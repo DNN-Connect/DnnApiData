@@ -1,0 +1,1315 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Instrumentation.dll" version="06.00.00" generated="2017-06-18 19:39:13Z" generationTime="1.2761836">
+  <namespace name="DotNetNuke.Instrumentation">
+    <class name="DnnLog">
+      <declaration><![CDATA[public static class DnnLog]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static DnnLog()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="41" ec="66">DnnLog.cs</location>
+            <body hash="1aed13a6917c0ad030e6d7adacd67422"><![CDATA[private static readonly object ConfigLock = new object()]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Debug">
+          <declaration><![CDATA[public static void Debug(object message)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="215" sc="9" el="224" ec="10">DnnLog.cs</location>
+            <body hash="6c42332c0ecfc3619a3bb0ee5d1c1c1f"><![CDATA[{
+            EnsureConfig();
+
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelDebug))
+            {
+                SetupThreadContext();
+                log.Debug(message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Debug">
+          <declaration><![CDATA[public static void Debug(string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="227" sc="9" el="236" ec="10">DnnLog.cs</location>
+            <body hash="cf37322189a1328dbffcbb043801443e"><![CDATA[{
+            EnsureConfig();
+
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelDebug))
+            {
+                SetupThreadContext();
+                log.DebugFormat(format, args);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Debug">
+          <declaration><![CDATA[public static void Debug(IFormatProvider provider, string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="239" sc="9" el="248" ec="10">DnnLog.cs</location>
+            <body hash="d77f6818ed89f9aa95136a097bae271f"><![CDATA[{
+            EnsureConfig();
+
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelDebug))
+            {
+                SetupThreadContext();
+                log.DebugFormat(provider, format, args);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="EnsureConfig">
+          <declaration><![CDATA[private static void EnsureConfig()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="75" sc="9" el="88" ec="10">DnnLog.cs</location>
+            <body hash="a21186ca4cba14e071784f69c2f2d991"><![CDATA[{
+            lock (ConfigLock)
+            {
+                if (!_configured)
+                {
+                    var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigFile);
+                    if (File.Exists(configPath))
+                    {
+                        XmlConfigurator.ConfigureAndWatch(new FileInfo(configPath));
+                    }
+                    _configured = true;
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Error">
+          <declaration><![CDATA[public static void Error(string message, Exception exception)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="341" sc="9" el="350" ec="10">DnnLog.cs</location>
+            <body hash="48df227ecb2391a313951826b26a6eaf"><![CDATA[{
+            EnsureConfig();
+
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelError))
+            {
+                SetupThreadContext();
+                log.Error(message, exception);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Error">
+          <declaration><![CDATA[public static void Error(object message)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="353" sc="9" el="361" ec="10">DnnLog.cs</location>
+            <body hash="45a4a1bcb36fdb593e1f513fd82c2b0e"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelError))
+            {
+                SetupThreadContext();
+                log.Error(message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Error">
+          <declaration><![CDATA[public static void Error(Exception exception)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="364" sc="9" el="372" ec="10">DnnLog.cs</location>
+            <body hash="c52836fd67330cfcbb74a17d30a46e10"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelError))
+            {
+                SetupThreadContext();
+                log.Error(exception.Message, exception);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Error">
+          <declaration><![CDATA[public static void Error(IFormatProvider provider, string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="375" sc="9" el="383" ec="10">DnnLog.cs</location>
+            <body hash="9ddae7e85841a0ba7f25343d1d0b83c9"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelError))
+            {
+                SetupThreadContext();
+                log.ErrorFormat(provider, format, args);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Error">
+          <declaration><![CDATA[public static void Error(string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="386" sc="9" el="394" ec="10">DnnLog.cs</location>
+            <body hash="ac4132432be5fc73b017da38074fc0c1"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelError))
+            {
+                SetupThreadContext();
+                log.ErrorFormat(format, args);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Fatal">
+          <declaration><![CDATA[public static void Fatal(string message, Exception exception)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="401" sc="9" el="409" ec="10">DnnLog.cs</location>
+            <body hash="0c06d4aee930fb4c9c216a1578d50d73"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelFatal))
+            {
+                SetupThreadContext();
+                log.Fatal(message, exception);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Fatal">
+          <declaration><![CDATA[public static void Fatal(object message)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="412" sc="9" el="420" ec="10">DnnLog.cs</location>
+            <body hash="70e37b06e7a2d7f4d28fa84954993f86"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelFatal))
+            {
+                SetupThreadContext();
+                log.Fatal(message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Fatal">
+          <declaration><![CDATA[public static void Fatal(IFormatProvider provider, string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="423" sc="9" el="431" ec="10">DnnLog.cs</location>
+            <body hash="8bbd4dcc1f3d363b876c19c8955551c9"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelFatal))
+            {
+                SetupThreadContext();
+                log.FatalFormat(provider, format, args);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Fatal">
+          <declaration><![CDATA[public static void Fatal(string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="434" sc="9" el="442" ec="10">DnnLog.cs</location>
+            <body hash="2f493837b28c3cc6b6fb8ed7b20b097d"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelFatal))
+            {
+                SetupThreadContext();
+                log.FatalFormat(format, args);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Info">
+          <declaration><![CDATA[public static void Info(object message)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="255" sc="9" el="263" ec="10">DnnLog.cs</location>
+            <body hash="1b639289d16af47a1bea4a415b0d767d"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelInfo))
+            {
+                SetupThreadContext();
+                log.Info(message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Info">
+          <declaration><![CDATA[public static void Info(IFormatProvider provider, string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="266" sc="9" el="274" ec="10">DnnLog.cs</location>
+            <body hash="626e46f827cd99ba05d1455c7c2eec50"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelInfo))
+            {
+                SetupThreadContext();
+                log.InfoFormat(provider, format, args);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Info">
+          <declaration><![CDATA[public static void Info(string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="277" sc="9" el="285" ec="10">DnnLog.cs</location>
+            <body hash="a95f7012a17e66d184705c3339be5688"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelInfo))
+            {
+                SetupThreadContext();
+                log.InfoFormat(format, args);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MethodEntry">
+          <declaration><![CDATA[public static void MethodEntry()]]></declaration>
+          <documentation>
+            <summary>
+   Standard method to use on method entry
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="121" sc="9" el="131" ec="10">DnnLog.cs</location>
+            <body hash="66a041c6ebde42a3b9fdd24c1b8c5357"><![CDATA[{
+            EnsureConfig();
+
+            var log = DnnLogger.GetClassLogger(CallingType);
+
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelTrace))
+            {
+                SetupThreadContext();
+                log.TraceFormat("Entering Method [{0}]", CallingFrame.GetMethod().Name);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MethodExit">
+          <declaration><![CDATA[public static void MethodExit(object returnObject)]]></declaration>
+          <documentation>
+            <summary>
+   Standard method to use on method exit
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="137" sc="9" el="151" ec="10">DnnLog.cs</location>
+            <body hash="edf8439d28e1edab617c300e441bb599"><![CDATA[{
+            EnsureConfig();
+
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelTrace))
+            {
+                if (returnObject == null)
+                {
+                    returnObject = "NULL";
+                }
+
+                SetupThreadContext();
+                log.TraceFormat("Method [{0}] Returned [{1}]", CallingFrame.GetMethod().Name, returnObject);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MethodExit">
+          <declaration><![CDATA[public static void MethodExit()]]></declaration>
+          <documentation>
+            <summary>
+   Standard method to use on method exit
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="157" sc="9" el="167" ec="10">DnnLog.cs</location>
+            <body hash="75b8bf3c22da41dc32f61ea4a6cbf1e4"><![CDATA[{
+            EnsureConfig();
+
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelTrace))
+            {
+
+                SetupThreadContext();
+                log.TraceFormat("Method [{0}] Returned", CallingFrame.GetMethod().Name);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetupThreadContext">
+          <declaration><![CDATA[public static void SetupThreadContext()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="91" sc="9" el="115" ec="10">DnnLog.cs</location>
+            <body hash="1ccaa7433968caed394c0d5c9909020e"><![CDATA[{
+            //if (HttpContext.Current != null && HttpContext.Current.Request != null)
+            //{
+            //    ThreadContext.Properties["Request.URL"] = HttpContext.Current.Request.RawUrl;
+            //    ThreadContext.Properties["Request.FilePath"] = HttpContext.Current.Request.FilePath;
+            //    ThreadContext.Properties["Request.HttpMethod"] = HttpContext.Current.Request.HttpMethod;
+            //    ThreadContext.Properties["Request.IsSecureConnection"] = HttpContext.Current.Request.IsSecureConnection;
+            //    ThreadContext.Properties["Request.UserAgent"] = HttpContext.Current.Request.UserAgent;
+
+            //    if (HttpContext.Current.User != null)
+            //    {
+            //        ThreadContext.Properties["UserIdentity"] = HttpContext.Current.User.Identity.Name;
+            //    }
+
+            //    //Entities.Portals.PortalSettings portal = Entities.Portals.PortalSettings.Current;
+            //    //if (portal != null)
+            //    //{
+            //    //    ThreadContext.Properties["Portal.CultureCode"] = portal.CultureCode;
+            //    //    ThreadContext.Properties["Portal.GUID"] = portal.GUID;
+            //    //    ThreadContext.Properties["Portal.PortalID"] = portal.PortalId;
+            //    //    ThreadContext.Properties["Portal.UesrID"] = portal.UserId;
+            //    //    ThreadContext.Properties["Portal.Version"] = portal.Version;
+            //    //}
+            //}
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Trace">
+          <declaration><![CDATA[public static void Trace(string message)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="172" sc="9" el="182" ec="10">DnnLog.cs</location>
+            <body hash="edc29eb6d115c6d8431e2c812e51bfaa"><![CDATA[{
+            EnsureConfig();
+
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelTrace))
+            {
+
+                SetupThreadContext();
+                log.TraceFormat(message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Trace">
+          <declaration><![CDATA[public static void Trace(string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="185" sc="9" el="195" ec="10">DnnLog.cs</location>
+            <body hash="eab771e64250cd23a51a7bd805f820be"><![CDATA[{
+            EnsureConfig();
+
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelTrace))
+            {
+
+                SetupThreadContext();
+                log.TraceFormat(format, args);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Trace">
+          <declaration><![CDATA[public static void Trace(IFormatProvider provider, string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="198" sc="9" el="208" ec="10">DnnLog.cs</location>
+            <body hash="82069bdf5283b343c3f7dba88c67d2cb"><![CDATA[{
+            EnsureConfig();
+
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelTrace))
+            {
+
+                SetupThreadContext();
+                log.TraceFormat(provider, format, args);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Warn">
+          <declaration><![CDATA[public static void Warn(string message, Exception exception)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="292" sc="9" el="300" ec="10">DnnLog.cs</location>
+            <body hash="99feac196e39111b48bdb3403a693110"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelWarn))
+            {
+                SetupThreadContext();
+                log.Warn(message, exception);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Warn">
+          <declaration><![CDATA[public static void Warn(object message)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="303" sc="9" el="311" ec="10">DnnLog.cs</location>
+            <body hash="9eb9071876c787f7f1a37198981b2835"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelWarn))
+            {
+                SetupThreadContext();
+                log.Warn(message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Warn">
+          <declaration><![CDATA[public static void Warn(IFormatProvider provider, string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="314" sc="9" el="322" ec="10">DnnLog.cs</location>
+            <body hash="fe61ce948cae021cccca15788041e6f7"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelWarn))
+            {
+                SetupThreadContext();
+                log.WarnFormat(provider, format, args);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Warn">
+          <declaration><![CDATA[public static void Warn(string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="326" sc="9" el="334" ec="10">DnnLog.cs</location>
+            <body hash="e5959aebd1d6599c24457ab81901d941"><![CDATA[{
+            EnsureConfig();
+            var log = DnnLogger.GetClassLogger(CallingType);
+            if (log.Logger.IsEnabledFor(DnnLogger.LevelWarn))
+            {
+                SetupThreadContext();
+                log.WarnFormat(format, args);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_configured">
+          <declaration><![CDATA[private static bool _configured;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ConfigFile">
+          <declaration><![CDATA[private const string ConfigFile = "DotNetNuke.log4net.config";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ConfigLock">
+          <declaration><![CDATA[private static readonly object ConfigLock = new object();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="CallingFrame">
+          <declaration><![CDATA[private static StackFrame CallingFrame]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="13" el="63" ec="14">DnnLog.cs</location>
+            <body hash="8d26411478db3aee8e24ca36d3b9d2a2"><![CDATA[{
+                StackFrame frame = null;
+                var stack = new StackTrace().GetFrames();
+
+                int frameDepth = 0;
+                if (stack != null)
+                {
+                    var reflectedType = stack[frameDepth].GetMethod().ReflectedType;
+                    while (reflectedType == BuildManager.GetType("DotNetNuke.Services.Exceptions.Exceptions", false) ||
+                           reflectedType == typeof(DnnLogger) || reflectedType == typeof(DnnLog))
+                    {
+                        frameDepth++;
+                        reflectedType = stack[frameDepth].GetMethod().ReflectedType;
+                    }
+                    frame = stack[frameDepth];
+                }
+                return frame;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CallingType">
+          <declaration><![CDATA[private static Type CallingType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="13" el="71" ec="14">DnnLog.cs</location>
+            <body hash="13617ba2e507c2c8fd8d7b67736f7103"><![CDATA[{
+                return CallingFrame.GetMethod().DeclaringType;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DnnLogger">
+      <declaration><![CDATA[public sealed class DnnLogger : LoggerWrapperImpl]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly Type _dnnExceptionType = BuildManager.GetType("DotNetNuke.Services.Exceptions.Exceptions", false);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="9" el="83" ec="10">DnnLogger.cs</location>
+            <body hash="52691bee87ce5d0c4c880a8e3061d24c"><![CDATA[private readonly Type _dnnExceptionType = BuildManager.GetType("DotNetNuke.Services.Exceptions.Exceptions", false);
+        private readonly Type _stackBoundary = typeof(DnnLogger);
+
+        private DnnLogger(ILogger logger)
+            : base(logger)
+        {
+            StackFrame[] stack = new StackTrace().GetFrames();
+
+            if (stack != null)
+            {
+                int frameDepth = 0;
+                Type methodType = stack[frameDepth].GetMethod().ReflectedType;
+                while (methodType == _dnnExceptionType || methodType == typeof(DnnLogger) || methodType == typeof(DnnLog) || methodType == typeof(Control))
+                {
+                    frameDepth++;
+                    methodType = stack[frameDepth].GetMethod().ReflectedType;
+                }
+
+                _stackBoundary = new StackTrace().GetFrame(frameDepth - 1).GetMethod().DeclaringType;
+            }
+            else
+            {
+                _stackBoundary = typeof(DnnLogger);
+            }
+
+            ReloadLevels(logger.Repository);
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Debug">
+          <declaration><![CDATA[public void Debug(object message)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a message object with the <c>DEBUG</c> level.
+ </summary>
+ <param name="message">The message object to log.</param>
+ <remarks>
+   <para>
+     This method first checks if this logger is <c>DEBUG</c>
+     enabled by comparing the level of this logger with the
+     <c>DEBUG</c> level. If this logger is
+     <c>DEBUG</c> enabled, then it converts the message object
+     (passed as parameter) to a string by invoking the appropriate
+     <see cref="T:log4net.ObjectRenderer.IObjectRenderer" />. It then
+     proceeds to call all the registered appenders in this logger
+     and also higher in the hierarchy depending on the value of the
+     additivity flag.
+   </para>
+   <para>
+     <b>WARNING</b> Note that passing an <see cref="T:System.Exception" />
+     to this method will print the name of the <see cref="T:System.Exception" />
+     but no stack trace. To print a stack trace use the
+     <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Error(System.Object,System.Exception)" /> form instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="152" sc="9" el="154" ec="10">DnnLogger.cs</location>
+            <body hash="4437968385f701d0adcb8c707b0f3561"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelDebug, message, null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DebugFormat">
+          <declaration><![CDATA[public void DebugFormat(string format, params object[] args)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a formatted message string with the <c>DEBUG</c> level.
+ </summary>
+ <param name="format">A String containing zero or more format items</param>
+ <param name="args">An Object array containing zero or more objects to format</param>
+ <remarks>
+   <para>
+     The message is formatted using the <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])" /> method. See
+     <c>String.Format</c> for details of the syntax of the format string and the behavior
+     of the formatting.
+   </para>
+   <para>
+     The string is formatted using the <see cref="P:System.Globalization.CultureInfo.InvariantCulture" />
+     format provider. To specify a localized provider use the
+     <see cref="M:DotNetNuke.Instrumentation.DnnLogger.DebugFormat(System.IFormatProvider,System.String,System.Object[])" /> method.
+   </para>
+   <para>
+     This method does not take an <see cref="T:System.Exception" /> object to include in the
+     log event. To pass an <see cref="T:System.Exception" /> use one of the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Debug(System.Object)" />
+     methods instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="180" sc="9" el="182" ec="10">DnnLogger.cs</location>
+            <body hash="56cf0aad04d0723ebe9c1ff2ede9f0a3"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelDebug, new SystemStringFormat(CultureInfo.InvariantCulture, format, args), null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DebugFormat">
+          <declaration><![CDATA[public void DebugFormat(IFormatProvider provider, string format, params object[] args)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a formatted message string with the <c>DEBUG</c> level.
+ </summary>
+ <param name="provider">An <see cref="T:System.IFormatProvider" /> that supplies culture-specific formatting information</param>
+ <param name="format">A String containing zero or more format items</param>
+ <param name="args">An Object array containing zero or more objects to format</param>
+ <remarks>
+   <para>
+     The message is formatted using the <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])" /> method. See
+     <c>String.Format</c> for details of the syntax of the format string and the behavior
+     of the formatting.
+   </para>
+   <para>
+     This method does not take an <see cref="T:System.Exception" /> object to include in the
+     log event. To pass an <see cref="T:System.Exception" /> use one of the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Debug(System.Object)" />
+     methods instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="203" sc="9" el="205" ec="10">DnnLogger.cs</location>
+            <body hash="bed9aeb8f9166b8f22f4e4fd4ec0e928"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelDebug, new SystemStringFormat(provider, format, args), null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Error">
+          <declaration><![CDATA[public void Error(object message)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a message object with the <c>ERROR</c> level.
+ </summary>
+ <param name="message">The message object to log.</param>
+ <remarks>
+   <para>
+     This method first checks if this logger is <c>ERROR</c>
+     enabled by comparing the level of this logger with the
+     <c>ERROR</c> level. If this logger is
+     <c>ERROR</c> enabled, then it converts the message object
+     (passed as parameter) to a string by invoking the appropriate
+     <see cref="T:log4net.ObjectRenderer.IObjectRenderer" />. It then
+     proceeds to call all the registered appenders in this logger and
+     also higher in the hierarchy depending on the value of the
+     additivity flag.
+   </para>
+   <para>
+     <b>WARNING</b> Note that passing an <see cref="T:System.Exception" /> to this
+     method will print the name of the <see cref="T:System.Exception" /> but no
+     stack trace. To print a stack trace use the
+     <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Error(System.Object,System.Exception)" /> form instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="421" sc="9" el="423" ec="10">DnnLogger.cs</location>
+            <body hash="8e5535021fac79704e366134ee73bf49"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelError, message, null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Error">
+          <declaration><![CDATA[public void Error(object message, Exception exception)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a message object with the <c>ERROR</c> level
+ </summary>
+ <param name="message">The message object to log.</param>
+ <param name="exception">The exception to log, including its stack trace.</param>
+ <remarks>
+   <para>
+     Logs a message object with the <c>ERROR</c> level including
+     the stack trace of the <see cref="T:System.Exception" /> <paramref name="exception" />
+     passed as a parameter.
+   </para>
+   <para>
+     See the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Error(System.Object)" /> form for more detailed information.
+   </para>
+ </remarks>
+ <seealso cref="M:DotNetNuke.Instrumentation.DnnLogger.Error(System.Object)" /></documentation>
+          <codeblock>
+            <location sl="442" sc="9" el="444" ec="10">DnnLogger.cs</location>
+            <body hash="59389fb9fe8e3b2fc98bb432f4b5d9e7"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelError, message, exception);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ErrorFormat">
+          <declaration><![CDATA[public void ErrorFormat(string format, params object[] args)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a formatted message string with the <c>ERROR</c> level.
+ </summary>
+ <param name="format">A String containing zero or more format items</param>
+ <param name="args">An Object array containing zero or more objects to format</param>
+ <remarks>
+   <para>
+     The message is formatted using the <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])" /> method. See
+     <c>String.Format</c> for details of the syntax of the format string and the behavior
+     of the formatting.
+   </para>
+   <para>
+     The string is formatted using the <see cref="P:System.Globalization.CultureInfo.InvariantCulture" />
+     format provider. To specify a localized provider use the
+     <see cref="M:DotNetNuke.Instrumentation.DnnLogger.ErrorFormat(System.IFormatProvider,System.String,System.Object[])" /> method.
+   </para>
+   <para>
+     This method does not take an <see cref="T:System.Exception" /> object to include in the
+     log event. To pass an <see cref="T:System.Exception" /> use one of the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Error(System.Object)" />
+     methods instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="469" sc="9" el="471" ec="10">DnnLogger.cs</location>
+            <body hash="1c1f4c221be9a134a479f2b0d7652587"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelError, new SystemStringFormat(CultureInfo.InvariantCulture, format, args), null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ErrorFormat">
+          <declaration><![CDATA[public void ErrorFormat(IFormatProvider provider, string format, params object[] args)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a formatted message string with the <c>ERROR</c> level.
+ </summary>
+ <param name="provider">An <see cref="T:System.IFormatProvider" /> that supplies culture-specific formatting information</param>
+ <param name="format">A String containing zero or more format items</param>
+ <param name="args">An Object array containing zero or more objects to format</param>
+ <remarks>
+   <para>
+     The message is formatted using the <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])" /> method. See
+     <c>String.Format</c> for details of the syntax of the format string and the behavior
+     of the formatting.
+   </para>
+   <para>
+     This method does not take an <see cref="T:System.Exception" /> object to include in the
+     log event. To pass an <see cref="T:System.Exception" /> use one of the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Error(System.Object)" />
+     methods instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="492" sc="9" el="494" ec="10">DnnLogger.cs</location>
+            <body hash="7a77ebac96a7401c7743073184ad566f"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelError, new SystemStringFormat(provider, format, args), null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Fatal">
+          <declaration><![CDATA[public void Fatal(object message)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a message object with the <c>FATAL</c> level.
+ </summary>
+ <param name="message">The message object to log.</param>
+ <remarks>
+   <para>
+     This method first checks if this logger is <c>FATAL</c>
+     enabled by comparing the level of this logger with the
+     <c>FATAL</c> level. If this logger is
+     <c>FATAL</c> enabled, then it converts the message object
+     (passed as parameter) to a string by invoking the appropriate
+     <see cref="T:log4net.ObjectRenderer.IObjectRenderer" />. It then
+     proceeds to call all the registered appenders in this logger and
+     also higher in the hierarchy depending on the value of the
+     additivity flag.
+   </para>
+   <para>
+     <b>WARNING</b> Note that passing an <see cref="T:System.Exception" /> to this
+     method will print the name of the <see cref="T:System.Exception" /> but no
+     stack trace. To print a stack trace use the
+     <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Fatal(System.Object,System.Exception)" /> form instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="520" sc="9" el="522" ec="10">DnnLogger.cs</location>
+            <body hash="fa8e56765cff221c74a2e0cb2cbcb1e0"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelFatal, message, null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Fatal">
+          <declaration><![CDATA[public void Fatal(object message, Exception exception)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a message object with the <c>FATAL</c> level
+ </summary>
+ <param name="message">The message object to log.</param>
+ <param name="exception">The exception to log, including its stack trace.</param>
+ <remarks>
+   <para>
+     Logs a message object with the <c>FATAL</c> level including
+     the stack trace of the <see cref="T:System.Exception" /> <paramref name="exception" />
+     passed as a parameter.
+   </para>
+   <para>
+     See the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Fatal(System.Object)" /> form for more detailed information.
+   </para>
+ </remarks>
+ <seealso cref="M:DotNetNuke.Instrumentation.DnnLogger.Fatal(System.Object)" /></documentation>
+          <codeblock>
+            <location sl="541" sc="9" el="543" ec="10">DnnLogger.cs</location>
+            <body hash="dde7c8c0853680f76f0b5c4a6dd8941e"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelFatal, message, exception);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FatalFormat">
+          <declaration><![CDATA[public void FatalFormat(string format, params object[] args)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a formatted message string with the <c>FATAL</c> level.
+ </summary>
+ <param name="format">A String containing zero or more format items</param>
+ <param name="args">An Object array containing zero or more objects to format</param>
+ <remarks>
+   <para>
+     The message is formatted using the <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])" /> method. See
+     <c>String.Format</c> for details of the syntax of the format string and the behavior
+     of the formatting.
+   </para>
+   <para>
+     The string is formatted using the <see cref="P:System.Globalization.CultureInfo.InvariantCulture" />
+     format provider. To specify a localized provider use the
+     <see cref="M:DotNetNuke.Instrumentation.DnnLogger.FatalFormat(System.IFormatProvider,System.String,System.Object[])" /> method.
+   </para>
+   <para>
+     This method does not take an <see cref="T:System.Exception" /> object to include in the
+     log event. To pass an <see cref="T:System.Exception" /> use one of the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Fatal(System.Object)" />
+     methods instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="568" sc="9" el="570" ec="10">DnnLogger.cs</location>
+            <body hash="e1444d080c67438d1a1ca4bf90dbd4a6"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelFatal, new SystemStringFormat(CultureInfo.InvariantCulture, format, args), null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FatalFormat">
+          <declaration><![CDATA[public void FatalFormat(IFormatProvider provider, string format, params object[] args)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a formatted message string with the <c>FATAL</c> level.
+ </summary>
+ <param name="provider">An <see cref="T:System.IFormatProvider" /> that supplies culture-specific formatting information</param>
+ <param name="format">A String containing zero or more format items</param>
+ <param name="args">An Object array containing zero or more objects to format</param>
+ <remarks>
+   <para>
+     The message is formatted using the <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])" /> method. See
+     <c>String.Format</c> for details of the syntax of the format string and the behavior
+     of the formatting.
+   </para>
+   <para>
+     This method does not take an <see cref="T:System.Exception" /> object to include in the
+     log event. To pass an <see cref="T:System.Exception" /> use one of the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Fatal(System.Object)" />
+     methods instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="591" sc="9" el="593" ec="10">DnnLogger.cs</location>
+            <body hash="46db8093ba06b311b9354ca9ab9a7465"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelFatal, new SystemStringFormat(provider, format, args), null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetClassLogger">
+          <declaration><![CDATA[public static DnnLogger GetClassLogger(Type type)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="107" sc="9" el="109" ec="10">DnnLogger.cs</location>
+            <body hash="012243eea1400f2227f64f0f4b7b25c1"><![CDATA[{
+            return new DnnLogger(LogManager.GetLogger(Assembly.GetCallingAssembly(), type).Logger);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetContextProperty">
+          <declaration><![CDATA[public static string GetContextProperty(string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="122" sc="9" el="124" ec="10">DnnLogger.cs</location>
+            <body hash="85ff2cf7c077a2218470cc25916d6012"><![CDATA[{
+            return ThreadContext.Properties[key].ToString();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogger">
+          <declaration><![CDATA[public static DnnLogger GetLogger(string name)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="112" sc="9" el="114" ec="10">DnnLogger.cs</location>
+            <body hash="3208d4fbf44f316f8c965a27cd2bcf57"><![CDATA[{
+            return new DnnLogger(LogManager.GetLogger(name).Logger);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Info">
+          <declaration><![CDATA[public void Info(object message)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a message object with the <c>INFO</c> level.
+ </summary>
+ <param name="message">The message object to log.</param>
+ <remarks>
+   <para>
+     This method first checks if this logger is <c>INFO</c>
+     enabled by comparing the level of this logger with the
+     <c>INFO</c> level. If this logger is
+     <c>INFO</c> enabled, then it converts the message object
+     (passed as parameter) to a string by invoking the appropriate
+     <see cref="T:log4net.ObjectRenderer.IObjectRenderer" />. It then
+     proceeds to call all the registered appenders in this logger
+     and also higher in the hierarchy depending on the value of
+     the additivity flag.
+   </para>
+   <para>
+     <b>WARNING</b> Note that passing an <see cref="T:System.Exception" />
+     to this method will print the name of the <see cref="T:System.Exception" />
+     but no stack trace. To print a stack trace use the
+     <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Error(System.Object,System.Exception)" /> form instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="231" sc="9" el="233" ec="10">DnnLogger.cs</location>
+            <body hash="102a8c5bddfa06e947647be77854b528"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelInfo, message, null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="InfoFormat">
+          <declaration><![CDATA[public void InfoFormat(string format, params object[] args)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a formatted message string with the <c>INFO</c> level.
+ </summary>
+ <param name="format">A String containing zero or more format items</param>
+ <param name="args">An Object array containing zero or more objects to format</param>
+ <remarks>
+   <para>
+     The message is formatted using the <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])" /> method. See
+     <c>String.Format</c> for details of the syntax of the format string and the behavior
+     of the formatting.
+   </para>
+   <para>
+     The string is formatted using the <see cref="P:System.Globalization.CultureInfo.InvariantCulture" />
+     format provider. To specify a localized provider use the
+     <see cref="M:DotNetNuke.Instrumentation.DnnLogger.InfoFormat(System.IFormatProvider,System.String,System.Object[])" /> method.
+   </para>
+   <para>
+     This method does not take an <see cref="T:System.Exception" /> object to include in the
+     log event. To pass an <see cref="T:System.Exception" /> use one of the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Info(System.Object)" />
+     methods instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="259" sc="9" el="261" ec="10">DnnLogger.cs</location>
+            <body hash="2a75a0d40a9b08ed55aff2184039dac7"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelInfo, new SystemStringFormat(CultureInfo.InvariantCulture, format, args), null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="InfoFormat">
+          <declaration><![CDATA[public void InfoFormat(IFormatProvider provider, string format, params object[] args)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a formatted message string with the <c>INFO</c> level.
+ </summary>
+ <param name="provider">An <see cref="T:System.IFormatProvider" /> that supplies culture-specific formatting information</param>
+ <param name="format">A String containing zero or more format items</param>
+ <param name="args">An Object array containing zero or more objects to format</param>
+ <remarks>
+   <para>
+     The message is formatted using the <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])" /> method. See
+     <c>String.Format</c> for details of the syntax of the format string and the behavior
+     of the formatting.
+   </para>
+   <para>
+     This method does not take an <see cref="T:System.Exception" /> object to include in the
+     log event. To pass an <see cref="T:System.Exception" /> use one of the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Info(System.Object)" />
+     methods instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="283" sc="9" el="285" ec="10">DnnLogger.cs</location>
+            <body hash="fbce9a71d06eeda228b10a24ecc9bd17"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelInfo, new SystemStringFormat(provider, format, args), null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ReloadLevels">
+          <declaration><![CDATA[private static void ReloadLevels(ILoggerRepository repository)]]></declaration>
+          <documentation>
+            <summary>
+   Virtual method called when the configuration of the repository changes
+ </summary>
+ <param name="repository">the repository holding the levels</param>
+ <remarks>
+   <para>
+     Virtual method called when the configuration of the repository changes
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="95" sc="9" el="104" ec="10">DnnLogger.cs</location>
+            <body hash="7dda1b4bdb47eee673afceb53c5a440e"><![CDATA[{
+            LevelMap levelMap = repository.LevelMap;
+
+            LevelTrace = levelMap.LookupWithDefault(Level.Trace);
+            LevelDebug = levelMap.LookupWithDefault(Level.Debug);
+            LevelInfo = levelMap.LookupWithDefault(Level.Info);
+            LevelWarn = levelMap.LookupWithDefault(Level.Warn);
+            LevelError = levelMap.LookupWithDefault(Level.Error);
+            LevelFatal = levelMap.LookupWithDefault(Level.Fatal);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetContextProperty">
+          <declaration><![CDATA[public static void SetContextProperty(string key, string value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="117" sc="9" el="119" ec="10">DnnLogger.cs</location>
+            <body hash="8ef570abde74026754e786528f70e0db"><![CDATA[{
+            ThreadContext.Properties[key] = value;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TraceFormat">
+          <declaration><![CDATA[internal void TraceFormat(string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="288" sc="9" el="290" ec="10">DnnLogger.cs</location>
+            <body hash="970867f67805841d3e5fc9095436f1ce"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelTrace, new SystemStringFormat(CultureInfo.InvariantCulture, format, args), null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TraceFormat">
+          <declaration><![CDATA[internal void TraceFormat(IFormatProvider provider, string format, params object[] args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="293" sc="9" el="295" ec="10">DnnLogger.cs</location>
+            <body hash="21a10f00f8b6351827333842dfb8ecfb"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelTrace, new SystemStringFormat(provider, format, args), null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Warn">
+          <declaration><![CDATA[public void Warn(object message)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a message object with the <c>WARN</c> level.
+ </summary>
+ <param name="message">the message object to log</param>
+ <remarks>
+   <para>
+     This method first checks if this logger is <c>WARN</c>
+     enabled by comparing the level of this logger with the
+     <c>WARN</c> level. If this logger is
+     <c>WARN</c> enabled, then it converts the message object
+     (passed as parameter) to a string by invoking the appropriate
+     <see cref="T:log4net.ObjectRenderer.IObjectRenderer" />. It then
+     proceeds to call all the registered appenders in this logger and
+     also higher in the hierarchy depending on the value of the
+     additivity flag.
+   </para>
+   <para>
+     <b>WARNING</b> Note that passing an <see cref="T:System.Exception" /> to this
+     method will print the name of the <see cref="T:System.Exception" /> but no
+     stack trace. To print a stack trace use the
+     <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Warn(System.Object,System.Exception)" /> form instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="322" sc="9" el="324" ec="10">DnnLogger.cs</location>
+            <body hash="4a8818da57c6ff2eb983306300a84bd4"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelWarn, message, null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Warn">
+          <declaration><![CDATA[public void Warn(object message, Exception exception)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a message object with the <c>WARN</c> level
+ </summary>
+ <param name="message">The message object to log.</param>
+ <param name="exception">The exception to log, including its stack trace.</param>
+ <remarks>
+   <para>
+     Logs a message object with the <c>WARN</c> level including
+     the stack trace of the <see cref="T:System.Exception" /> <paramref name="exception" />
+     passed as a parameter.
+   </para>
+   <para>
+     See the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Warn(System.Object)" /> form for more detailed information.
+   </para>
+ </remarks>
+ <seealso cref="M:DotNetNuke.Instrumentation.DnnLogger.Warn(System.Object)" /></documentation>
+          <codeblock>
+            <location sl="343" sc="9" el="345" ec="10">DnnLogger.cs</location>
+            <body hash="0aa175d9532ef6b8fa6a748206c29f69"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelWarn, message, exception);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="WarnFormat">
+          <declaration><![CDATA[public void WarnFormat(string format, params object[] args)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a formatted message string with the <c>WARN</c> level.
+ </summary>
+ <param name="format">A String containing zero or more format items</param>
+ <param name="args">An Object array containing zero or more objects to format</param>
+ <remarks>
+   <para>
+     The message is formatted using the <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])" /> method. See
+     <c>String.Format</c> for details of the syntax of the format string and the behavior
+     of the formatting.
+   </para>
+   <para>
+     The string is formatted using the <see cref="P:System.Globalization.CultureInfo.InvariantCulture" />
+     format provider. To specify a localized provider use the
+     <see cref="M:DotNetNuke.Instrumentation.DnnLogger.WarnFormat(System.IFormatProvider,System.String,System.Object[])" /> method.
+   </para>
+   <para>
+     This method does not take an <see cref="T:System.Exception" /> object to include in the
+     log event. To pass an <see cref="T:System.Exception" /> use one of the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Warn(System.Object)" />
+     methods instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="370" sc="9" el="372" ec="10">DnnLogger.cs</location>
+            <body hash="5252b3be5c4d463b1a57bd89997135bd"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelWarn, new SystemStringFormat(CultureInfo.InvariantCulture, format, args), null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="WarnFormat">
+          <declaration><![CDATA[public void WarnFormat(IFormatProvider provider, string format, params object[] args)]]></declaration>
+          <documentation>
+            <summary>
+   Logs a formatted message string with the <c>WARN</c> level.
+ </summary>
+ <param name="provider">An <see cref="T:System.IFormatProvider" /> that supplies culture-specific formatting information</param>
+ <param name="format">A String containing zero or more format items</param>
+ <param name="args">An Object array containing zero or more objects to format</param>
+ <remarks>
+   <para>
+     The message is formatted using the <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])" /> method. See
+     <c>String.Format</c> for details of the syntax of the format string and the behavior
+     of the formatting.
+   </para>
+   <para>
+     This method does not take an <see cref="T:System.Exception" /> object to include in the
+     log event. To pass an <see cref="T:System.Exception" /> use one of the <see cref="M:DotNetNuke.Instrumentation.DnnLogger.Warn(System.Object)" />
+     methods instead.
+   </para>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="393" sc="9" el="395" ec="10">DnnLogger.cs</location>
+            <body hash="ce5dd98a49fa71092e99c076c597ff1c"><![CDATA[{
+            Logger.Log(_stackBoundary, LevelWarn, new SystemStringFormat(provider, format, args), null);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_dnnExceptionType">
+          <declaration><![CDATA[private readonly Type _dnnExceptionType = BuildManager.GetType("DotNetNuke.Services.Exceptions.Exceptions", false);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_stackBoundary">
+          <declaration><![CDATA[private readonly Type _stackBoundary = typeof(DnnLogger);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LevelDebug">
+          <declaration><![CDATA[internal static Level LevelDebug;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LevelError">
+          <declaration><![CDATA[internal static Level LevelError;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LevelFatal">
+          <declaration><![CDATA[internal static Level LevelFatal;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LevelInfo">
+          <declaration><![CDATA[internal static Level LevelInfo;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LevelTrace">
+          <declaration><![CDATA[internal static Level LevelTrace;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LevelWarn">
+          <declaration><![CDATA[internal static Level LevelWarn;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

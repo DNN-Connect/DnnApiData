@@ -1,0 +1,1193 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.TaskScheduler.dll" version="01.01.00" generated="2017-06-19 21:14:25Z" generationTime="2.2549892">
+  <namespace name="">
+    <class name="&lt;Module&gt;">
+      <declaration><![CDATA[internal class <Module>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="&lt;PrivateImplementationDetails&gt;">
+      <declaration><![CDATA[internal sealed class <PrivateImplementationDetails>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="ComputeStringHash">
+          <declaration><![CDATA[internal static uint ComputeStringHash(string s)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.TaskScheduler.Components">
+    <class name="TaskSchedulerController">
+      <declaration><![CDATA[public class TaskSchedulerController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public TaskSchedulerController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CreateScheduleItem">
+          <declaration><![CDATA[public ScheduleItem CreateScheduleItem(string typeFullName, string friendlyName, int timeLapse, string timeLapseMeasurement, int retryTimeLapse, string retryTimeLapseMeasurement, int retainHistoryNum, string attachToEvent, bool catchUpEnabled, bool enabled, string objectDependencies, string scheduleStartDate, string servers)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="104" sc="9" el="132" ec="10">Components\TaskSchedulerController.cs</location>
+            <body hash="97123910b7739655c27bc4a7a5b40eec"><![CDATA[{
+            var scheduleItem = new ScheduleItem();
+            scheduleItem.TypeFullName = typeFullName;
+            scheduleItem.FriendlyName = friendlyName;
+            scheduleItem.TimeLapse = timeLapse;
+            scheduleItem.TimeLapseMeasurement = string.IsNullOrEmpty(timeLapseMeasurement) ? "s" : timeLapseMeasurement;
+            scheduleItem.RetryTimeLapse = retryTimeLapse;
+            scheduleItem.RetryTimeLapseMeasurement = string.IsNullOrEmpty(retryTimeLapseMeasurement) ? "s" : retryTimeLapseMeasurement;
+            scheduleItem.RetainHistoryNum = retainHistoryNum;
+            scheduleItem.AttachToEvent = string.IsNullOrEmpty(attachToEvent) ? string.Empty : attachToEvent;
+            scheduleItem.CatchUpEnabled = catchUpEnabled;
+            scheduleItem.Enabled = enabled;
+            scheduleItem.ObjectDependencies = string.IsNullOrEmpty(objectDependencies) ? string.Empty : objectDependencies;
+            scheduleItem.ScheduleStartDate = !string.IsNullOrEmpty(scheduleStartDate) ? Convert.ToDateTime(scheduleStartDate, CultureInfo.InvariantCulture) : Null.NullDate;
+
+            if (!string.IsNullOrEmpty(servers))
+            {
+                if (!servers.StartsWith(","))
+                {
+                    servers = "," + servers;
+                }
+                if (!servers.EndsWith(","))
+                {
+                    servers = servers + ",";
+                }
+            }
+            scheduleItem.Servers = string.IsNullOrEmpty(servers) ? Null.NullString : servers;
+            return scheduleItem;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTimeLapse">
+          <declaration><![CDATA[public string GetTimeLapse(int timeLapse, string timeLapseMeasurement)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="94" ec="10">Components\TaskSchedulerController.cs</location>
+            <body hash="0e178a36e8e67b91633b2b3ff42a206f"><![CDATA[{
+            if (timeLapse != Null.NullInteger)
+            {
+                var str = Null.NullString;
+                var strPrefix = Localization.GetString("TimeLapsePrefix", LocalResourcesFile);
+                var strSec = Localization.GetString("Second", LocalResourcesFile);
+                var strMn = Localization.GetString("Minute", LocalResourcesFile);
+                var strHour = Localization.GetString("Hour", LocalResourcesFile);
+                var strDay = Localization.GetString("Day", LocalResourcesFile);
+                var strWeek = Localization.GetString("Week", LocalResourcesFile);
+                var strMonth = Localization.GetString("Month", LocalResourcesFile);
+                var strYear = Localization.GetString("Year", LocalResourcesFile);
+                var strSecs = Localization.GetString("Seconds");
+                var strMns = Localization.GetString("Minutes");
+                var strHours = Localization.GetString("Hours");
+                var strDays = Localization.GetString("Days");
+                var strWeeks = Localization.GetString("Weeks");
+                var strMonths = Localization.GetString("Months");
+                var strYears = Localization.GetString("Years");
+                switch (timeLapseMeasurement)
+                {
+                    case "s":
+                        str = strPrefix + " " + timeLapse + " " + (timeLapse > 1 ? strSecs : strSec);
+                        break;
+                    case "m":
+                        str = strPrefix + " " + timeLapse + " " + (timeLapse > 1 ? strMns : strMn);
+                        break;
+                    case "h":
+                        str = strPrefix + " " + timeLapse + " " + (timeLapse > 1 ? strHours : strHour);
+                        break;
+                    case "d":
+                        str = strPrefix + " " + timeLapse + " " + (timeLapse > 1 ? strDays : strDay);
+                        break;
+                    case "w":
+                        str = strPrefix + " " + timeLapse + " " + (timeLapse > 1 ? strWeeks : strWeek);
+                        break;
+                    case "mo":
+                        str = strPrefix + " " + timeLapse + " " + (timeLapse > 1 ? strMonths : strMonth);
+                        break;
+                    case "y":
+                        str = strPrefix + " " + timeLapse + " " + (timeLapse > 1 ? strYears : strYear);
+                        break;
+                }
+                return str;
+            }
+            return Localization.GetString("n/a", LocalResourcesFile);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="StopSchedule">
+          <declaration><![CDATA[public void StopSchedule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="97" sc="9" el="99" ec="10">Components\TaskSchedulerController.cs</location>
+            <body hash="0af229df4a67131d1cbf61fd82c443c9"><![CDATA[{
+            SchedulingProvider.Instance().Halt(Localization.GetString("ManuallyStopped", LocalResourcesFile));
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="LocalResourcesFile">
+          <declaration><![CDATA[private string LocalResourcesFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="13" el="44" ec="14">Components\TaskSchedulerController.cs</location>
+            <body hash="6f59ff0899928ee70769af733856caef"><![CDATA[{
+                return Path.Combine("~/DesktopModules/admin/Dnn.PersonaBar/Modules/Dnn.TaskScheduler/App_LocalResources/TaskScheduler.resx");
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.TaskScheduler.MenuControllers">
+    <class name="HostMenuController">
+      <declaration><![CDATA[public class HostMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public HostMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="9" el="29" ec="10">MenuControllers\HostMenuController.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="9" el="18" ec="10">MenuControllers\HostMenuController.cs</location>
+            <body hash="4a8f06184b6087940b8e4519251d0924"><![CDATA[{
+            
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="9" el="24" ec="10">MenuControllers\HostMenuController.cs</location>
+            <body hash="c393c42544f107d48bfa9b85d7b12404"><![CDATA[{
+            var user = UserController.Instance.GetCurrentUserInfo();
+            return user.IsSuperUser;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.TaskScheduler.Services">
+    <class name="TaskSchedulerController">
+      <declaration><![CDATA[public class TaskSchedulerController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private TaskSchedulerController _controller = new TaskSchedulerController();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="35" ec="107">Services\TaskSchedulerController.cs</location>
+            <body hash="87420060a2e80f63bd6970aa279c13f7"><![CDATA[private Components.TaskSchedulerController _controller = new Components.TaskSchedulerController()]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static TaskSchedulerController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="9" el="36" ec="170">Services\TaskSchedulerController.cs</location>
+            <body hash="6785fecb17a22b7e4419e7e6b699e39b"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(TaskSchedulerController));
+        private Components.TaskSchedulerController _controller = new Components.TaskSchedulerController();
+        private static string localResourcesFile = Path.Combine("~/DesktopModules/admin/Dnn.PersonaBar/Modules/Dnn.TaskScheduler/App_LocalResources/TaskScheduler.resx");]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CalculateTime">
+          <declaration><![CDATA[private static DateTime CalculateTime(int lapse, string measurement)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="588" sc="9" el="615" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="45b94a5c145ef5a2cfe6779f062a9a6c"><![CDATA[{
+            var nextTime = new DateTime();
+            switch (measurement)
+            {
+                case "s":
+                    nextTime = DateTime.Now.AddSeconds(lapse);
+                    break;
+                case "m":
+                    nextTime = DateTime.Now.AddMinutes(lapse);
+                    break;
+                case "h":
+                    nextTime = DateTime.Now.AddHours(lapse);
+                    break;
+                case "d":
+                    nextTime = DateTime.Now.AddDays(lapse);
+                    break;
+                case "w":
+                    nextTime = DateTime.Now.AddDays(lapse);
+                    break;
+                case "mo":
+                    nextTime = DateTime.Now.AddMonths(lapse);
+                    break;
+                case "y":
+                    nextTime = DateTime.Now.AddYears(lapse);
+                    break;
+            }
+            return nextTime;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateScheduleItem">
+          <declaration><![CDATA[public HttpResponseMessage CreateScheduleItem(ScheduleDto scheduleDto)]]></declaration>
+          <documentation>POST: api/TaskScheduler/CreateScheduleItem
+ <summary>
+ Creates a new schedule item
+ </summary>
+ <param name="scheduleDto"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="306" sc="9" el="331" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="3f4dc5f4b2e2237127f4455172d65a4c"><![CDATA[{
+            try
+            {
+                if (scheduleDto.RetryTimeLapse == 0)
+                {
+                    scheduleDto.RetryTimeLapse = Null.NullInteger;
+                }
+
+                if (!VerifyValidTimeLapseRetry(scheduleDto.TimeLapse, scheduleDto.TimeLapseMeasurement, scheduleDto.RetryTimeLapse, scheduleDto.RetryTimeLapseMeasurement))
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, Localization.GetString("InvalidFrequencyAndRetry", localResourcesFile));
+                }
+
+                var scheduleItem = _controller.CreateScheduleItem(scheduleDto.TypeFullName, scheduleDto.FriendlyName, scheduleDto.TimeLapse, scheduleDto.TimeLapseMeasurement,
+            scheduleDto.RetryTimeLapse, scheduleDto.RetryTimeLapseMeasurement, scheduleDto.RetainHistoryNum, scheduleDto.AttachToEvent, scheduleDto.CatchUpEnabled,
+            scheduleDto.Enabled, scheduleDto.ObjectDependencies, scheduleDto.ScheduleStartDate, scheduleDto.Servers);
+                SchedulingProvider.Instance().AddSchedule(scheduleItem);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteSchedule">
+          <declaration><![CDATA[public HttpResponseMessage DeleteSchedule(ScheduleDto scheduleDto)]]></declaration>
+          <documentation>POST: api/TaskScheduler/DeleteSchedule
+ <summary>
+ Runs schedule
+ </summary>
+ <param name="scheduleDto"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="560" sc="9" el="572" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="bbf7a55e9413efe4fef2e0295435598d"><![CDATA[{
+            try
+            {
+                var objScheduleItem = new ScheduleItem { ScheduleID = scheduleDto.ScheduleID };
+                SchedulingProvider.Instance().DeleteSchedule(objScheduleItem);
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleItem">
+          <declaration><![CDATA[public HttpResponseMessage GetScheduleItem(int scheduleId)]]></declaration>
+          <documentation>GET: api/TaskScheduler/GetScheduleItem
+ <summary>
+ Gets an existing schedule item
+ </summary>
+ <param></param>
+ <returns>schedule item</returns></documentation>
+          <codeblock>
+            <location sl="261" sc="9" el="295" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="160dee273026b9a7af03935e0adf95fb"><![CDATA[{
+            try
+            {
+                ScheduleItem scheduleItem = SchedulingProvider.Instance().GetSchedule(scheduleId);
+
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        scheduleItem.ScheduleID,
+                        scheduleItem.FriendlyName,
+                        scheduleItem.TypeFullName,
+                        scheduleItem.Enabled,
+                        ScheduleStartDate = !Null.IsNull(scheduleItem.ScheduleStartDate) ? scheduleItem.ScheduleStartDate.ToString(CultureInfo.CurrentCulture) : "",
+                        scheduleItem.TimeLapse,
+                        scheduleItem.TimeLapseMeasurement,
+                        scheduleItem.RetryTimeLapse,
+                        scheduleItem.RetryTimeLapseMeasurement,
+                        scheduleItem.RetainHistoryNum,
+                        scheduleItem.AttachToEvent,
+                        scheduleItem.CatchUpEnabled,
+                        scheduleItem.ObjectDependencies,
+                        scheduleItem.Servers
+                    },
+                    TotalResults = 1
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleItemHistory">
+          <declaration><![CDATA[public HttpResponseMessage GetScheduleItemHistory(int scheduleId = -1, int pageIndex = 0, int pageSize = 20)]]></declaration>
+          <documentation>GET: api/TaskScheduler/GetScheduleItemHistory
+ <summary>
+ Gets schedule item history
+ </summary>
+ <param name="scheduleId"></param>
+ <param name="pageIndex"></param>
+ <param name="pageSize"></param>
+ <returns>schedule item history</returns></documentation>
+          <codeblock>
+            <location sl="220" sc="9" el="251" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="090745e6a56edc9069a605d671512864"><![CDATA[{
+            try
+            {
+                var arrSchedule = SchedulingProvider.Instance().GetScheduleHistory(scheduleId);
+
+                var query = from ScheduleHistoryItem history in arrSchedule
+                            select new
+                            {
+                                history.FriendlyName,
+                                history.LogNotes,
+                                history.Server,
+                                ElapsedTime = Math.Round(history.ElapsedTime, 3),
+                                history.Succeeded,
+                                StartDate = !Null.IsNull(history.StartDate) ? history.StartDate.ToString() : "",
+                                EndDate = !Null.IsNull(history.EndDate) ? history.EndDate.ToString() : "",
+                                NextStart = !Null.IsNull(history.NextStart) ? history.NextStart.ToString() : ""
+                            };
+
+                var response = new
+                {
+                    Success = true,
+                    Results = query.Skip(pageIndex * pageSize).Take(pageSize),
+                    TotalResults = query.Count()
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleItems">
+          <declaration><![CDATA[public HttpResponseMessage GetScheduleItems(string serverName = "")]]></declaration>
+          <documentation>GET: api/TaskScheduler/GetScheduleItems
+ <summary>
+ Gets list of schedule items
+ </summary>
+ <param name="serverName"></param>
+ <returns>List of schedule items</returns></documentation>
+          <codeblock>
+            <location sl="87" sc="9" el="125" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="6339074a14169775077fab3058c31e2f"><![CDATA[{
+            try
+            {
+                List<ScheduleItem> scheduleviews;
+                if (string.IsNullOrEmpty(serverName) || serverName == Localization.GetString("All"))
+                {
+                    scheduleviews = SchedulingController.GetSchedule();
+                }
+                else
+                {
+                    scheduleviews = SchedulingController.GetSchedule(serverName);
+                }
+
+                foreach (var item in scheduleviews.Where(x => x.NextStart == Null.NullDate))
+                    if (item.ScheduleStartDate != Null.NullDate)
+                        item.NextStart = item.ScheduleStartDate;
+                var arrSchedule = scheduleviews.ToArray();
+                var response = new
+                {
+                    Success = true,
+                    Results = arrSchedule.Select(v => new
+                    {
+                        v.ScheduleID,
+                        v.FriendlyName,
+                        v.Enabled,
+                        RetryTimeLapse = _controller.GetTimeLapse(v.RetryTimeLapse, v.RetryTimeLapseMeasurement),
+                        NextStart = (v.Enabled && !Null.IsNull(v.NextStart)) ? v.NextStart.ToString() : "",
+                        Frequency = _controller.GetTimeLapse(v.TimeLapse, v.TimeLapseMeasurement)
+                    }),
+                    TotalResults = arrSchedule.Count()
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedulerSettings">
+          <declaration><![CDATA[public HttpResponseMessage GetSchedulerSettings()]]></declaration>
+          <documentation>GET: api/TaskScheduler/GetSchedulerSettings
+ <summary>
+ Gets scheduler settings
+ </summary>
+ <param></param>
+ <returns>scheduler settings</returns></documentation>
+          <codeblock>
+            <location sl="135" sc="9" el="162" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="4ae4739b61e6a58003aba9d47d5e98d9"><![CDATA[{
+            try
+            {
+                KeyValuePair<string, string>[] modes = new KeyValuePair<string, string>[]
+                {
+                    new KeyValuePair<string, string>(Localization.GetString("Disabled", localResourcesFile), "0"),
+                    new KeyValuePair<string, string>(Localization.GetString("TimerMethod", localResourcesFile), "1"),
+                    new KeyValuePair<string, string>(Localization.GetString("RequestMethod", localResourcesFile), "2")
+                };
+
+                var response = new
+                {
+                    Results = new
+                    {
+                        SchedulerMode = HostController.Instance.GetString("SchedulerMode"),
+                        SchedulerModeOptions = modes,
+                        SchedulerdelayAtAppStart = HostController.Instance.GetInteger("SchedulerdelayAtAppStart", 1)
+                    },
+                    TotalResults = 1
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleStatus">
+          <declaration><![CDATA[public HttpResponseMessage GetScheduleStatus()]]></declaration>
+          <documentation>GET: api/TaskScheduler/GetScheduleStatus
+ <summary>
+ Gets schedule status
+ </summary>
+ <param></param>
+ <returns>schedule status</returns></documentation>
+          <codeblock>
+            <location sl="395" sc="9" el="474" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="bc1dd795956e76ed0da9f0720d0f4116"><![CDATA[{
+            try
+            {
+                if (SchedulingProvider.Enabled)
+                {
+                    Collection arrScheduleProcessing = SchedulingProvider.Instance().GetScheduleProcessing();
+
+                    var processing = from ScheduleHistoryItem item in arrScheduleProcessing
+                                     select new
+                                     {
+                                         item.ScheduleID,
+                                         item.TypeFullName,
+                                         StartDate = !Null.IsNull(item.StartDate) ? item.StartDate.ToString() : "",
+                                         ElapsedTime = Math.Round(item.ElapsedTime, 3),
+                                         item.ObjectDependencies,
+                                         ScheduleSource = item.ScheduleSource.ToString(),
+                                         item.ThreadID,
+                                         item.Servers
+                                     };
+
+                    Collection arrScheduleQueue = SchedulingProvider.Instance().GetScheduleQueue();
+
+                    var queue = from ScheduleHistoryItem item in arrScheduleQueue
+                                select new
+                                {
+                                    item.ScheduleID,
+                                    item.FriendlyName,
+                                    NextStart = !Null.IsNull(item.NextStart) ? item.NextStart.ToString() : "",
+                                    item.Overdue,
+                                    item.RemainingTime,
+                                    item.ObjectDependencies,
+                                    ScheduleSource = item.ScheduleSource.ToString(),
+                                    item.ThreadID,
+                                    item.Servers
+                                };
+
+                    var response = new
+                    {
+                        Success = true,
+                        Results = new
+                        {
+                            ServerTime = DateTime.Now.ToString(),
+                            SchedulingEnabled = SchedulingProvider.Enabled.ToString(),
+                            Status = SchedulingProvider.Instance().GetScheduleStatus().ToString(),
+                            FreeThreadCount = SchedulingProvider.Instance().GetFreeThreadCount().ToString(),
+                            ActiveThreadCount = SchedulingProvider.Instance().GetActiveThreadCount().ToString(),
+                            MaxThreadCount = SchedulingProvider.Instance().GetMaxThreadCount().ToString(),
+                            ScheduleProcessing = processing,
+                            ScheduleQueue = queue.ToList().OrderBy(q => q.RemainingTime)
+                        },
+                        TotalResults = 1
+                    };
+                    return Request.CreateResponse(HttpStatusCode.OK, response);
+                }
+                else
+                {
+                    var response = new
+                    {
+                        Success = true,
+                        Results = new
+                        {
+                            SchedulingEnabled = "False",
+                            Status = Localization.GetString("Disabled", localResourcesFile),
+                            FreeThreadCount = "0",
+                            ActiveThreadCount = "0",
+                            MaxThreadCount = "0",
+                            ScheduleProcessing = new List<string>(),
+                            ScheduleQueue = new List<string>()
+                        },
+                        TotalResults = 1
+                    };
+                    return Request.CreateResponse(HttpStatusCode.OK, response);
+                }
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetServers">
+          <declaration><![CDATA[public HttpResponseMessage GetServers()]]></declaration>
+          <documentation>GET: api/TaskScheduler/GetServers
+ <summary>
+ Gets list of servers
+ </summary>
+ <param></param>
+ <returns>List of servers</returns></documentation>
+          <codeblock>
+            <location sl="46" sc="9" el="77" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="8410dead95e2caca47f3c713080a2415"><![CDATA[{
+            try
+            {
+                var servers = ServerController.GetServers();
+                var query = from ServerInfo server in servers
+                            where server.Enabled == true
+                            select server;
+                var availableServers = query.Select(v => new
+                {
+                    ServerID = v.ServerID.ToString(),
+                    v.ServerName
+                }).ToList();
+                availableServers.Insert(0, new 
+                {
+                    ServerID = "*",
+                    ServerName = Localization.GetString("All")
+                });
+                var response = new
+                {
+                    Success = true,
+                    Results = availableServers,
+                    TotalResults = servers.Count()
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Halt">
+          <declaration><![CDATA[private static void Halt()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="618" sc="9" el="620" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="4879a023c804e8d610cddd4531a7304a"><![CDATA[{
+            SchedulingProvider.Instance().Halt("Host Settings");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RunSchedule">
+          <declaration><![CDATA[public HttpResponseMessage RunSchedule(ScheduleDto scheduleDto)]]></declaration>
+          <documentation>POST: api/TaskScheduler/RunSchedule
+ <summary>
+ Runs schedule
+ </summary>
+ <param name="scheduleDto"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="529" sc="9" el="549" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="90ce4aa8a8feae25163cd9bb031945b6"><![CDATA[{
+            try
+            {
+                var scheduleItem = _controller.CreateScheduleItem(scheduleDto.TypeFullName, scheduleDto.FriendlyName, scheduleDto.TimeLapse, scheduleDto.TimeLapseMeasurement,
+            scheduleDto.RetryTimeLapse, scheduleDto.RetryTimeLapseMeasurement, scheduleDto.RetainHistoryNum, scheduleDto.AttachToEvent, scheduleDto.CatchUpEnabled,
+            scheduleDto.Enabled, scheduleDto.ObjectDependencies, scheduleDto.ScheduleStartDate, scheduleDto.Servers);
+                scheduleItem.ScheduleID = scheduleDto.ScheduleID;
+                SchedulingProvider.Instance().RunScheduleItemNow(scheduleItem, true);
+
+                if (SchedulingProvider.SchedulerMode == SchedulerMode.TIMER_METHOD)
+                {
+                    SchedulingProvider.Instance().ReStart("Change made to schedule.");
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="StartSchedule">
+          <declaration><![CDATA[public HttpResponseMessage StartSchedule()]]></declaration>
+          <documentation>POST: api/TaskScheduler/StartSchedule
+ <summary>
+ Starts schedule
+ </summary>
+ <param></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="485" sc="9" el="496" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="9536ff7f20cd87418400e72cbc026261"><![CDATA[{
+            try
+            {
+                SchedulingProvider.Instance().StartAndWaitForResponse();
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="StopSchedule">
+          <declaration><![CDATA[public HttpResponseMessage StopSchedule()]]></declaration>
+          <documentation>POST: api/TaskScheduler/StopSchedule
+ <summary>
+ Stops schedule
+ </summary>
+ <param></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="507" sc="9" el="518" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="9dc8fe6553a08d9062926b38f46b306c"><![CDATA[{
+            try
+            {
+                _controller.StopSchedule();
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateScheduleItem">
+          <declaration><![CDATA[public HttpResponseMessage UpdateScheduleItem(ScheduleDto scheduleDto)]]></declaration>
+          <documentation>POST: api/TaskScheduler/UpdateScheduleItem
+ <summary>
+ Updates an existing schedule item
+ </summary>
+ <param name="scheduleDto"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="342" sc="9" el="385" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="e522df24ea27244721508e25a2b2fab5"><![CDATA[{
+            try
+            {
+                if (scheduleDto.RetryTimeLapse == 0)
+                {
+                    scheduleDto.RetryTimeLapse = Null.NullInteger;
+                }
+
+                if (!VerifyValidTimeLapseRetry(scheduleDto.TimeLapse, scheduleDto.TimeLapseMeasurement, scheduleDto.RetryTimeLapse, scheduleDto.RetryTimeLapseMeasurement))
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, Localization.GetString("InvalidFrequencyAndRetry", localResourcesFile));
+                }
+
+                var existingItem = SchedulingProvider.Instance().GetSchedule(scheduleDto.ScheduleID);
+
+                var updatedItem = _controller.CreateScheduleItem(scheduleDto.TypeFullName, scheduleDto.FriendlyName, scheduleDto.TimeLapse, scheduleDto.TimeLapseMeasurement,
+            scheduleDto.RetryTimeLapse, scheduleDto.RetryTimeLapseMeasurement, scheduleDto.RetainHistoryNum, scheduleDto.AttachToEvent, scheduleDto.CatchUpEnabled,
+            scheduleDto.Enabled, scheduleDto.ObjectDependencies, scheduleDto.ScheduleStartDate, scheduleDto.Servers);
+                updatedItem.ScheduleID = scheduleDto.ScheduleID;
+
+
+                if ((updatedItem.ScheduleStartDate != existingItem.ScheduleStartDate) ||
+                    (updatedItem.Enabled) ||
+                    (updatedItem.TimeLapse != existingItem.TimeLapse) ||
+                    (updatedItem.RetryTimeLapse != existingItem.RetryTimeLapse) ||
+                    (updatedItem.RetryTimeLapseMeasurement != existingItem.RetryTimeLapseMeasurement) ||
+                    (updatedItem.TimeLapseMeasurement != existingItem.TimeLapseMeasurement))
+                {
+                    SchedulingProvider.Instance().UpdateSchedule(updatedItem);
+                }
+                else
+                {
+                    SchedulingProvider.Instance().UpdateScheduleWithoutExecution(updatedItem);
+
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSchedulerSettings">
+          <declaration><![CDATA[public HttpResponseMessage UpdateSchedulerSettings(UpdateSettingsRequest request)]]></declaration>
+          <documentation>POST: api/TaskScheduler/UpdateSchedulerSettings
+ <summary>
+ Updates scheduler settings
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="173" sc="9" el="208" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="e205379b97d2140f571d667dd9cf0110"><![CDATA[{
+            try
+            {
+                var originalSchedulerMode = (SchedulerMode)Convert.ToInt32(HostController.Instance.GetString("SchedulerMode"));
+                SchedulerMode newSchedulerMode;
+                Enum.TryParse(request.SchedulerMode, true, out newSchedulerMode);
+                if (originalSchedulerMode != newSchedulerMode)
+                {
+                    switch (newSchedulerMode)
+                    {
+                        case SchedulerMode.DISABLED:
+                            var newThread1 = new Thread(new ThreadStart(Halt)) { IsBackground = true };
+                            newThread1.Start();
+                            break;
+                        case SchedulerMode.TIMER_METHOD:
+                            var newThread2 = new Thread(SchedulingProvider.Instance().Start) { IsBackground = true };
+                            newThread2.Start();
+                            break;
+                        default:
+                            var newThread3 = new Thread(new ThreadStart(Halt)) { IsBackground = true };
+                            newThread3.Start();
+                            break;
+                    }
+                }
+
+                HostController.Instance.Update("SchedulerMode", request.SchedulerMode, false);
+                HostController.Instance.Update("SchedulerdelayAtAppStart", request.SchedulerdelayAtAppStart);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="VerifyValidTimeLapseRetry">
+          <declaration><![CDATA[private bool VerifyValidTimeLapseRetry(int timeLapse, string timeLapseMeasurement, int retryTimeLapse, string retryTimeLapseMeasurement)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="575" sc="9" el="585" ec="10">Services\TaskSchedulerController.cs</location>
+            <body hash="820b4380cc5d0274eb4b07b4633ddc17"><![CDATA[{
+            if (retryTimeLapse == 0) return true;
+
+            var frequency = CalculateTime(Convert.ToInt32(timeLapse), timeLapseMeasurement);
+            var retry = CalculateTime(Convert.ToInt32(retryTimeLapse), retryTimeLapseMeasurement);
+            if (retry > frequency)
+            {
+                return false;
+            }
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_controller">
+          <declaration><![CDATA[private TaskSchedulerController _controller = new TaskSchedulerController();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="localResourcesFile">
+          <declaration><![CDATA[private static string localResourcesFile = Path.Combine(new string[]]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(TaskSchedulerController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.TaskScheduler.Services.Dto">
+    <class name="ScheduleDto">
+      <declaration><![CDATA[public class ScheduleDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ScheduleDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AttachToEvent">
+          <declaration><![CDATA[public string AttachToEvent]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="39" el="53" ec="43">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="53" sc="44" el="53" ec="48">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CatchUpEnabled">
+          <declaration><![CDATA[public bool CatchUpEnabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="38" el="55" ec="42">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="55" sc="43" el="55" ec="47">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Enabled">
+          <declaration><![CDATA[public bool Enabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="31" el="57" ec="35">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="57" sc="36" el="57" ec="40">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="FriendlyName">
+          <declaration><![CDATA[public string FriendlyName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="38" el="41" ec="42">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="41" sc="43" el="41" ec="47">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ObjectDependencies">
+          <declaration><![CDATA[public string ObjectDependencies]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="44" el="59" ec="48">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="59" sc="49" el="59" ec="53">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RetainHistoryNum">
+          <declaration><![CDATA[public int RetainHistoryNum]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="39" el="51" ec="43">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="51" sc="44" el="51" ec="48">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RetryTimeLapse">
+          <declaration><![CDATA[public int RetryTimeLapse]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="37" el="47" ec="41">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="47" sc="42" el="47" ec="46">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RetryTimeLapseMeasurement">
+          <declaration><![CDATA[public string RetryTimeLapseMeasurement]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="51" el="49" ec="55">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="49" sc="56" el="49" ec="60">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ScheduleID">
+          <declaration><![CDATA[public int ScheduleID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="33" el="37" ec="37">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="38" el="37" ec="42">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ScheduleStartDate">
+          <declaration><![CDATA[public string ScheduleStartDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="43" el="61" ec="47">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="61" sc="48" el="61" ec="52">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Servers">
+          <declaration><![CDATA[public string Servers]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="33" el="63" ec="37">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="63" sc="38" el="63" ec="42">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TimeLapse">
+          <declaration><![CDATA[public int TimeLapse]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="32" el="43" ec="36">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="37" el="43" ec="41">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TimeLapseMeasurement">
+          <declaration><![CDATA[public string TimeLapseMeasurement]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="46" el="45" ec="50">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="45" sc="51" el="45" ec="55">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TypeFullName">
+          <declaration><![CDATA[public string TypeFullName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="38" el="39" ec="42">Services\Dto\ScheduleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="39" sc="43" el="39" ec="47">Services\Dto\ScheduleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateSettingsRequest">
+      <declaration><![CDATA[public class UpdateSettingsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateSettingsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="SchedulerdelayAtAppStart">
+          <declaration><![CDATA[public string SchedulerdelayAtAppStart]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="50" el="39" ec="54">Services\Dto\UpdateSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="39" sc="55" el="39" ec="59">Services\Dto\UpdateSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SchedulerMode">
+          <declaration><![CDATA[public string SchedulerMode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="39" el="37" ec="43">Services\Dto\UpdateSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="44" el="37" ec="48">Services\Dto\UpdateSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

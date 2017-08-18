@@ -1,0 +1,835 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.ASP2MenuNavigationProvider.dll" version="06.01.05" generated="2017-06-18 21:46:24Z" generationTime="1.5337194">
+  <namespace name="DotNetNuke.NavigationControl">
+    <class name="ASP2MenuNavigationProvider">
+      <declaration><![CDATA[public class ASP2MenuNavigationProvider : NavigationProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLBreadCrumbRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="52" ec="50">ASP2MenuNavigationProvider.cs</location>
+            <body hash="ce8cbe5de6263f2fc2f0093be42a8c2a"><![CDATA[private string m_strNodeLeftHTMLBreadCrumbRoot = "";
+        private string m_strNodeLeftHTMLBreadCrumbSub = "";
+        private string m_strNodeLeftHTMLRoot = "";
+        private string m_strNodeLeftHTMLSub = "";
+        private string m_strNodeRightHTMLBreadCrumbRoot = "";
+        private string m_strNodeRightHTMLBreadCrumbSub = "";
+        private string m_strNodeRightHTMLRoot = "";
+        private string m_strNodeRightHTMLSub = "";
+        private string m_strPathImage = "";
+        private string m_strSystemPathImage = "";]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Bind">
+          <declaration><![CDATA[public override void Bind(DNNNodeCollection objNodes)]]></declaration>
+          <documentation>
+            <summary>
+ Responsible for the populating of the underlying navigation control
+ </summary>
+ <param name="objNodes">Node hierarchy used in control population</param>
+ <remarks></remarks></documentation>
+          <codeblock>
+            <location sl="478" sc="9" el="584" ec="10">ASP2MenuNavigationProvider.cs</location>
+            <body hash="17fc7c8870d26e301bbae91c3198a88b"><![CDATA[{
+            MenuItem objMenuItem = null;
+            DNNNode objPrevNode;
+            if (IndicateChildren == false)
+            {
+                IndicateChildImageSub = "";
+                IndicateChildImageRoot = "";
+            }
+            string strLeftHTML = "";
+            string strRightHTML = "";
+            foreach (DNNNode objNode in objNodes)
+            {
+                if (objNode.IsBreak)
+                {
+                }
+                else
+                {
+                    strLeftHTML = "";
+                    strRightHTML = "";
+                    if (objNode.Level == 0) //root menu
+                    {
+                        Menu.Items.Add(GetMenuItem(objNode));
+                        objMenuItem = Menu.Items[Menu.Items.Count - 1];
+                        if (!String.IsNullOrEmpty(NodeLeftHTMLRoot))
+                        {
+                            strLeftHTML = NodeLeftHTMLRoot;
+                        }
+                        if (objNode.BreadCrumb)
+                        {
+                            if (!String.IsNullOrEmpty(NodeLeftHTMLBreadCrumbRoot))
+                            {
+                                strLeftHTML = NodeLeftHTMLBreadCrumbRoot;
+                            }
+                            if (!String.IsNullOrEmpty(NodeRightHTMLBreadCrumbRoot))
+                            {
+                                strRightHTML = NodeRightHTMLBreadCrumbRoot;
+                            }
+                        }
+                        if (!String.IsNullOrEmpty(NodeRightHTMLRoot))
+                        {
+                            strRightHTML = NodeRightHTMLRoot;
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            MenuItem objParent = Menu.FindItem(GetValuePath(objNode.ParentNode));
+                            objParent.ChildItems.Add(GetMenuItem(objNode));
+                            objMenuItem = objParent.ChildItems[objParent.ChildItems.Count - 1];
+                            if (!String.IsNullOrEmpty(NodeLeftHTMLSub))
+                            {
+                                strLeftHTML = NodeLeftHTMLSub;
+                            }
+                            if (objNode.BreadCrumb)
+                            {
+                                if (!String.IsNullOrEmpty(NodeLeftHTMLBreadCrumbSub))
+                                {
+                                    strLeftHTML = NodeLeftHTMLBreadCrumbSub;
+                                }
+                                if (!String.IsNullOrEmpty(NodeRightHTMLBreadCrumbSub))
+                                {
+                                    strRightHTML = NodeRightHTMLBreadCrumbSub;
+                                }
+                            }
+                            if (!String.IsNullOrEmpty(NodeRightHTMLSub))
+                            {
+                                strRightHTML = NodeRightHTMLSub;
+                            }
+                        }
+                        catch
+                        {
+                            //throws exception if the parent tab has not been loaded ( may be related to user role security not allowing access to a parent tab )
+                            objMenuItem = null;
+                        }
+                    }
+                    if (objMenuItem != null)
+                    {
+						//Append LeftHTML/RightHTML to menu's text property
+                        if (!String.IsNullOrEmpty(strLeftHTML))
+                        {
+                            objMenuItem.Text = strLeftHTML + objMenuItem.Text;
+                        }
+                        if (!String.IsNullOrEmpty(strRightHTML))
+                        {
+                            objMenuItem.Text = objMenuItem.Text + strRightHTML;
+                        }
+                    }
+					
+					//Figure out image paths
+                    if (!String.IsNullOrEmpty(objNode.Image))
+                    {
+                        if (objNode.Image.StartsWith("~/images/"))
+                        {
+                            objNode.Image = objNode.Image.Replace("~/images/", PathSystemImage);
+                        }
+                        else if (!objNode.Image.Contains("://") && objNode.Image.StartsWith("/") == false && !String.IsNullOrEmpty(PathImage))
+                        {
+                            objNode.Image = PathImage + objNode.Image;
+                        }
+                        objMenuItem.ImageUrl = objNode.Image;
+                    }
+                    Bind(objNode.DNNNodes);
+                    objPrevNode = objNode;
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetMenuItem">
+          <declaration><![CDATA[private MenuItem GetMenuItem(DNNNode objNode)]]></declaration>
+          <documentation>
+            <summary>
+ Create a ASP.NET Menu item for a given DNNNode
+ </summary>
+ <param name="objNode">Node to create item off of</param>
+ <returns></returns>
+ <remarks>
+ Due to ValuePath needed for postback routine, there is a HACK to replace out the
+ id with the valuepath if a JSFunciton is specified
+ </remarks></documentation>
+          <codeblock>
+            <location sl="643" sc="9" el="664" ec="4">ASP2MenuNavigationProvider.cs</location>
+            <body hash="2486154dbd28c5f6ffa294e5d698c614"><![CDATA[{
+            var objItem = new MenuItem();
+            objItem.Text = objNode.Text;
+            objItem.Value = objNode.Key;
+            if (!String.IsNullOrEmpty(objNode.JSFunction))
+            {
+                //HACK...  The postback event needs to have the entire ValuePath to the menu item, not just the unique id
+                //__doPostBack('dnn:ctr365:dnnACTIONS:ctldnnACTIONS','6') -> __doPostBack('dnn:ctr365:dnnACTIONS:ctldnnACTIONS','0\\6')}
+                objItem.NavigateUrl = "javascript:" + objNode.JSFunction.Replace(Menu.ID + "','" + objNode.Key + "'", Menu.ID + "'.'" + GetValuePath(objNode).Replace("/", "\\\\") + "'") +
+                                      objNode.NavigateURL;
+            }
+            else
+            {
+                objItem.NavigateUrl = objNode.NavigateURL;
+            }
+            objItem.Target = objNode.Target;
+            objItem.Selectable = objNode.Enabled;
+            objItem.ImageUrl = objNode.Image; //possibly fix for path
+            objItem.Selected = objNode.Selected;
+            objItem.ToolTip = objNode.ToolTip;
+            return objItem;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="GetValuePath">
+          <declaration><![CDATA[private string GetValuePath(DNNNode objNode)]]></declaration>
+          <documentation>
+            <summary>
+ Loops through each of the nodes parents and concatenates the keys to derive its valuepath
+ </summary>
+ <param name="objNode">DNNNode object to obtain valuepath from</param>
+ <returns>ValuePath of node</returns>
+ <remarks>
+ the ASP.NET Menu creates a unique key based off of all the menuitem's parents, delimited by a string.
+ I wish there was a way around this, for we are already guaranteeing the uniqueness of the key since is it pulled from the
+ database.
+ </remarks></documentation>
+          <codeblock>
+            <location sl="618" sc="9" el="631" ec="10">ASP2MenuNavigationProvider.cs</location>
+            <body hash="0c2c78b4354127c509a2a9831346c7ff"><![CDATA[{
+            DNNNode objParent = objNode.ParentNode;
+            string strPath = objNode.Key;
+            do
+            {
+                if (objParent == null || objParent.Level == -1)
+                {
+                    break;
+                }
+                strPath = objParent.Key + Menu.PathSeparator + strPath;
+                objParent = objParent.ParentNode;
+            } while (true);
+            return strPath;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Initialize">
+          <declaration><![CDATA[public override void Initialize()]]></declaration>
+          <documentation>
+            <summary>
+ This method is called by the provider to allow for the control to default values and set up
+ event handlers
+ </summary>
+ <remarks></remarks></documentation>
+          <codeblock>
+            <location sl="450" sc="9" el="470" ec="10">ASP2MenuNavigationProvider.cs</location>
+            <body hash="bb8ec71893ef61da226d2fb6a28e5f04"><![CDATA[{
+            m_objMenu = new Menu();
+            Menu.ID = m_strControlID;
+            Menu.EnableViewState = false;	//Not sure why, but when we disable viewstate the menuitemclick does not fire...
+            
+			//default properties to match DNN defaults 
+            Menu.DynamicPopOutImageUrl = "";
+            Menu.StaticPopOutImageUrl = "";
+            ControlOrientation = Orientation.Horizontal;
+
+            //add event handlers
+            Menu.MenuItemClick += Menu_NodeClick;
+            Menu.PreRender += Menu_PreRender;
+			
+			//add how many levels worth of styles???
+            for (int i = 0; i <= 6; i++)
+            {
+                Menu.LevelMenuItemStyles.Add(new MenuItemStyle());
+                Menu.LevelSelectedStyles.Add(new MenuItemStyle());
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Menu_NodeClick">
+          <declaration><![CDATA[private void Menu_NodeClick(object source, MenuEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="587" sc="9" el="589" ec="10">ASP2MenuNavigationProvider.cs</location>
+            <body hash="72f8aa4458c51251e5ff3fa830ea87a2"><![CDATA[{
+            base.RaiseEvent_NodeClick(e.Item.Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Menu_PreRender">
+          <declaration><![CDATA[private void Menu_PreRender(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="592" sc="9" el="601" ec="10">ASP2MenuNavigationProvider.cs</location>
+            <body hash="226456de5f1d8986969f376104091653"><![CDATA[{
+            if (!String.IsNullOrEmpty(Menu.StaticPopOutImageUrl))
+            {
+                Menu.StaticPopOutImageUrl = PathSystemImage + Menu.StaticPopOutImageUrl;
+            }
+            if (!String.IsNullOrEmpty(Menu.DynamicPopOutImageUrl))
+            {
+                Menu.DynamicPopOutImageUrl = PathSystemImage + Menu.DynamicPopOutImageUrl;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="m_objMenu">
+          <declaration><![CDATA[private Menu m_objMenu;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strControlID">
+          <declaration><![CDATA[private string m_strControlID;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeLeftHTMLBreadCrumbRoot">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLBreadCrumbRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeLeftHTMLBreadCrumbSub">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLBreadCrumbSub = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeLeftHTMLRoot">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeLeftHTMLSub">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLSub = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeRightHTMLBreadCrumbRoot">
+          <declaration><![CDATA[private string m_strNodeRightHTMLBreadCrumbRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeRightHTMLBreadCrumbSub">
+          <declaration><![CDATA[private string m_strNodeRightHTMLBreadCrumbSub = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeRightHTMLRoot">
+          <declaration><![CDATA[private string m_strNodeRightHTMLRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeRightHTMLSub">
+          <declaration><![CDATA[private string m_strNodeRightHTMLSub = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strPathImage">
+          <declaration><![CDATA[private string m_strPathImage = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSystemPathImage">
+          <declaration><![CDATA[private string m_strSystemPathImage = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ControlID">
+          <declaration><![CDATA[public override string ControlID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="87" sc="13" el="89" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="2b8710fb27eb8a745bb841a8a55c8060"><![CDATA[{
+                return m_strControlID;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="91" sc="13" el="93" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="2b90542a7872430773e1d683b78b82f5"><![CDATA[{
+                m_strControlID = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ControlOrientation">
+          <declaration><![CDATA[public override NavigationProvider.Orientation ControlOrientation]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="150" sc="13" el="158" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="8ea1848ef547a6f291082406300b5ad5"><![CDATA[{
+                switch (Menu.Orientation)
+                {
+                    case System.Web.UI.WebControls.Orientation.Horizontal:
+                        return Orientation.Horizontal;
+                    default:
+                        return Orientation.Vertical;
+                }
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="160" sc="13" el="170" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="d2c92fe4342b7dda2936b1d4844bf298"><![CDATA[{
+                switch (value)
+                {
+                    case Orientation.Horizontal:
+                        Menu.Orientation = System.Web.UI.WebControls.Orientation.Horizontal;
+                        break;
+                    case Orientation.Vertical:
+                        Menu.Orientation = System.Web.UI.WebControls.Orientation.Vertical;
+                        break;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSControl">
+          <declaration><![CDATA[public override string CSSControl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="336" sc="13" el="338" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="65c29ef6752d21eba24c2d1f3baca0e1"><![CDATA[{
+                return Menu.DynamicMenuStyle.CssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="340" sc="13" el="342" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="ea2d39a0dc455b4c0c8cd61d9413edf3"><![CDATA[{
+                Menu.DynamicMenuStyle.CssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNode">
+          <declaration><![CDATA[public override string CSSNode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="348" sc="13" el="350" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="5656dbf46c6b85eb915ba38368315875"><![CDATA[{
+                return Menu.DynamicMenuItemStyle.CssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="352" sc="13" el="358" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="0c776b64889aaadcc55544a2ec65b2ad"><![CDATA[{
+                Menu.DynamicMenuItemStyle.CssClass = value;
+                for (int i = 0; i <= Menu.LevelMenuItemStyles.Count - 1; i++)
+                {
+                    Menu.LevelMenuItemStyles[i].CssClass = value;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNodeHover">
+          <declaration><![CDATA[public override string CSSNodeHover]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="404" sc="13" el="406" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="2cf30f08bafe01a4069d95565e343f23"><![CDATA[{
+                return Menu.DynamicHoverStyle.CssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="408" sc="13" el="411" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="20df2857a3715fa330a9609d31b8379e"><![CDATA[{
+                Menu.DynamicHoverStyle.CssClass = value;
+                Menu.StaticHoverStyle.CssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNodeHoverRoot">
+          <declaration><![CDATA[public override string CSSNodeHoverRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="429" sc="13" el="431" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="110fa0539cea8e5084d65e980d256536"><![CDATA[{
+                return Menu.StaticHoverStyle.CssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="433" sc="13" el="435" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="dcccbd07aa9856b8d2d44de9caa729aa"><![CDATA[{
+                Menu.StaticHoverStyle.CssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNodeHoverSub">
+          <declaration><![CDATA[public override string CSSNodeHoverSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="417" sc="13" el="419" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="2cf30f08bafe01a4069d95565e343f23"><![CDATA[{
+                return Menu.DynamicHoverStyle.CssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="421" sc="13" el="423" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="e997ded16ca3d23afc125c6640c378ab"><![CDATA[{
+                Menu.DynamicHoverStyle.CssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNodeRoot">
+          <declaration><![CDATA[public override string CSSNodeRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="364" sc="13" el="366" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="4f9e96aa92e609dcd7df932704addee7"><![CDATA[{
+                return Menu.LevelMenuItemStyles[0].CssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="368" sc="13" el="370" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="99c83266e02a155bcc21e23cb62d3068"><![CDATA[{
+                Menu.LevelMenuItemStyles[0].CssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNodeSelectedRoot">
+          <declaration><![CDATA[public override string CSSNodeSelectedRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="376" sc="13" el="378" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="41e44265a8cef27abc390b5a6285bfef"><![CDATA[{
+                return Menu.LevelSelectedStyles[0].CssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="380" sc="13" el="382" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="7bdf81212cdf70881edfade6f19ad7c1"><![CDATA[{
+                Menu.LevelSelectedStyles[0].CssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNodeSelectedSub">
+          <declaration><![CDATA[public override string CSSNodeSelectedSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="388" sc="13" el="390" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="97ab9aee5cee6a59d1893f72a4d9c34a"><![CDATA[{
+                return Menu.LevelSelectedStyles[1].CssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="392" sc="13" el="397" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="e7e3d98e84a53fbd05615aadedb4c5a0"><![CDATA[{
+                for (int i = 1; i <= Menu.LevelSelectedStyles.Count - 1; i++)
+                {
+                    Menu.LevelSelectedStyles[i].CssClass = value;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ForceDownLevel">
+          <declaration><![CDATA[public override string ForceDownLevel]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="131" sc="13" el="133" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="fd34906e59fe28aafe1d59c3dd105ad4"><![CDATA[{
+                return (Menu.StaticDisplayLevels > 1).ToString();
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="135" sc="13" el="144" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="8e15d3c11dd7518a93c02ef8c93459d9"><![CDATA[{
+                if (Convert.ToBoolean(value))
+                {
+                    Menu.StaticDisplayLevels = 99;
+                }
+                else
+                {
+                    Menu.StaticDisplayLevels = 1;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildImageRoot">
+          <declaration><![CDATA[public override string IndicateChildImageRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="220" sc="13" el="222" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="349e056104d88415784f9677c667eccf"><![CDATA[{
+                return Menu.StaticPopOutImageUrl;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="224" sc="13" el="226" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="7f69d953da5ee3384b68e261e292b855"><![CDATA[{
+                Menu.StaticPopOutImageUrl = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildImageSub">
+          <declaration><![CDATA[public override string IndicateChildImageSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="208" sc="13" el="210" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="3a039a09051bfd55cc6a8bc5169bccd7"><![CDATA[{
+                return Menu.DynamicPopOutImageUrl;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="212" sc="13" el="214" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="568d8ea433e5a02c17cc02506ec90ef6"><![CDATA[{
+                Menu.DynamicPopOutImageUrl = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildren">
+          <declaration><![CDATA[public override bool IndicateChildren]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="196" sc="13" el="198" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="2cb5ab3c260277bfcb952728f8ce15dc"><![CDATA[{
+                return Menu.DynamicEnableDefaultPopOutImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="200" sc="13" el="202" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="b4a9e4928f1231ee38d720a955263aa6"><![CDATA[{
+                Menu.DynamicEnableDefaultPopOutImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Menu">
+          <declaration><![CDATA[public Menu Menu]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="13" el="65" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="9a27af22f064ef03902036a5d2f75c18"><![CDATA[{
+                return m_objMenu;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="MouseOutHideDelay">
+          <declaration><![CDATA[public override decimal MouseOutHideDelay]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="180" sc="13" el="182" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="d5b2b0ac2b4a84f99715b15d5f4df3fb"><![CDATA[{
+                return Menu.DisappearAfter;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="184" sc="13" el="186" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="e0d6043ccbbf442262fe15f57aac264e"><![CDATA[{
+                Menu.DisappearAfter = Convert.ToInt32(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NavigationControl">
+          <declaration><![CDATA[public override Control NavigationControl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="13" el="73" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="72bfb39c469f0a1ea25f37b6ae41eeb0"><![CDATA[{
+                return Menu;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeLeftHTMLBreadCrumbRoot">
+          <declaration><![CDATA[public override string NodeLeftHTMLBreadCrumbRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="308" sc="13" el="310" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="146b83e8ea8375936038453a3ec87c4b"><![CDATA[{
+                return m_strNodeLeftHTMLBreadCrumbRoot;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="312" sc="13" el="314" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="9342dcf8a1705a3bdd1ec406e5b3c573"><![CDATA[{
+                m_strNodeLeftHTMLBreadCrumbRoot = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeLeftHTMLBreadCrumbSub">
+          <declaration><![CDATA[public override string NodeLeftHTMLBreadCrumbSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="284" sc="13" el="286" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="636df91e65c7e673e70546b1868b7086"><![CDATA[{
+                return m_strNodeLeftHTMLBreadCrumbSub;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="288" sc="13" el="290" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="7a482b4a31d384092bc2acc99d4772de"><![CDATA[{
+                m_strNodeLeftHTMLBreadCrumbSub = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeLeftHTMLRoot">
+          <declaration><![CDATA[public override string NodeLeftHTMLRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="236" sc="13" el="238" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="c9bc47c63e95a2e959bdb971834d70bc"><![CDATA[{
+                return m_strNodeLeftHTMLRoot;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="240" sc="13" el="242" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="6dfc55f39b98488c9b99bd80d55ebe8f"><![CDATA[{
+                m_strNodeLeftHTMLRoot = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeLeftHTMLSub">
+          <declaration><![CDATA[public override string NodeLeftHTMLSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="260" sc="13" el="262" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="225fee6938cc5e23be350a5f5767dcb0"><![CDATA[{
+                return m_strNodeLeftHTMLSub;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="264" sc="13" el="266" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="18a5b7874d00dfd1924ede9223516690"><![CDATA[{
+                m_strNodeLeftHTMLSub = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeRightHTMLBreadCrumbRoot">
+          <declaration><![CDATA[public override string NodeRightHTMLBreadCrumbRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="320" sc="13" el="322" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="71d6778c708d99b38fe09b148978df95"><![CDATA[{
+                return m_strNodeRightHTMLBreadCrumbRoot;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="324" sc="13" el="326" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="78e335c84ffe0cb007cb0850e8c20c05"><![CDATA[{
+                m_strNodeRightHTMLBreadCrumbRoot = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeRightHTMLBreadCrumbSub">
+          <declaration><![CDATA[public override string NodeRightHTMLBreadCrumbSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="296" sc="13" el="298" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="5ec7ce3b1fc97d05b0ad0d2013760288"><![CDATA[{
+                return m_strNodeRightHTMLBreadCrumbSub;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="300" sc="13" el="302" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="2f8b8e8df3c870a9023e7e1bc4ae0250"><![CDATA[{
+                m_strNodeRightHTMLBreadCrumbSub = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeRightHTMLRoot">
+          <declaration><![CDATA[public override string NodeRightHTMLRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="248" sc="13" el="250" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="40a28d2ce802ef502870e18298c367ff"><![CDATA[{
+                return m_strNodeRightHTMLRoot;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="252" sc="13" el="254" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="2d164e390b0bce74819c7611e41ae63e"><![CDATA[{
+                m_strNodeRightHTMLRoot = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeRightHTMLSub">
+          <declaration><![CDATA[public override string NodeRightHTMLSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="272" sc="13" el="274" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="7beeaa0d9f44c8af7a57b771cf3982fd"><![CDATA[{
+                return m_strNodeRightHTMLSub;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="276" sc="13" el="278" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="dd5b9651b2c1a954721682e858d673af"><![CDATA[{
+                m_strNodeRightHTMLSub = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PathImage">
+          <declaration><![CDATA[public override string PathImage]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="103" sc="13" el="105" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="ddd60c6c02432dbbdaaafdba44280a74"><![CDATA[{
+                return m_strPathImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="107" sc="13" el="109" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="c34d2c5aeab19dc3282505e381b06d3b"><![CDATA[{
+                m_strPathImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PathSystemImage">
+          <declaration><![CDATA[public override string PathSystemImage]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="115" sc="13" el="117" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="65bf97b5ce53ab7dc11c68411622752e"><![CDATA[{
+                return m_strSystemPathImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="119" sc="13" el="121" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="c587e75926c5a219a9d93a8aa9eef88a"><![CDATA[{
+                m_strSystemPathImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SupportsPopulateOnDemand">
+          <declaration><![CDATA[public override bool SupportsPopulateOnDemand]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="13" el="81" ec="14">ASP2MenuNavigationProvider.cs</location>
+            <body hash="479cced518a49e9e626d5350fca9bbad"><![CDATA[{
+                return false;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

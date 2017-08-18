@@ -1,0 +1,1228 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.Roles.dll" version="01.03.00" generated="2017-08-10 13:08:43Z" generationTime="2.3352821">
+  <namespace name="Dnn.PersonaBar.Roles.Components">
+    <class name="Constants">
+      <declaration><![CDATA[public static class Constants]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="LocalResourcesFile">
+          <declaration><![CDATA[public const string LocalResourcesFile = "~/DesktopModules/admin/Dnn.PersonaBar//Modules/Dnn.Roles/App_LocalResources/Roles.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MenuName">
+          <declaration><![CDATA[public const string MenuName = "Dnn.Roles";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RolesController">
+      <declaration><![CDATA[public class RolesController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RolesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Roles.Services">
+    <class name="RolesController">
+      <declaration><![CDATA[public class RolesController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RolesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static RolesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="9" el="32" ec="105">Services\RolesController.cs</location>
+            <body hash="31427d39c925d4d90870c0a2184ec5db"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (RolesController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddUserToRole">
+          <declaration><![CDATA[public HttpResponseMessage AddUserToRole(UserRoleDto userRoleDto, bool notifyUser, bool isOwner)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="360" sc="9" el="415" ec="10">Services\RolesController.cs</location>
+            <body hash="a9d7dffe7a4b1f2d85dda6ac84304cdb"><![CDATA[{
+            try
+            {
+                Validate(userRoleDto);
+
+                if (!AllowExpired(userRoleDto.UserId, userRoleDto.RoleId))
+                {
+                    userRoleDto.StartTime = userRoleDto.ExpiresTime = Null.NullDate;
+                }
+                HttpResponseMessage response;
+                var user = GetUser(userRoleDto.UserId, out response);
+                if (user == null)
+                    return response;
+
+                var role = RoleController.Instance.GetRoleById(PortalId, userRoleDto.RoleId);
+                if (role.SecurityMode != SecurityMode.SocialGroup && role.SecurityMode != SecurityMode.Both)
+                    isOwner = false;
+                if (role.Status != RoleStatus.Approved)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest,
+                        Localization.GetString("CannotAssginUserToUnApprovedRole",
+                            Components.Constants.LocalResourcesFile));
+                }
+
+                RoleController.AddUserRole(user, role, PortalSettings, RoleStatus.Approved, userRoleDto.StartTime,
+                    userRoleDto.ExpiresTime, notifyUser, isOwner);
+
+                var addedUser = RoleController.Instance.GetUserRole(PortalId, userRoleDto.UserId, userRoleDto.RoleId);
+                var portal = PortalController.Instance.GetPortal(PortalId);
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new UserRoleDto
+                    {
+                        UserId = addedUser.UserID,
+                        RoleId = addedUser.RoleID,
+                        DisplayName = addedUser.FullName,
+                        StartTime = addedUser.EffectiveDate,
+                        ExpiresTime = addedUser.ExpiryDate,
+                        AllowExpired = AllowExpired(addedUser.UserID, addedUser.RoleID),
+                        AllowDelete = RoleController.CanRemoveUserFromRole(portal, addedUser.UserID, addedUser.RoleID)
+                    });
+            }
+            catch (ArgumentException ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (SecurityException ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AllowExpired">
+          <declaration><![CDATA[private bool AllowExpired(int userId, int roleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="480" sc="9" el="482" ec="10">Services\RolesController.cs</location>
+            <body hash="c4f1d3a450c70114cd1736af48a0fdaa"><![CDATA[{
+            return userId != PortalSettings.AdministratorId || roleId != PortalSettings.AdministratorRoleId;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteRole">
+          <declaration><![CDATA[public HttpResponseMessage DeleteRole(RoleDto roleDto)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="147" sc="9" el="171" ec="10">Services\RolesController.cs</location>
+            <body hash="e7e0d77899926fe67bf4dc7c9c52219e"><![CDATA[{
+            var role = RoleController.Instance.GetRoleById(PortalId, roleDto.Id);
+            if (role == null)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound,
+                    Localization.GetString("RoleNotFound", Components.Constants.LocalResourcesFile));
+            }
+            if (role.IsSystemRole)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest,
+                   Localization.GetString("SecurityRoleDeleteNotAllowed", Components.Constants.LocalResourcesFile));
+
+            }
+
+            if (role.RoleID == PortalSettings.AdministratorRoleId && !IsAdmin())
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest,
+                    Localization.GetString("InvalidRequest", Components.Constants.LocalResourcesFile));
+            }
+
+            RoleController.Instance.DeleteRole(role);
+            DataCache.RemoveCache("GetRoles");
+
+            return Request.CreateResponse(HttpStatusCode.OK, new {roleId = roleDto.Id});
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteRoleGroup">
+          <declaration><![CDATA[public HttpResponseMessage DeleteRoleGroup(RoleGroupDto roleGroupDto)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="254" sc="9" el="265" ec="10">Services\RolesController.cs</location>
+            <body hash="d37897cfa8fbf2b49a1b5da63d22a3de"><![CDATA[{
+            var roleGroup = RoleController.GetRoleGroup(PortalId, roleGroupDto.Id);
+            if (roleGroup == null)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound,
+                    Localization.GetString("RoleGroupNotFound", Components.Constants.LocalResourcesFile));
+            }
+
+            RoleController.DeleteRoleGroup(roleGroup);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new {groupId = roleGroupDto.Id});
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRole">
+          <declaration><![CDATA[private RoleDto GetRole(int roleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="485" sc="9" el="487" ec="10">Services\RolesController.cs</location>
+            <body hash="2524eb8db53b51f598adbb4980664b2b"><![CDATA[{
+            return RoleDto.FromRoleInfo(RoleController.Instance.GetRoleById(PortalId, roleId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleGroups">
+          <declaration><![CDATA[public HttpResponseMessage GetRoleGroups(bool reload = false)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="179" sc="9" el="197" ec="10">Services\RolesController.cs</location>
+            <body hash="43aeb22c85864cb0e8c08371e6bdd06c"><![CDATA[{
+            try
+            {
+                if (reload)
+                {
+                    DataCache.RemoveCache(string.Format(DataCache.RoleGroupsCacheKey, PortalId));
+                }
+                var groups = RoleController.GetRoleGroups(PortalId)
+                    .Cast<RoleGroupInfo>()
+                    .Select(RoleGroupDto.FromRoleGroupInfo);
+
+                return Request.CreateResponse(HttpStatusCode.OK, groups);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoles">
+          <declaration><![CDATA[public HttpResponseMessage GetRoles(int groupId, string keyword, int startIndex, int pageSize)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="9" el="67" ec="10">Services\RolesController.cs</location>
+            <body hash="916ebef74d300d2e3e698cd5ad1a0c5c"><![CDATA[{
+            try
+            {
+                var isAdmin = IsAdmin();
+
+                var roles = (groupId < Null.NullInteger
+                    ? RoleController.Instance.GetRoles(PortalId)
+                    : RoleController.Instance.GetRoles(PortalId, r => r.RoleGroupID == groupId))
+                    .Where(r => isAdmin || r.RoleID != PortalSettings.AdministratorRoleId)
+                    .Select(RoleDto.FromRoleInfo);
+
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    roles =
+                        roles.Where(
+                            r => r.Name.IndexOf(keyword, StringComparison.InvariantCultureIgnoreCase) > Null.NullInteger);
+                }
+
+                var roleDtos = roles as RoleDto[] ?? roles.ToArray();
+                var loadMore = roleDtos.Count() > startIndex + pageSize;
+                roles = roleDtos.Skip(startIndex).Take(pageSize);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new {roles, loadMore});
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleUsers">
+          <declaration><![CDATA[public HttpResponseMessage GetRoleUsers(string keyword, int roleId, int pageIndex, int pageSize)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="311" sc="9" el="355" ec="10">Services\RolesController.cs</location>
+            <body hash="4f4a16a3769bb3a114532490344c0009"><![CDATA[{
+            try
+            {
+                var role = RoleController.Instance.GetRoleById(PortalId, roleId);
+                if (role == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, Localization.GetString("RoleNotFound", Components.Constants.LocalResourcesFile));
+                }
+
+                if (role.RoleID == PortalSettings.AdministratorRoleId && !IsAdmin())
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest,
+                        Localization.GetString("InvalidRequest", Components.Constants.LocalResourcesFile));
+                }
+
+                var users = RoleController.Instance.GetUserRoles(PortalId, Null.NullString, role.RoleName);
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    users =
+                        users.Where(u => u.FullName.StartsWith(keyword, StringComparison.InvariantCultureIgnoreCase))
+                            .ToList();
+                }
+
+                var totalRecords = users.Count;
+                var startIndex = pageIndex*pageSize;
+                var portal = PortalController.Instance.GetPortal(PortalId);
+                var pagedData = users.Skip(startIndex).Take(pageSize).Select(u => new UserRoleDto()
+                {
+                    UserId = u.UserID,
+                    RoleId = u.RoleID,
+                    DisplayName = u.FullName,
+                    StartTime = u.EffectiveDate,
+                    ExpiresTime = u.ExpiryDate,
+                    AllowExpired = AllowExpired(u.UserID, u.RoleID),
+                    AllowDelete = RoleController.CanRemoveUserFromRole(portal, u.UserID, u.RoleID)
+                });
+
+                return Request.CreateResponse(HttpStatusCode.OK, new {users = pagedData, totalRecords});
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSuggestUsers">
+          <declaration><![CDATA[public HttpResponseMessage GetSuggestUsers(string keyword, int roleId, int count)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="273" sc="9" el="307" ec="10">Services\RolesController.cs</location>
+            <body hash="beac64d21c163b446a48cae12736a1ed"><![CDATA[{
+            try
+            {
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, new List<UserRoleDto>());
+                }
+
+                var displayMatch = keyword + "%";
+                var totalRecords = 0;
+                var totalRecords2 = 0;
+                var isAdmin = IsAdmin();
+
+                var matchedUsers = UserController.GetUsersByDisplayName(PortalId, displayMatch, 0, count,
+                    ref totalRecords, false, false);
+                matchedUsers.AddRange(UserController.GetUsersByUserName(PortalId, displayMatch, 0, count, ref totalRecords2, false, false));
+                var finalUsers = matchedUsers
+                    .Cast<UserInfo>()
+                    .Where(x => isAdmin || !x.Roles.Contains(PortalSettings.AdministratorRoleName))
+                    .Select(u => new UserRoleDto()
+                    {
+                        UserId = u.UserID,
+                        DisplayName = $"{u.DisplayName} ({u.Username})"
+                    });
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    finalUsers.ToList().GroupBy(x => x.UserId).Select(group => group.First()));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUser">
+          <declaration><![CDATA[private UserInfo GetUser(int userId, out HttpResponseMessage response)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="501" sc="9" el="521" ec="10">Services\RolesController.cs</location>
+            <body hash="950c8cef7e4e5715b032e554812d7873"><![CDATA[{
+            response = null;
+            var user = UserController.Instance.GetUserById(PortalId, userId);
+            if (user == null)
+            {
+                response = Request.CreateErrorResponse(HttpStatusCode.NotFound,
+                    Localization.GetString("UserNotFound", Components.Constants.LocalResourcesFile));
+                return null;
+            }
+            if (!IsAdmin(user)) return user;
+
+            if ((user.IsSuperUser && !UserInfo.IsSuperUser) || !IsAdmin())
+            {
+                response = Request.CreateErrorResponse(HttpStatusCode.Unauthorized,
+                    Localization.GetString("InSufficientPermissions", Components.Constants.LocalResourcesFile));
+                return null;
+            }
+            if (user.IsSuperUser)
+                user = UserController.Instance.GetUserById(Null.NullInteger, userId);
+            return user;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsAdmin">
+          <declaration><![CDATA[private bool IsAdmin()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="490" sc="9" el="493" ec="10">Services\RolesController.cs</location>
+            <body hash="68c280626b6fe6c2f5683ad60952329e"><![CDATA[{
+            var user = UserController.Instance.GetCurrentUserInfo();
+            return user.IsSuperUser || user.IsInRole(PortalSettings.AdministratorRoleName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsAdmin">
+          <declaration><![CDATA[private bool IsAdmin(UserInfo user)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="496" sc="9" el="498" ec="10">Services\RolesController.cs</location>
+            <body hash="4443a4e9fdf1722809643a5216dfefd5"><![CDATA[{
+            return user.IsSuperUser || user.IsInRole(PortalSettings.AdministratorRoleName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveUserFromRole">
+          <declaration><![CDATA[public HttpResponseMessage RemoveUserFromRole(UserRoleDto userRoleDto)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="420" sc="9" el="447" ec="10">Services\RolesController.cs</location>
+            <body hash="b9d2083e61e4766797a971812758a65b"><![CDATA[{
+            try
+            {
+                Validate(userRoleDto);
+                HttpResponseMessage response;
+                var user = GetUser(userRoleDto.UserId, out response);
+                if (user == null)
+                    return response;
+
+                RoleController.Instance.UpdateUserRole(PortalId, userRoleDto.UserId, userRoleDto.RoleId,
+                    RoleStatus.Approved, false, true);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new {userRoleDto.UserId, userRoleDto.RoleId});
+            }
+            catch (ArgumentException ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (SecurityException ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveRole">
+          <declaration><![CDATA[public HttpResponseMessage SaveRole(RoleDto roleDto, [FromUri] bool assignExistUsers)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="142" ec="10">Services\RolesController.cs</location>
+            <body hash="bec86f7c2a34b58f3dfe4da1eab8320f"><![CDATA[{
+            try
+            {
+                Validate(roleDto);
+
+                var role = roleDto.ToRoleInfo();
+                role.PortalID = PortalId;
+                var rolename = role.RoleName.ToUpperInvariant();
+
+                if (roleDto.Id == Null.NullInteger)
+                {
+
+                    if (RoleController.Instance.GetRole(PortalId,
+                        r => rolename.Equals(r.RoleName, StringComparison.InvariantCultureIgnoreCase)) == null)
+                    {
+                        RoleController.Instance.AddRole(role, assignExistUsers);
+                        roleDto.Id = role.RoleID;
+                    }
+                    else
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest,
+                            Localization.GetString("DuplicateRole", Components.Constants.LocalResourcesFile));
+                    }
+                }
+                else
+                {
+                    var existingRole = RoleController.Instance.GetRoleById(PortalId, roleDto.Id);
+                    if (existingRole == null)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotFound,
+                            Localization.GetString("RoleNotFound", Components.Constants.LocalResourcesFile));
+                    }
+
+                    if (existingRole.IsSystemRole)
+                    {
+                        if (role.Description != existingRole.Description)//In System roles only description can be updated.
+                        {
+                            existingRole.Description = role.Description;
+                            RoleController.Instance.UpdateRole(existingRole, assignExistUsers);
+                        }
+                    }
+                    else if (RoleController.Instance.GetRole(PortalId,
+                        r =>
+                            rolename.Equals(r.RoleName, StringComparison.InvariantCultureIgnoreCase) &&
+                            r.RoleID != roleDto.Id) == null)
+                    {
+                        RoleController.Instance.UpdateRole(role, assignExistUsers);
+                    }
+                    else
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest,
+                            Localization.GetString("DuplicateRole", Components.Constants.LocalResourcesFile));
+                    }
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, GetRole(roleDto.Id));
+            }
+            catch (ArgumentException ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (SecurityException ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveRoleGroup">
+          <declaration><![CDATA[public HttpResponseMessage SaveRoleGroup(RoleGroupDto roleGroupDto)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="202" sc="9" el="249" ec="10">Services\RolesController.cs</location>
+            <body hash="46a5755e348a20dccbc10612e782ea20"><![CDATA[{
+            try
+            {
+                Validate(roleGroupDto);
+
+                var roleGroup = roleGroupDto.ToRoleGroupInfo();
+                roleGroup.PortalID = PortalId;
+
+                if (roleGroup.RoleGroupID < Null.NullInteger)
+                {
+                    try
+                    {
+                        RoleController.AddRoleGroup(roleGroup);
+                    }
+                    catch
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest,
+                            Localization.GetString("DuplicateRoleGroup", Components.Constants.LocalResourcesFile));
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        RoleController.UpdateRoleGroup(roleGroup);
+                    }
+                    catch
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest,
+                            Localization.GetString("DuplicateRoleGroup", Components.Constants.LocalResourcesFile));
+                    }
+                }
+
+                roleGroup = RoleController.GetRoleGroups(PortalId).Cast<RoleGroupInfo>()
+                    .FirstOrDefault(r => r.RoleGroupName == roleGroupDto.Name?.Trim());
+
+                return Request.CreateResponse(HttpStatusCode.OK, RoleGroupDto.FromRoleGroupInfo(roleGroup));
+            }
+            catch (ArgumentException ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Validate">
+          <declaration><![CDATA[private void Validate(RoleDto role)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="454" sc="9" el="461" ec="10">Services\RolesController.cs</location>
+            <body hash="ed26890ff3b0cb3b30e50902be4ad45a"><![CDATA[{
+            Requires.NotNullOrEmpty("Name", role.Name);
+
+            if (!IsAdmin() && role.Id == PortalSettings.AdministratorRoleId)
+            {
+                throw new SecurityException(Localization.GetString("InvalidRequest", Components.Constants.LocalResourcesFile));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Validate">
+          <declaration><![CDATA[private void Validate(RoleGroupDto role)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="464" sc="9" el="466" ec="10">Services\RolesController.cs</location>
+            <body hash="242b4fd6c58da3fbb8e4059549ba9b16"><![CDATA[{
+            Requires.NotNullOrEmpty("Name", role.Name);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Validate">
+          <declaration><![CDATA[private void Validate(UserRoleDto userRoleDto)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="469" sc="9" el="477" ec="10">Services\RolesController.cs</location>
+            <body hash="2c417e022d347ef28b4fe401ea47d9da"><![CDATA[{
+            Requires.NotNegative("UserId", userRoleDto.UserId);
+            Requires.NotNegative("RoleId", userRoleDto.RoleId);
+
+            if (!IsAdmin() && userRoleDto.RoleId == PortalSettings.AdministratorRoleId)
+            {
+                throw new SecurityException(Localization.GetString("InvalidRequest", Components.Constants.LocalResourcesFile));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(RolesController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Roles.Services.DTO">
+    <class name="RoleDto">
+      <declaration><![CDATA[public class RoleDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RoleDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="FromRoleInfo">
+          <declaration><![CDATA[public static RoleDto FromRoleInfo(RoleInfo role)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="9" el="95" ec="10">Services\DTO\RoleDto.cs</location>
+            <body hash="a18bc0e556fbf4f9b29678951d9c60b9"><![CDATA[{
+            if (role == null) return null;
+            return new RoleDto()
+            {
+                Id = role.RoleID,
+                GroupId = role.RoleGroupID,
+                Name = role.RoleName,
+                Description = role.Description,
+                ServiceFee = role.ServiceFee,
+                BillingPeriod = role.BillingPeriod,
+                BillingFrequency = role.BillingFrequency,
+                TrialFee = role.TrialFee,
+                TrialPeriod = role.TrialPeriod,
+                TrialFrequency = role.TrialFrequency,
+                IsPublic = role.IsPublic,
+                AutoAssign = role.AutoAssignment,
+                RsvpCode = role.RSVPCode,
+                Icon = role.IconFile,
+                Status = role.Status,
+                SecurityMode = role.SecurityMode,
+                IsSystem = role.IsSystemRole,
+                UsersCount = role.UserCount,
+                AllowOwner = (role.SecurityMode == SecurityMode.SocialGroup) || (role.SecurityMode == SecurityMode.Both)
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ToRoleInfo">
+          <declaration><![CDATA[public RoleInfo ToRoleInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="98" sc="9" el="119" ec="10">Services\DTO\RoleDto.cs</location>
+            <body hash="6aeb44b8e6d0c6b8bf0f770f9f4ef4b9"><![CDATA[{
+            return new RoleInfo()
+            {
+                RoleID = Id,
+                RoleGroupID = GroupId,
+                RoleName = Name,
+                Description = Description,
+                ServiceFee = ServiceFee,
+                BillingPeriod = BillingPeriod,
+                BillingFrequency = BillingFrequency,
+                TrialFee = TrialFee,
+                TrialPeriod = TrialPeriod,
+                TrialFrequency = TrialFrequency,
+                IsPublic = IsPublic,
+                AutoAssignment = AutoAssign,
+                RSVPCode = RsvpCode,
+                IconFile = Icon,
+                Status = Status,
+                SecurityMode = SecurityMode,
+                IsSystemRole = IsSystem
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AllowOwner">
+          <declaration><![CDATA[public bool AllowOwner]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="34" el="68" ec="38">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="68" sc="39" el="68" ec="43">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="AutoAssign">
+          <declaration><![CDATA[public bool AutoAssign]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="34" el="47" ec="38">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="47" sc="39" el="47" ec="43">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="BillingFrequency">
+          <declaration><![CDATA[public string BillingFrequency]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="42" el="32" ec="46">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="32" sc="47" el="32" ec="51">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="BillingPeriod">
+          <declaration><![CDATA[public int BillingPeriod]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="36" el="29" ec="40">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="29" sc="41" el="29" ec="45">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Description">
+          <declaration><![CDATA[public string Description]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="37" el="23" ec="41">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="23" sc="42" el="23" ec="46">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupId">
+          <declaration><![CDATA[public int GroupId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="30" el="17" ec="34">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="17" sc="35" el="17" ec="39">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Icon">
+          <declaration><![CDATA[public string Icon]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="30" el="53" ec="34">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="53" sc="35" el="53" ec="39">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Id">
+          <declaration><![CDATA[public int Id]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="14" sc="25" el="14" ec="29">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="14" sc="30" el="14" ec="34">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="IsPublic">
+          <declaration><![CDATA[public bool IsPublic]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="32" el="44" ec="36">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="44" sc="37" el="44" ec="41">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="IsSystem">
+          <declaration><![CDATA[public bool IsSystem]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="62" sc="32" el="62" ec="36">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="62" sc="37" el="62" ec="41">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="20" sc="30" el="20" ec="34">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="20" sc="35" el="20" ec="39">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RsvpCode">
+          <declaration><![CDATA[public string RsvpCode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="34" el="50" ec="38">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="50" sc="39" el="50" ec="43">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SecurityMode">
+          <declaration><![CDATA[public SecurityMode SecurityMode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="44" el="59" ec="48">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="59" sc="49" el="59" ec="53">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ServiceFee">
+          <declaration><![CDATA[public float ServiceFee]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="26" sc="35" el="26" ec="39">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="26" sc="40" el="26" ec="44">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Status">
+          <declaration><![CDATA[public RoleStatus Status]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="36" el="56" ec="40">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="56" sc="41" el="56" ec="45">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TrialFee">
+          <declaration><![CDATA[public float TrialFee]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="33" el="35" ec="37">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="35" sc="38" el="35" ec="42">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TrialFrequency">
+          <declaration><![CDATA[public string TrialFrequency]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="40" el="41" ec="44">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="41" sc="45" el="41" ec="49">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TrialPeriod">
+          <declaration><![CDATA[public int TrialPeriod]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="34" el="38" ec="38">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="38" sc="39" el="38" ec="43">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UsersCount">
+          <declaration><![CDATA[public long UsersCount]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="34" el="65" ec="38">Services\DTO\RoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="65" sc="39" el="65" ec="43">Services\DTO\RoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RoleGroupDto">
+      <declaration><![CDATA[public class RoleGroupDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RoleGroupDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="9" el="16" ec="10">Services\DTO\RoleGroupDto.cs</location>
+            <body hash="edbd0df3f200ec8c7152d1b4ef662ab8"><![CDATA[public RoleGroupDto()
+        {
+            Id = -2;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="FromRoleGroupInfo">
+          <declaration><![CDATA[public static RoleGroupDto FromRoleGroupInfo(RoleGroupInfo roleGroup)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="38" ec="10">Services\DTO\RoleGroupDto.cs</location>
+            <body hash="801756f662cd553ade97f1ef03aaf5bd"><![CDATA[{
+            return new RoleGroupDto()
+            {
+                Id = roleGroup.RoleGroupID,
+                Name = roleGroup.RoleGroupName?.Trim(),
+                Description = roleGroup.Description,
+                RolesCount = roleGroup.Roles?.Count ?? 0
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ToRoleGroupInfo">
+          <declaration><![CDATA[public RoleGroupInfo ToRoleGroupInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="48" ec="10">Services\DTO\RoleGroupDto.cs</location>
+            <body hash="dc72ab89c50adbf1733cfdcd524ec367"><![CDATA[{
+            return new RoleGroupInfo()
+            {
+                RoleGroupID = Id,
+                RoleGroupName = Name?.Trim(),
+                Description = Description ?? ""
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Description">
+          <declaration><![CDATA[public string Description]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="37" el="27" ec="41">Services\DTO\RoleGroupDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="27" sc="42" el="27" ec="46">Services\DTO\RoleGroupDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Id">
+          <declaration><![CDATA[public int Id]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="18" sc="25" el="18" ec="29">Services\DTO\RoleGroupDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="18" sc="30" el="18" ec="34">Services\DTO\RoleGroupDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="30" el="21" ec="34">Services\DTO\RoleGroupDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="21" sc="35" el="21" ec="39">Services\DTO\RoleGroupDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RolesCount">
+          <declaration><![CDATA[public int RolesCount]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="33" el="24" ec="37">Services\DTO\RoleGroupDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="24" sc="38" el="24" ec="42">Services\DTO\RoleGroupDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UserRoleDto">
+      <declaration><![CDATA[public class UserRoleDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UserRoleDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AllowDelete">
+          <declaration><![CDATA[public bool AllowDelete]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="35" el="32" ec="39">Services\DTO\UserRoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="32" sc="40" el="32" ec="44">Services\DTO\UserRoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="AllowExpired">
+          <declaration><![CDATA[public bool AllowExpired]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="36" el="29" ec="40">Services\DTO\UserRoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="29" sc="41" el="29" ec="45">Services\DTO\UserRoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="DisplayName">
+          <declaration><![CDATA[public string DisplayName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="37" el="17" ec="41">Services\DTO\UserRoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="17" sc="42" el="17" ec="46">Services\DTO\UserRoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ExpiresTime">
+          <declaration><![CDATA[public DateTime ExpiresTime]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="26" sc="39" el="26" ec="43">Services\DTO\UserRoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="26" sc="44" el="26" ec="48">Services\DTO\UserRoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RoleId">
+          <declaration><![CDATA[public int RoleId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="20" sc="29" el="20" ec="33">Services\DTO\UserRoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="20" sc="34" el="20" ec="38">Services\DTO\UserRoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="StartTime">
+          <declaration><![CDATA[public DateTime StartTime]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="37" el="23" ec="41">Services\DTO\UserRoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="23" sc="42" el="23" ec="46">Services\DTO\UserRoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UserId">
+          <declaration><![CDATA[public int UserId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="14" sc="29" el="14" ec="33">Services\DTO\UserRoleDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="14" sc="34" el="14" ec="38">Services\DTO\UserRoleDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

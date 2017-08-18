@@ -1,0 +1,791 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Web.Razor.dll" version="09.01.00" generated="2017-08-10 13:11:31Z" generationTime="1.5654753">
+  <namespace name="DotNetNuke.Web.Razor">
+    <class name="DotNetNukeWebPage">
+      <declaration><![CDATA[public abstract class DotNetNukeWebPage : WebPageBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[protected DotNetNukeWebPage()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ConfigurePage">
+          <declaration><![CDATA[protected override void ConfigurePage(WebPageBase parentPage)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="9" el="41" ec="10">DotNetNukeWebPage.cs</location>
+            <body hash="86c2e9be34c61c6e8b8790620fc8f5dd"><![CDATA[{
+            base.ConfigurePage(parentPage);
+
+            //Child pages need to get their context from the Parent
+            Context = parentPage.Context;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_model">
+          <declaration><![CDATA[private dynamic _model;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Dnn">
+          <declaration><![CDATA[protected internal DnnHelper Dnn]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="44" el="29" ec="48">DotNetNukeWebPage.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="29" sc="49" el="29" ec="62">DotNetNukeWebPage.cs</location>
+            <body hash="547cefb3c0c83e070f9d7cd0975f10de"><![CDATA[internal set]]></body>
+          </codeblock>
+        </property>
+        <property name="Html">
+          <declaration><![CDATA[protected internal HtmlHelper Html]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="46" el="31" ec="50">DotNetNukeWebPage.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="31" sc="51" el="31" ec="64">DotNetNukeWebPage.cs</location>
+            <body hash="547cefb3c0c83e070f9d7cd0975f10de"><![CDATA[internal set]]></body>
+          </codeblock>
+        </property>
+        <property name="Model">
+          <declaration><![CDATA[public dynamic Model]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Url">
+          <declaration><![CDATA[protected internal UrlHelper Url]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="44" el="33" ec="48">DotNetNukeWebPage.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="33" sc="49" el="33" ec="62">DotNetNukeWebPage.cs</location>
+            <body hash="547cefb3c0c83e070f9d7cd0975f10de"><![CDATA[internal set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DotNetNukeWebPage&lt;TModel&gt;">
+      <declaration><![CDATA[public abstract class DotNetNukeWebPage<TModel> : DotNetNukeWebPage where TModel : class]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[protected DotNetNukeWebPage()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="_model">
+          <declaration><![CDATA[private TModel _model;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Model">
+          <declaration><![CDATA[public new TModel Model]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RazorEngine">
+      <declaration><![CDATA[public class RazorEngine]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RazorEngine(string razorScriptFile, ModuleInstanceContext moduleContext, string localResourceFile)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="63" ec="10">RazorEngine.cs</location>
+            <body hash="82443e66f953a8221f9dc95236ed9809"><![CDATA[public RazorEngine(string razorScriptFile, ModuleInstanceContext moduleContext, string localResourceFile)
+        {
+            RazorScriptFile = razorScriptFile;
+            ModuleContext = moduleContext;
+            LocalResourceFile = localResourceFile ?? Path.Combine(Path.GetDirectoryName(razorScriptFile), Localization.LocalResourceDirectory, Path.GetFileName(razorScriptFile) + ".resx");
+
+            try
+            {
+                InitWebpage();
+            }
+            catch (HttpParseException)
+            {
+                throw;
+            }
+            catch (HttpCompileException)
+            {
+                throw;
+            }
+            catch (Exception exc)
+            {
+                Exceptions.LogException(exc);
+            }
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CreateWebPageInstance">
+          <declaration><![CDATA[private object CreateWebPageInstance()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="125" sc="9" el="133" ec="10">RazorEngine.cs</location>
+            <body hash="1a8506f0eb4201cce1486ace90737cfd"><![CDATA[{
+            var compiledType = BuildManager.GetCompiledType(RazorScriptFile);
+            object objectValue = null;
+            if (((compiledType != null)))
+            {
+                objectValue = RuntimeHelpers.GetObjectValue(Activator.CreateInstance(compiledType));
+            }
+            return objectValue;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="InitHelpers">
+          <declaration><![CDATA[private void InitHelpers(DotNetNukeWebPage webPage)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="136" sc="9" el="140" ec="10">RazorEngine.cs</location>
+            <body hash="a7a099af9ae869966fe520acd708e8ba"><![CDATA[{
+            webPage.Dnn = new DnnHelper(ModuleContext);
+            webPage.Html = new HtmlHelper(ModuleContext, LocalResourceFile);
+            webPage.Url = new UrlHelper(ModuleContext);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="InitWebpage">
+          <declaration><![CDATA[private void InitWebpage()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="143" sc="9" el="160" ec="10">RazorEngine.cs</location>
+            <body hash="fd0a81e225db03ad9e9c0aae75a31cbb"><![CDATA[{
+            if (!string.IsNullOrEmpty(RazorScriptFile))
+            {
+                var objectValue = RuntimeHelpers.GetObjectValue(CreateWebPageInstance());
+                if ((objectValue == null))
+                {
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "The webpage found at '{0}' was not created.", new object[] {RazorScriptFile}));
+                }
+                Webpage = objectValue as DotNetNukeWebPage;
+                if ((Webpage == null))
+                {
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "The webpage at '{0}' must derive from DotNetNukeWebPage.", new object[] {RazorScriptFile}));
+                }
+                Webpage.Context = HttpContext;
+                Webpage.VirtualPath = VirtualPathUtility.GetDirectory(RazorScriptFile);
+                InitHelpers(Webpage);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Render">
+          <declaration><![CDATA[public void Render<T>(TextWriter writer, T model)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="9" el="98" ec="10">RazorEngine.cs</location>
+            <body hash="eee280f12c087741be1097f32bbce7e2"><![CDATA[{
+            try
+            {
+                Webpage.ExecutePageHierarchy(new WebPageContext(HttpContext, Webpage, model), writer, Webpage);
+            }
+            catch (Exception exc)
+            {
+                Exceptions.LogException(exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Render">
+          <declaration><![CDATA[public void Render(TextWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="101" sc="9" el="110" ec="10">RazorEngine.cs</location>
+            <body hash="05d9585893f871eadd97de44911917a8"><![CDATA[{
+            try
+            {
+                Webpage.ExecutePageHierarchy(new WebPageContext(HttpContext, Webpage, null), writer, Webpage);
+            }
+            catch (Exception exc)
+            {
+                Exceptions.LogException(exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Render">
+          <declaration><![CDATA[public void Render(TextWriter writer, WebPageContext context)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="113" sc="9" el="122" ec="10">RazorEngine.cs</location>
+            <body hash="59550685ec9fb6739e3259ccee7965a1"><![CDATA[{
+            try
+            {
+                Webpage.ExecutePageHierarchy(context, writer, Webpage);
+            }
+            catch (Exception exc)
+            {
+                Exceptions.LogException(exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RequestedModelType">
+          <declaration><![CDATA[public Type RequestedModelType()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="9" el="86" ec="10">RazorEngine.cs</location>
+            <body hash="0e26323f82cdf5a84e40652271aafffc"><![CDATA[{
+            if (Webpage != null)
+            {
+                var webpageType = Webpage.GetType();
+                if (webpageType.BaseType.IsGenericType)
+                {
+                    return webpageType.BaseType.GetGenericArguments()[0];
+                }
+            }
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="HttpContext">
+          <declaration><![CDATA[protected HttpContextBase HttpContext]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LocalResourceFile">
+          <declaration><![CDATA[protected string LocalResourceFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="46" el="67" ec="50">RazorEngine.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="67" sc="51" el="67" ec="55">RazorEngine.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ModuleContext">
+          <declaration><![CDATA[protected ModuleInstanceContext ModuleContext]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="57" el="66" ec="61">RazorEngine.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="66" sc="62" el="66" ec="66">RazorEngine.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RazorScriptFile">
+          <declaration><![CDATA[protected string RazorScriptFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="44" el="65" ec="48">RazorEngine.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="65" sc="49" el="65" ec="53">RazorEngine.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Webpage">
+          <declaration><![CDATA[public DotNetNukeWebPage Webpage]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="44" el="68" ec="48">RazorEngine.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="68" sc="49" el="68" ec="53">RazorEngine.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RazorHostControl">
+      <declaration><![CDATA[public class RazorHostControl : ModuleControlBase, IActionable]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RazorHostControl(string scriptFile)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="43" ec="10">RazorHostControl.cs</location>
+            <body hash="7e4dc406e7059ea0b0f56b918e0b8295"><![CDATA[public RazorHostControl(string scriptFile)
+        {
+            _razorScriptFile = scriptFile;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnPreRender">
+          <declaration><![CDATA[protected override void OnPreRender(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="74" ec="10">RazorHostControl.cs</location>
+            <body hash="275d2513f9aa70fdd8780cbed14af7cd"><![CDATA[{
+            base.OnPreRender(e);
+
+            if (!(string.IsNullOrEmpty(RazorScriptFile)))
+            {
+                var writer = new StringWriter();
+				Engine.Render(writer);
+                Controls.Add(new LiteralControl(HttpUtility.HtmlDecode(writer.ToString())));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_engine">
+          <declaration><![CDATA[private RazorEngine _engine;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_razorScriptFile">
+          <declaration><![CDATA[private readonly string _razorScriptFile;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Engine">
+          <declaration><![CDATA[private RazorEngine Engine]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="7" el="61" ec="8">RazorHostControl.cs</location>
+            <body hash="4dd875811ced87f437ca134753a0b99f"><![CDATA[{
+				if (_engine == null)
+			    {
+					_engine = new RazorEngine(RazorScriptFile, ModuleContext, LocalResourceFile);
+			    }
+
+			    return _engine;
+		    }]]></body>
+          </codeblock>
+        </property>
+        <property name="ModuleActions">
+          <declaration><![CDATA[public ModuleActionCollection ModuleActions]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="4" el="86" ec="5">RazorHostControl.cs</location>
+            <body hash="3a9cf80f683d4a2ff6d79368db683db1"><![CDATA[{
+				if (Engine.Webpage is IActionable)
+				{
+					return (Engine.Webpage as IActionable).ModuleActions;
+				}
+
+				return new ModuleActionCollection();
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="RazorScriptFile">
+          <declaration><![CDATA[protected virtual string RazorScriptFile]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RazorModuleBase">
+      <declaration><![CDATA[public class RazorModuleBase : ModuleUserControlBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RazorModuleBase()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnPreRender">
+          <declaration><![CDATA[protected override void OnPreRender(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="77" ec="10">RazorModuleBase.cs</location>
+            <body hash="b8bf85affe858865ad5d56d8a2050806"><![CDATA[{
+            base.OnPreRender(e);
+            try
+            {
+                if (! (string.IsNullOrEmpty(RazorScriptFile)))
+                {
+                    var razorEngine = new RazorEngine(RazorScriptFile, ModuleContext, LocalResourceFile);
+                    var writer = new StringWriter();
+                    razorEngine.Render(writer);
+
+                    Controls.Add(new LiteralControl(writer.ToString()));
+                }
+            }
+            catch (Exception ex)
+            {
+                Exceptions.ProcessModuleLoadException(this, ex);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="RazorScriptFile">
+          <declaration><![CDATA[protected virtual string RazorScriptFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="13" el="56" ec="14">RazorModuleBase.cs</location>
+            <body hash="e0382647abf46ba030271cb130b3e2ce"><![CDATA[{
+                var scriptFolder = AppRelativeTemplateSourceDirectory;
+                var fileRoot = Path.GetFileNameWithoutExtension(AppRelativeVirtualPath);
+                var scriptFile = scriptFolder + "_" + fileRoot + ".cshtml";
+
+                if (! (File.Exists(Server.MapPath(scriptFile))))
+                {
+                    //Try VB (vbhtml)
+                    scriptFile = scriptFolder + "_" + fileRoot + ".vbhtml";
+
+                    if (!(File.Exists(Server.MapPath(scriptFile))))
+                    {
+                        //Return ""
+                        scriptFile = "";
+                    }
+                }
+
+                return scriptFile;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RazorModuleControlFactory">
+      <declaration><![CDATA[public class RazorModuleControlFactory : IModuleControlFactory]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RazorModuleControlFactory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CreateControl">
+          <declaration><![CDATA[public Control CreateControl(TemplateControl containerControl, string controlKey, string controlSrc)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="9" el="31" ec="10">RazorModuleControlFactory.cs</location>
+            <body hash="d2c57325b75a0af174310b390a0c2002"><![CDATA[{
+            return new RazorHostControl("~/" + controlSrc);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateModuleControl">
+          <declaration><![CDATA[public Control CreateModuleControl(TemplateControl containerControl, ModuleInfo moduleConfiguration)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="9" el="36" ec="10">RazorModuleControlFactory.cs</location>
+            <body hash="7253acd8703b07a945dbbdbb665f600b"><![CDATA[{
+            return CreateControl(containerControl, String.Empty, moduleConfiguration.ModuleControl.ControlSrc);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateSettingsControl">
+          <declaration><![CDATA[public Control CreateSettingsControl(TemplateControl containerControl, ModuleInfo moduleConfiguration, string controlSrc)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="41" ec="10">RazorModuleControlFactory.cs</location>
+            <body hash="51b9dde3a0007ca4cfa3eadba4f4124e"><![CDATA[{
+            return CreateControl(containerControl, String.Empty, controlSrc);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Web.Razor.Helpers">
+    <class name="DnnHelper">
+      <declaration><![CDATA[public class DnnHelper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DnnHelper(ModuleInstanceContext context)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="9" el="40" ec="10">Helpers\DnnHelper.cs</location>
+            <body hash="cb54965bf1637a37dc6a53a7d9805f08"><![CDATA[public DnnHelper(ModuleInstanceContext context)
+        {
+            _context = context;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="_context">
+          <declaration><![CDATA[private readonly ModuleInstanceContext _context;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Module">
+          <declaration><![CDATA[public ModuleInfo Module]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="13" el="47" ec="14">Helpers\DnnHelper.cs</location>
+            <body hash="fad67466ba22c17e366a325b66690d45"><![CDATA[{
+                return _context.Configuration;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Portal">
+          <declaration><![CDATA[public PortalSettings Portal]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="13" el="63" ec="14">Helpers\DnnHelper.cs</location>
+            <body hash="e3e7617ad64448a63529b115b8db5437"><![CDATA[{
+                return _context.PortalSettings;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Tab">
+          <declaration><![CDATA[public TabInfo Tab]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="13" el="55" ec="14">Helpers\DnnHelper.cs</location>
+            <body hash="88dd9c5a7e48c0ef240fc5a967222700"><![CDATA[{
+                return _context.PortalSettings.ActiveTab;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="User">
+          <declaration><![CDATA[public UserInfo User]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="13" el="71" ec="14">Helpers\DnnHelper.cs</location>
+            <body hash="1c92eedc6110330424a4cd989cd42e0d"><![CDATA[{
+                return _context.PortalSettings.UserInfo;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="HtmlHelper">
+      <declaration><![CDATA[public class HtmlHelper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public HtmlHelper(ModuleInstanceContext context, string resourcefile)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="9" el="40" ec="10">Helpers\HtmlHelper.cs</location>
+            <body hash="e585b9786f358ce8b4ccf64bed0227c7"><![CDATA[public HtmlHelper(ModuleInstanceContext context, string resourcefile)
+        {
+            _context = context;
+            _resourceFile = resourcefile;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetLocalizedString">
+          <declaration><![CDATA[public object GetLocalizedString(string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="45" ec="10">Helpers\HtmlHelper.cs</location>
+            <body hash="4300b5bf52affb2a341d5749f914a67e"><![CDATA[{
+            return Localization.GetString(key, _resourceFile);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLocalizedString">
+          <declaration><![CDATA[public object GetLocalizedString(string key, string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="50" ec="10">Helpers\HtmlHelper.cs</location>
+            <body hash="60dbd109bd9f6a7631e68bc355800a81"><![CDATA[{
+            return Localization.GetString(key, _resourceFile, culture);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Raw">
+          <declaration><![CDATA[public HtmlString Raw(string text)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="9" el="55" ec="10">Helpers\HtmlHelper.cs</location>
+            <body hash="789ccbf927fa7dc33e543ee40e35c25b"><![CDATA[{
+            return new HtmlString(text);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_context">
+          <declaration><![CDATA[private ModuleInstanceContext _context;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_resourceFile">
+          <declaration><![CDATA[private readonly string _resourceFile;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UrlHelper">
+      <declaration><![CDATA[public class UrlHelper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UrlHelper(ModuleInstanceContext context)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="9" el="37" ec="10">Helpers\UrlHelper.cs</location>
+            <body hash="b2dcbbb51c8f40f7cd79bec39f29d1c7"><![CDATA[public UrlHelper(ModuleInstanceContext context)
+        {
+            _context = context;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="NavigateToControl">
+          <declaration><![CDATA[public string NavigateToControl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="42" ec="10">Helpers\UrlHelper.cs</location>
+            <body hash="088d612059ee86aaef5a1133e3705123"><![CDATA[{
+            return Globals.NavigateURL(_context.TabId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="NavigateToControl">
+          <declaration><![CDATA[public string NavigateToControl(string controlKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="47" ec="10">Helpers\UrlHelper.cs</location>
+            <body hash="50af30502e5aa3e51a5a0103b72ac5c6"><![CDATA[{
+            return Globals.NavigateURL(_context.TabId, controlKey, "mid=" + _context.ModuleId);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_context">
+          <declaration><![CDATA[private readonly ModuleInstanceContext _context;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

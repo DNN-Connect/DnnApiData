@@ -1,0 +1,1606 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.Modules.ModuleCreator.dll" version="09.01.01" generated="2017-08-10 13:30:35Z" generationTime="3.1896156">
+  <namespace name="">
+    <class name="&lt;PrivateImplementationDetails&gt;">
+      <declaration><![CDATA[internal sealed class <PrivateImplementationDetails>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="ComputeStringHash">
+          <declaration><![CDATA[internal static uint ComputeStringHash(string s)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Module.ModuleCreator">
+    <class name="CreateModule">
+      <declaration><![CDATA[public class CreateModule : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CreateModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="cboTemplate_SelectedIndexChanged">
+          <declaration><![CDATA[protected void cboTemplate_SelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="428" sc="9" el="430" ec="10">CreateModule.ascx.cs</location>
+            <body hash="2dd72f246077b62a9cd79a103aa48c4d"><![CDATA[{
+            LoadReadMe();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="cmdCreate_Click">
+          <declaration><![CDATA[protected void cmdCreate_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="433" sc="9" el="449" ec="10">CreateModule.ascx.cs</location>
+            <body hash="032c38bad501fb7997529fa3cb23087b"><![CDATA[{
+            if (UserInfo.IsSuperUser)
+            {
+                if (!String.IsNullOrEmpty(txtOwner.Text) && !String.IsNullOrEmpty(txtModule.Text) && cboTemplate.SelectedIndex > 0 && !String.IsNullOrEmpty(txtControl.Text))
+                {
+                    HostController.Instance.Update("Owner", txtOwner.Text, false);
+                    if (CreateModuleDefinition())
+                    {
+                        Response.Redirect(Globals.NavigateURL(), true);
+                    }
+                }
+                else
+                {
+                    DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("InputValidation.ErrorMessage", LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateModuleControl">
+          <declaration><![CDATA[private string CreateModuleControl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="120" sc="9" el="211" ec="10">CreateModule.ascx.cs</location>
+            <body hash="095a178b000541f5ae25d9fb66b7e863"><![CDATA[{
+			var moduleTemplatePath = Server.MapPath(ControlPath) + "Templates\\" + optLanguage.SelectedValue + "\\" + cboTemplate.SelectedValue + "\\";
+
+            EventLogController.Instance.AddLog("Processing Template Folder", moduleTemplatePath, PortalSettings, -1, EventLogController.EventLogType.HOST_ALERT);
+
+
+            var controlName = Null.NullString;
+            var fileName = Null.NullString;
+            var modulePath = "";
+            var sourceCode = Null.NullString;
+
+            //iterate through files in template folder
+            string[] fileList = Directory.GetFiles(moduleTemplatePath);
+            foreach (string filePath in fileList)
+            {
+                modulePath = Server.MapPath("DesktopModules/" + GetFolderName() + "/");
+
+                //open file
+                using (TextReader tr = new StreamReader(filePath))
+                {
+                    sourceCode = tr.ReadToEnd();
+                    tr.Close();
+                }
+
+                //replace tokens
+                sourceCode = sourceCode.Replace("_OWNER_", GetOwner());
+                sourceCode = sourceCode.Replace("_MODULE_", GetModule());
+                sourceCode = sourceCode.Replace("_CONTROL_", GetControl());
+                sourceCode = sourceCode.Replace("_YEAR_", DateTime.Now.Year.ToString());
+
+                //get filename 
+                fileName = Path.GetFileName(filePath);
+                fileName = fileName.Replace("template", GetControl());
+                fileName = fileName.Replace("_OWNER_", GetOwner());
+                fileName = fileName.Replace("_MODULE_", GetModule());
+                fileName = fileName.Replace("_CONTROL_", GetControl());
+
+                switch (Path.GetExtension(filePath).ToLower())
+                {
+                    case ".ascx":
+                        controlName = fileName;
+                        break;
+                    case ".vbhtml":
+                        controlName = fileName;
+                        break;
+                    case ".cshtml":
+                        controlName = fileName;
+                        break;
+                    case ".resx":
+                        modulePath = modulePath + "\\App_LocalResources\\";
+                        break;
+                    case ".vb":
+                        if (filePath.ToLower().IndexOf(".ascx") == -1)
+                        {
+                            modulePath = modulePath.Replace("DesktopModules", "App_Code");
+                        }
+                        break;
+                    case ".cs":
+                        if (filePath.ToLower().IndexOf(".ascx") == -1)
+                        {
+                            modulePath = modulePath.Replace("DesktopModules", "App_Code");
+                        }
+                        break;
+                    case ".js":
+                        modulePath = modulePath + "\\js\\";
+                        break;
+                }
+
+                //check if folder exists
+                if (!Directory.Exists(modulePath))
+                {
+                    Directory.CreateDirectory(modulePath);
+                }
+
+                //check if file already exists
+                if (!File.Exists(modulePath + fileName))
+                {
+                    //create file
+                    using (TextWriter tw = new StreamWriter(modulePath + fileName))
+                    {
+                        tw.WriteLine(sourceCode);
+                        tw.Close();
+                    }
+
+                    EventLogController.Instance.AddLog("Created File", modulePath + fileName, PortalSettings, -1, EventLogController.EventLogType.HOST_ALERT);
+
+                }
+
+            }
+
+            return controlName;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateModuleDefinition">
+          <declaration><![CDATA[private bool CreateModuleDefinition()]]></declaration>
+          <documentation>
+            <summary>
+ </summary>
+ <remarks>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="250" sc="9" el="383" ec="10">CreateModule.ascx.cs</location>
+            <body hash="acfa0e4992fc07a180b4807a7ed09fb6"><![CDATA[{
+            try
+            {
+                if (PackageController.Instance.GetExtensionPackage(Null.NullInteger, p => p.Name == GetClassName()) == null)
+                {
+                    var controlName = Null.NullString;
+
+                    //Create module folder
+                    CreateModuleFolder();
+
+                    //Create module control
+                    controlName = CreateModuleControl();
+                    if (controlName != "")
+                    {
+                        //Create package
+                        var objPackage = new PackageInfo();
+                        objPackage.Name = GetClassName();
+                        objPackage.FriendlyName = txtModule.Text;
+                        objPackage.Description = txtDescription.Text;
+                        objPackage.Version = new Version(1, 0, 0);
+                        objPackage.PackageType = "Module";
+                        objPackage.License = "";
+                        objPackage.Owner = txtOwner.Text;
+                        objPackage.Organization = txtOwner.Text;
+                        objPackage.FolderName = "DesktopModules/" + GetFolderName();
+                        objPackage.License = "The license for this package is not currently included within the installation file, please check with the vendor for full license details.";
+                        objPackage.ReleaseNotes = "This package has no Release Notes.";
+                        PackageController.Instance.SaveExtensionPackage(objPackage);
+
+                        //Create desktopmodule
+                        var objDesktopModule = new DesktopModuleInfo();
+                        objDesktopModule.DesktopModuleID = Null.NullInteger;
+                        objDesktopModule.ModuleName = GetClassName();
+                        objDesktopModule.FolderName = GetFolderName();
+                        objDesktopModule.FriendlyName = txtModule.Text;
+                        objDesktopModule.Description = txtDescription.Text;
+                        objDesktopModule.IsPremium = false;
+                        objDesktopModule.IsAdmin = false;
+                        objDesktopModule.Version = "01.00.00";
+                        objDesktopModule.BusinessControllerClass = "";
+                        objDesktopModule.CompatibleVersions = "";
+                        objDesktopModule.AdminPage = "";
+                        objDesktopModule.HostPage = "";
+                        objDesktopModule.Dependencies = "";
+                        objDesktopModule.Permissions = "";
+                        objDesktopModule.PackageID = objPackage.PackageID;
+						objDesktopModule.DesktopModuleID = DesktopModuleController.SaveDesktopModule(objDesktopModule, false, true);
+						objDesktopModule = DesktopModuleController.GetDesktopModule(objDesktopModule.DesktopModuleID, Null.NullInteger);
+
+                        //Add OwnerName to the DesktopModule taxonomy and associate it with this module
+                        var vocabularyId = -1;
+                        var termId = -1;
+                        var objTermController = DotNetNuke.Entities.Content.Common.Util.GetTermController();
+                        var objTerms = objTermController.GetTermsByVocabulary("Module_Categories");
+                        foreach (Term term in objTerms)
+                        {
+                            vocabularyId = term.VocabularyId;
+                            if (term.Name == txtOwner.Text)
+                            {
+                                termId = term.TermId;
+                            }
+                        }
+                        if (termId == -1)
+                        {
+                            termId = objTermController.AddTerm(new Term(vocabularyId) { Name = txtOwner.Text });
+                        }
+                        var objTerm = objTermController.GetTerm(termId);
+                        var objContentController = DotNetNuke.Entities.Content.Common.Util.GetContentController();
+                        var objContent = objContentController.GetContentItem(objDesktopModule.ContentItemId);
+                        objTermController.AddTermToContent(objTerm, objContent);
+
+                        //Add desktopmodule to all portals
+                        DesktopModuleController.AddDesktopModuleToPortals(objDesktopModule.DesktopModuleID);
+
+                        //Create module definition
+                        var objModuleDefinition = new ModuleDefinitionInfo();
+                        objModuleDefinition.ModuleDefID = Null.NullInteger;
+                        objModuleDefinition.DesktopModuleID = objDesktopModule.DesktopModuleID;
+                        // need core enhancement to have a unique DefinitionName  
+                        objModuleDefinition.FriendlyName = GetClassName();
+                        //objModuleDefinition.FriendlyName = txtModule.Text;
+                        //objModuleDefinition.DefinitionName = GetClassName();
+                        objModuleDefinition.DefaultCacheTime = 0;
+                        objModuleDefinition.ModuleDefID = ModuleDefinitionController.SaveModuleDefinition(objModuleDefinition, false, true);
+
+                        //Create modulecontrol
+                        var objModuleControl = new ModuleControlInfo();
+                        objModuleControl.ModuleControlID = Null.NullInteger;
+                        objModuleControl.ModuleDefID = objModuleDefinition.ModuleDefID;
+                        objModuleControl.ControlKey = "";
+                        objModuleControl.ControlSrc = "DesktopModules/" + GetFolderName() + "/" + controlName;
+                        objModuleControl.ControlTitle = "";
+                        objModuleControl.ControlType = SecurityAccessLevel.View;
+                        objModuleControl.HelpURL = "";
+                        objModuleControl.IconFile = "";
+                        objModuleControl.ViewOrder = 0;
+                        objModuleControl.SupportsPartialRendering = false;
+                        objModuleControl.SupportsPopUps = false;
+                        ModuleControlController.AddModuleControl(objModuleControl);
+
+                        //Update current module to reference new moduledefinition
+                        var objModule = ModuleController.Instance.GetModule(ModuleId, TabId, false);
+                        objModule.ModuleDefID = objModuleDefinition.ModuleDefID;
+                        objModule.ModuleTitle = txtModule.Text;
+
+                        //HACK - need core enhancement to be able to update ModuleDefID
+                        using (DotNetNuke.Data.DataProvider.Instance().ExecuteSQL(
+                            "UPDATE {databaseOwner}{objectQualifier}Modules SET ModuleDefID=" + objModule.ModuleDefID + " WHERE ModuleID=" + ModuleId))
+                        {
+                        }
+
+                        ModuleController.Instance.UpdateModule(objModule);
+
+                        return true;
+                    }
+                    else
+                    {
+                        DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("TemplateProblem.ErrorMessage", LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning);
+                        return false;
+                    }
+                }
+                else
+                {
+                    DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("AlreadyExists.ErrorMessage", LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning);
+                    return false;
+                }
+            }
+            catch (Exception exc)
+            {
+                Exceptions.LogException(exc);
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, exc.ToString(), ModuleMessage.ModuleMessageType.RedError);
+                return false;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateModuleFolder">
+          <declaration><![CDATA[private void CreateModuleFolder()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="110" sc="9" el="117" ec="10">CreateModule.ascx.cs</location>
+            <body hash="4aabbf0de257229742a51da781de4134"><![CDATA[{
+            var moduleFolderPath = Globals.ApplicationMapPath + "\\DesktopModules\\" + GetFolderName().Replace("/", "\\");
+
+            if (!Directory.Exists(moduleFolderPath))
+            {
+                Directory.CreateDirectory(moduleFolderPath);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetClassName">
+          <declaration><![CDATA[private string GetClassName()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="237" sc="9" el="242" ec="10">CreateModule.ascx.cs</location>
+            <body hash="5652606bf9da26cc8ad86cbf9f1dc354"><![CDATA[{
+            var strClass = Null.NullString;
+            strClass += txtOwner.Text + "." + txtModule.Text;
+            //return class and remove any spaces that might appear in class name
+            return strClass.Replace(" ", "");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetControl">
+          <declaration><![CDATA[private string GetControl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="224" sc="9" el="226" ec="10">CreateModule.ascx.cs</location>
+            <body hash="de089f19c8fcfa8719ac42ecc08ab08b"><![CDATA[{
+            return txtControl.Text.Replace(" ", "");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFolderName">
+          <declaration><![CDATA[private string GetFolderName()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="229" sc="9" el="234" ec="10">CreateModule.ascx.cs</location>
+            <body hash="639d1582798ef1f0ce20456397b01257"><![CDATA[{
+            var strFolder = Null.NullString;
+            strFolder += txtOwner.Text + "/" + txtModule.Text;
+            //return folder and remove any spaces that might appear in folder structure
+            return strFolder.Replace(" ", "");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetModule">
+          <declaration><![CDATA[private string GetModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="219" sc="9" el="221" ec="10">CreateModule.ascx.cs</location>
+            <body hash="d4b0f643693e3bd90b6df23aa627e8d4"><![CDATA[{
+            return txtModule.Text.Replace(" ", "");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetOwner">
+          <declaration><![CDATA[private string GetOwner()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="214" sc="9" el="216" ec="10">CreateModule.ascx.cs</location>
+            <body hash="15305e63b90bd8a31f31da01f8f63c3e"><![CDATA[{
+            return txtOwner.Text.Replace(" ", "");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadLanguages">
+          <declaration><![CDATA[private void LoadLanguages()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="9" el="83" ec="10">CreateModule.ascx.cs</location>
+            <body hash="7c5575be03a898aebedb5bf270ad2b96"><![CDATA[{
+            optLanguage.Items.Clear();
+			var moduleTemplatePath = Server.MapPath(ControlPath) + "Templates";
+            string[] folderList = Directory.GetDirectories(moduleTemplatePath);
+            foreach (string folderPath in folderList)
+            {
+                optLanguage.Items.Add(new ListItem(Path.GetFileName(folderPath)));
+            }
+            optLanguage.SelectedIndex = 0;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadModuleTemplates">
+          <declaration><![CDATA[private void LoadModuleTemplates()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="9" el="107" ec="10">CreateModule.ascx.cs</location>
+            <body hash="f1b91321872968ece5a1b9bd736e3f19"><![CDATA[{
+            cboTemplate.Items.Clear();
+			var moduleTemplatePath = Server.MapPath(ControlPath) + "Templates\\" + optLanguage.SelectedValue;
+            string[] folderList = Directory.GetDirectories(moduleTemplatePath);
+            foreach (string folderPath in folderList)
+            {
+                if (Path.GetFileName(folderPath).ToLower().StartsWith("module"))
+                {
+                    cboTemplate.Items.Add(new ListItem(Path.GetFileName(folderPath)));
+                }
+            }
+            cboTemplate.Items.Insert(0, new ListItem("<" + Localization.GetString("Not_Specified", Localization.SharedResourceFile) + ">", ""));
+            if (cboTemplate.Items.FindByText("Module - User Control") != null)
+            {
+                cboTemplate.Items.FindByText("Module - User Control").Selected = true;
+            }
+            else
+            {
+                cboTemplate.SelectedIndex = 0;
+            }
+            LoadReadMe();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadReadMe">
+          <declaration><![CDATA[private void LoadReadMe()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="9" el="71" ec="10">CreateModule.ascx.cs</location>
+            <body hash="ce4c39171e932753017cfcaed034dfc7"><![CDATA[{
+            var readMePath = Server.MapPath(ControlPath) + "Templates\\" + optLanguage.SelectedValue + "\\" + cboTemplate.SelectedItem.Value + "\\readme.txt";
+            if (File.Exists(readMePath))
+            {
+                var readMe = Null.NullString;
+                using (TextReader tr = new StreamReader(readMePath))
+                {
+                    readMe = tr.ReadToEnd();
+                    tr.Close();
+                    lblDescription.Text = readMe.Replace("\n", "<br/>");
+                }
+            }
+            else
+            {
+                lblDescription.Text = "";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="390" sc="9" el="396" ec="10">CreateModule.ascx.cs</location>
+            <body hash="ccea4d9b83c1abf8eeecf5a60a213ae9"><![CDATA[{
+            base.OnInit(e);
+
+            optLanguage.SelectedIndexChanged += optLanguage_SelectedIndexChanged;
+            cboTemplate.SelectedIndexChanged += cboTemplate_SelectedIndexChanged;
+            cmdCreate.Click += cmdCreate_Click;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="399" sc="9" el="420" ec="10">CreateModule.ascx.cs</location>
+            <body hash="bb5456f944d8a1675baeaee91331af23"><![CDATA[{
+            base.OnLoad(e);
+            if (UserInfo.IsSuperUser)
+            {
+                if (!Page.IsPostBack)
+                {
+                    Dictionary<string, string> HostSettings = HostController.Instance.GetSettingsDictionary();
+                    if (HostSettings.ContainsKey("Owner"))
+                    {
+                        txtOwner.Text = HostSettings["Owner"];
+                    }
+                    LoadLanguages();
+                    LoadModuleTemplates();
+                    txtControl.Text = "View";
+                }
+            }
+            else
+            {
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("SuperUser.ErrorMessage", LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning);
+                createForm.Visible = false;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="optLanguage_SelectedIndexChanged">
+          <declaration><![CDATA[protected void optLanguage_SelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="423" sc="9" el="425" ec="10">CreateModule.ascx.cs</location>
+            <body hash="d7cbcea9a6febe411403d917f4b00b40"><![CDATA[{
+            LoadModuleTemplates();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cboTemplate">
+          <declaration><![CDATA[protected DropDownList cboTemplate;]]></declaration>
+          <documentation>
+            <summary>
+ cboTemplate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdCreate">
+          <declaration><![CDATA[protected LinkButton cmdCreate;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCreate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="createForm">
+          <declaration><![CDATA[protected PlaceHolder createForm;]]></declaration>
+          <documentation>
+            <summary>
+ createForm control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblDescription">
+          <declaration><![CDATA[protected Label lblDescription;]]></declaration>
+          <documentation>
+            <summary>
+ lblDescription control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="optLanguage">
+          <declaration><![CDATA[protected RadioButtonList optLanguage;]]></declaration>
+          <documentation>
+            <summary>
+ optLanguage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plControl">
+          <declaration><![CDATA[protected UserControl plControl;]]></declaration>
+          <documentation>
+            <summary>
+ plControl control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plDescription">
+          <declaration><![CDATA[protected UserControl plDescription;]]></declaration>
+          <documentation>
+            <summary>
+ plDescription control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plLanguage">
+          <declaration><![CDATA[protected UserControl plLanguage;]]></declaration>
+          <documentation>
+            <summary>
+ plLanguage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plModule">
+          <declaration><![CDATA[protected UserControl plModule;]]></declaration>
+          <documentation>
+            <summary>
+ plModule control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plOwner">
+          <declaration><![CDATA[protected UserControl plOwner;]]></declaration>
+          <documentation>
+            <summary>
+ plOwner control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plTemplate">
+          <declaration><![CDATA[protected UserControl plTemplate;]]></declaration>
+          <documentation>
+            <summary>
+ plTemplate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtControl">
+          <declaration><![CDATA[protected TextBox txtControl;]]></declaration>
+          <documentation>
+            <summary>
+ txtControl control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtDescription">
+          <declaration><![CDATA[protected TextBox txtDescription;]]></declaration>
+          <documentation>
+            <summary>
+ txtDescription control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtModule">
+          <declaration><![CDATA[protected TextBox txtModule;]]></declaration>
+          <documentation>
+            <summary>
+ txtModule control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtOwner">
+          <declaration><![CDATA[protected TextBox txtOwner;]]></declaration>
+          <documentation>
+            <summary>
+ txtOwner control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ViewSource">
+      <declaration><![CDATA[public class ViewSource : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ViewSource()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindFiles">
+          <declaration><![CDATA[private void BindFiles(string controlSrc)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="82" sc="9" el="157" ec="10">viewsource.ascx.cs</location>
+            <body hash="79f314b569f9b0280d364f46abef7a5c"><![CDATA[{
+            string[] fileList;
+            cboFile.Items.Clear();
+
+            var objModuleControl = ModuleControlController.GetModuleControl(ModuleControlId);
+            var objModuleDefinition = ModuleDefinitionController.GetModuleDefinitionByID(objModuleControl.ModuleDefID);
+            var objDesktopModule = DesktopModuleController.GetDesktopModule(objModuleDefinition.DesktopModuleID, PortalId);
+
+            var relativePath = $"DesktopModules/{(objModuleControl.ControlSrc.EndsWith(".mvc") ? "MVC/" : string.Empty)}{objDesktopModule.FolderName}/";
+            var modulePath = Server.MapPath(relativePath);
+
+            if (Directory.Exists(modulePath))
+            {
+                //iterate through files in desktopmodules folder
+                fileList = Directory.GetFiles(modulePath, "*", SearchOption.AllDirectories);
+                foreach (string filePath in fileList)
+                {
+                    switch (Path.GetExtension(filePath).ToLower())
+                    {
+                        case ".ascx":
+                            cboFile.Items.Add(new ListItem(filePath.Substring(modulePath.Length), filePath));
+                            var resxPath = filePath.Replace(Path.GetFileName(filePath), "App_LocalResources\\" + Path.GetFileName(filePath)) + ".resx";
+                            if (File.Exists(resxPath))
+                            {
+                                cboFile.Items.Add(new ListItem(filePath.Substring(modulePath.Length), resxPath));
+                            }
+                            break;
+                        case ".vb":
+                        case ".cs":
+                        case ".vbhtml":
+                        case ".cshtml":
+                        case ".css":
+                        case ".js":
+                        case ".txt":
+                        case ".html":
+                        case ".xml":
+                        case ".xslt":
+                        case ".sql":
+                        case ".sqldataprovider":
+                            cboFile.Items.Add(new ListItem(filePath.Substring(modulePath.Length), filePath));
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("FolderNameInvalid", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+            }
+
+
+            //iterate through files in app_code folder
+            modulePath = Globals.ApplicationMapPath + "\\App_Code\\" + objDesktopModule.FolderName.Replace("/", "\\") + "\\";
+            if (Directory.Exists(modulePath))
+            {
+                fileList = Directory.GetFiles(modulePath);
+                foreach (string filePath in fileList)
+                {
+                    switch (Path.GetExtension(filePath).ToLower())
+                    {
+                        case ".vb":
+                            cboFile.Items.Add(new ListItem(Path.GetFileName(filePath), filePath));
+                            break;
+                        case ".cs":
+                            cboFile.Items.Add(new ListItem(Path.GetFileName(filePath), filePath));
+                            break;
+                    }
+                }
+            }
+
+            // select file
+            if (cboFile.Items.FindByValue(Globals.ApplicationMapPath + "\\" + controlSrc.Replace("/", "\\")) != null)
+            {
+                cboFile.Items.FindByValue(Globals.ApplicationMapPath + "\\" + controlSrc.Replace("/", "\\")).Selected = true;
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="cboTemplate_SelectedIndexChanged">
+          <declaration><![CDATA[protected void cboTemplate_SelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="510" sc="9" el="512" ec="10">viewsource.ascx.cs</location>
+            <body hash="2dd72f246077b62a9cd79a103aa48c4d"><![CDATA[{
+            LoadReadMe();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateModuleControl">
+          <declaration><![CDATA[private string CreateModuleControl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="313" sc="9" el="442" ec="10">viewsource.ascx.cs</location>
+            <body hash="b0e52c2122037b77a906bc4534f21542"><![CDATA[{
+            var objModuleControl = ModuleControlController.GetModuleControl(ModuleControlId);
+            var objModuleDefinition = ModuleDefinitionController.GetModuleDefinitionByID(objModuleControl.ModuleDefID);
+            var objDesktopModule = DesktopModuleController.GetDesktopModule(objModuleDefinition.DesktopModuleID, PortalId);
+            var objPackage = PackageController.Instance.GetExtensionPackage(Null.NullInteger, p => p.PackageID ==objDesktopModule.PackageID);
+
+			var moduleTemplatePath = Server.MapPath(ControlPath) + "Templates\\" + optLanguage.SelectedValue + "\\" + cboTemplate.SelectedValue + "\\";
+
+
+            EventLogController.Instance.AddLog("Processing Template Folder", moduleTemplatePath, PortalSettings, -1, EventLogController.EventLogType.HOST_ALERT);
+
+
+            var controlName = Null.NullString;
+            var fileName = Null.NullString;
+            var modulePath = Null.NullString;
+            var sourceCode = Null.NullString;
+
+            //iterate through files in template folder
+            string[] fileList = Directory.GetFiles(moduleTemplatePath);
+            foreach (string filePath in fileList)
+            {
+                modulePath = Server.MapPath("DesktopModules/" + objDesktopModule.FolderName + "/");
+
+                //open file
+                using (TextReader tr = new StreamReader(filePath))
+                {
+                    sourceCode = tr.ReadToEnd();
+                    tr.Close();
+                }
+
+                //replace tokens
+                var owner = objPackage.Owner.Replace(" ", "");
+                if (string.IsNullOrEmpty(owner))
+                {
+                    owner = "DNN";
+                }
+                sourceCode = sourceCode.Replace("_OWNER_", owner);
+                sourceCode = sourceCode.Replace("_MODULE_", objDesktopModule.FriendlyName.Replace(" ", ""));
+                sourceCode = sourceCode.Replace("_CONTROL_", GetControl());
+                sourceCode = sourceCode.Replace("_YEAR_", DateTime.Now.Year.ToString());
+
+                //get filename 
+                fileName = Path.GetFileName(filePath);
+                fileName = fileName.Replace("template", GetControl());
+                fileName = fileName.Replace("_OWNER_", objPackage.Owner.Replace(" ", ""));
+                fileName = fileName.Replace("_MODULE_", objDesktopModule.FriendlyName.Replace(" ", ""));
+                fileName = fileName.Replace("_CONTROL_", GetControl());
+
+                switch (Path.GetExtension(filePath).ToLower())
+                {
+                    case ".ascx":
+                        controlName = fileName;
+                        break;
+                    case ".vbhtml":
+                        controlName = fileName;
+                        break;
+                    case ".cshtml":
+                        controlName = fileName;
+                        break;
+                    case ".resx":
+                        modulePath = modulePath + "\\App_LocalResources\\";
+                        break;
+                    case ".vb":
+                        if (filePath.ToLower().IndexOf(".ascx") == -1)
+                        {
+                            modulePath = modulePath.Replace("DesktopModules", "App_Code");
+                        }
+                        break;
+                    case ".cs":
+                        if (filePath.ToLower().IndexOf(".ascx") == -1)
+                        {
+                            modulePath = modulePath.Replace("DesktopModules", "App_Code");
+                        }
+                        break;
+                    case ".js":
+                        modulePath = modulePath + "\\js\\";
+                        break;
+                }
+
+                //check if folder exists
+                if (!Directory.Exists(modulePath))
+                {
+                    Directory.CreateDirectory(modulePath);
+                }
+
+                //check if file already exists
+                if (!File.Exists(modulePath + fileName))
+                {
+                    //create file
+                    using (TextWriter tw = new StreamWriter(modulePath + fileName))
+                    {
+                        tw.WriteLine(sourceCode);
+                        tw.Close();
+                    }
+
+                    EventLogController.Instance.AddLog("Created File", modulePath + fileName, PortalSettings, -1, EventLogController.EventLogType.HOST_ALERT);
+
+                }
+            }
+
+            //Create module control
+            if (controlName != Null.NullString)
+            {
+                try
+                {
+                    objModuleControl = new ModuleControlInfo();
+                    objModuleControl.ModuleControlID = Null.NullInteger;
+                    objModuleControl.ModuleDefID = objModuleDefinition.ModuleDefID;
+                    objModuleControl.ControlKey = GetControl();
+                    objModuleControl.ControlSrc = "DesktopModules/" + objDesktopModule.FolderName + "/" + controlName;
+                    objModuleControl.ControlTitle = txtControl.Text;
+                    objModuleControl.ControlType = (SecurityAccessLevel)Enum.Parse(typeof(SecurityAccessLevel), cboType.SelectedItem.Value);
+                    objModuleControl.HelpURL = "";
+                    objModuleControl.IconFile = "";
+                    objModuleControl.ViewOrder = 0;
+                    objModuleControl.SupportsPartialRendering = true;
+                    objModuleControl.SupportsPopUps = true;
+                    ModuleControlController.AddModuleControl(objModuleControl);
+                    controlName = objModuleControl.ControlSrc;
+                }
+                catch
+                {
+                    //Suppress error
+                }
+            }
+
+            DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ControlCreated", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+
+            return controlName;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetControl">
+          <declaration><![CDATA[private string GetControl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="445" sc="9" el="447" ec="10">viewsource.ascx.cs</location>
+            <body hash="de089f19c8fcfa8719ac42ecc08ab08b"><![CDATA[{
+            return txtControl.Text.Replace(" ", "");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadFile">
+          <declaration><![CDATA[private void LoadFile()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="160" sc="9" el="167" ec="10">viewsource.ascx.cs</location>
+            <body hash="5e580aa4f1fde0e4d8bf7b3c7118a106"><![CDATA[{
+            lblPath.Text = cboFile.SelectedValue;
+            var objStreamReader = File.OpenText(lblPath.Text);
+            txtSource.Text = objStreamReader.ReadToEnd();
+            objStreamReader.Close();
+
+            SetFileType(lblPath.Text);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadLanguages">
+          <declaration><![CDATA[private void LoadLanguages()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="218" sc="9" el="247" ec="10">viewsource.ascx.cs</location>
+            <body hash="058fef1efdcda6ee13d8cfb17ff83211"><![CDATA[{
+            optLanguage.Items.Clear();
+			var moduleTemplatePath = Server.MapPath(ControlPath) + "Templates";
+            string[] folderList = Directory.GetDirectories(moduleTemplatePath);
+            foreach (string folderPath in folderList)
+            {
+                optLanguage.Items.Add(new ListItem(Path.GetFileName(folderPath)));
+            }
+
+            var language = "";
+            foreach (ListItem objFile in cboFile.Items)
+            {
+                if (objFile.Text.EndsWith(".vb"))
+                {
+                    language = "VB";
+                }
+                if (objFile.Text.EndsWith(".cs"))
+                {
+                    language = "C#";
+                }
+            }
+            if (language == "")
+            {
+                optLanguage.SelectedIndex = 0;
+            }
+            else
+            {
+                optLanguage.Items.FindByValue(language).Selected = true;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadModuleTemplates">
+          <declaration><![CDATA[private void LoadModuleTemplates()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="250" sc="9" el="259" ec="10">viewsource.ascx.cs</location>
+            <body hash="5305400da8844e524b4ed863611a7fb6"><![CDATA[{
+            cboTemplate.Items.Clear();
+			var moduleTemplatePath = Server.MapPath(ControlPath) + "Templates\\" + optLanguage.SelectedValue;
+            string[] folderList = Directory.GetDirectories(moduleTemplatePath);
+            foreach (string folderPath in folderList)
+            {
+                cboTemplate.Items.Add(new ListItem(Path.GetFileName(folderPath)));
+            }
+            cboTemplate.Items.Insert(0, new ListItem("<" + Localization.GetString("Not_Specified", Localization.SharedResourceFile) + ">", ""));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadReadMe">
+          <declaration><![CDATA[private void LoadReadMe()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="262" sc="9" el="310" ec="10">viewsource.ascx.cs</location>
+            <body hash="73fa8c53ad8d10a208d9f3a1c6c93181"><![CDATA[{
+			var templatePath = Server.MapPath(ControlPath) + "Templates\\" + optLanguage.SelectedValue + "\\" + cboTemplate.SelectedItem.Value;
+            if (File.Exists(templatePath + "\\readme.txt"))
+            {
+                var readMe = Null.NullString;
+                using (TextReader tr = new StreamReader(templatePath + "\\readme.txt"))
+                {
+                    readMe = tr.ReadToEnd();
+                    tr.Close();
+                }
+                lblDescription.Text = readMe.Replace("\n", "<br/>");
+            }
+            else
+            {
+                lblDescription.Text = "";
+            }
+
+            //Determine if Control Name is required
+            var controlNameRequired = false;
+            var controlName = "<Not Required>";
+            string[] fileList = Directory.GetFiles(templatePath);
+            foreach (string filePath in fileList)
+            {
+                if (Path.GetFileName(filePath).ToLower().IndexOf("template") > -1)
+                {
+                    controlNameRequired = true;
+                    controlName = "Edit";
+                }
+                else
+                {
+                    if (Path.GetFileName(filePath).EndsWith(".ascx"))
+                    {
+                        controlName = Path.GetFileNameWithoutExtension(filePath);
+                    }
+                }
+            }
+            txtControl.Text = controlName;
+            txtControl.Enabled = controlNameRequired;
+            if (txtControl.Enabled)
+            {
+                if (!cboTemplate.SelectedItem.Value.ToLower().StartsWith("module"))
+                {
+                    var objModuleControl = ModuleControlController.GetModuleControl(ModuleControlId);
+                    var objModuleDefinition = ModuleDefinitionController.GetModuleDefinitionByID(objModuleControl.ModuleDefID);
+                    var objDesktopModule = DesktopModuleController.GetDesktopModule(objModuleDefinition.DesktopModuleID, PortalId);
+                    txtControl.Text = objDesktopModule.FriendlyName;
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnConfigureClick">
+          <declaration><![CDATA[private void OnConfigureClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="529" sc="9" el="535" ec="10">viewsource.ascx.cs</location>
+            <body hash="52cc164ffef00be50e4f42377989298b"><![CDATA[{
+            var objModuleControl = ModuleControlController.GetModuleControl(ModuleControlId);
+            var objModuleDefinition = ModuleDefinitionController.GetModuleDefinitionByID(objModuleControl.ModuleDefID);
+            var objDesktopModule = DesktopModuleController.GetDesktopModule(objModuleDefinition.DesktopModuleID, PortalId);
+            ModuleInfo objModule = ModuleController.Instance.GetModuleByDefinition(-1, "Extensions");
+            Response.Redirect(Globals.NavigateURL(objModule.TabID, "Edit", "mid=" + objModule.ModuleID.ToString(), "PackageID=" + objDesktopModule.PackageID.ToString()) + "?popUp=true", true);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnCreateClick">
+          <declaration><![CDATA[private void OnCreateClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="538" sc="9" el="549" ec="10">viewsource.ascx.cs</location>
+            <body hash="0ea918a2f683ea93eec30611d6394423"><![CDATA[{
+            if (cboTemplate.SelectedIndex > 0 && txtControl.Text != "")
+            {
+                var controlSrc = CreateModuleControl();
+                BindFiles(controlSrc);
+                LoadFile();
+            }
+            else
+            {
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("AddControlError", LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnFileIndexChanged">
+          <declaration><![CDATA[protected void OnFileIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="500" sc="9" el="502" ec="10">viewsource.ascx.cs</location>
+            <body hash="c1904f679745abf8a2bbbd409fca8dff"><![CDATA[{
+            LoadFile();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLanguageSelectedIndexChanged">
+          <declaration><![CDATA[protected void OnLanguageSelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="505" sc="9" el="507" ec="10">viewsource.ascx.cs</location>
+            <body hash="d7cbcea9a6febe411403d917f4b00b40"><![CDATA[{
+            LoadModuleTemplates();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="455" sc="9" el="497" ec="10">viewsource.ascx.cs</location>
+            <body hash="3464662c617d5856b435d41b15d8a63d"><![CDATA[{
+            base.OnLoad(e);
+            ServicesFramework.Instance.RequestAjaxAntiForgerySupport();
+
+            cboFile.SelectedIndexChanged += OnFileIndexChanged;
+            optLanguage.SelectedIndexChanged += OnLanguageSelectedIndexChanged;
+            cboTemplate.SelectedIndexChanged += cboTemplate_SelectedIndexChanged;
+            cmdUpdate.Click += OnUpdateClick;
+            cmdPackage.Click += OnPackageClick;
+            cmdConfigure.Click += OnConfigureClick;
+            cmdCreate.Click += OnCreateClick;
+
+            if (Page.IsPostBack == false)
+            {
+                cmdCancel1.NavigateUrl = ReturnURL;
+                cmdCancel2.NavigateUrl = ReturnURL;
+
+                var objModuleControl = ModuleControlController.GetModuleControl(ModuleControlId);
+                if (objModuleControl != null)
+                {
+                    BindFiles(objModuleControl.ControlSrc);
+                    LoadFile();
+                }
+
+                if (Request.UrlReferrer != null)
+                {
+                    ViewState["UrlReferrer"] = Convert.ToString(Request.UrlReferrer);
+                }
+                else
+                {
+                    ViewState["UrlReferrer"] = "";
+                }
+
+                LoadLanguages();
+                LoadModuleTemplates();
+                if (cboTemplate.Items.FindByText("Module - User Control") != null)
+                {
+                    cboTemplate.Items.FindByText("Module - User Control").Selected = true;
+                }
+                LoadReadMe();
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnPackageClick">
+          <declaration><![CDATA[private void OnPackageClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="520" sc="9" el="526" ec="10">viewsource.ascx.cs</location>
+            <body hash="1d832f0972ee6f48c9a389cd09acd05d"><![CDATA[{
+            var objModuleControl = ModuleControlController.GetModuleControl(ModuleControlId);
+            var objModuleDefinition = ModuleDefinitionController.GetModuleDefinitionByID(objModuleControl.ModuleDefID);
+            var objDesktopModule = DesktopModuleController.GetDesktopModule(objModuleDefinition.DesktopModuleID, PortalId);
+            ModuleInfo objModule = ModuleController.Instance.GetModuleByDefinition(-1, "Extensions");
+            Response.Redirect(Globals.NavigateURL(objModule.TabID, "PackageWriter", "rtab=" + TabId.ToString(), "packageId=" + objDesktopModule.PackageID.ToString(), "mid=" + objModule.ModuleID.ToString()) + "?popUp=true", true);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnUpdateClick">
+          <declaration><![CDATA[private void OnUpdateClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="515" sc="9" el="517" ec="10">viewsource.ascx.cs</location>
+            <body hash="f99be34f72b7a1e0374cd525b1816bf8"><![CDATA[{
+            SaveFile();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveFile">
+          <declaration><![CDATA[private void SaveFile()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="202" sc="9" el="215" ec="10">viewsource.ascx.cs</location>
+            <body hash="abd2db171ad8cf3c523eef978b3e047c"><![CDATA[{
+            try
+            {
+                File.SetAttributes(cboFile.SelectedValue, FileAttributes.Normal);
+                var objStream = File.CreateText(cboFile.SelectedValue);
+                objStream.WriteLine(txtSource.Text);
+                objStream.Close();
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ControlUpdated", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetFileType">
+          <declaration><![CDATA[private void SetFileType(string filePath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="170" sc="9" el="199" ec="10">viewsource.ascx.cs</location>
+            <body hash="0e5fe9c7ae7cc8382fcf0bcc9e19204e"><![CDATA[{
+            string mimeType;
+            switch (Path.GetExtension(filePath).ToLowerInvariant())
+            {
+                case ".vb":
+                    mimeType = "text/x-vb";
+                    break;
+                case ".cs":
+                    mimeType = "text/x-csharp";
+                    break;
+                case ".css":
+                    mimeType = "text/css";
+                    break;
+                case ".js":
+                    mimeType = "text/javascript";
+                    break;
+                case ".xml":
+                case ".xslt":
+                    mimeType = "application/xml";
+                    break;
+                case ".sql":
+                case ".sqldataprovider":
+                    mimeType = "text/x-sql";
+                    break;
+                default:
+                    mimeType = "text/html";
+                    break;
+            }
+            DotNetNuke.UI.Utilities.ClientAPI.RegisterClientVariable(Page, "mimeType", mimeType, true);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cboFile">
+          <declaration><![CDATA[protected DropDownList cboFile;]]></declaration>
+          <documentation>
+            <summary>
+ cboFile control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboTemplate">
+          <declaration><![CDATA[protected DropDownList cboTemplate;]]></declaration>
+          <documentation>
+            <summary>
+ cboTemplate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboType">
+          <declaration><![CDATA[protected RadioButtonList cboType;]]></declaration>
+          <documentation>
+            <summary>
+ cboType control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdCancel1">
+          <declaration><![CDATA[protected HyperLink cmdCancel1;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCancel1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdCancel2">
+          <declaration><![CDATA[protected HyperLink cmdCancel2;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCancel2 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdConfigure">
+          <declaration><![CDATA[protected LinkButton cmdConfigure;]]></declaration>
+          <documentation>
+            <summary>
+ cmdConfigure control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdCreate">
+          <declaration><![CDATA[protected LinkButton cmdCreate;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCreate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdPackage">
+          <declaration><![CDATA[protected LinkButton cmdPackage;]]></declaration>
+          <documentation>
+            <summary>
+ cmdPackage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdUpdate">
+          <declaration><![CDATA[protected LinkButton cmdUpdate;]]></declaration>
+          <documentation>
+            <summary>
+ cmdUpdate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblDescription">
+          <declaration><![CDATA[protected Label lblDescription;]]></declaration>
+          <documentation>
+            <summary>
+ lblDescription control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblPath">
+          <declaration><![CDATA[protected Label lblPath;]]></declaration>
+          <documentation>
+            <summary>
+ lblPath control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="optLanguage">
+          <declaration><![CDATA[protected RadioButtonList optLanguage;]]></declaration>
+          <documentation>
+            <summary>
+ optLanguage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plControl">
+          <declaration><![CDATA[protected UserControl plControl;]]></declaration>
+          <documentation>
+            <summary>
+ plControl control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plFile">
+          <declaration><![CDATA[protected UserControl plFile;]]></declaration>
+          <documentation>
+            <summary>
+ plFile control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plLanguage">
+          <declaration><![CDATA[protected UserControl plLanguage;]]></declaration>
+          <documentation>
+            <summary>
+ plLanguage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plSource">
+          <declaration><![CDATA[protected UserControl plSource;]]></declaration>
+          <documentation>
+            <summary>
+ plSource control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plTemplate">
+          <declaration><![CDATA[protected UserControl plTemplate;]]></declaration>
+          <documentation>
+            <summary>
+ plTemplate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plType">
+          <declaration><![CDATA[protected UserControl plType;]]></declaration>
+          <documentation>
+            <summary>
+ plType control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtControl">
+          <declaration><![CDATA[protected TextBox txtControl;]]></declaration>
+          <documentation>
+            <summary>
+ txtControl control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtSource">
+          <declaration><![CDATA[protected TextBox txtSource;]]></declaration>
+          <documentation>
+            <summary>
+ txtSource control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ModuleControlId">
+          <declaration><![CDATA[protected int ModuleControlId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="13" el="66" ec="14">viewsource.ascx.cs</location>
+            <body hash="b2f0e454edcdb8708604cbb8368e4cfd"><![CDATA[{
+                var moduleControlId = Null.NullInteger;
+                if ((Request.QueryString["ctlid"] != null))
+                {
+                    moduleControlId = Int32.Parse(Request.QueryString["ctlid"]);
+                }
+                return moduleControlId;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ReturnURL">
+          <declaration><![CDATA[private string ReturnURL]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="13" el="74" ec="14">viewsource.ascx.cs</location>
+            <body hash="886024cc288178771d5df7a287e8cdef"><![CDATA[{
+                return UrlUtils.ValidReturnUrl(Request.Params["ReturnURL"]) ?? Globals.NavigateURL();
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.ModuleCreator.Components">
+    <class name="BusinessController">
+      <declaration><![CDATA[public class BusinessController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="55" ec="10">Components\BusinessController.cs</location>
+            <body hash="01bc5f8bd1d974a31f0b95552d1bdb1d"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "08.00.00":
+
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

@@ -1,0 +1,991 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Modules.CoreMessaging.dll" version="07.00.02" generated="2017-06-18 23:42:09Z" generationTime="2.0524743">
+  <namespace name="DotNetNuke.Modules.CoreMessaging">
+    <class name="View">
+      <declaration><![CDATA[public class View : PortalModuleBase]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+ The View class displays the content
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public View()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddIe7StyleSheet">
+          <declaration><![CDATA[private void AddIe7StyleSheet()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="111" sc="9" el="118" ec="10">View.ascx.cs</location>
+            <body hash="c30c4061e5e913e8822c126dad54b385"><![CDATA[{
+            var browser = Request.Browser;
+            if (browser.Type == "IE" || browser.MajorVersion < 8)
+            {
+                const string cssLink = "<link href=\"/ie-messages.css\" rel=\"stylesheet\" type=\"text/css\" />";
+                Page.Header.Controls.Add(new LiteralControl(cssLink));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="9" el="104" ec="10">View.ascx.cs</location>
+            <body hash="9da77afb3d9288ff55fc0889d0dc7f6a"><![CDATA[{
+            if (!Request.IsAuthenticated)
+            {
+                // Do not redirect but hide the content of the module and display a message.
+                CoreMessagingContainer.Visible = false;
+                UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ContentNotAvailable", LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning);
+                return;
+            }
+            if (UserId != ProfileUserId && (PortalSettings.ActiveTab.ParentId == PortalSettings.UserTabId || TabId == PortalSettings.UserTabId))
+            {
+                Response.Redirect(Globals.NavigateURL(ModuleContext.PortalSettings.ActiveTab.TabID, "", "UserId=" + ModuleContext.PortalSettings.UserId.ToString(CultureInfo.InvariantCulture)));
+            }
+            
+            if (IsEditable && PermissionsNotProperlySet())
+            {
+                UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("PermissionsNotProperlySet", LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning);
+            }
+
+            ServicesFramework.Instance.RequestAjaxScriptSupport();
+            ServicesFramework.Instance.RequestAjaxAntiForgerySupport();
+            jQuery.RequestDnnPluginsRegistration();
+            ClientResourceManager.RegisterScript(Page, "~/DesktopModules/CoreMessaging/Scripts/CoreMessaging.js");
+            jQuery.RequestDnnPluginsRegistration();
+            AddIe7StyleSheet();
+            base.OnInit(e);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PermissionPredicate">
+          <declaration><![CDATA[private static bool PermissionPredicate(PermissionInfoBase p)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="138" sc="9" el="140" ec="10">View.ascx.cs</location>
+            <body hash="bcc5123f2e95cd9dc4453be8693fb844"><![CDATA[{
+            return p.PermissionKey == "VIEW" && p.AllowAccess && (p.RoleName == Globals.glbRoleAllUsersName || p.RoleName == Globals.glbRoleUnauthUserName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PermissionsNotProperlySet">
+          <declaration><![CDATA[private bool PermissionsNotProperlySet()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="121" sc="9" el="135" ec="10">View.ascx.cs</location>
+            <body hash="811a83c483f13a23f8301f3549d04e48"><![CDATA[{
+            List<PermissionInfoBase> permissions;
+
+            if (ModuleConfiguration.InheritViewPermissions)
+            {
+                var tabPermissionCollection = TabPermissionController.GetTabPermissions(TabId, PortalId);
+                permissions = tabPermissionCollection.ToList();
+            }
+            else
+            {
+                permissions = ModuleConfiguration.ModulePermissions.ToList();
+            }
+
+            return permissions.Find(PermissionPredicate) != null;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="coreMessaging">
+          <declaration><![CDATA[protected HtmlGenericControl coreMessaging;]]></declaration>
+          <documentation>
+            <summary>
+ coreMessaging control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="CoreMessagingContainer">
+          <declaration><![CDATA[protected Panel CoreMessagingContainer;]]></declaration>
+          <documentation>
+            <summary>
+ CoreMessagingContainer control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnCssInclude1">
+          <declaration><![CDATA[protected DnnCssInclude DnnCssInclude1;]]></declaration>
+          <documentation>
+            <summary>
+ DnnCssInclude1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnCssInclude2">
+          <declaration><![CDATA[protected DnnCssInclude DnnCssInclude2;]]></declaration>
+          <documentation>
+            <summary>
+ DnnCssInclude2 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnCssInclude3">
+          <declaration><![CDATA[protected DnnCssInclude DnnCssInclude3;]]></declaration>
+          <documentation>
+            <summary>
+ DnnCssInclude3 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude1">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude1;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude2">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude2;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude2 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude3">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude3;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude3 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude4">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude4;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude4 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude5">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude5;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude5 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ProfileUserId">
+          <declaration><![CDATA[public int ProfileUserId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="13" el="62" ec="14">View.ascx.cs</location>
+            <body hash="b54f995526c72617c67516af9667b32c"><![CDATA[{
+                var userId = Null.NullInteger;
+                if (!string.IsNullOrEmpty(Request.Params["UserId"]))
+                {
+                    userId = Int32.Parse(Request.Params["UserId"]);
+                }
+                return userId;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ShowAttachments">
+          <declaration><![CDATA[public string ShowAttachments]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="13" el="71" ec="14">View.ascx.cs</location>
+            <body hash="a7d4ca3223aa4bdc8b710bf4688f7263"><![CDATA[{
+                var allowAttachments = PortalController.GetPortalSetting("MessagingAllowAttachments", PortalId, "NO");
+                return allowAttachments == "NO" ? "false" : "true";
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.CoreMessaging.Components">
+    <class name="CoreMessagingBusinessController">
+      <declaration><![CDATA[public class CoreMessagingBusinessController : IUpgradeable]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CoreMessagingBusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static CoreMessagingBusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="6" el="39" ec="118">Components\CoreMessagingBusinessController.cs</location>
+            <body hash="df0a3accb70c27711dd15f5fa1126749"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (CoreMessagingBusinessController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string Version)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="92" ec="10">Components\CoreMessagingBusinessController.cs</location>
+            <body hash="5f4159deaeb256ab971646562709e0f6"><![CDATA[{
+            try
+            {
+                switch (Version)
+                {
+                    case "06.02.00":
+                        var portalController = new PortalController();
+                        var moduleController = new ModuleController();
+                        var tabController = new TabController();
+
+                        var moduleDefinition = ModuleDefinitionController.GetModuleDefinitionByFriendlyName("Message Center");
+                        if (moduleDefinition != null)
+                        {
+                            var portals = portalController.GetPortals();
+                            foreach (PortalInfo portal in portals)
+                            {
+                                if (portal.UserTabId > Null.NullInteger)
+                                {
+                                    //Find TabInfo
+                                    var tab = tabController.GetTab(portal.UserTabId, portal.PortalID, true);
+                                    if (tab != null)
+                                    {
+                                        foreach (var module in moduleController.GetTabModules(portal.UserTabId).Values)
+                                        {
+                                            if (module.DesktopModule.FriendlyName == "Messaging")
+                                            {
+                                                //Delete the Module from the Modules list
+                                                moduleController.DeleteTabModule(module.TabID, module.ModuleID, false);
+
+                                                //Add new module to the page
+                                                Upgrade.AddModuleToPage(tab, moduleDefinition.ModuleDefID, "Message Center", "", true);
+
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(CoreMessagingBusinessController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.CoreMessaging.Services">
+    <class name="CoreMessagingRouteMapper">
+      <declaration><![CDATA[public sealed class CoreMessagingRouteMapper : IServiceRouteMapper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CoreMessagingRouteMapper()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="RegisterRoutes">
+          <declaration><![CDATA[public void RegisterRoutes(IMapRoute mapRouteManager)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="9" el="31" ec="10">Services\CoreMessagingRouteMapper.cs</location>
+            <body hash="efdfb7dc18f471cbd115a004c599482e"><![CDATA[{
+            mapRouteManager.MapHttpRoute("CoreMessaging", "default", "{controller}/{action}", new[] { "DotNetNuke.Modules.CoreMessaging.Services" });
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="MessagingServiceController">
+      <declaration><![CDATA[public class MessagingServiceController : DnnApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MessagingServiceController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static MessagingServiceController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="6" el="46" ec="113">Services\MessagingServiceController.cs</location>
+            <body hash="ed4c90e446dd297894db67b2ea5a9643"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (MessagingServiceController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Archived">
+          <declaration><![CDATA[public HttpResponseMessage Archived(int afterMessageId, int numberOfRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="90" sc="9" el="105" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="3292fe405571d018df8855e424d1362f"><![CDATA[{
+            try
+            {
+                var messageBoxView = InternalMessagingController.Instance.GetArchivedMessages(UserInfo.UserID, afterMessageId, numberOfRecords);
+                var portalId = PortalController.GetEffectivePortalId(UserController.GetCurrentUserInfo().PortalID);
+                messageBoxView.TotalNewThreads = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId);
+                messageBoxView.TotalConversations = InternalMessagingController.Instance.CountArchivedMessages(UserInfo.UserID, portalId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, messageBoxView);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CountNotifications">
+          <declaration><![CDATA[public HttpResponseMessage CountNotifications()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="285" sc="9" el="297" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="c0a8f254a20e01b678c404a56cb38f85"><![CDATA[{
+            try
+            {
+                var portalId = PortalController.GetEffectivePortalId(UserController.GetCurrentUserInfo().PortalID);
+                int notifications = NotificationsController.Instance.CountNotifications(UserInfo.UserID, portalId);
+                return Request.CreateResponse(HttpStatusCode.OK, notifications);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CountUnreadMessages">
+          <declaration><![CDATA[public HttpResponseMessage CountUnreadMessages()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="301" sc="9" el="313" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="027eaf7adc19f0a2cced83b18dfd0b73"><![CDATA[{
+            try
+            {
+                var portalId = PortalController.GetEffectivePortalId(UserController.GetCurrentUserInfo().PortalID);
+                var unreadMessages = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId);
+                return Request.CreateResponse(HttpStatusCode.OK, unreadMessages);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTotals">
+          <declaration><![CDATA[public HttpResponseMessage GetTotals()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="317" sc="9" el="334" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="5e4a9d4b75163d89ffa382057067976e"><![CDATA[{
+            try
+            {
+                var portalId = PortalController.GetEffectivePortalId(UserController.GetCurrentUserInfo().PortalID);
+                var totalsViewModel = new TotalsViewModel
+                {
+                    TotalUnreadMessages = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId),
+                    TotalNotifications = NotificationsController.Instance.CountNotifications(UserInfo.UserID, portalId)
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, totalsViewModel);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Inbox">
+          <declaration><![CDATA[public HttpResponseMessage Inbox(int afterMessageId, int numberOfRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="67" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="4e0f1b714cbf47215427ee5042757a2f"><![CDATA[{
+            try
+            {
+                var messageBoxView = InternalMessagingController.Instance.GetRecentInbox(UserInfo.UserID, afterMessageId, numberOfRecords);
+                var portalId = PortalController.GetEffectivePortalId(UserController.GetCurrentUserInfo().PortalID);
+
+                messageBoxView.TotalNewThreads = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId);
+                messageBoxView.TotalConversations = InternalMessagingController.Instance.CountConversations(UserInfo.UserID, portalId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, messageBoxView);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LocalizeActionString">
+          <declaration><![CDATA[private string LocalizeActionString(string key, int desktopModuleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="356" sc="9" el="378" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="8494e791d8c31bd5cbe655f4f6259639"><![CDATA[{
+            if (string.IsNullOrEmpty(key)) return "";
+
+            string actionString;
+
+            if (desktopModuleId > 0)
+            {
+                var desktopModule = DesktopModuleController.GetDesktopModule(desktopModuleId, PortalSettings.PortalId);
+
+                var resourceFile = string.Format("~/DesktopModules/{0}/{1}/{2}",
+                    desktopModule.FolderName.Replace("\\", "/"),
+                    Localization.LocalResourceDirectory,
+                    Localization.LocalSharedResourceFile);
+
+                actionString = Localization.GetString(key, resourceFile);
+            }
+            else
+            {
+                actionString = Localization.GetString(key);
+            }
+
+            return string.IsNullOrEmpty(actionString) ? key : actionString;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MarkArchived">
+          <declaration><![CDATA[public HttpResponseMessage MarkArchived(MessagingServiceController.ConversationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="155" sc="9" el="166" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="e52af28694da79f40db4c9af584f707f"><![CDATA[{
+            try
+            {
+                InternalMessagingController.Instance.MarkArchived(postData.ConversationId, UserInfo.UserID);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MarkRead">
+          <declaration><![CDATA[public HttpResponseMessage MarkRead(MessagingServiceController.ConversationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="187" sc="9" el="198" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="cbee45f45934ae75420d22c26fe7fe41"><![CDATA[{
+            try
+            {
+                InternalMessagingController.Instance.MarkRead(postData.ConversationId, UserInfo.UserID);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MarkUnArchived">
+          <declaration><![CDATA[public HttpResponseMessage MarkUnArchived(MessagingServiceController.ConversationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="171" sc="9" el="182" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="1de282267cc306d7eac89cdd08d1e0f8"><![CDATA[{
+            try
+            {
+                InternalMessagingController.Instance.MarkUnArchived(postData.ConversationId, UserInfo.UserID);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MarkUnRead">
+          <declaration><![CDATA[public HttpResponseMessage MarkUnRead(MessagingServiceController.ConversationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="203" sc="9" el="214" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="c51a5e7c20f3aa1a4aa837e9653b45a6"><![CDATA[{
+            try
+            {
+                InternalMessagingController.Instance.MarkUnRead(postData.ConversationId, UserInfo.UserID);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Notifications">
+          <declaration><![CDATA[public HttpResponseMessage Notifications(int afterNotificationId, int numberOfRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="218" sc="9" el="281" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="e4d9c8e2d8d3df92b6c497f7d99a6f57"><![CDATA[{
+            try
+            {
+                var portalId = PortalController.GetEffectivePortalId(UserController.GetCurrentUserInfo().PortalID);
+                var notificationsDomainModel = NotificationsController.Instance.GetNotifications(UserInfo.UserID, portalId, afterNotificationId, numberOfRecords);
+
+                var notificationsViewModel = new NotificationsViewModel
+                {
+                    TotalNotifications = NotificationsController.Instance.CountNotifications(UserInfo.UserID, portalId),
+                    Notifications = new List<NotificationViewModel>(notificationsDomainModel.Count)
+                };
+
+                foreach (var notification in notificationsDomainModel)
+                {
+                    var notificationViewModel = new NotificationViewModel
+                    {
+                        NotificationId = notification.NotificationID,
+                        Subject = notification.Subject,
+                        From = notification.From,
+                        Body = notification.Body,
+                        DisplayDate = Common.Utilities.DateUtils.CalculateDateForDisplay(notification.CreatedOnDate),
+                        SenderAvatar = string.Format(Globals.UserProfilePicFormattedUrl(), notification.SenderUserID, 32, 32),
+                        SenderProfileUrl = Globals.UserProfileURL(notification.SenderUserID),
+                        Actions = new List<NotificationActionViewModel>()
+                    };
+
+                    var notificationType = NotificationsController.Instance.GetNotificationType(notification.NotificationTypeID);
+                    var notificationTypeActions = NotificationsController.Instance.GetNotificationTypeActions(notification.NotificationTypeID);
+
+                    foreach (var notificationTypeAction in notificationTypeActions)
+                    {
+                        var notificationActionViewModel = new NotificationActionViewModel
+                        {
+                            Name = LocalizeActionString(notificationTypeAction.NameResourceKey, notificationType.DesktopModuleId),
+                            Description = LocalizeActionString(notificationTypeAction.DescriptionResourceKey, notificationType.DesktopModuleId),
+                            Confirm = LocalizeActionString(notificationTypeAction.ConfirmResourceKey, notificationType.DesktopModuleId),
+                            APICall = notificationTypeAction.APICall
+                        };
+
+                        notificationViewModel.Actions.Add(notificationActionViewModel);
+                    }
+
+                    if (notification.IncludeDismissAction)
+                    {
+                        notificationViewModel.Actions.Add(new NotificationActionViewModel
+                        {
+                            Name = Localization.GetString("Dismiss.Text"),
+                            Description = Localization.GetString("DismissNotification.Text"),
+                            Confirm = "",
+                            APICall = "DesktopModules/InternalServices/API/NotificationsService/Dismiss"
+                        });
+                    }
+
+                    notificationsViewModel.Notifications.Add(notificationViewModel);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, notificationsViewModel);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Reply">
+          <declaration><![CDATA[public HttpResponseMessage Reply(MessagingServiceController.ReplyDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="131" sc="9" el="150" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="c864eaf37bca6c78d9d33d58cb714e53"><![CDATA[{
+            try
+            {
+                postData.Body = HttpUtility.UrlDecode(postData.Body);
+                var messageId = InternalMessagingController.Instance.ReplyMessage(postData.ConversationId, postData.Body, postData.FileIds);
+                var message = InternalMessagingController.Instance.GetMessage(messageId);
+                var portalId = PortalController.GetEffectivePortalId(UserController.GetCurrentUserInfo().PortalID);
+
+                var totalNewThreads = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId);
+                var totalThreads = InternalMessagingController.Instance.CountMessagesByConversation(postData.ConversationId);
+                var totalArchivedThreads = InternalMessagingController.Instance.CountArchivedMessagesByConversation(postData.ConversationId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { Conversation = message, TotalNewThreads = totalNewThreads, TotalThreads = totalThreads, TotalArchivedThreads = totalArchivedThreads });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Sentbox">
+          <declaration><![CDATA[public HttpResponseMessage Sentbox(int afterMessageId, int numberOfRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="9" el="86" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="69a91943c93d93fdb6542ec1393971c6"><![CDATA[{
+            try
+            {
+                var messageBoxView = InternalMessagingController.Instance.GetRecentSentbox(UserInfo.UserID, afterMessageId, numberOfRecords);
+                var portalId = PortalController.GetEffectivePortalId(UserController.GetCurrentUserInfo().PortalID);
+                messageBoxView.TotalNewThreads = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId);
+                messageBoxView.TotalConversations = InternalMessagingController.Instance.CountSentMessages(UserInfo.UserID, portalId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, messageBoxView);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Thread">
+          <declaration><![CDATA[public HttpResponseMessage Thread(int conversationId, int afterMessageId, int numberOfRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="109" sc="9" el="126" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="5a207342751be3a46d0b7c6acd4c9191"><![CDATA[{
+            try
+            {
+                var totalRecords = 0;
+                var messageThreadsView = InternalMessagingController.Instance.GetMessageThread(conversationId, UserInfo.UserID, afterMessageId, numberOfRecords, ref totalRecords);
+                var portalId = PortalController.GetEffectivePortalId(UserController.GetCurrentUserInfo().PortalID);
+                messageThreadsView.TotalNewThreads = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId);
+                messageThreadsView.TotalThreads = InternalMessagingController.Instance.CountMessagesByConversation(conversationId);
+                messageThreadsView.TotalArchivedThreads = InternalMessagingController.Instance.CountArchivedMessagesByConversation(conversationId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, messageThreadsView);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(MessagingServiceController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.CoreMessaging.ViewModels">
+    <class name="NotificationActionViewModel">
+      <declaration><![CDATA[public class NotificationActionViewModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public NotificationActionViewModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="APICall">
+          <declaration><![CDATA[public string APICall]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Confirm">
+          <declaration><![CDATA[public string Confirm]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Description">
+          <declaration><![CDATA[public string Description]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="NotificationsViewModel">
+      <declaration><![CDATA[public class NotificationsViewModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public NotificationsViewModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Notifications">
+          <declaration><![CDATA[public IList<NotificationViewModel> Notifications]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="TotalNotifications">
+          <declaration><![CDATA[public int TotalNotifications]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="NotificationViewModel">
+      <declaration><![CDATA[public class NotificationViewModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public NotificationViewModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Actions">
+          <declaration><![CDATA[public IList<NotificationActionViewModel> Actions]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Body">
+          <declaration><![CDATA[public string Body]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="DisplayDate">
+          <declaration><![CDATA[public string DisplayDate]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="From">
+          <declaration><![CDATA[public string From]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="NotificationId">
+          <declaration><![CDATA[public int NotificationId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SenderAvatar">
+          <declaration><![CDATA[public string SenderAvatar]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SenderProfileUrl">
+          <declaration><![CDATA[public string SenderProfileUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Subject">
+          <declaration><![CDATA[public string Subject]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="TotalsViewModel">
+      <declaration><![CDATA[public class TotalsViewModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public TotalsViewModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="TotalNotifications">
+          <declaration><![CDATA[public int TotalNotifications]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="TotalUnreadMessages">
+          <declaration><![CDATA[public int TotalUnreadMessages]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

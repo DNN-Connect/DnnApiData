@@ -1,0 +1,1328 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Modules.PreviewProfileManagement.dll" version="07.00.00" generated="2017-06-18 23:18:48Z" generationTime="1.7757123">
+  <namespace name="DotNetNuke.Modules.PreviewProfileManagement.Components">
+    <class name="PreviewProfileManagementController">
+      <declaration><![CDATA[public class PreviewProfileManagementController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+ Business controller of device profile management.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PreviewProfileManagementController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="RemoveProVersion">
+          <declaration><![CDATA[private void RemoveProVersion()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="123" ec="10">Components\PreviewProfileManagementController.cs</location>
+            <body hash="98b81bcf416efbc42c02ea4ad2dc649c"><![CDATA[{
+            //update the tab module to use CE version
+            var tabController = new TabController();
+            var moduleController = new ModuleController();
+            TabInfo newTab;
+
+            var portalController = new PortalController();
+
+            foreach (PortalInfo portal in portalController.GetPortals())
+            {
+                //Update Site Redirection management page
+                var tabId = TabController.GetTabByTabPath(portal.PortalID, "//Admin//DevicePreviewManagement", Null.NullString);
+                if (tabId == Null.NullInteger)
+                {
+                    newTab = Upgrade.AddAdminPage(portal,
+                                                 "Device Preview Management",
+                                                 "Device Preview Management.",
+                                                 "~/desktopmodules/DevicePreviewManagement/images/DevicePreview_Standard_16X16.png",
+                                                 "~/desktopmodules/DevicePreviewManagement/images/DevicePreview_Standard_32X32.png",
+                                                 true);
+                }
+                else
+                {
+                    newTab = tabController.GetTab(tabId, portal.PortalID, true);
+                    newTab.IconFile = "~/desktopmodules/DevicePreviewManagement/images/DevicePreview_Standard_16X16.png";
+                    newTab.IconFileLarge = "~/desktopmodules/DevicePreviewManagement/images/DevicePreview_Standard_32X32.png";
+                    tabController.UpdateTab(newTab);
+                }
+
+                //Remove Pro edition module
+                int moduleID = Null.NullInteger;
+                IDictionary<int, ModuleInfo> modules = moduleController.GetTabModules(newTab.TabID);
+
+                if (modules != null)
+                {
+                    foreach (ModuleInfo m in modules.Values)
+                    {
+                        if (m.DesktopModule.FriendlyName == "Device Preview Management")
+                        {
+                            moduleID = m.ModuleID;
+                            break;
+                        }
+                    }
+                }
+
+                if (moduleID != Null.NullInteger)
+                {
+                    moduleController.DeleteTabModule(newTab.TabID, moduleID, false);
+                }
+
+                //Add community edition module
+                ModuleDefinitionInfo mDef = ModuleDefinitionController.GetModuleDefinitionByFriendlyName("DNN Device Preview Management");
+                if (mDef != null)
+                {
+                    Upgrade.AddModuleToPage(newTab, mDef.ModuleDefID, "Device Preview Management", "~/desktopmodules/DevicePreviewManagement/images/DevicePreview_Standard_32X32.png", true);
+                }
+
+                //reset default devices created flag
+                string defaultPreviewProfiles;
+                var settings = PortalController.GetPortalSettingsDictionary(portal.PortalID);
+                if (settings.TryGetValue("DefPreviewProfiles_Created", out defaultPreviewProfiles) && defaultPreviewProfiles == "DNNCORP.CE")
+                {
+                    PortalController.DeletePortalSetting(portal.PortalID, "DefPreviewProfiles_Created");
+                }
+            }
+
+            var package = PackageController.GetPackageByName("DotNetNuke.Professional.PreviewProfileManagement");
+            if (package != null)
+            {
+                var installer = new Installer(package, Globals.ApplicationMapPath);
+                installer.UnInstall(true);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+ IUpgradable.UpgradeModule.
+ </summary>
+ <param name="version">upgrade in version.</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="48" ec="10">Components\PreviewProfileManagementController.cs</location>
+            <body hash="95efbf7cedaed5add959edfbfa855304"><![CDATA[{
+            switch (version)
+            {
+                case "06.02.00":
+                    RemoveProVersion();
+                    break;
+            }
+			return "Success";
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="PrimaryKeyEventArgs">
+      <declaration><![CDATA[public class PrimaryKeyEventArgs : System.EventArgs]]></declaration>
+      <documentation>
+        <summary>
+ Event args with a primary key.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PrimaryKeyEventArgs(int id)]]></declaration>
+          <documentation>
+            <summary>
+ Default constructor for PrimaryKeyEventArgs.
+ </summary>
+ <param name="id">The primary key need to process.</param></documentation>
+          <codeblock>
+            <location sl="36" sc="3" el="39" ec="4">Components\PrimaryKeyEventArgs.cs</location>
+            <body hash="91cac56bc81b94075c6b26041740a4d9"><![CDATA[public PrimaryKeyEventArgs(int id)
+		{
+			Id = id;
+		}]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Id">
+          <declaration><![CDATA[public int Id]]></declaration>
+          <documentation>
+            <summary>
+ The primary key need to process by caller.
+ </summary>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ProfileEventArgs">
+      <declaration><![CDATA[public class ProfileEventArgs : System.EventArgs]]></declaration>
+      <documentation>
+        <summary>
+ Event args of profile instance.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ProfileEventArgs(IPreviewProfile profile)]]></declaration>
+          <documentation>
+            <summary>
+ Default constructor for ProfileEventArgs.
+ </summary>
+ <param name="profile">The profile need to process.</param></documentation>
+          <codeblock>
+            <location sl="38" sc="3" el="41" ec="4">Components\ProfileEventArgs.cs</location>
+            <body hash="4ada4e87c49d1f544e2032746ae873fd"><![CDATA[public ProfileEventArgs(IPreviewProfile profile)
+		{
+			Profile = profile;
+		}]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Profile">
+          <declaration><![CDATA[public IPreviewProfile Profile]]></declaration>
+          <documentation>
+            <summary>
+ The profile need to process by caller.
+ </summary>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.PreviewProfileManagement.Presenters">
+    <class name="ProfileManagerPresenter">
+      <declaration><![CDATA[public class ProfileManagerPresenter : ModulePresenter<IProfileManagerView, ProfileManagerViewModel>]]></declaration>
+      <documentation>
+        <summary>
+ Presenter of profile management list view.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ProfileManagerPresenter(IProfileManagerView view) : this(view, new PreviewProfileController())]]></declaration>
+          <documentation>
+            <summary>
+ ProfileManagerPresenter constructor.
+ </summary>
+ <param name="view">the profile manager view.</param></documentation>
+          <codeblock>
+            <location sl="78" sc="3" el="81" ec="10">Presenters\ProfileManagerPresenter.cs</location>
+            <body hash="7d4f10ddac337bebd678e66af4eda150"><![CDATA[public ProfileManagerPresenter(IProfileManagerView view)
+			: this(view, new PreviewProfileController())
+        {
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ProfileManagerPresenter(IProfileManagerView view, IPreviewProfileController controller) : base(view)]]></declaration>
+          <documentation>
+            <summary>
+  ProfileManagerPresenter constructor.
+ </summary>
+ <param name="view">the profile manager view.</param>
+ <param name="controller">The profile controller.</param></documentation>
+          <codeblock>
+            <location sl="88" sc="3" el="94" ec="4">Presenters\ProfileManagerPresenter.cs</location>
+            <body hash="4d0517a2a6b04f035edd736551c4243d"><![CDATA[public ProfileManagerPresenter(IProfileManagerView view, IPreviewProfileController controller)
+			: base(view)
+		{
+            _previewProfileController = controller;
+
+            Initialize();
+		}]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="DeleteProfile">
+          <declaration><![CDATA[public void DeleteProfile(object sender, PrimaryKeyEventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+ Delete a profile.
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param></documentation>
+          <codeblock>
+            <location sl="185" sc="3" el="187" ec="4">Presenters\ProfileManagerPresenter.cs</location>
+            <body hash="56b7b6891a6dd891bac4e048be760712"><![CDATA[{
+			_previewProfileController.Delete(ModuleContext.PortalId, e.Id);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEditProfile">
+          <declaration><![CDATA[public void GetEditProfile(object sender, PrimaryKeyEventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+ Get a profile for edit.
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param></documentation>
+          <codeblock>
+            <location sl="119" sc="3" el="121" ec="4">Presenters\ProfileManagerPresenter.cs</location>
+            <body hash="7aad3dc6c62b1c83d8f549fe71d995bb"><![CDATA[{
+			View.Model.EditProfile = _previewProfileController.GetProfileById(ModuleContext.PortalId, e.Id);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="GetHighlightProfiles">
+          <declaration><![CDATA[public void GetHighlightProfiles(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+ Get highlight profile list.
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param></documentation>
+          <codeblock>
+            <location sl="139" sc="3" el="149" ec="4">Presenters\ProfileManagerPresenter.cs</location>
+            <body hash="23857a3653032b3796ea28624ecf4a0c"><![CDATA[{
+            if (!File.Exists(HighlightDataPath))
+            {
+                throw new ArgumentException("Highlight profile databse doesn't exist.");
+            }
+
+            var serializer = new XmlSerializer(typeof(List<PreviewProfile>));
+            var profiles = (List<PreviewProfile>)serializer.Deserialize(File.OpenRead(HighlightDataPath));
+
+            View.Model.HighlightProfiles = profiles.Cast<IPreviewProfile>().ToList();
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="GetProfiles">
+          <declaration><![CDATA[public void GetProfiles(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+ Get profile list.
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param></documentation>
+          <codeblock>
+            <location sl="129" sc="3" el="131" ec="4">Presenters\ProfileManagerPresenter.cs</location>
+            <body hash="bc7e14adefabc598fde1b8149b068341"><![CDATA[{
+			View.Model.PreviewProfiles = _previewProfileController.GetProfilesByPortal(ModuleContext.PortalId);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="Initialize">
+          <declaration><![CDATA[private void Initialize()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="101" sc="9" el="107" ec="10">Presenters\ProfileManagerPresenter.cs</location>
+            <body hash="f8706d7c2b94acac7392dcbd689d25a4"><![CDATA[{
+			View.SaveProfile += new EventHandler<ProfileEventArgs>(SaveProfile);
+			View.DeleteProfile += new EventHandler<PrimaryKeyEventArgs>(DeleteProfile);
+			View.GetEditProfile += new EventHandler<PrimaryKeyEventArgs>(GetEditProfile);
+			View.GetProfiles += new EventHandler(GetProfiles);
+			View.GetHighlightProfiles += new EventHandler(GetHighlightProfiles);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveProfile">
+          <declaration><![CDATA[public void SaveProfile(object sender, ProfileEventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+ Save profile.
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param></documentation>
+          <codeblock>
+            <location sl="157" sc="3" el="177" ec="4">Presenters\ProfileManagerPresenter.cs</location>
+            <body hash="e1d99475871ee91eb88fbfcd16df0d7a"><![CDATA[{
+			bool moveFirst = false;
+			var profileList = _previewProfileController.GetProfilesByPortal(e.Profile.PortalId);
+
+			if(e.Profile.Id == Null.NullInteger)
+			{
+				moveFirst = true;
+			}
+
+			//save profile
+			_previewProfileController.Save(e.Profile);
+
+			//if the profile is new, then move it to the top of list.
+			if(moveFirst && profileList.Count > 0)
+			{
+				int moveId = e.Profile.Id;
+				int nextId = profileList[0].Id;
+
+				SortProfiles(moveId, nextId);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="SortProfiles">
+          <declaration><![CDATA[public string SortProfiles(int moveId, int nextId)]]></declaration>
+          <documentation>
+            <summary>
+ Sort the profile list.
+ </summary>
+ <param name="moveId">the item which need to move.</param>
+ <param name="nextId">the item that move item will insert before it.</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="200" sc="3" el="246" ec="4">Presenters\ProfileManagerPresenter.cs</location>
+            <body hash="dbba16d910a92e604d1072284185c6a8"><![CDATA[{
+			var moveProfile = _previewProfileController.GetProfileById(ModuleContext.PortalId, moveId);
+			var nextProfile = _previewProfileController.GetProfileById(ModuleContext.PortalId, nextId);
+			var allItems = _previewProfileController.GetProfilesByPortal(ModuleContext.PortalId);
+
+			if (nextId > 0)
+			{
+				if (nextProfile.SortOrder > moveProfile.SortOrder)
+				{
+					var effectItems = allItems.Where(r => r.SortOrder > moveProfile.SortOrder && r.SortOrder < nextProfile.SortOrder).ToList();
+					effectItems.ForEach(r =>
+					{
+						r.SortOrder--;
+						_previewProfileController.Save(r);
+					});
+
+					moveProfile.SortOrder = nextProfile.SortOrder - 1;
+					_previewProfileController.Save(moveProfile);
+				}
+				else
+				{
+					int nextOrder = nextProfile.SortOrder;
+					var effectItems = allItems.Where(r => r.SortOrder >= nextProfile.SortOrder && r.SortOrder < moveProfile.SortOrder).ToList();
+					effectItems.ForEach(r =>
+					{
+						r.SortOrder++;
+						_previewProfileController.Save(r);
+					});
+
+					moveProfile.SortOrder = nextOrder;
+					_previewProfileController.Save(moveProfile);
+				}
+			}
+			else
+			{
+				var effectItems = allItems.Where(r => r.SortOrder > moveProfile.SortOrder).ToList();
+				effectItems.ForEach(r =>
+				{
+					r.SortOrder--;
+					_previewProfileController.Save(r);
+				});
+
+				moveProfile.SortOrder = allItems.Count;
+				_previewProfileController.Save(moveProfile);
+			}
+			return string.Empty;
+		}]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_highlightDataPath">
+          <declaration><![CDATA[private string _highlightDataPath;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_previewProfileController">
+          <declaration><![CDATA[private IPreviewProfileController _previewProfileController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="HighlightDataPath">
+          <declaration><![CDATA[public string HighlightDataPath]]></declaration>
+          <documentation>
+            <summary>
+ Highlight profiles data path.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="13" el="63" ec="14">Presenters\ProfileManagerPresenter.cs</location>
+            <body hash="a737147ca3b3ba3fef6acd92ec885e2d"><![CDATA[{
+                if (string.IsNullOrEmpty(_highlightDataPath))
+                {
+                    if (View == null || !(View is Control))
+                    {
+                        throw new ArgumentException("Highlight data path should be assign when view is not a control");
+                    }
+
+                    var dataPath = Path.Combine((View as Control).TemplateSourceDirectory, "Resources\\highlightDevices.xml");
+                    _highlightDataPath = HttpContext.Server.MapPath(dataPath);
+                }
+
+                return _highlightDataPath;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="65" sc="13" el="67" ec="14">Presenters\ProfileManagerPresenter.cs</location>
+            <body hash="6d825c68f047623dbdfd383c7f4a3ea5"><![CDATA[{
+                _highlightDataPath = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.PreviewProfileManagement.ViewModels">
+    <class name="ProfileManagerViewModel">
+      <declaration><![CDATA[public class ProfileManagerViewModel]]></declaration>
+      <documentation>
+        <summary>
+ View model of profile management.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ProfileManagerViewModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="EditProfile">
+          <declaration><![CDATA[public IPreviewProfile EditProfile]]></declaration>
+          <documentation>
+            <summary>
+ Profile need to edit.
+ </summary>
+          </documentation>
+        </property>
+        <property name="HighlightProfiles">
+          <declaration><![CDATA[public System.Collections.Generic.List<IPreviewProfile> HighlightProfiles]]></declaration>
+          <documentation>
+            <summary>
+ Highlight profiles list.
+ </summary>
+          </documentation>
+        </property>
+        <property name="PreviewProfiles">
+          <declaration><![CDATA[public System.Collections.Generic.IList<IPreviewProfile> PreviewProfiles]]></declaration>
+          <documentation>
+            <summary>
+ Profiles list.
+ </summary>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.PreviewProfileManagement.Views">
+    <class name="IProfileManagerView">
+      <declaration><![CDATA[public interface IProfileManagerView : IModuleView<ProfileManagerViewModel>, IModuleViewBase, IView<ProfileManagerViewModel>, IView]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="add_DeleteProfile">
+          <declaration><![CDATA[void add_DeleteProfile(System.EventHandler<PrimaryKeyEventArgs> value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_GetEditProfile">
+          <declaration><![CDATA[void add_GetEditProfile(System.EventHandler<PrimaryKeyEventArgs> value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_GetHighlightProfiles">
+          <declaration><![CDATA[void add_GetHighlightProfiles(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_GetProfiles">
+          <declaration><![CDATA[void add_GetProfiles(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_SaveProfile">
+          <declaration><![CDATA[void add_SaveProfile(System.EventHandler<ProfileEventArgs> value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_DeleteProfile">
+          <declaration><![CDATA[void remove_DeleteProfile(System.EventHandler<PrimaryKeyEventArgs> value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_GetEditProfile">
+          <declaration><![CDATA[void remove_GetEditProfile(System.EventHandler<PrimaryKeyEventArgs> value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_GetHighlightProfiles">
+          <declaration><![CDATA[void remove_GetHighlightProfiles(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_GetProfiles">
+          <declaration><![CDATA[void remove_GetProfiles(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_SaveProfile">
+          <declaration><![CDATA[void remove_SaveProfile(System.EventHandler<ProfileEventArgs> value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="DeleteProfile">
+          <declaration><![CDATA[event System.EventHandler<PrimaryKeyEventArgs> DeleteProfile;]]></declaration>
+          <documentation>
+            <summary>
+ Event for delete a profile.
+ </summary>
+          </documentation>
+        </event>
+        <event name="GetEditProfile">
+          <declaration><![CDATA[event System.EventHandler<PrimaryKeyEventArgs> GetEditProfile;]]></declaration>
+          <documentation>
+            <summary>
+ Event for get a profile to edit.
+ </summary>
+          </documentation>
+        </event>
+        <event name="GetHighlightProfiles">
+          <declaration><![CDATA[event System.EventHandler GetHighlightProfiles;]]></declaration>
+          <documentation>
+            <summary>
+ Event for get highlight profile data, this data will be used for auto complete the device name.
+ </summary>
+          </documentation>
+        </event>
+        <event name="GetProfiles">
+          <declaration><![CDATA[event System.EventHandler GetProfiles;]]></declaration>
+          <documentation>
+            <summary>
+ Event for get profile data.
+ </summary>
+          </documentation>
+        </event>
+        <event name="SaveProfile">
+          <declaration><![CDATA[event System.EventHandler<ProfileEventArgs> SaveProfile;]]></declaration>
+          <documentation>
+            <summary>
+ Event for save a profile.
+ </summary>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="ProfileManagerView">
+      <declaration><![CDATA[public class ProfileManagerView : ModuleView<ProfileManagerViewModel>, IProfileManagerView, IModuleView<ProfileManagerViewModel>, IModuleViewBase, IView<ProfileManagerViewModel>, IView, IClientAPICallbackEventHandler]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ProfileManagerView()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="add_DeleteProfile">
+          <declaration><![CDATA[public void add_DeleteProfile(System.EventHandler<PrimaryKeyEventArgs> value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_GetEditProfile">
+          <declaration><![CDATA[public void add_GetEditProfile(System.EventHandler<PrimaryKeyEventArgs> value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_GetHighlightProfiles">
+          <declaration><![CDATA[public void add_GetHighlightProfiles(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_GetProfiles">
+          <declaration><![CDATA[public void add_GetProfiles(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_SaveProfile">
+          <declaration><![CDATA[public void add_SaveProfile(System.EventHandler<ProfileEventArgs> value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="BindControls">
+          <declaration><![CDATA[private void BindControls()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="268" sc="3" el="271" ec="4">Views\ProfileManagerView.ascx.cs</location>
+            <body hash="47a6a44d13a4a9d3b6910d0fe7cfd6f7"><![CDATA[{
+			LoadProfiles();
+            LoadHighlightProfiles();
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="btnSave_Click">
+          <declaration><![CDATA[private void btnSave_Click(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="172" sc="3" el="189" ec="4">Views\ProfileManagerView.ascx.cs</location>
+            <body hash="052edb0c4bf812fe6d16bfb4bb805bd3"><![CDATA[{
+			if (Page.IsValid)
+			{
+				var name = cbName.Text;
+				var width = Convert.ToInt32(txtWidth.Text);
+				var height = Convert.ToInt32(txtHeight.Text);
+				var userAgent = txtUserAgent.Text;
+
+				var profile = new PreviewProfile { Name = name, Width = width, Height = height, UserAgent = userAgent, PortalId = ModuleContext.PortalId };
+
+				SaveProfile(this, new ProfileEventArgs(profile));
+
+				cbName.SelectedIndex = -1;
+				cbName.Text = txtWidth.Text = txtHeight.Text = txtUserAgent.Text = string.Empty;
+
+				LoadProfiles(true);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadHighlightProfiles">
+          <declaration><![CDATA[private void LoadHighlightProfiles()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="279" sc="9" el="293" ec="10">Views\ProfileManagerView.ascx.cs</location>
+            <body hash="3259428c5ed967ca3bd6b39b8a63efd3"><![CDATA[{
+            if (!IsPostBack)
+            {
+                GetHighlightProfiles(this, new EventArgs());
+
+                cbName.Items.Clear();
+                foreach (var profile in Model.HighlightProfiles)
+                {
+                    var text = profile.Name;
+                    var value = string.Format("id:\"{0}\", width: \"{1}\", height:\"{2}\", userAgent: \"{3}\"", cbName.Items.Count, profile.Width, profile.Height, profile.UserAgent);
+
+                    cbName.Items.Add(new DnnComboBoxItem(text, value));
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadProfiles">
+          <declaration><![CDATA[private void LoadProfiles()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="274" sc="3" el="276" ec="4">Views\ProfileManagerView.ascx.cs</location>
+            <body hash="97be4055d9050530f5684d8835de56d4"><![CDATA[{
+			LoadProfiles(false);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadProfiles">
+          <declaration><![CDATA[private void LoadProfiles(bool rebind)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="296" sc="3" el="304" ec="4">Views\ProfileManagerView.ascx.cs</location>
+            <body hash="89c0f928c4d24367c5f47a005e48facb"><![CDATA[{
+			GetProfiles(this, new EventArgs());
+			ProfilesList.DataSource = Model.PreviewProfiles;
+
+			if (!IsPostBack || rebind)
+			{
+				ProfilesList.DataBind();
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(System.EventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+ OnLoad Event.
+ </summary>
+ <param name="e"></param></documentation>
+          <codeblock>
+            <location sl="79" sc="3" el="97" ec="4">Views\ProfileManagerView.ascx.cs</location>
+            <body hash="5490710781bfa9c98544a27174005739"><![CDATA[{
+			base.OnLoad(e);
+
+			btnSave.Click += new EventHandler(btnSave_Click);
+            //ProfilesList.ItemCommand += new DataGridCommandEventHandler(ProfilesList_ItemCommand);
+            //ProfilesList.ItemDataBound += new DataGridItemEventHandler(ProfilesList_ItemDataBound);
+
+            ProfilesList.ItemCommand += new Telerik.Web.UI.GridCommandEventHandler(ProfilesList_ItemCommand);
+            ProfilesList.ItemDataBound += new Telerik.Web.UI.GridItemEventHandler(ProfilesList_ItemDataBound);
+
+			BindControls();
+
+            if(!IsPostBack)
+            {
+                //Localization.LocalizeDataGrid(ref ProfilesList, LocalResourceFile);
+            }
+
+			ClientAPI.RegisterClientVariable(Page, "ActionCallback", ClientAPI.GetCallbackEventReference(this, "[ACTIONTOKEN]", "success", "this", "error"), true);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="ProfilesList_ItemCommand">
+          <declaration><![CDATA[private void ProfilesList_ItemCommand(object sender, GridCommandEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="109" sc="9" el="160" ec="10">Views\ProfileManagerView.ascx.cs</location>
+            <body hash="ae0887e204ce8d540eff33a7105ddc0c"><![CDATA[{
+            switch (e.CommandName)
+            {
+                case "Edit":
+                    //ProfilesList.EditItemIndex = e.Item.ItemIndex;
+                    //ProfilesList.EditIndexes.Add(e.Item.ItemIndex);                    
+                    e.Item.Edit = true;
+                    
+                    LoadProfiles(true);
+                    AddProfile.Visible = false;
+                    break;
+                case "Save":
+                    if (Page.IsValid)
+                    {
+                        GetEditProfile(this, new PrimaryKeyEventArgs(Convert.ToInt32(e.CommandArgument)));
+
+                        var gridDataItem = (GridDataItem)e.Item;
+                        var editName = (gridDataItem["DeviceName"].Controls.Cast<Control>().First(c => c is TextBox) as TextBox).Text;
+                        var editWidth = Convert.ToInt32((gridDataItem["Width"].Controls.Cast<Control>().First(c => c is TextBox) as TextBox).Text);
+                        var editHeight = Convert.ToInt32((gridDataItem["Height"].Controls.Cast<Control>().First(c => c is TextBox) as TextBox).Text);
+                        var editUserAgent = (gridDataItem["UserAgent"].Controls.Cast<Control>().First(c => c is TextBox) as TextBox).Text;
+
+                        Model.EditProfile.Name = editName;
+                        Model.EditProfile.Width = editWidth;
+                        Model.EditProfile.Height = editHeight;
+                        Model.EditProfile.UserAgent = editUserAgent;
+
+                        SaveProfile(this, new ProfileEventArgs(Model.EditProfile));
+
+                        //ProfilesList.EditItemIndex = -1;
+                        ProfilesList.EditIndexes.Clear();
+                        LoadProfiles(true);
+                        AddProfile.Visible = true;
+                    }
+                    break;
+                case "Cancel":
+                    //ProfilesList.EditItemIndex = -1;
+                    ProfilesList.EditIndexes.Clear();
+
+                    LoadProfiles(true);
+                    AddProfile.Visible = true;
+                    break;
+                case "Delete":
+                    DeleteProfile(this, new PrimaryKeyEventArgs(Convert.ToInt32(e.CommandArgument)));
+                    //ProfilesList.EditItemIndex = -1;
+                    ProfilesList.EditIndexes.Clear();
+
+                    LoadProfiles(true);
+                    AddProfile.Visible = true;
+                    break;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ProfilesList_ItemDataBound">
+          <declaration><![CDATA[private void ProfilesList_ItemDataBound(object sender, GridItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="100" sc="9" el="106" ec="10">Views\ProfileManagerView.ascx.cs</location>
+            <body hash="7e09a6cd853a322ed0ab694b5ad64faf"><![CDATA[{
+            if (e.Item.ItemType == GridItemType.Item || e.Item.ItemType == GridItemType.AlternatingItem || e.Item.ItemType == GridItemType.EditFormItem )
+            {
+                IPreviewProfile profile = e.Item.DataItem as IPreviewProfile;
+                e.Item.Attributes.Add("data", profile.Id.ToString());
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RaiseClientAPICallbackEvent">
+          <declaration><![CDATA[public string RaiseClientAPICallbackEvent(string eventArgument)]]></declaration>
+          <documentation>
+            <summary>
+ IClientAPICallbackEventHandler.RaiseClientAPICallbackEvent
+ </summary>
+ <param name="eventArgument"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="316" sc="3" el="333" ec="4">Views\ProfileManagerView.ascx.cs</location>
+            <body hash="a0ffe5a6c9f9fdbdc102545edc8d884a"><![CDATA[{
+			IDictionary<string, string> arguments = new Dictionary<string, string>();
+			foreach (var arg in eventArgument.Split('&'))
+			{
+				arguments.Add(arg.Split('=')[0], arg.Split('=')[1]);
+			}
+			switch (arguments["action"])
+			{
+				case "sort":
+					var moveId = Convert.ToInt32(arguments["moveId"]);
+					var nextId = Convert.ToInt32(arguments["nextId"]);
+
+					new ProfileManagerPresenter(this).SortProfiles(moveId, nextId);
+					break;
+			}
+
+			return string.Empty;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_DeleteProfile">
+          <declaration><![CDATA[public void remove_DeleteProfile(System.EventHandler<PrimaryKeyEventArgs> value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_GetEditProfile">
+          <declaration><![CDATA[public void remove_GetEditProfile(System.EventHandler<PrimaryKeyEventArgs> value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_GetHighlightProfiles">
+          <declaration><![CDATA[public void remove_GetHighlightProfiles(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_GetProfiles">
+          <declaration><![CDATA[public void remove_GetProfiles(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_SaveProfile">
+          <declaration><![CDATA[public void remove_SaveProfile(System.EventHandler<ProfileEventArgs> value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ValidateName">
+          <declaration><![CDATA[protected void ValidateName(object sender, System.Web.UI.WebControls.ServerValidateEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="237" sc="3" el="261" ec="4">Views\ProfileManagerView.ascx.cs</location>
+            <body hash="b3297267a07f12a439009a3ccd5528ee"><![CDATA[{
+			if (string.IsNullOrEmpty(e.Value))
+			{
+				e.IsValid = false;
+			}
+			else
+			{
+				var validator = sender as CustomValidator;
+				GetProfiles(this, new EventArgs());
+
+				if (validator.ValidationGroup == "AddProfile")
+				{
+					e.IsValid = !Model.PreviewProfiles.Any(p => p.Name == e.Value);
+				}
+				else if(validator.ValidationGroup == "EditProfile")
+				{
+					var initValue = validator.Attributes["InitValue"];
+					
+					if(e.Value != initValue)
+					{
+						e.IsValid = !Model.PreviewProfiles.Any(p => p.Name == e.Value);
+					}
+				}
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="AddProfile">
+          <declaration><![CDATA[protected System.Web.UI.HtmlControls.HtmlGenericControl AddProfile;]]></declaration>
+          <documentation>
+            <summary>
+ AddProfile control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="btnSave">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.LinkButton btnSave;]]></declaration>
+          <documentation>
+            <summary>
+ btnSave control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cbName">
+          <declaration><![CDATA[protected DnnComboBox cbName;]]></declaration>
+          <documentation>
+            <summary>
+ cbName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="CustomValidator1">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.CustomValidator CustomValidator1;]]></declaration>
+          <documentation>
+            <summary>
+ CustomValidator1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="CustomValidator2">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.CustomValidator CustomValidator2;]]></declaration>
+          <documentation>
+            <summary>
+ CustomValidator2 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="CustomValidator3">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.CustomValidator CustomValidator3;]]></declaration>
+          <documentation>
+            <summary>
+ CustomValidator3 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="CustomValidator4">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.CustomValidator CustomValidator4;]]></declaration>
+          <documentation>
+            <summary>
+ CustomValidator4 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DeleteProfile">
+          <declaration><![CDATA[private System.EventHandler<PrimaryKeyEventArgs> DeleteProfile;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GetEditProfile">
+          <declaration><![CDATA[private System.EventHandler<PrimaryKeyEventArgs> GetEditProfile;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GetHighlightProfiles">
+          <declaration><![CDATA[private System.EventHandler GetHighlightProfiles;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GetProfiles">
+          <declaration><![CDATA[private System.EventHandler GetProfiles;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="lblHeight">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.Label lblHeight;]]></declaration>
+          <documentation>
+            <summary>
+ lblHeight control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblName">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.Label lblName;]]></declaration>
+          <documentation>
+            <summary>
+ lblName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblUserAgent">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.Label lblUserAgent;]]></declaration>
+          <documentation>
+            <summary>
+ lblUserAgent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblWidth">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.Label lblWidth;]]></declaration>
+          <documentation>
+            <summary>
+ lblWidth control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ProfilesList">
+          <declaration><![CDATA[protected DnnGrid ProfilesList;]]></declaration>
+          <documentation>
+            <summary>
+ ProfilesList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="SaveProfile">
+          <declaration><![CDATA[private System.EventHandler<ProfileEventArgs> SaveProfile;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="txtHeight">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.TextBox txtHeight;]]></declaration>
+          <documentation>
+            <summary>
+ txtHeight control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtUserAgent">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.TextBox txtUserAgent;]]></declaration>
+          <documentation>
+            <summary>
+ txtUserAgent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtWidth">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.TextBox txtWidth;]]></declaration>
+          <documentation>
+            <summary>
+ txtWidth control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="valEditSummary">
+          <declaration><![CDATA[protected System.Web.UI.WebControls.ValidationSummary valEditSummary;]]></declaration>
+          <documentation>
+            <summary>
+ valEditSummary control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="DeleteProfile">
+          <declaration><![CDATA[public event System.EventHandler<PrimaryKeyEventArgs> DeleteProfile;]]></declaration>
+          <documentation>
+            <summary>
+ Event for delete a profile.
+ </summary>
+          </documentation>
+        </event>
+        <event name="GetEditProfile">
+          <declaration><![CDATA[public event System.EventHandler<PrimaryKeyEventArgs> GetEditProfile;]]></declaration>
+          <documentation>
+            <summary>
+ Event for get a profile to edit.
+ </summary>
+          </documentation>
+        </event>
+        <event name="GetHighlightProfiles">
+          <declaration><![CDATA[public event System.EventHandler GetHighlightProfiles;]]></declaration>
+          <documentation>
+            <summary>
+ Event for get highlight profile data, this data will be used for auto complete the device name.
+ </summary>
+          </documentation>
+        </event>
+        <event name="GetProfiles">
+          <declaration><![CDATA[public event System.EventHandler GetProfiles;]]></declaration>
+          <documentation>
+            <summary>
+ Event for get profile data.
+ </summary>
+          </documentation>
+        </event>
+        <event name="SaveProfile">
+          <declaration><![CDATA[public event System.EventHandler<ProfileEventArgs> SaveProfile;]]></declaration>
+          <documentation>
+            <summary>
+ Event for save a profile.
+ </summary>
+          </documentation>
+        </event>
+      </events>
+    </class>
+  </namespace>
+</root>

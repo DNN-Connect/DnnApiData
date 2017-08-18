@@ -1,0 +1,2055 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.Themes.dll" version="01.01.00" generated="2017-08-10 12:34:12Z" generationTime="3.7744477">
+  <namespace name="Dnn.PersonaBar.Themes.Components">
+    <class name="ApplyThemeScope">
+      <declaration><![CDATA[public enum ApplyThemeScope]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="Edit">
+          <declaration><![CDATA[public const ApplyThemeScope Edit = 2;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Site">
+          <declaration><![CDATA[public const ApplyThemeScope Site = 1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="IThemesController">
+      <declaration><![CDATA[public interface IThemesController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="ApplyDefaultTheme">
+          <declaration><![CDATA[void ApplyDefaultTheme(PortalSettings portalSettings, string themeName);]]></declaration>
+          <documentation>
+            <summary>
+ update portal skin.
+ </summary>
+ <param name="portalSettings">portal settings.</param>
+ <param name="themeName"></param></documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ApplyTheme">
+          <declaration><![CDATA[void ApplyTheme(int portalId, ThemeFileInfo themeFile, ApplyThemeScope scope);]]></declaration>
+          <documentation>
+            <summary>
+ update portal skin.
+ </summary>
+ <param name="portalId">portal id.</param>
+ <param name="themeFile">skin info.</param>
+ <param name="scope">change skin or container.</param></documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteTheme">
+          <declaration><![CDATA[void DeleteTheme(PortalSettings portalSettings, ThemeFileInfo themeFile);]]></declaration>
+          <documentation>
+            <summary>
+ delete a skin or container.
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="themeFile"></param></documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteThemePackage">
+          <declaration><![CDATA[void DeleteThemePackage(PortalSettings portalSettings, ThemeInfo theme);]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="theme"></param></documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetContainers">
+          <declaration><![CDATA[IList<ThemeInfo> GetContainers(PortalSettings portalSettings, ThemeLevel level);]]></declaration>
+          <documentation>
+            <summary>
+ Get Containers.
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="level">portal level or host level.</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLayouts">
+          <declaration><![CDATA[IList<ThemeInfo> GetLayouts(PortalSettings portalSettings, ThemeLevel level);]]></declaration>
+          <documentation>
+            <summary>
+ Get Skins.
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="level">portal level or host level.</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetThemeFile">
+          <declaration><![CDATA[ThemeFileInfo GetThemeFile(PortalSettings portalSettings, string filePath, ThemeType type);]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="filePath"></param>
+ <param name="type"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetThemeFiles">
+          <declaration><![CDATA[IList<ThemeFileInfo> GetThemeFiles(PortalSettings portalSettings, ThemeInfo theme);]]></declaration>
+          <documentation>
+            <summary>
+ get skin files in the skin.
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="theme"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ParseTheme">
+          <declaration><![CDATA[void ParseTheme(PortalSettings portalSettings, ThemeInfo theme, ParseType parseType);]]></declaration>
+          <documentation>
+            <summary>
+ Parse skin package.
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="theme"></param>
+ <param name="parseType"></param></documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateTheme">
+          <declaration><![CDATA[void UpdateTheme(PortalSettings portalSettings, UpdateThemeInfo updateTheme);]]></declaration>
+          <documentation>
+            <summary>
+ Update Theme Attributes.
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="updateTheme"></param></documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ParseType">
+      <declaration><![CDATA[public enum ParseType]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="Localized">
+          <declaration><![CDATA[public const ParseType Localized = 0;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Portable">
+          <declaration><![CDATA[public const ParseType Portable = 1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ThemeLevel">
+      <declaration><![CDATA[public enum ThemeLevel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="Global">
+          <declaration><![CDATA[public const ThemeLevel Global = 2;]]></declaration>
+          <documentation>
+            <summary>
+ Themes available in all sites.
+ </summary>
+          </documentation>
+        </field>
+        <field name="Site">
+          <declaration><![CDATA[public const ThemeLevel Site = 1;]]></declaration>
+          <documentation>
+            <summary>
+ Themes only available in current site.
+ </summary>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ThemesController">
+      <declaration><![CDATA[public class ThemesController : ServiceLocator<IThemesController, ThemesController>, IThemesController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ThemesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ThemesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="49" ec="69">Components\ThemesController.cs</location>
+            <body hash="ddc9e3333826b78541773b1ce6c45b3f"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ThemesController));
+
+        internal static readonly IList<string> ImageExtensions = new List<string>() {".jpg", ".png", ".jpeg"};
+        internal static readonly IList<string> DefaultLayoutNames = new List<string>() {"Default", "2-Col", "Home", "Index", "Main"};
+        internal static readonly IList<string> DefaultContainerNames = new List<string>() { "Title-h2", "NoTitle", "Main", "Default"};
+
+        private static readonly object _threadLocker = new object();]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ApplyDefaultTheme">
+          <declaration><![CDATA[public void ApplyDefaultTheme(PortalSettings portalSettings, string themeName)]]></declaration>
+          <documentation>
+            <summary>
+ update portal skin.
+ </summary>
+ <param name="portalSettings">portal settings.</param>
+ <param name="themeName"></param></documentation>
+          <codeblock>
+            <location sl="228" sc="9" el="250" ec="10">Components\ThemesController.cs</location>
+            <body hash="ec9ec1b6fc9d006681f9a19a9e913f09"><![CDATA[{
+            var skin = GetLayouts(portalSettings, ThemeLevel.Global | ThemeLevel.Site)
+                .FirstOrDefault(t => t.PackageName == themeName);
+            if (skin != null)
+            {
+                var skinFile = GetThemeFiles(portalSettings, skin).FirstOrDefault(t => t.Path == skin.DefaultThemeFile);
+                if (skinFile != null)
+                {
+                    ApplyTheme(portalSettings.PortalId, skinFile, ApplyThemeScope.Site | ApplyThemeScope.Edit);
+                }
+            }
+
+            var container = GetContainers(portalSettings, ThemeLevel.Global | ThemeLevel.Site)
+                .FirstOrDefault(t => t.PackageName.Equals(themeName, StringComparison.InvariantCultureIgnoreCase));
+            if (container != null)
+            {
+                var containerFile = GetThemeFiles(portalSettings, container).FirstOrDefault(t => t.Path == container.DefaultThemeFile);
+                if (containerFile != null)
+                {
+                    ApplyTheme(portalSettings.PortalId, containerFile, ApplyThemeScope.Site | ApplyThemeScope.Edit);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ApplyTheme">
+          <declaration><![CDATA[public void ApplyTheme(int portalId, ThemeFileInfo themeFile, ApplyThemeScope scope)]]></declaration>
+          <documentation>
+            <summary>
+ update portal skin.
+ </summary>
+ <param name="portalId">portal id.</param>
+ <param name="themeFile">skin info.</param>
+ <param name="scope">change skin or container.</param></documentation>
+          <codeblock>
+            <location sl="192" sc="9" el="220" ec="10">Components\ThemesController.cs</location>
+            <body hash="b3c035dab7853dd368409afbd2ad4285"><![CDATA[{
+            var skinPath = themeFile.Path + ".ascx";
+
+            switch (themeFile.Type)
+            {
+                case ThemeType.Container:
+                    if ((scope & ApplyThemeScope.Site) == ApplyThemeScope.Site)
+                    {
+                        SkinController.SetSkin(SkinController.RootContainer, portalId, SkinType.Portal, skinPath);
+                    }
+
+                    if ((scope & ApplyThemeScope.Edit) == ApplyThemeScope.Edit)
+                    {
+                        SkinController.SetSkin(SkinController.RootContainer, portalId, SkinType.Admin, skinPath);
+                    }
+                    break;
+                case ThemeType.Skin:
+                    if ((scope & ApplyThemeScope.Site) == ApplyThemeScope.Site)
+                    {
+                        SkinController.SetSkin(SkinController.RootSkin, portalId, SkinType.Portal, skinPath);
+                    }
+                    if ((scope & ApplyThemeScope.Edit) == ApplyThemeScope.Edit)
+                    {
+                        SkinController.SetSkin(SkinController.RootSkin, portalId, SkinType.Admin, skinPath);
+                    }
+                    DataCache.ClearPortalCache(portalId, true);
+                    break;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateThumbnail">
+          <declaration><![CDATA[internal static string CreateThumbnail(string strImage)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="556" sc="9" el="630" ec="10">Components\ThemesController.cs</location>
+            <body hash="01fc25a5146ba3a178cd066ff60004eb"><![CDATA[{
+            var imageFileName = Path.GetFileName(strImage);
+            if (string.IsNullOrEmpty(imageFileName) || imageFileName.StartsWith("thumbnail_"))
+            {
+               strImage = Globals.ApplicationPath + "/" + strImage.Substring(strImage.IndexOf("portals\\"));
+               strImage = strImage.Replace("\\", "/");
+                                return strImage;
+            }
+            
+            var strThumbnail = strImage.Replace(Path.GetFileName(strImage), "thumbnail_" + imageFileName);
+
+            if (NeedCreateThumbnail(strThumbnail, strImage))
+            {
+                lock (_threadLocker)
+                {
+                    if (NeedCreateThumbnail(strThumbnail, strImage))
+                    {
+                        const int intSize = 150; //size of the thumbnail 
+                        try
+                        {
+                            var objImage = Image.FromFile(strImage);
+
+                            //scale the image to prevent distortion
+                            int intHeight;
+                            int intWidth;
+                            double dblScale;
+                            if (objImage.Height > objImage.Width)
+                            {
+                                //The height was larger, so scale the width 
+                                dblScale = (double)intSize / objImage.Height;
+                                intHeight = intSize;
+                                intWidth = Convert.ToInt32(objImage.Width * dblScale);
+                            }
+                            else
+                            {
+                                //The width was larger, so scale the height 
+                                dblScale = (double)intSize / objImage.Width;
+                                intWidth = intSize;
+                                intHeight = Convert.ToInt32(objImage.Height * dblScale);
+                            }
+
+                            //create the thumbnail image
+                            var objThumbnail = objImage.GetThumbnailImage(intWidth, intHeight, null, IntPtr.Zero);
+
+                            //delete the old file ( if it exists )
+                            if (File.Exists(strThumbnail))
+                            {
+                                File.Delete(strThumbnail);
+                            }
+
+                            //save the thumbnail image 
+                            objThumbnail.Save(strThumbnail, objImage.RawFormat);
+
+                            //set the file attributes
+                            File.SetAttributes(strThumbnail, FileAttributes.Normal);
+                            File.SetLastWriteTime(strThumbnail, File.GetLastWriteTime(strImage));
+
+                            //tidy up
+                            objImage.Dispose();
+                            objThumbnail.Dispose();
+                        }
+                        catch (Exception ex) //problem creating thumbnail
+                        {
+                            Logger.Error(ex);
+                        }
+                    }
+                }
+            }
+            
+            strThumbnail = Globals.ApplicationPath + "/" + strThumbnail.Substring(strThumbnail.IndexOf("portals\\"));
+            strThumbnail = strThumbnail.Replace("\\", "/");
+
+            //return thumbnail filename
+            return strThumbnail;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteTheme">
+          <declaration><![CDATA[public void DeleteTheme(PortalSettings portalSettings, ThemeFileInfo themeFile)]]></declaration>
+          <documentation>
+            <summary>
+ delete a skin or container.
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="themeFile"></param></documentation>
+          <codeblock>
+            <location sl="258" sc="9" el="269" ec="10">Components\ThemesController.cs</location>
+            <body hash="909ec09058c00ce8a74e01dba6411df4"><![CDATA[{
+            var themePath = SkinController.FormatSkinSrc(themeFile.Path, portalSettings);
+            var user = UserController.Instance.GetCurrentUserInfo();
+
+            if (!user.IsSuperUser && themePath.IndexOf("\\portals\\_default\\", StringComparison.InvariantCultureIgnoreCase) != Null.NullInteger)
+            {
+                throw new SecurityException("NoPermission");
+            }
+
+            File.Delete(Path.Combine(Globals.ApplicationMapPath, themePath));
+            DataCache.ClearPortalCache(portalSettings.PortalId, true);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteThemePackage">
+          <declaration><![CDATA[public void DeleteThemePackage(PortalSettings portalSettings, ThemeInfo theme)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="theme"></param></documentation>
+          <codeblock>
+            <location sl="277" sc="9" el="316" ec="10">Components\ThemesController.cs</location>
+            <body hash="e706024e68bc2c13e2d98f92e55f7001"><![CDATA[{
+            var themePath = Path.Combine(Globals.ApplicationMapPath, theme.Path);
+            var user = UserController.Instance.GetCurrentUserInfo();
+
+            if (!user.IsSuperUser  && themePath.IndexOf("\\portals\\_default\\", StringComparison.InvariantCultureIgnoreCase) != Null.NullInteger)
+            {
+                throw new SecurityException("NoPermission");
+            }
+
+            if (theme.Type == ThemeType.Skin)
+            {
+                var skinPackage = SkinController.GetSkinPackage(portalSettings.PortalId, theme.PackageName, "Skin");
+                if (skinPackage != null)
+                {
+                    throw new InvalidOperationException("UsePackageUninstall");
+                }
+
+                if (Directory.Exists(themePath))
+                {
+                    Globals.DeleteFolderRecursive(themePath);
+                }
+                if (Directory.Exists(themePath.Replace("\\" + SkinController.RootSkin.ToLower() + "\\", "\\" + SkinController.RootContainer + "\\")))
+                {
+                    Globals.DeleteFolderRecursive(themePath.Replace("\\" + SkinController.RootSkin.ToLower() + "\\", "\\" + SkinController.RootContainer + "\\"));
+                }
+            }
+            else if (theme.Type == ThemeType.Container)
+            {
+                var skinPackage = SkinController.GetSkinPackage(portalSettings.PortalId, theme.PackageName, "Container");
+                if (skinPackage != null)
+                {
+                    throw new InvalidOperationException("UsePackageUninstall");
+                }
+
+                if (Directory.Exists(themePath))
+                {
+                    Globals.DeleteFolderRecursive(themePath);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FormatThemePath">
+          <declaration><![CDATA[private static string FormatThemePath(string themePath, string fileName, ThemeType type)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="658" sc="9" el="679" ec="10">Components\ThemesController.cs</location>
+            <body hash="1173ef257a5344f88b591412785a7c56"><![CDATA[{
+            var filePath = Path.Combine(themePath, fileName);
+            var lowercasePath = filePath.ToLowerInvariant();
+            string strRootSkin;
+            if (type == ThemeType.Skin)
+            {
+                strRootSkin = SkinController.RootSkin.ToLower();
+            }
+            else
+            {
+                strRootSkin = SkinController.RootContainer.ToLower();
+            }
+
+            var strSkinType = themePath.IndexOf(Globals.HostMapPath, StringComparison.InvariantCultureIgnoreCase) != -1 ? "G" : "L";
+
+            var strUrl = lowercasePath.Substring(filePath.IndexOf("\\" + strRootSkin + "\\", StringComparison.InvariantCultureIgnoreCase))
+                        .Replace(".ascx", "")
+                        .Replace("\\", "/")
+                        .TrimStart('/');
+
+            return "[" + strSkinType + "]" + strUrl;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetContainers">
+          <declaration><![CDATA[public IList<ThemeInfo> GetContainers(PortalSettings portalSettings, ThemeLevel level)]]></declaration>
+          <documentation>
+            <summary>
+ Get Containers.
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="level">portal level or host level.</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="87" sc="9" el="100" ec="10">Components\ThemesController.cs</location>
+            <body hash="789521ff6e23e80d5cb638e66ccbface"><![CDATA[{
+            var themes = new List<ThemeInfo>();
+            if ((level & ThemeLevel.Site) == ThemeLevel.Site)
+            {
+                themes.AddRange(GetThemes(ThemeType.Container, Path.Combine(portalSettings.HomeSystemDirectoryMapPath, SkinController.RootContainer)));
+            }
+
+            if ((level & ThemeLevel.Global) == ThemeLevel.Global)
+            {
+                themes.AddRange(GetThemes(ThemeType.Container, Path.Combine(Globals.HostMapPath, SkinController.RootContainer)));
+            }
+
+            return themes;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDefaultThemeFileName">
+          <declaration><![CDATA[private static string GetDefaultThemeFileName(string themePath, ThemeType type)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="517" sc="9" el="535" ec="10">Components\ThemesController.cs</location>
+            <body hash="844efe3e9e5439db51778a904b7289a9"><![CDATA[{
+            var themeFiles = new List<string>();
+            var folderPath = Path.Combine(Globals.ApplicationMapPath, themePath);
+            themeFiles.AddRange(Directory.GetFiles(folderPath, "*.ascx"));
+
+            var defaultFile = themeFiles.FirstOrDefault(i =>
+            {
+                var fileName = Path.GetFileNameWithoutExtension(i);
+                return type == ThemeType.Skin ? DefaultLayoutNames.Contains(fileName, StringComparer.InvariantCultureIgnoreCase)
+                                              : DefaultContainerNames.Contains(fileName, StringComparer.InvariantCultureIgnoreCase);
+            });
+
+            if (string.IsNullOrEmpty(defaultFile))
+            {
+                defaultFile = themeFiles.FirstOrDefault();
+            }
+
+            return !string.IsNullOrEmpty(defaultFile) ? Path.GetFileName(defaultFile) : string.Empty;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFactory">
+          <declaration><![CDATA[protected override Func<IThemesController> GetFactory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="9" el="54" ec="10">Components\ThemesController.cs</location>
+            <body hash="2b9c6d008c22aef5ddfd92df28a35d2c"><![CDATA[{
+            return () => new ThemesController();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLayouts">
+          <declaration><![CDATA[public IList<ThemeInfo> GetLayouts(PortalSettings portalSettings, ThemeLevel level)]]></declaration>
+          <documentation>
+            <summary>
+ Get Skins.
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="level">portal level or host level.</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="78" ec="10">Components\ThemesController.cs</location>
+            <body hash="0a6fdf50620b249934a288d620f6979b"><![CDATA[{
+            var themes = new List<ThemeInfo>();
+            if ((level & ThemeLevel.Site) == ThemeLevel.Site)
+            {
+                themes.AddRange(GetThemes(ThemeType.Skin, Path.Combine(portalSettings.HomeSystemDirectoryMapPath, SkinController.RootSkin)));
+            }
+
+            if ((level & ThemeLevel.Global) == ThemeLevel.Global)
+            {
+                themes.AddRange(GetThemes(ThemeType.Skin, Path.Combine(Globals.HostMapPath, SkinController.RootSkin)));
+            }
+
+            return themes;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetThemeFile">
+          <declaration><![CDATA[public ThemeFileInfo GetThemeFile(PortalSettings portalSettings, string filePath, ThemeType type)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="168" sc="9" el="183" ec="10">Components\ThemesController.cs</location>
+            <body hash="c2db067ef4f29b96e4d222354bfa58f2"><![CDATA[{
+            var themeName = SkinController.FormatSkinPath(filePath)
+                            .Substring(filePath.IndexOf("/", StringComparison.InvariantCultureIgnoreCase) + 1)
+                            .Replace("/", string.Empty);
+
+            var themeInfo = (type == ThemeType.Skin ? GetLayouts(portalSettings, ThemeLevel.Global | ThemeLevel.Site)
+                                                    : GetContainers(portalSettings, ThemeLevel.Global | ThemeLevel.Site))
+                            .FirstOrDefault(t => t.PackageName.Equals(themeName, StringComparison.InvariantCultureIgnoreCase));
+
+            if (themeInfo != null)
+            {
+                return GetThemeFiles(portalSettings, themeInfo).FirstOrDefault(f => (f.Path + ".ascx").Equals(filePath, StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetThemeFiles">
+          <declaration><![CDATA[public IList<ThemeFileInfo> GetThemeFiles(PortalSettings portalSettings, ThemeInfo theme)]]></declaration>
+          <documentation>
+            <summary>
+ get skin files in the skin.
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="theme"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="109" sc="9" el="165" ec="10">Components\ThemesController.cs</location>
+            <body hash="5aa3f15f8b7ec2fa757189537dacdd6a"><![CDATA[{
+            var themePath = Path.Combine(Globals.ApplicationMapPath, theme.Path);
+            var themeFiles = new List<ThemeFileInfo>();
+
+            if (Directory.Exists(themePath))
+            {
+                bool fallbackSkin;
+                if (theme.Type == ThemeType.Skin)
+                {
+                    fallbackSkin = IsFallbackSkin(themePath);
+                }
+                else
+                {
+                    fallbackSkin = IsFallbackContainer(themePath);
+                }
+
+                var strSkinType = themePath.IndexOf(Globals.HostMapPath, StringComparison.InvariantCultureIgnoreCase) != -1 ? "G" : "L";
+
+                var canDeleteSkin = SkinController.CanDeleteSkin(themePath, portalSettings.HomeDirectoryMapPath);
+                var arrFiles = Directory.GetFiles(themePath, "*.ascx");
+
+                foreach (var strFile in arrFiles)
+                {
+                    var file = strFile.ToLowerInvariant();
+
+                    var themeFile = new ThemeFileInfo();
+                    themeFile.ThemeName = theme.PackageName;
+                    themeFile.Type = theme.Type;
+
+                    var imagePath = string.Empty;
+                    foreach (var ext in ImageExtensions)
+                    {
+                        var path = Path.ChangeExtension(file, ext);
+                        if (File.Exists(path))
+                        {
+                            imagePath = path;
+                            break;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(imagePath))
+                    {
+                        themeFile.Thumbnail = CreateThumbnail(imagePath);
+                    }
+
+
+                    themeFile.Name = Path.GetFileNameWithoutExtension(file);
+                    themeFile.Path = FormatThemePath(themePath, Path.GetFileName(strFile), theme.Type);
+                    themeFile.CanDelete = (UserController.Instance.GetCurrentUserInfo().IsSuperUser || strSkinType == "L")
+                                          && (!fallbackSkin && canDeleteSkin);
+
+                    themeFiles.Add(themeFile);
+                }
+            }
+
+            return themeFiles;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetThemes">
+          <declaration><![CDATA[private static IList<ThemeInfo> GetThemes(ThemeType type, string strRoot)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="487" sc="9" el="514" ec="10">Components\ThemesController.cs</location>
+            <body hash="b80297eb763a5ff52112c6b8ae6ba23b"><![CDATA[{
+            var themes = new List<ThemeInfo>();
+            if (Directory.Exists(strRoot))
+            {
+                foreach (var strFolder in Directory.GetDirectories(strRoot))
+                {
+                    var strName = strFolder.Substring(strFolder.LastIndexOf("\\") + 1);
+                    if (strName != "_default")
+                    {
+                        var themePath = strFolder.Replace(Globals.ApplicationMapPath, "").TrimStart('\\').ToLowerInvariant();
+                        var isFallback = type == ThemeType.Skin ? IsFallbackSkin(themePath) : IsFallbackContainer(themePath);
+                        var canDelete = !isFallback && SkinController.CanDeleteSkin(strFolder, PortalSettings.Current.HomeDirectoryMapPath);
+                        var defaultThemeFile = GetDefaultThemeFileName(themePath, type);
+                        themes.Add(new ThemeInfo()
+                        {
+                            PackageName = strName,
+                            Type = type,
+                            Path = themePath,
+                            DefaultThemeFile = FormatThemePath(strFolder, defaultThemeFile, type),
+                            Thumbnail = GetThumbnail(themePath, defaultThemeFile),
+                            CanDelete = canDelete
+                        });
+                    }
+                }
+            }
+
+            return themes;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetThumbnail">
+          <declaration><![CDATA[private static string GetThumbnail(string themePath, string themeFileName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="538" sc="9" el="553" ec="10">Components\ThemesController.cs</location>
+            <body hash="f14cda3d9c347ecd72114f01b48e7543"><![CDATA[{
+            var folderPath = Path.Combine(Globals.ApplicationMapPath, themePath);
+            var filePath = Path.Combine(folderPath, themeFileName);
+            var imagePath = string.Empty;
+            foreach (var ext in ImageExtensions)
+            {
+                var path = Path.ChangeExtension(filePath, ext);
+                if (File.Exists(path))
+                {
+                    imagePath = path;
+                    break;
+                }
+            }
+
+            return !string.IsNullOrEmpty(imagePath) ? CreateThumbnail(imagePath) : string.Empty;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsFallbackContainer">
+          <declaration><![CDATA[private static bool IsFallbackContainer(string skinPath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="638" sc="9" el="645" ec="10">Components\ThemesController.cs</location>
+            <body hash="508f037df7bf2e0f89a6b4c708fcd7ac"><![CDATA[{
+            var strDefaultContainerPath = (Globals.HostMapPath + SkinController.RootContainer + SkinDefaults.GetSkinDefaults(SkinDefaultType.SkinInfo).Folder).Replace("/", "\\");
+            if (strDefaultContainerPath.EndsWith("\\"))
+            {
+                strDefaultContainerPath = strDefaultContainerPath.Substring(0, strDefaultContainerPath.Length - 1);
+            }
+            return skinPath.IndexOf(strDefaultContainerPath, StringComparison.CurrentCultureIgnoreCase) != -1;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsFallbackSkin">
+          <declaration><![CDATA[private static bool IsFallbackSkin(string skinPath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="648" sc="9" el="655" ec="10">Components\ThemesController.cs</location>
+            <body hash="beb9a7b3bc41a8d577e9ab436ccfdad5"><![CDATA[{
+            var strDefaultSkinPath = (Globals.HostMapPath + SkinController.RootSkin + SkinDefaults.GetSkinDefaults(SkinDefaultType.SkinInfo).Folder).Replace("/", "\\");
+            if (strDefaultSkinPath.EndsWith("\\"))
+            {
+                strDefaultSkinPath = strDefaultSkinPath.Substring(0, strDefaultSkinPath.Length - 1);
+            }
+            return skinPath.ToLowerInvariant() == strDefaultSkinPath.ToLowerInvariant();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="NeedCreateThumbnail">
+          <declaration><![CDATA[private static bool NeedCreateThumbnail(string thumbnailPath, string imagePath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="633" sc="9" el="635" ec="10">Components\ThemesController.cs</location>
+            <body hash="0ca29c0075e854a13707e7b1f1118dc1"><![CDATA[{
+            return !File.Exists(thumbnailPath) || File.GetLastWriteTime(thumbnailPath) != File.GetLastWriteTime(imagePath);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ParseTheme">
+          <declaration><![CDATA[public void ParseTheme(PortalSettings portalSettings, ThemeInfo theme, ParseType parseType)]]></declaration>
+          <documentation>
+            <summary>
+ Parse skin package.
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="theme"></param>
+ <param name="parseType"></param></documentation>
+          <codeblock>
+            <location sl="364" sc="9" el="412" ec="10">Components\ThemesController.cs</location>
+            <body hash="177e86bbb477a50f23be671d08d4d557"><![CDATA[{
+            var strRootPath = Null.NullString;
+            switch (theme.Level)
+            {
+                case ThemeLevel.Global: //global
+                    strRootPath = Globals.HostMapPath;
+                    break;
+                case ThemeLevel.Site: //local
+                    strRootPath = portalSettings.HomeDirectoryMapPath;
+                    break;
+            }
+            var objSkinFiles = new SkinFileProcessor(strRootPath, theme.Type == ThemeType.Container ? SkinController.RootContainer : SkinController.RootSkin, theme.PackageName);
+            var arrSkinFiles = new ArrayList();
+
+            var strFolder = Path.Combine(Globals.ApplicationMapPath, theme.Path);
+            if (Directory.Exists(strFolder))
+            {
+                var arrFiles = Directory.GetFiles(strFolder);
+                foreach (var strFile in arrFiles)
+                {
+                    switch (Path.GetExtension(strFile))
+                    {
+                        case ".htm":
+                        case ".html":
+                        case ".css":
+                            if (strFile.ToLower().IndexOf(Globals.glbAboutPage.ToLower()) < 0)
+                            {
+                                arrSkinFiles.Add(strFile);
+                            }
+                            break;
+                        case ".ascx":
+                            if (File.Exists(strFile.Replace(".ascx", ".htm")) == false && File.Exists(strFile.Replace(".ascx", ".html")) == false)
+                            {
+                                arrSkinFiles.Add(strFile);
+                            }
+                            break;
+                    }
+                }
+            }
+            switch (parseType)
+            {
+                case ParseType.Localized: //localized
+                    objSkinFiles.ProcessList(arrSkinFiles, SkinParser.Localized);
+                    break;
+                case ParseType.Portable: //portable
+                    objSkinFiles.ProcessList(arrSkinFiles, SkinParser.Portable);
+                    break;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateManifest">
+          <declaration><![CDATA[private void UpdateManifest(PortalSettings portalSettings, UpdateThemeInfo updateTheme)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="419" sc="9" el="484" ec="10">Components\ThemesController.cs</location>
+            <body hash="0b1dfcb3ea7a81f4bb8a49905a37a681"><![CDATA[{
+            var themePath = SkinController.FormatSkinSrc(updateTheme.Path, portalSettings);
+            if (File.Exists(themePath.Replace(".ascx", ".htm")))
+            {
+                var strFile = themePath.Replace(".ascx", ".xml");
+                if (File.Exists(strFile) == false)
+                {
+                    strFile = strFile.Replace(Path.GetFileName(strFile), "skin.xml");
+                }
+                XmlDocument xmlDoc = null;
+                try
+                {
+                    xmlDoc = new XmlDocument();
+                    xmlDoc.Load(strFile);
+                }
+                catch
+                {
+                    xmlDoc.InnerXml = "<Objects></Objects>";
+                }
+                var xmlToken = xmlDoc.DocumentElement.SelectSingleNode("descendant::Object[Token='[" + updateTheme.Token + "]']");
+                if (xmlToken == null)
+                {
+                    //add token
+                    string strToken = "<Token>[" + updateTheme.Token + "]</Token><Settings></Settings>";
+                    xmlToken = xmlDoc.CreateElement("Object");
+                    xmlToken.InnerXml = strToken;
+                    xmlDoc.SelectSingleNode("Objects").AppendChild(xmlToken);
+                    xmlToken = xmlDoc.DocumentElement.SelectSingleNode("descendant::Object[Token='[" + updateTheme.Token + "]']");
+                }
+                var strValue = updateTheme.Value;
+
+                var blnUpdate = false;
+                foreach (XmlNode xmlSetting in xmlToken.SelectNodes(".//Settings/Setting"))
+                {
+                    if (xmlSetting.SelectSingleNode("Name").InnerText == updateTheme.Setting)
+                    {
+                        xmlSetting.SelectSingleNode("Value").InnerText = strValue;
+                        blnUpdate = true;
+                    }
+                }
+                if (blnUpdate == false)
+                {
+                    var strSetting = "<Name>" + updateTheme.Setting + "</Name><Value>" + strValue + "</Value>";
+                    XmlNode xmlSetting = xmlDoc.CreateElement("Setting");
+                    xmlSetting.InnerXml = strSetting;
+                    xmlToken.SelectSingleNode("Settings").AppendChild(xmlSetting);
+                }
+                try
+                {
+                    if (File.Exists(strFile))
+                    {
+                        File.SetAttributes(strFile, FileAttributes.Normal);
+                    }
+                    var objStream = File.CreateText(strFile);
+                    var strXML = xmlDoc.InnerXml;
+                    strXML = strXML.Replace("><", ">" + Environment.NewLine + "<");
+                    objStream.WriteLine(strXML);
+                    objStream.Close();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex);
+                }
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateTheme">
+          <declaration><![CDATA[public void UpdateTheme(PortalSettings portalSettings, UpdateThemeInfo updateTheme)]]></declaration>
+          <documentation>
+            <summary>
+ Update Theme Attributes.
+ </summary>
+ <param name="portalSettings"></param>
+ <param name="updateTheme"></param></documentation>
+          <codeblock>
+            <location sl="324" sc="9" el="355" ec="10">Components\ThemesController.cs</location>
+            <body hash="2ba8a5c4feec1b8dd63ca69187424849"><![CDATA[{
+            var themePath = SkinController.FormatSkinSrc(updateTheme.Path + ".ascx", portalSettings);
+            themePath = Path.Combine(Globals.ApplicationMapPath, themePath.TrimStart('/'));
+
+            var objStreamReader = File.OpenText(themePath);
+            var strSkin = objStreamReader.ReadToEnd();
+            objStreamReader.Close();
+            var strTag = "<dnn:" + updateTheme.Token + " runat=\"server\" id=\"dnn" + updateTheme.Token + "\"";
+            var intOpenTag = strSkin.IndexOf(strTag);
+            if (intOpenTag != -1)
+            {
+                var intCloseTag = strSkin.IndexOf(" />", intOpenTag);
+                var strAttribute = updateTheme.Setting;
+                var intStartAttribute = strSkin.IndexOf(strAttribute, intOpenTag);
+                string strValue = updateTheme.Value;
+                if (intStartAttribute != -1 && intStartAttribute < intCloseTag)
+                {
+                    //remove attribute
+                    var intEndAttribute = strSkin.IndexOf("\" ", intStartAttribute);
+                    strSkin = strSkin.Substring(0, intStartAttribute) + strSkin.Substring(intEndAttribute + 2);
+                }
+                //add attribute
+                strSkin = strSkin.Insert(intOpenTag + strTag.Length, " " + strAttribute + "=\"" + strValue + "\"");
+
+                File.SetAttributes(themePath, FileAttributes.Normal);
+                var objStream = File.CreateText(themePath);
+                objStream.WriteLine(strSkin);
+                objStream.Close();
+
+                UpdateManifest(portalSettings, updateTheme);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_threadLocker">
+          <declaration><![CDATA[private static readonly object _threadLocker = new object();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="DefaultContainerNames">
+          <declaration><![CDATA[internal static readonly IList<string> DefaultContainerNames = new List<string>]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="DefaultLayoutNames">
+          <declaration><![CDATA[internal static readonly IList<string> DefaultLayoutNames = new List<string>]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ImageExtensions">
+          <declaration><![CDATA[internal static readonly IList<string> ImageExtensions = new List<string>]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ThemesController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ThemeType">
+      <declaration><![CDATA[public enum ThemeType]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="Container">
+          <declaration><![CDATA[public const ThemeType Container = 1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Skin">
+          <declaration><![CDATA[public const ThemeType Skin = 0;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Themes.Components.DTO">
+    <class name="ApplyDefaultThemeInfo">
+      <declaration><![CDATA[public class ApplyDefaultThemeInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ApplyDefaultThemeInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ThemeName">
+          <declaration><![CDATA[public string ThemeName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="35" el="13" ec="39">Components\DTO\ApplyDefaultThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="13" sc="40" el="13" ec="44">Components\DTO\ApplyDefaultThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ApplyThemeInfo">
+      <declaration><![CDATA[public class ApplyThemeInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ApplyThemeInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Scope">
+          <declaration><![CDATA[public ApplyThemeScope Scope]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="40" el="16" ec="44">Components\DTO\ApplyThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="16" sc="45" el="16" ec="49">Components\DTO\ApplyThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ThemeFile">
+          <declaration><![CDATA[public ThemeFileInfo ThemeFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="42" el="13" ec="46">Components\DTO\ApplyThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="13" sc="47" el="13" ec="51">Components\DTO\ApplyThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ListItemInfo">
+      <declaration><![CDATA[public class ListItemInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ListItemInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="18" sc="9" el="21" ec="10">Components\DTO\ListItemInfo.cs</location>
+            <body hash="f4b4b7e6e10b1e5c1c37057e780c5f91"><![CDATA[public ListItemInfo()
+        {
+            
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ListItemInfo(string text, string value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="9" el="27" ec="10">Components\DTO\ListItemInfo.cs</location>
+            <body hash="30d2f51f40c8ffddfe9b622edf6c19fc"><![CDATA[public ListItemInfo(string text, string value)
+        {
+            Text = text;
+            Value = value;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Text">
+          <declaration><![CDATA[public string Text]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="30" el="13" ec="34">Components\DTO\ListItemInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="13" sc="35" el="13" ec="39">Components\DTO\ListItemInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Value">
+          <declaration><![CDATA[public string Value]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="31" el="16" ec="35">Components\DTO\ListItemInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="16" sc="36" el="16" ec="40">Components\DTO\ListItemInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ParseThemeInfo">
+      <declaration><![CDATA[public class ParseThemeInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ParseThemeInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ParseType">
+          <declaration><![CDATA[public ParseType ParseType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="38" el="16" ec="42">Components\DTO\ParseThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="16" sc="43" el="16" ec="47">Components\DTO\ParseThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ThemeName">
+          <declaration><![CDATA[public string ThemeName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="35" el="13" ec="39">Components\DTO\ParseThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="13" sc="40" el="13" ec="44">Components\DTO\ParseThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ThemeFileInfo">
+      <declaration><![CDATA[public class ThemeFileInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private bool <CanDelete>k__BackingField = true;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="47" el="30" ec="51">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="f8354de67d79a99e880000c5f3cae57d"><![CDATA[tru]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CanDelete">
+          <declaration><![CDATA[public bool CanDelete]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="33" el="30" ec="37">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="30" sc="38" el="30" ec="42">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="18" sc="30" el="18" ec="34">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="18" sc="35" el="18" ec="39">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Path">
+          <declaration><![CDATA[public string Path]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="30" el="24" ec="34">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="24" sc="35" el="24" ec="39">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ThemeName">
+          <declaration><![CDATA[public string ThemeName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="15" sc="35" el="15" ec="39">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="15" sc="40" el="15" ec="44">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Thumbnail">
+          <declaration><![CDATA[public string Thumbnail]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="35" el="27" ec="39">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="27" sc="40" el="27" ec="44">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Type">
+          <declaration><![CDATA[public ThemeType Type]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="33" el="21" ec="37">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="21" sc="38" el="21" ec="42">Components\DTO\ThemeFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ThemeInfo">
+      <declaration><![CDATA[public class ThemeInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private bool <CanDelete>k__BackingField = true;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="47" el="31" ec="51">Components\DTO\ThemeInfo.cs</location>
+            <body hash="f8354de67d79a99e880000c5f3cae57d"><![CDATA[tru]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CanDelete">
+          <declaration><![CDATA[public bool CanDelete]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="33" el="31" ec="37">Components\DTO\ThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="31" sc="38" el="31" ec="42">Components\DTO\ThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="DefaultThemeFile">
+          <declaration><![CDATA[public string DefaultThemeFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="25" sc="42" el="25" ec="46">Components\DTO\ThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="25" sc="47" el="25" ec="51">Components\DTO\ThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Level">
+          <declaration><![CDATA[public ThemeLevel Level]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="36" el="36" ec="30">Components\DTO\ThemeInfo.cs</location>
+            <body hash="f869b4006e56b9a26ebec45b124e8dc6"><![CDATA[Path.Replace("\\", "/").IndexOf(Globals.HostPath.TrimStart('/'), StringComparison.InvariantCultureIgnoreCase) > Null.NullInteger
+            ? ThemeLevel.Global
+            : ThemeLevel.Site]]></body>
+          </codeblock>
+        </property>
+        <property name="PackageName">
+          <declaration><![CDATA[public string PackageName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="37" el="16" ec="41">Components\DTO\ThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="16" sc="42" el="16" ec="46">Components\DTO\ThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Path">
+          <declaration><![CDATA[public string Path]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="22" sc="30" el="22" ec="34">Components\DTO\ThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="22" sc="35" el="22" ec="39">Components\DTO\ThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Thumbnail">
+          <declaration><![CDATA[public string Thumbnail]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="35" el="28" ec="39">Components\DTO\ThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="28" sc="40" el="28" ec="44">Components\DTO\ThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Type">
+          <declaration><![CDATA[public ThemeType Type]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="33" el="19" ec="37">Components\DTO\ThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="19" sc="38" el="19" ec="42">Components\DTO\ThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateThemeInfo">
+      <declaration><![CDATA[public class UpdateThemeInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateThemeInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Path">
+          <declaration><![CDATA[public string Path]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="14" sc="30" el="14" ec="34">Components\DTO\UpdateThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="14" sc="35" el="14" ec="39">Components\DTO\UpdateThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Setting">
+          <declaration><![CDATA[public string Setting]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="20" sc="33" el="20" ec="37">Components\DTO\UpdateThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="20" sc="38" el="20" ec="42">Components\DTO\UpdateThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Token">
+          <declaration><![CDATA[public string Token]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="31" el="17" ec="35">Components\DTO\UpdateThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="17" sc="36" el="17" ec="40">Components\DTO\UpdateThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Value">
+          <declaration><![CDATA[public string Value]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="31" el="23" ec="35">Components\DTO\UpdateThemeInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="23" sc="36" el="23" ec="40">Components\DTO\UpdateThemeInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Themes.MenuControllers">
+    <class name="ThemeMenuController">
+      <declaration><![CDATA[public class ThemeMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ThemeMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="26" sc="9" el="32" ec="10">MenuControllers\ThemeMenuController.cs</location>
+            <body hash="71ba97fb8e144575f7995c04dcc34674"><![CDATA[{
+            return new Dictionary<string, object>
+            {
+                {"previewUrl", Globals.NavigateURL()},
+                {"isHost", UserController.Instance.GetCurrentUserInfo().IsSuperUser}
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="9" el="17" ec="10">MenuControllers\ThemeMenuController.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="20" sc="9" el="23" ec="10">MenuControllers\ThemeMenuController.cs</location>
+            <body hash="d4c78a0d5351d270343f678a4a02cf22"><![CDATA[{
+            var user = UserController.Instance.GetCurrentUserInfo();
+            return user.IsSuperUser || user.IsInRole(PortalSettings.Current?.AdministratorRoleName);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Themes.Services">
+    <class name="ThemesController">
+      <declaration><![CDATA[public class ThemesController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private IThemesController _controller = ServiceLocator<IThemesController, ThemesController>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="9" el="38" ec="86">Services\ThemesController.cs</location>
+            <body hash="03e39221353254b4b4fba918753153f4"><![CDATA[private IThemesController _controller = Components.ThemesController.Instance]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ThemesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="9" el="37" ec="105">Services\ThemesController.cs</location>
+            <body hash="e7f8a9b53c9a032c65dd58ecf13ae2bf"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ThemesController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ApplyDefaultTheme">
+          <declaration><![CDATA[public HttpResponseMessage ApplyDefaultTheme(ApplyDefaultThemeInfo defaultTheme, string language)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="118" sc="9" el="144" ec="10">Services\ThemesController.cs</location>
+            <body hash="98d3057eb6db1bf53cfbd97db5684adc"><![CDATA[{
+            try
+            {
+                var themeInfo = _controller.GetLayouts(PortalSettings, ThemeLevel.Global | ThemeLevel.Site)
+                                    .FirstOrDefault(
+                                        t => t.PackageName.Equals(defaultTheme.ThemeName, StringComparison.InvariantCultureIgnoreCase));
+
+                if (themeInfo == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, "ThemeNotFound");
+                }
+
+                var themeFiles = _controller.GetThemeFiles(PortalSettings, themeInfo);
+                if (themeFiles.Count == 0)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, "NoThemeFile");
+                }
+
+                _controller.ApplyDefaultTheme(PortalSettings, defaultTheme.ThemeName);
+                return Request.CreateResponse(HttpStatusCode.OK, GetCurrentThemeObject());
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ApplyTheme">
+          <declaration><![CDATA[public HttpResponseMessage ApplyTheme(ApplyThemeInfo applyTheme, string language)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="102" sc="9" el="113" ec="10">Services\ThemesController.cs</location>
+            <body hash="eef3743dd660dcadd1e79e3acf40cb9c"><![CDATA[{
+            try
+            {
+                _controller.ApplyTheme(PortalId, applyTheme.ThemeFile, applyTheme.Scope);
+                return Request.CreateResponse(HttpStatusCode.OK, GetCurrentThemeObject());
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteThemePackage">
+          <declaration><![CDATA[public HttpResponseMessage DeleteThemePackage(ThemeInfo theme)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="149" sc="9" el="165" ec="10">Services\ThemesController.cs</location>
+            <body hash="99e164bcd133f4c1c3aa6596bafab6b5"><![CDATA[{
+            try
+            {
+                if (theme.Level == ThemeLevel.Global && !UserInfo.IsSuperUser)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "NoPermission");
+                }
+
+                _controller.DeleteThemePackage(PortalSettings, theme);
+                return Request.CreateResponse(HttpStatusCode.OK, new { });
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCurrentTheme">
+          <declaration><![CDATA[public HttpResponseMessage GetCurrentTheme(string language)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="9" el="56" ec="10">Services\ThemesController.cs</location>
+            <body hash="5a92ab4b7568ab8a9f41ce5de8806a2f"><![CDATA[{
+            try
+            {
+
+
+                return Request.CreateResponse(HttpStatusCode.OK, GetCurrentThemeObject());
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCurrentThemeObject">
+          <declaration><![CDATA[private object GetCurrentThemeObject()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="341" sc="9" el="358" ec="10">Services\ThemesController.cs</location>
+            <body hash="f0a6b117315ef0cc8ef7b1420ea18a09"><![CDATA[{
+            var cultureCode = LocaleController.Instance.GetCurrentLocale(PortalId).Code;
+            var siteLayout = PortalController.GetPortalSetting("DefaultPortalSkin", PortalId, Host.DefaultPortalSkin, cultureCode);
+            var siteContainer = PortalController.GetPortalSetting("DefaultPortalContainer", PortalId, Host.DefaultPortalContainer, cultureCode);
+            var editLayout = PortalController.GetPortalSetting("DefaultAdminSkin", PortalId, Host.DefaultAdminSkin, cultureCode);
+            var editContainer = PortalController.GetPortalSetting("DefaultAdminContainer", PortalId, Host.DefaultAdminContainer, cultureCode);
+
+            var currentTheme = new
+            {
+                SiteLayout = _controller.GetThemeFile(PortalSettings, siteLayout, ThemeType.Skin),
+                SiteContainer = _controller.GetThemeFile(PortalSettings, siteContainer, ThemeType.Container),
+                EditLayout = _controller.GetThemeFile(PortalSettings, editLayout, ThemeType.Skin),
+                EditContainer = _controller.GetThemeFile(PortalSettings, editContainer, ThemeType.Container)
+
+            };
+
+            return currentTheme;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEditableSettings">
+          <declaration><![CDATA[public HttpResponseMessage GetEditableSettings(string token)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="187" sc="9" el="209" ec="10">Services\ThemesController.cs</location>
+            <body hash="547deb94bb40211ad2a252500714f8a4"><![CDATA[{
+            try
+            {
+                var strFile = Globals.ApplicationMapPath + "\\" + token.ToLowerInvariant().Replace("/", "\\").Replace(".ascx", ".xml");
+                var settings = new List<ListItemInfo>();
+                if (File.Exists(strFile))
+                {
+                    var xmlDoc = new XmlDocument();
+                    xmlDoc.Load(strFile);
+                    foreach (XmlNode xmlSetting in xmlDoc.SelectNodes("//Settings/Setting"))
+                    {
+                        settings.Add(new ListItemInfo(xmlSetting.SelectSingleNode("Name").InnerText, xmlSetting.SelectSingleNode("Name").InnerText));
+                    }
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, settings);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEditableTokens">
+          <declaration><![CDATA[public HttpResponseMessage GetEditableTokens()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="169" sc="9" el="183" ec="10">Services\ThemesController.cs</location>
+            <body hash="d4903c6b25e28676f6a1e1563f2684e7"><![CDATA[{
+            try
+            {
+                var tokens = SkinControlController.GetSkinControls().Values
+                    .Where(c => !string.IsNullOrEmpty(c.ControlKey) && !string.IsNullOrEmpty(c.ControlSrc))
+                    .Select(c => new ListItemInfo { Text = c.ControlKey, Value = c.ControlSrc });
+
+                return Request.CreateResponse(HttpStatusCode.OK, tokens);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEditableValues">
+          <declaration><![CDATA[public HttpResponseMessage GetEditableValues(string token, string setting)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="213" sc="9" el="249" ec="10">Services\ThemesController.cs</location>
+            <body hash="fd9aad4c3245e8eb8eaaf111b61915f2"><![CDATA[{
+            try
+            {
+                var strFile = Globals.ApplicationMapPath + "\\" + token.ToLowerInvariant().Replace("/", "\\").Replace(".ascx", ".xml");
+                var value = string.Empty;
+                if (File.Exists(strFile))
+                {
+                    var xmlDoc = new XmlDocument();
+                    xmlDoc.Load(strFile);
+                    foreach (XmlNode xmlSetting in xmlDoc.SelectNodes("//Settings/Setting"))
+                    {
+                        if (xmlSetting.SelectSingleNode("Name").InnerText == setting)
+                        {
+                            string strValue = xmlSetting.SelectSingleNode("Value").InnerText;
+                            switch (strValue)
+                            {
+                                case "":
+                                    break;
+                                case "[TABID]":
+                                    value = "Pages";
+                                    break;
+                                default:
+                                    value = strValue;
+                                    break;
+                            }
+                        }
+                    }
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { Value = value });
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetThemeFiles">
+          <declaration><![CDATA[public HttpResponseMessage GetThemeFiles(string themeName, ThemeType type, ThemeLevel level)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="97" ec="10">Services\ThemesController.cs</location>
+            <body hash="0d236b21ab16e9b90bfbd0fa5e2272ea"><![CDATA[{
+            try
+            {
+                var theme = (type == ThemeType.Skin ? _controller.GetLayouts(PortalSettings, level)
+                                                    : _controller.GetContainers(PortalSettings, level)
+                            ).FirstOrDefault(t => t.PackageName.Equals(themeName, StringComparison.InvariantCultureIgnoreCase));
+
+                if (theme == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, "ThemeNotFound");
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, _controller.GetThemeFiles(PortalSettings, theme));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetThemes">
+          <declaration><![CDATA[public HttpResponseMessage GetThemes(ThemeLevel level)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="74" ec="10">Services\ThemesController.cs</location>
+            <body hash="ef8bce85689073c8372411faf24114ff"><![CDATA[{
+            try
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    Layouts = _controller.GetLayouts(PortalSettings, level),
+                    Containers = _controller.GetContainers(PortalSettings, level)
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ParseTheme">
+          <declaration><![CDATA[public HttpResponseMessage ParseTheme(ParseThemeInfo parseTheme)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="285" sc="9" el="313" ec="10">Services\ThemesController.cs</location>
+            <body hash="6e37d79bdb08e33bbec16b12fd678ded"><![CDATA[{
+            try
+            {
+                var themeName = parseTheme.ThemeName;
+
+                var layout = _controller.GetLayouts(PortalSettings, ThemeLevel.Global | ThemeLevel.Site)
+                                .FirstOrDefault(t => t.PackageName.Equals(themeName, StringComparison.InvariantCultureIgnoreCase));
+
+                if (layout != null)
+                {
+                    _controller.ParseTheme(PortalSettings, layout, parseTheme.ParseType);
+                }
+
+                var container = _controller.GetContainers(PortalSettings, ThemeLevel.Global | ThemeLevel.Site)
+                                .FirstOrDefault(t => t.PackageName.Equals(themeName, StringComparison.InvariantCultureIgnoreCase));
+
+                if (container != null)
+                {
+                    _controller.ParseTheme(PortalSettings, container, parseTheme.ParseType);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { });
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreTheme">
+          <declaration><![CDATA[public HttpResponseMessage RestoreTheme(string language)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="318" sc="10" el="334" ec="11">Services\ThemesController.cs</location>
+            <body hash="deea233d3ee10a5fbbbceb72f288e7d7"><![CDATA[{
+             try
+             {
+                 SkinController.SetSkin(SkinController.RootSkin, PortalId, SkinType.Portal, "");
+                 SkinController.SetSkin(SkinController.RootContainer, PortalId, SkinType.Portal, "");
+                 SkinController.SetSkin(SkinController.RootSkin, PortalId, SkinType.Admin, "");
+                 SkinController.SetSkin(SkinController.RootContainer, PortalId, SkinType.Admin, "");
+                 DataCache.ClearPortalCache(PortalId, true);
+ 
+                 return Request.CreateResponse(HttpStatusCode.OK, GetCurrentThemeObject());
+             }
+             catch (Exception ex)
+             {
+                 Logger.Error(ex);
+                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+             }
+         }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateTheme">
+          <declaration><![CDATA[public HttpResponseMessage UpdateTheme(UpdateThemeInfo updateTheme)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="254" sc="9" el="279" ec="10">Services\ThemesController.cs</location>
+            <body hash="ba48a35448bd093eec59e44fa5a131b9"><![CDATA[{
+            try
+            {
+                var token = SkinControlController.GetSkinControls().Values.FirstOrDefault(t => t.ControlSrc == updateTheme.Token);
+                if (token == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "InvalidParameter");
+                }
+
+                var themeFilePath = updateTheme.Path.ToLowerInvariant();
+                if ((!themeFilePath.StartsWith("[g]") && !themeFilePath.StartsWith("[l]") && !themeFilePath.StartsWith("[s]"))
+                    || (themeFilePath.StartsWith("[g]") && !UserInfo.IsSuperUser))
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "InvalidPermission");
+                }
+
+                updateTheme.Token = token.ControlKey;
+                _controller.UpdateTheme(PortalSettings, updateTheme);
+                return Request.CreateResponse(HttpStatusCode.OK, new { });
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_controller">
+          <declaration><![CDATA[private IThemesController _controller = ServiceLocator<IThemesController, ThemesController>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ThemesController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

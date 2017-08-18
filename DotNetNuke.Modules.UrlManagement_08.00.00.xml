@@ -1,0 +1,1267 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Modules.UrlManagement.dll" version="08.00.00" generated="2017-06-19 22:18:14Z" generationTime="1.9644937">
+  <namespace name="DotNetNuke.Modules.UrlManagement">
+    <class name="AdvancedUrlSetttings">
+      <declaration><![CDATA[public class AdvancedUrlSetttings : ModuleUserControlBase, IEditPageTabControlActions]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AdvancedUrlSetttings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindAction">
+          <declaration><![CDATA[public void BindAction(int portalId, int tabId, int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="9" el="87" ec="10">AdvancedUrlSettings.ascx.cs</location>
+            <body hash="2f22c0b8f437424ad2a75792b2aca93b"><![CDATA[{
+            var providers = ExtensionUrlProviderController.GetProviders(portalId);
+			Localization.LocalizeDataGrid(ref providersGrid, LocalResourceFile);
+            providersGrid.DataSource = providers;
+            providersGrid.DataBind();
+
+            UrlSettingsExtensionControl.BindAction(portalId, tabId, moduleId);
+
+            var settings = new DotNetNuke.Entities.Urls.FriendlyUrlSettings(portalId);
+            if (settings.EnableCustomProviders == false)
+            {
+                providersGrid.Visible = false;
+                providersWarningLabel.Visible = true;
+                providersWarningLabel.Text = LocalizeString("ExtensionProvidersDisabled.Text");
+            }
+            else
+            {
+                if (providersGrid.Items.Count == 0)
+                {
+                    providersGrid.Visible = false;
+                    providersWarningLabel.Visible = true;
+                    providersWarningLabel.Text = LocalizeString("NoProvidersInstalled.Text");
+                }
+            }
+            
+            
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CancelAction">
+          <declaration><![CDATA[public void CancelAction(int portalId, int tabId, int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="90" sc="9" el="91" ec="10">AdvancedUrlSettings.ascx.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="EditSettings">
+          <declaration><![CDATA[protected void EditSettings(object source, CommandEventArgs args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="9" el="39" ec="10">AdvancedUrlSettings.ascx.cs</location>
+            <body hash="c1a5e42b00476d874ae9fd02d12ddf3a"><![CDATA[{
+            Response.Redirect(Globals.NavigateURL(ModuleContext.TabId, "UrlProviderSettings", "ProviderId=" + args.CommandArgument));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnChangeProviderStatus">
+          <declaration><![CDATA[protected void OnChangeProviderStatus(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="99" sc="6" el="110" ec="7">AdvancedUrlSettings.ascx.cs</location>
+            <body hash="56c24b64e10914426bf4dee05d0afe0e"><![CDATA[{
+		    var checkbox = (sender as CheckBox);
+		    var providerId = Convert.ToInt32((checkbox.Parent.FindControl("urlProviderId") as HiddenField).Value);
+		    if (checkbox.Checked)
+		    {
+			    ExtensionUrlProviderController.EnableProvider(providerId, ModuleContext.PortalId);
+		    }
+		    else
+		    {
+				ExtensionUrlProviderController.DisableProvider(providerId, ModuleContext.PortalId);
+		    }
+	    }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="9" el="58" ec="10">AdvancedUrlSettings.ascx.cs</location>
+            <body hash="96ed76aba681e4a608f8f055cee139df"><![CDATA[{
+            base.OnInit(e);
+
+            foreach (DataGridColumn column in providersGrid.Columns)
+            {
+                if (ReferenceEquals(column.GetType(), typeof(ImageCommandColumn)))
+                {
+                    var imageColumn = (ImageCommandColumn)column;
+
+                    var formatString = ModuleContext.EditUrl("ProviderId", "KEYFIELD", "UrlProviderSettings");
+
+                    formatString = formatString.Replace("KEYFIELD", "{0}");
+                    imageColumn.NavigateURLFormatString = formatString;
+                }
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveAction">
+          <declaration><![CDATA[public void SaveAction(int portalId, int tabId, int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="94" sc="9" el="96" ec="10">AdvancedUrlSettings.ascx.cs</location>
+            <body hash="9841ceef5b9eaf0098e318e9eb032f8b"><![CDATA[{
+            UrlSettingsExtensionControl.SaveAction(portalId, tabId, moduleId);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="moduleProvidersLabel">
+          <declaration><![CDATA[protected UserControl moduleProvidersLabel;]]></declaration>
+          <documentation>
+            <summary>
+ moduleProvidersLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="providersGrid">
+          <declaration><![CDATA[protected DataGrid providersGrid;]]></declaration>
+          <documentation>
+            <summary>
+ providersGrid control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="providersWarningLabel">
+          <declaration><![CDATA[protected Label providersWarningLabel;]]></declaration>
+          <documentation>
+            <summary>
+ providersWarningLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="UrlSettingsExtensionControl">
+          <declaration><![CDATA[protected EditPagePanelExtensionControl UrlSettingsExtensionControl;]]></declaration>
+          <documentation>
+            <summary>
+ UrlSettingsExtensionControl control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="FriendlyUrls">
+      <declaration><![CDATA[public class FriendlyUrls : ModuleUserControlBase, IEditPagePanelControlActions]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FriendlyUrls()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindAction">
+          <declaration><![CDATA[public void BindAction(int portalId, int tabId, int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="9" el="37" ec="10">FriendlyUrls.ascx.cs</location>
+            <body hash="c4a7da136c6dbcecdc01584591fc4327"><![CDATA[{
+            basicUrlPanel.Visible = Config.GetFriendlyUrlProvider() != "advanced";
+            chkUseFriendlyUrls.Checked = Entities.Host.Host.UseFriendlyUrls;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CancelAction">
+          <declaration><![CDATA[public void CancelAction(int portalId, int tabId, int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="41" ec="10">FriendlyUrls.ascx.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveAction">
+          <declaration><![CDATA[public void SaveAction(int portalId, int tabId, int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="9" el="46" ec="10">FriendlyUrls.ascx.cs</location>
+            <body hash="6a38569be311f29cf806622e84c8fe9d"><![CDATA[{
+            HostController.Instance.Update("UseFriendlyUrls", chkUseFriendlyUrls.Checked ? "Y" : "N", false);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="basicUrlPanel">
+          <declaration><![CDATA[protected PlaceHolder basicUrlPanel;]]></declaration>
+          <documentation>
+            <summary>
+ basicUrlPanel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkUseFriendlyUrls">
+          <declaration><![CDATA[protected CheckBox chkUseFriendlyUrls;]]></declaration>
+          <documentation>
+            <summary>
+ chkUseFriendlyUrls control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="friendlyUrls">
+          <declaration><![CDATA[protected UserControl friendlyUrls;]]></declaration>
+          <documentation>
+            <summary>
+ friendlyUrls control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="friendlyUrlsRow">
+          <declaration><![CDATA[protected HtmlGenericControl friendlyUrlsRow;]]></declaration>
+          <documentation>
+            <summary>
+ friendlyUrlsRow control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plUseFriendlyUrls">
+          <declaration><![CDATA[protected UserControl plUseFriendlyUrls;]]></declaration>
+          <documentation>
+            <summary>
+ plUseFriendlyUrls control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="PortalAliases">
+      <declaration><![CDATA[public class PortalAliases : PortAliasesModuleBase]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PortalAliases()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetPortalAliasProperties">
+          <declaration><![CDATA[protected override void GetPortalAliasProperties(int index, PortalAliasInfo portalAlias)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="9" el="75" ec="10">PortalAliases.ascx.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="84" ec="10">PortalAliases.ascx.cs</location>
+            <body hash="36a0ffa984d70b86a858b4578fa31b37"><![CDATA[{
+            LocalResourceFile = resourcefile;
+
+            base.OnInit(e);
+
+            portalAiasesGrid.UpdateCommand += SaveAliasesGrid;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="87" sc="9" el="97" ec="10">PortalAliases.ascx.cs</location>
+            <body hash="2a8c0499445ca80c1607d1327323a3a9"><![CDATA[{
+            if (!Page.IsPostBack)
+            {
+                Localization.LocalizeDataGrid(ref portalAiasesGrid, LocalResourceFile);
+                // hide language column if there is only 1 language
+                if (LocaleController.Instance.GetLocales(PortalId).Count == 1) portalAiasesGrid.Columns[2].Visible = false;
+            }
+
+            base.OnLoad(e);
+
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="addAliasButton">
+          <declaration><![CDATA[protected LinkButton addAliasButton;]]></declaration>
+          <documentation>
+            <summary>
+ addAliasButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblError">
+          <declaration><![CDATA[protected Label lblError;]]></declaration>
+          <documentation>
+            <summary>
+ lblError control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="portalAiasesGrid">
+          <declaration><![CDATA[protected DataGrid portalAiasesGrid;]]></declaration>
+          <documentation>
+            <summary>
+ portalAiasesGrid control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="resourcefile">
+          <declaration><![CDATA[private const string resourcefile = "~/DesktopModules/Admin/UrlManagement/App_LocalResources/SharedResources.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ActionColumnIndex">
+          <declaration><![CDATA[protected override int ActionColumnIndex]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="AddAliasButton">
+          <declaration><![CDATA[protected override LinkButton AddAliasButton]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ErrorLabel">
+          <declaration><![CDATA[protected override Label ErrorLabel]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Grid">
+          <declaration><![CDATA[protected override DataGrid Grid]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ProviderSettings">
+      <declaration><![CDATA[public class ProviderSettings : ModuleUserControlBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ProviderSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="cmdCancel_Click">
+          <declaration><![CDATA[private void cmdCancel_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="62" sc="9" el="64" ec="10">UrlProviderSettings.ascx.cs</location>
+            <body hash="d5fa94f3f4471650bbc61a749ae8ba40"><![CDATA[{
+            Response.Redirect(Globals.NavigateURL(ModuleContext.PortalSettings.ActiveTab.TabID));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="cmdUpdate_Click">
+          <declaration><![CDATA[private void cmdUpdate_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="83" ec="10">UrlProviderSettings.ascx.cs</location>
+            <body hash="a651186b889028b196f45d4d103920bd"><![CDATA[{
+            if (!this.Page.IsValid)
+            {
+                return;
+            }
+
+            if (_providerSettingsControl != null)
+            {
+                var settings = _providerSettingsControl.SaveSettings();
+                foreach (var setting in settings)
+                {
+                    ExtensionUrlProviderController.SaveSetting(_providerId, ModuleContext.PortalId, setting.Key, setting.Value);
+                }
+            }
+
+            Response.Redirect(Globals.NavigateURL(ModuleContext.PortalSettings.ActiveTab.TabID));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="9" el="50" ec="10">UrlProviderSettings.ascx.cs</location>
+            <body hash="d7f6232795518587bb76ace087337959"><![CDATA[{
+            base.OnInit(e);
+
+            cmdUpdate.Click += cmdUpdate_Click;
+            cmdCancel.Click += cmdCancel_Click;
+
+            _providerId = Convert.ToInt32(Request.Params["ProviderId"]);
+
+            var provider = ExtensionUrlProviderController.GetModuleProviders(ModuleContext.PortalId)
+                                .SingleOrDefault(p => p.ProviderConfig.ExtensionUrlProviderId == _providerId);
+
+            if (provider != null)
+            {
+                var settingsControlSrc = provider.ProviderConfig.SettingsControlSrc;
+
+                var settingsControl = Page.LoadControl(settingsControlSrc);
+
+                providerSettingsPlaceHolder.Controls.Add(settingsControl);
+
+// ReSharper disable SuspiciousTypeConversion.Global
+                _providerSettingsControl = settingsControl as IExtensionUrlProviderSettingsControl;
+// ReSharper restore SuspiciousTypeConversion.Global
+                if (_providerSettingsControl != null)
+                {
+                    _providerSettingsControl.Provider = provider.ProviderConfig;
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="9" el="59" ec="10">UrlProviderSettings.ascx.cs</location>
+            <body hash="280af52fd91b2e7163f12e1fd62b3624"><![CDATA[{
+            base.OnLoad(e);
+            if (_providerSettingsControl != null)
+            {
+                _providerSettingsControl.LoadSettings();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_providerId">
+          <declaration><![CDATA[private int _providerId;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_providerSettingsControl">
+          <declaration><![CDATA[private IExtensionUrlProviderSettingsControl _providerSettingsControl;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="cmdCancel">
+          <declaration><![CDATA[protected LinkButton cmdCancel;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCancel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdUpdate">
+          <declaration><![CDATA[protected LinkButton cmdUpdate;]]></declaration>
+          <documentation>
+            <summary>
+ cmdUpdate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="providerSettingsPlaceHolder">
+          <declaration><![CDATA[protected PlaceHolder providerSettingsPlaceHolder;]]></declaration>
+          <documentation>
+            <summary>
+ providerSettingsPlaceHolder control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.UrlManagement.Components">
+    <class name="PortAliasesModuleBase">
+      <declaration><![CDATA[public abstract class PortAliasesModuleBase : ModuleUserControlBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private int _currentPortalId = -1;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="45" ec="43">Components\PortAliasesModuleBase.cs</location>
+            <body hash="5db3084fd69d7607566951f1711d1103"><![CDATA[private int _currentPortalId = -1]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddAlias">
+          <declaration><![CDATA[protected void AddAlias(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="107" sc="9" el="118" ec="10">Components\PortAliasesModuleBase.cs</location>
+            <body hash="c5c6e2c048eff2ec2a03866d858c349b"><![CDATA[{
+            //Add a new empty rule and set the editrow to the new row
+            var portalAlias = new PortalAliasInfo { PortalID = CurrentPortalId };
+            Aliases.Add(portalAlias);
+            Grid.EditItemIndex = Aliases.Count - 1;
+
+            //Set the AddMode to true
+            AddMode = true;
+
+            //Rebind the collection
+            BindAliases();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BindAliases">
+          <declaration><![CDATA[protected void BindAliases()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="121" sc="9" el="124" ec="10">Components\PortAliasesModuleBase.cs</location>
+            <body hash="307f1c912e40e687138df3e9b4194d64"><![CDATA[{
+            Grid.DataSource = Aliases;
+            Grid.DataBind();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CancelEdit">
+          <declaration><![CDATA[protected void CancelEdit(object source, CommandEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="127" sc="9" el="141" ec="10">Components\PortAliasesModuleBase.cs</location>
+            <body hash="8beb85cccd2dd1c7880a5c50080c82a2"><![CDATA[{
+            if (AddMode)
+            {
+                //Remove the temporary added row
+                Aliases.RemoveAt(Aliases.Count - 1);
+                AddMode = false;
+            }
+
+            //Clear editrow
+            Grid.EditItemIndex = -1;
+            ErrorLabel.Visible = false;
+
+            //Rebind the collection
+            BindAliases();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteAiasesGrid">
+          <declaration><![CDATA[protected void DeleteAiasesGrid(object source, CommandEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="144" sc="9" el="165" ec="10">Components\PortAliasesModuleBase.cs</location>
+            <body hash="597d84d5be3e97d3fdb6d98b93de2943"><![CDATA[{
+            //Get the index of the row to delete
+            int index = Convert.ToInt32(e.CommandArgument);
+
+            //Remove the alias from the aliases collection
+            var portalAlias = Aliases[index];
+
+            PortalAliasController.Instance.DeletePortalAlias(portalAlias);
+            //should remove the portal's folder if exist
+            var portalFolder = PortalController.GetPortalFolder(portalAlias.HTTPAlias);
+            var serverPath = Globals.GetAbsoluteServerPath(Request);
+
+            if (!string.IsNullOrEmpty(portalFolder) && Directory.Exists(serverPath + portalFolder))
+            {
+                PortalController.DeletePortalFolder(serverPath, portalFolder);
+            }
+
+            //Rebind the collection
+            _Aliases = null;
+            BindAliases();
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="EditAiasesGrid">
+          <declaration><![CDATA[protected void EditAiasesGrid(object source, CommandEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="168" sc="9" el="177" ec="10">Components\PortAliasesModuleBase.cs</location>
+            <body hash="247da086f3ce6e26e3824a059cc4c933"><![CDATA[{
+            //Set the AddMode to false
+            AddMode = false;
+
+            //Set the editrow
+            Grid.EditItemIndex = Convert.ToInt32(e.CommandArgument);
+
+            //Rebind the collection
+            BindAliases();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetIsPrimary">
+          <declaration><![CDATA[protected bool GetIsPrimary(int index)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="180" sc="9" el="189" ec="10">Components\PortAliasesModuleBase.cs</location>
+            <body hash="1ec752df664ee740443591e6a4e37566"><![CDATA[{
+            bool isPrimary = false;
+            var isPrimaryCheckbox = Grid.Items[index].Controls[0].FindControl("isPrimary") as CheckBox;
+
+            if (isPrimaryCheckbox != null)
+            {
+                isPrimary = isPrimaryCheckbox.Checked;
+            }
+            return isPrimary;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalAliasProperties">
+          <declaration><![CDATA[protected abstract void GetPortalAliasProperties(int index, PortalAliasInfo portalAlias);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GridItemDataBound">
+          <declaration><![CDATA[protected virtual void GridItemDataBound(object sender, DataGridItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="194" sc="9" el="245" ec="10">Components\PortAliasesModuleBase.cs</location>
+            <body hash="901e2fa6d25ef5d1833fbcf70eb3cdee"><![CDATA[{
+            DataGridItem item = e.Item;
+
+            if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem || item.ItemType == ListItemType.SelectedItem || item.ItemType == ListItemType.EditItem)
+            {
+                bool isEditItem = (item.ItemType == ListItemType.EditItem);
+
+                var portalAlias = (PortalAliasInfo)item.DataItem;
+
+                if (portalAlias != null)
+                {
+                    Control imgColumnControl = item.Controls[ActionColumnIndex].FindControl("deleteButton");
+                    var delImage = (DnnImageButton) imgColumnControl;
+                    if (delImage != null)
+                    {
+                        delImage.Visible = (portalAlias.PortalAliasID != PortalAlias.PortalAliasID && !portalAlias.IsPrimary && !isEditItem);
+
+                        if (delImage.Visible) ClientAPI.AddButtonConfirm(delImage, Localization.GetString("DeleteItem"));
+                    }
+
+                    imgColumnControl = item.Controls[ActionColumnIndex].FindControl("editButton");
+                    var editImage = (DnnImageButton) imgColumnControl;
+                    if (editImage != null)
+                    {
+                        editImage.Visible = (portalAlias.PortalAliasID != PortalAlias.PortalAliasID && !isEditItem);
+                    }
+
+                    imgColumnControl = item.Controls[ActionColumnIndex].FindControl("currentAliasHelpLabel");
+                    var image = (LabelControl) imgColumnControl;
+                    if (image != null)
+                    {
+                        image.Visible = (portalAlias.PortalAliasID == PortalAlias.PortalAliasID && !isEditItem);
+                    }
+
+                    if (isEditItem)
+                    {
+                        var cultureCodeDropDown = item.Controls[2].FindControl("cultureCodeDropDown") as DnnComboBox;
+                        if (cultureCodeDropDown != null)
+                        {
+                            var locales = new Dictionary<string, string> {{"<" + LocalizeString("None_Specified") + ">", String.Empty}};
+                            foreach (var locale in Locales)
+                            {
+                                locales.Add(locale.Value.NativeName, locale.Value.Code);
+                            }
+                            cultureCodeDropDown.DataSource = locales;
+                            cultureCodeDropDown.DataBind();
+                            cultureCodeDropDown.Select(portalAlias.CultureCode, false);
+                        }
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadViewState">
+          <declaration><![CDATA[protected override void LoadViewState(object savedState)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="248" sc="9" el="265" ec="10">Components\PortAliasesModuleBase.cs</location>
+            <body hash="3ee4838237fee2c5cbf5d60da03d1f32"><![CDATA[{
+            var myState = (object[])savedState;
+            if ((myState[0] != null))
+            {
+                base.LoadViewState(myState[0]);
+            }
+            if ((myState[1] != null))
+            {
+                var aliasCount = (int)myState[1];
+                Aliases.Clear();
+                for (int i = 0; i <= aliasCount - 1; i++)
+                {
+                    string aliasString = Convert.ToString(myState[i + 2]);
+                    var sr = new StringReader(aliasString);
+                    Aliases.Add(CBO.DeserializeObject<PortalAliasInfo>(sr));
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="268" sc="9" el="295" ec="10">Components\PortAliasesModuleBase.cs</location>
+            <body hash="613fe8b4944e7b6f8cf13d8bdca478b7"><![CDATA[{
+            base.OnInit(e);
+
+            AddAliasButton.Click += AddAlias;
+            Grid.ItemDataBound += GridItemDataBound;
+            Grid.EditCommand += EditAiasesGrid;
+            Grid.DeleteCommand += DeleteAiasesGrid;
+            Grid.CancelCommand += CancelEdit;
+
+            foreach (DataGridColumn column in Grid.Columns)
+            {
+                if (ReferenceEquals(column.GetType(), typeof(ImageCommandColumn)))
+                {
+                    //Manage Delete Confirm JS
+                    var imageColumn = (ImageCommandColumn)column;
+                    if (imageColumn.CommandName == "Delete")
+                    {
+                        imageColumn.OnClickJS = Localization.GetString("DeleteItem");
+                    }
+
+                    //Localize Image Column Text
+                    if (!String.IsNullOrEmpty(imageColumn.CommandName))
+                    {
+                        imageColumn.Text = Localization.GetString(imageColumn.CommandName, LocalResourceFile);
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="298" sc="9" el="308" ec="10">Components\PortAliasesModuleBase.cs</location>
+            <body hash="f2de0dd44c7da470181704480bd5c50a"><![CDATA[{
+            base.OnLoad(e);
+
+            _currentPortalId = (Request.QueryString["pid"] != null) ? Int32.Parse(Request.QueryString["pid"]) : PortalId;
+
+            if (!Page.IsPostBack)
+            {
+                BindAliases();
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveAliasesGrid">
+          <declaration><![CDATA[protected virtual void SaveAliasesGrid(object source, CommandEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="311" sc="9" el="395" ec="10">Components\PortAliasesModuleBase.cs</location>
+            <body hash="c7e76da55d48e6476fb7afc3dc1e43a2"><![CDATA[{
+            string childPath = string.Empty;
+            string message = string.Empty;
+
+            //Get the index of the row to save
+            int index = Grid.EditItemIndex;
+
+            var portalAlias = Aliases[index];
+            var ctlAlias = Grid.Items[index].Cells[1].FindControl("txtHTTPAlias") as TextBox;
+
+            bool isPrimary = GetIsPrimary(index);
+
+            string strAlias = String.Empty;
+            if (ctlAlias != null)
+            {
+                strAlias = ctlAlias.Text.Trim();
+            }
+
+            if (string.IsNullOrEmpty(strAlias))
+            {
+                message = Localization.GetString("InvalidAlias", LocalResourceFile);
+            }
+            else
+            {
+                if (strAlias.IndexOf("://", StringComparison.Ordinal) != -1)
+                {
+                    strAlias = strAlias.Remove(0, strAlias.IndexOf("://", StringComparison.Ordinal) + 3);
+                }
+                if (strAlias.IndexOf("\\\\", StringComparison.Ordinal) != -1)
+                {
+                    strAlias = strAlias.Remove(0, strAlias.IndexOf("\\\\", StringComparison.Ordinal) + 2);
+                }
+
+                //Validate Alias, this needs to be done with lowercase, downstream we only check with lowercase variables
+                if (!PortalAliasController.ValidateAlias(strAlias.ToLowerInvariant(), false))
+                {
+                    message = Localization.GetString("InvalidAlias", LocalResourceFile);
+                }
+            }
+
+            if (string.IsNullOrEmpty(message) && AddMode)
+            {
+                var aliases = PortalAliasController.Instance.GetPortalAliases();
+                if (aliases.Contains(strAlias))
+                {
+                    message = Localization.GetString("DuplicateAlias", LocalResourceFile);
+                }
+            }
+
+            if (string.IsNullOrEmpty(message))
+            {
+                portalAlias.HTTPAlias = strAlias;
+                portalAlias.IsPrimary = isPrimary;
+
+                var item = Grid.Items[index];
+                var cultureCodeDropDown = item.Controls[2].FindControl("cultureCodeDropDown") as DnnComboBox;
+                if (cultureCodeDropDown != null)
+                {
+                    portalAlias.CultureCode = cultureCodeDropDown.SelectedValue;
+                }
+
+                GetPortalAliasProperties(index, portalAlias);
+
+                if (AddMode)
+                {
+                    PortalAliasController.Instance.AddPortalAlias(portalAlias);
+                }
+                else
+                {
+                    PortalAliasController.Instance.UpdatePortalAlias(portalAlias);
+                }
+
+                //Reset Edit Index
+                ErrorLabel.Visible = false;
+                Grid.EditItemIndex = -1;
+                _Aliases = null;
+            }
+            else
+            {
+                ErrorLabel.Text = message;
+                ErrorLabel.Visible = true;
+            }
+
+            BindAliases();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveViewState">
+          <declaration><![CDATA[protected override object SaveViewState()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="398" sc="9" el="411" ec="10">Components\PortAliasesModuleBase.cs</location>
+            <body hash="80f134bcf57a0bfeab9994df32aee3c6"><![CDATA[{
+            object baseState = base.SaveViewState();
+            var allStates = new object[Aliases.Count + 2];
+            allStates[0] = baseState;
+            allStates[1] = Aliases.Count;
+            for (int i = 0; i <= Aliases.Count - 1; i++)
+            {
+                var portalAlias = Aliases[i];
+                var sw = new StringWriter();
+                CBO.SerializeObject(portalAlias, sw);
+                allStates[i + 2] = sw.ToString();
+            }
+            return allStates;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_Aliases">
+          <declaration><![CDATA[protected List<PortalAliasInfo> _Aliases;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_currentPortalId">
+          <declaration><![CDATA[private int _currentPortalId = -1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ActionColumnIndex">
+          <declaration><![CDATA[protected abstract int ActionColumnIndex]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="AddAliasButton">
+          <declaration><![CDATA[protected abstract LinkButton AddAliasButton]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="AddMode">
+          <declaration><![CDATA[protected bool AddMode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="13" el="63" ec="14">Components\PortAliasesModuleBase.cs</location>
+            <body hash="30ff27eb6e5af91c3ff37fd2e344938f"><![CDATA[{
+                bool _Mode = Null.NullBoolean;
+                if (ViewState["Mode"] != null)
+                {
+                    _Mode = Convert.ToBoolean(ViewState["Mode"]);
+                }
+                return _Mode;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="65" sc="13" el="67" ec="14">Components\PortAliasesModuleBase.cs</location>
+            <body hash="177a71d978b3132501675561f96e7121"><![CDATA[{
+                ViewState["Mode"] = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Aliases">
+          <declaration><![CDATA[protected List<PortalAliasInfo> Aliases]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="13" el="75" ec="14">Components\PortAliasesModuleBase.cs</location>
+            <body hash="e4d2addc2587ca02a5604539fd7630bb"><![CDATA[{
+                return _Aliases ?? (_Aliases = PortalAliasController.Instance.GetPortalAliasesByPortalId(_currentPortalId).ToList());
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CurrentPortalId">
+          <declaration><![CDATA[protected int CurrentPortalId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ErrorLabel">
+          <declaration><![CDATA[protected abstract Label ErrorLabel]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Grid">
+          <declaration><![CDATA[protected abstract DataGrid Grid]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Locales">
+          <declaration><![CDATA[protected Dictionary<string, Locale> Locales]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="PortalAlias">
+          <declaration><![CDATA[protected PortalAliasInfo PortalAlias]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="PortalId">
+          <declaration><![CDATA[protected int PortalId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.UrlManagement.Components.ExtensionPoints.UserControls">
+    <class name="AdvancedUrlSettingsExtensionPoint">
+      <declaration><![CDATA[public class AdvancedUrlSettingsExtensionPoint : IEditPageTabExtensionPoint, IUserControlExtensionPoint, IExtensionPoint]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AdvancedUrlSettingsExtensionPoint()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="_localResourceFile">
+          <declaration><![CDATA[private const string _localResourceFile = "DesktopModules/Admin/UrlManagement/App_LocalResources/AdvancedUrlSettings.ascx.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="CssClass">
+          <declaration><![CDATA[public string CssClass]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="EditPageTabId">
+          <declaration><![CDATA[public string EditPageTabId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Icon">
+          <declaration><![CDATA[public string Icon]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Order">
+          <declaration><![CDATA[public int Order]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Permission">
+          <declaration><![CDATA[public string Permission]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Text">
+          <declaration><![CDATA[public string Text]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="UserControlSrc">
+          <declaration><![CDATA[public string UserControlSrc]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Visible">
+          <declaration><![CDATA[public bool Visible]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="FriendlyUrlsExtensionPoint">
+      <declaration><![CDATA[public class FriendlyUrlsExtensionPoint : IEditPagePanelExtensionPoint, IUserControlExtensionPoint, IExtensionPoint]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FriendlyUrlsExtensionPoint()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="_localResourceFile">
+          <declaration><![CDATA[private const string _localResourceFile = "DesktopModules/Admin/UrlManagement/App_LocalResources/FriendlyUrls.ascx.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="CssClass">
+          <declaration><![CDATA[public string CssClass]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="EditPagePanelId">
+          <declaration><![CDATA[public string EditPagePanelId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Icon">
+          <declaration><![CDATA[public string Icon]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Order">
+          <declaration><![CDATA[public int Order]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Text">
+          <declaration><![CDATA[public string Text]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="UserControlSrc">
+          <declaration><![CDATA[public string UserControlSrc]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Visible">
+          <declaration><![CDATA[public bool Visible]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="PortalAliasesExtensionPoint">
+      <declaration><![CDATA[public class PortalAliasesExtensionPoint : IUserControlExtensionPoint, IExtensionPoint]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PortalAliasesExtensionPoint()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Icon">
+          <declaration><![CDATA[public string Icon]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Order">
+          <declaration><![CDATA[public int Order]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Text">
+          <declaration><![CDATA[public string Text]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="UserControlSrc">
+          <declaration><![CDATA[public string UserControlSrc]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Visible">
+          <declaration><![CDATA[public bool Visible]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

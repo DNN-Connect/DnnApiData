@@ -1,0 +1,1784 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.Modules.Lists.dll" version="08.00.04" generated="2017-06-19 23:39:39Z" generationTime="2.2525405">
+  <namespace name="Dnn.Modules.Lists">
+    <class name="ListEditor">
+      <declaration><![CDATA[public class ListEditor : PortalModuleBase]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Manages Entry List
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ListEditor()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindList">
+          <declaration><![CDATA[private void BindList(string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="9" el="73" ec="10">ListEditor.ascx.cs</location>
+            <body hash="dcc73ad8fc8abaac4fe744f14c409c98"><![CDATA[{
+            lstEntries.SelectedKey = key;
+            lstEntries.ListPortalID = PortalSettings.ActiveTab.IsSuperTab ? Null.NullInteger : PortalId;
+            lstEntries.ShowDelete = true;
+            lstEntries.DataBind();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BindTree">
+          <declaration><![CDATA[private void BindTree()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="9" el="123" ec="10">ListEditor.ascx.cs</location>
+            <body hash="2493d6bcb53a4218201333c34aa3b96f"><![CDATA[{
+            var ctlLists = new ListController();
+            var colLists = ctlLists.GetListInfoCollection(string.Empty, string.Empty, PortalSettings.ActiveTab.PortalID);
+            var indexLookup = new Hashtable();
+
+            listTree.Nodes.Clear();
+
+            foreach (ListInfo list in colLists)
+            {
+                String filteredNode;
+                if (list.DisplayName.Contains(":"))
+                {
+                    var finalPeriod = list.DisplayName.LastIndexOf(".", StringComparison.InvariantCulture);
+                    filteredNode = list.DisplayName.Substring(finalPeriod + 1);
+
+                }
+                else
+                {
+                    filteredNode = list.DisplayName;
+                }
+				var node = new DnnTreeNode { Text = filteredNode };
+                {
+                    node.Value = list.Key;
+                    node.ToolTip = String.Format(LocalizeString("NoEntries"), list.EntryCount);
+					node.ImageUrl = IconController.IconURL("Folder");
+                }
+                if (list.Level == 0)
+                {
+					listTree.Nodes.Add(node);
+                }
+                else
+                {
+                    if (indexLookup[list.ParentList] != null)
+                    {
+                        
+                        var parentNode = (DnnTreeNode) indexLookup[list.ParentList];
+  
+                        parentNode.Nodes.Add(node);
+                    }
+                }
+                
+                //Add index key here to find it later, should suggest with Joe to add it to DNNTree
+                if (indexLookup[list.Key] == null)
+                {
+                    indexLookup.Add(list.Key, node);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="cmdAddList_Click">
+          <declaration><![CDATA[private void cmdAddList_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+     Handles Add New List command
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param>
+ <remarks>
+     Using "CommandName" property of cmdSaveEntry to determine this is a new list
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="226" sc="9" el="229" ec="10">ListEditor.ascx.cs</location>
+            <body hash="b55075fec21d3d9db1852b5b69e46b6d"><![CDATA[{
+            Mode = "AddList";
+            BindList("");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DNNTree_NodeClick">
+          <declaration><![CDATA[private void DNNTree_NodeClick(object source, RadTreeNodeEventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+     Populate list entries based on value selected in DNNTree
+ </summary>
+ <param name="source"></param>
+ <param name="e"></param>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="210" sc="9" el="213" ec="10">ListEditor.ascx.cs</location>
+            <body hash="22b4a87df93de832039d1baea58c388b"><![CDATA[{
+            Mode = "ListEntries";
+            BindList(e.Node.Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Page_Init runs when the control is initialised
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="135" sc="9" el="143" ec="10">ListEditor.ascx.cs</location>
+            <body hash="2b98bf531119a9f5ddc4074cac2360de"><![CDATA[{
+            base.OnInit(e);
+
+            //Set the List Entries Control Properties
+            lstEntries.ID = "ListEntries";
+            
+            //ensure that module context is forwarded from parent module to child module
+            lstEntries.ModuleContext.Configuration = ModuleContext.Configuration;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+     Page load, bind tree and enable controls
+ </summary>
+ <param name="e"></param>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="154" sc="9" el="181" ec="10">ListEditor.ascx.cs</location>
+            <body hash="cc4b324752c92964d3e556ea8cd65e6c"><![CDATA[{
+            base.OnLoad(e);
+
+            listTree.NodeClick += DNNTree_NodeClick;
+            cmdAddList.Click += cmdAddList_Click;
+
+            try
+            {
+                if (!Page.IsPostBack)
+                {
+                    //configure tree
+                    if (Request.QueryString["Key"] != null)
+                    {
+                        Mode = "ListEntries";
+                        BindList(Request.QueryString["Key"]);
+                    }
+                    else
+                    {
+                        Mode = "NoList";
+                    }
+                    BindTree();
+                }
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnPreRender">
+          <declaration><![CDATA[protected override void OnPreRender(EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Page_PreRender runs just prior to the control being rendered
+ </summary>
+ <param name="e"></param>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="192" sc="9" el="198" ec="10">ListEditor.ascx.cs</location>
+            <body hash="9cd6220cf50838b7dc852edb35adb31e"><![CDATA[{
+            base.OnPreRender(e);
+
+            var listSelected = Mode != "NoList";
+            divNoList.Visible = !listSelected;
+            divDetails.Visible = listSelected;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cmdAddList">
+          <declaration><![CDATA[protected LinkButton cmdAddList;]]></declaration>
+          <documentation>
+            <summary>
+ cmdAddList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="divDetails">
+          <declaration><![CDATA[protected HtmlGenericControl divDetails;]]></declaration>
+          <documentation>
+            <summary>
+ divDetails control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="divNoList">
+          <declaration><![CDATA[protected HtmlGenericControl divNoList;]]></declaration>
+          <documentation>
+            <summary>
+ divNoList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="listTree">
+          <declaration><![CDATA[protected DnnTreeView listTree;]]></declaration>
+          <documentation>
+            <summary>
+ listTree control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lstEntries">
+          <declaration><![CDATA[protected ListEntries lstEntries;]]></declaration>
+          <documentation>
+            <summary>
+ lstEntries control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Mode">
+          <declaration><![CDATA[protected string Mode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="13" el="56" ec="14">ListEditor.ascx.cs</location>
+            <body hash="0b0b3758ecae03bc1238aca0a0d2daa0"><![CDATA[{
+                return lstEntries.Mode;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="58" sc="13" el="60" ec="14">ListEditor.ascx.cs</location>
+            <body hash="d0f49f320e3a6709547d594e125942ba"><![CDATA[{
+                lstEntries.Mode = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ListEntries">
+      <declaration><![CDATA[public class ListEntries : PortalModuleBase]]></declaration>
+      <documentation>
+        <summary>
+ Manages Entry List
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ListEntries()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="add_ListCreated">
+          <declaration><![CDATA[public void add_ListCreated(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_ListEntryCreated">
+          <declaration><![CDATA[public void add_ListEntryCreated(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="BindGrid">
+          <declaration><![CDATA[private void BindGrid()]]></declaration>
+          <documentation>
+            <summary>
+     Loads top level entry list
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="249" sc="3" el="309" ec="4">ListEntries.ascx.cs</location>
+            <body hash="e264e742ddb953af7db4cbf9e72acf46"><![CDATA[{
+			foreach (GridColumn column in grdEntries.Columns)
+			{
+				if (ReferenceEquals(column.GetType(), typeof(DnnGridImageCommandColumn)))
+				{
+					//Manage Delete Confirm JS
+					var imageColumn = (DnnGridImageCommandColumn)column;
+					if (imageColumn.CommandName == "Delete")
+					{
+						imageColumn.OnClickJs = Localization.GetString("DeleteItem");
+						if (SystemList)
+						{
+							column.Visible = false;
+						}
+						else
+						{
+							column.Visible = true;
+						}
+					}
+
+					//Localize Image Column Text
+					if (!string.IsNullOrEmpty(imageColumn.CommandName))
+					{
+						imageColumn.Text = Localization.GetString(imageColumn.CommandName, LocalResourceFile);
+					}
+				}
+
+                else if(ReferenceEquals(column.GetType(), typeof(DnnGridTemplateColumn)))
+                {
+                    if (EnableSortOrder)
+                    {
+                        column.Visible = true;
+                    }
+                    else
+                    {
+                        column.Visible = false;
+                    }
+                    
+                }
+			}
+			grdEntries.DataSource = SelectedListItems; //selList
+		    grdEntries.DataBind();
+            
+		    if (SelectedListItems == null)
+			{
+				lblEntryCount.Text = "0 " + Localization.GetString("Entries", LocalResourceFile);
+			}
+			else
+			{
+				lblEntryCount.Text = SelectedListItems.Count() + " " + Localization.GetString("Entries", LocalResourceFile);
+				foreach (var item in SelectedListItems)
+				{
+					//list cannot be deleted if any of the item belongs to host
+					if (item.SystemList)
+					{
+						cmdDeleteList.Visible = false;
+						break;
+					}
+				}
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="BindListInfo">
+          <declaration><![CDATA[private void BindListInfo()]]></declaration>
+          <documentation>
+            <summary>
+     Loads top level entry list
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="315" sc="3" el="383" ec="4">ListEntries.ascx.cs</location>
+            <body hash="f5ebae15ff3b13e24019f369aabac737"><![CDATA[{
+			lblListName.Text = ListName;
+			lblListParent.Text = ParentKey;
+			rowListParent.Visible = (!string.IsNullOrEmpty(ParentKey));
+			chkEnableSortOrder.Checked = EnableSortOrder;
+			if (!SystemList && ShowDelete)
+			{
+				cmdDeleteList.Visible = true;
+				ClientAPI.AddButtonConfirm(cmdDeleteList, Localization.GetString("DeleteItem"));
+			}
+			else
+			{
+				cmdDeleteList.Visible = false;
+			}
+			switch (Mode)
+			{
+				case "ListEntries":
+					EnableView(true);
+					break;
+				case "EditEntry":
+					EnableView(false);
+					EnableEdit(false);
+					break;
+				case "AddEntry":
+					EnableView(false);
+					EnableEdit(false);
+					if (SelectedList != null)
+					{
+						txtParentKey.Text = SelectedList.ParentKey;
+					}
+					else
+					{
+						rowEnableSortOrder.Visible = true;
+					}
+					txtEntryName.Text = ListName;
+					rowListName.Visible = false;
+					txtEntryValue.Text = "";
+					txtEntryText.Text = "";
+					cmdSaveEntry.CommandName = "SaveEntry";
+					break;
+				case "AddList":
+					EnableView(false);
+					EnableEdit(true);
+
+					rowListName.Visible = true;
+					txtParentKey.Text = "";
+					txtEntryName.Text = "";
+					txtEntryValue.Text = "";
+					txtEntryText.Text = "";
+					txtEntryName.ReadOnly = false;
+					cmdSaveEntry.CommandName = "SaveList";
+
+					var ctlLists = new ListController();
+
+					ddlSelectList.Enabled = true;
+					ddlSelectList.DataSource = ctlLists.GetListInfoCollection(string.Empty, string.Empty, PortalSettings.ActiveTab.PortalID);
+					ddlSelectList.DataTextField = "DisplayName";
+					ddlSelectList.DataValueField = "Key";
+					ddlSelectList.DataBind();
+					//ddlSelectList.Items.Insert(0, new ListItem(Localization.GetString("None_Specified"), ""));
+                    ddlSelectList.InsertItem(0, Localization.GetString("None_Specified"), "");
+
+					//Reset dropdownlist
+					ddlSelectParent.ClearSelection();
+					ddlSelectParent.Enabled = false;
+
+					break;
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="DataBind">
+          <declaration><![CDATA[public override void DataBind()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="475" sc="3" el="479" ec="4">ListEntries.ascx.cs</location>
+            <body hash="c5aa498b0c63ddc2c44636e1e1132f7c"><![CDATA[{
+			InitList();
+			BindListInfo();
+			BindGrid();
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteItem">
+          <declaration><![CDATA[private void DeleteItem(int entryId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="386" sc="3" el="404" ec="4">ListEntries.ascx.cs</location>
+            <body hash="92c831d3adf34b91653c0805afe6ee45"><![CDATA[{
+			if (SelectedListItems.Any())
+			{
+				try
+				{
+					var ctlLists = new ListController();
+					ctlLists.DeleteListEntryByID(entryId, true);
+					DataBind();
+				}
+				catch (Exception exc) //Module failed to load
+				{
+					Exceptions.ProcessModuleLoadException(this, exc);
+				}
+			}
+			else
+			{
+				DeleteList();
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteList">
+          <declaration><![CDATA[private void DeleteList()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="407" sc="3" el="413" ec="4">ListEntries.ascx.cs</location>
+            <body hash="a4beb51c7fe61171a292bca5e5b005cc"><![CDATA[{
+			var ctlLists = new ListController();
+
+			ctlLists.DeleteList(SelectedList, true);
+
+			Response.Redirect(DotNetNuke.Common.Globals.NavigateURL(TabId));
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="EnableEdit">
+          <declaration><![CDATA[private void EnableEdit(bool addList)]]></declaration>
+          <documentation>
+            <summary>
+     Switching to edit mode, change controls visibility for editing depends on AddList params
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="419" sc="3" el="426" ec="4">ListEntries.ascx.cs</location>
+            <body hash="7b36e3e66e07cac89776bf9661b16356"><![CDATA[{
+			rowListdetails.Visible = (!addList);
+			rowSelectList.Visible = addList;
+			rowSelectParent.Visible = addList;
+			rowEnableSortOrder.Visible = addList;
+			rowParentKey.Visible = false;
+			cmdDelete.Visible = false;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="EnableView">
+          <declaration><![CDATA[private void EnableView(bool viewMode)]]></declaration>
+          <documentation>
+            <summary>
+     Switching to view mode, change controls visibility for viewing
+ </summary>
+ <param name="viewMode">Boolean value to determine View or Edit mode</param></documentation>
+          <codeblock>
+            <location sl="433" sc="3" el="437" ec="4">ListEntries.ascx.cs</location>
+            <body hash="05855c94ad6c58bd48bbd9a4029ec1b8"><![CDATA[{
+			rowListdetails.Visible = true;
+			rowEntryGrid.Visible = viewMode;
+			rowEntryEdit.Visible = (!viewMode);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="EntriesGridItemCommand">
+          <declaration><![CDATA[protected void EntriesGridItemCommand(object source, GridCommandEventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+     Handles events when clicking image button in the grid (Edit/Up/Down)
+ </summary>
+ <param name="source"></param>
+ <param name="e"></param></documentation>
+          <codeblock>
+            <location sl="518" sc="3" el="567" ec="4">ListEntries.ascx.cs</location>
+            <body hash="c760952e7915e3ec585c89abee317e88"><![CDATA[{
+			try
+			{
+				var ctlLists = new ListController();
+			    int entryID = Convert.ToInt32(((GridDataItem) e.Item).GetDataKeyValue("EntryID"));
+
+				switch (e.CommandName.ToLower())
+				{
+					case "delete":
+						Mode = "ListEntries";
+						DeleteItem(entryID);
+						break;
+					case "edit":
+						Mode = "EditEntry";
+
+						ListEntryInfo entry = ctlLists.GetListEntryInfo(entryID);
+						txtEntryID.Text = entryID.ToString(CultureInfo.InvariantCulture);
+						txtParentKey.Text = entry.ParentKey;
+						txtEntryValue.Text = entry.Value;
+						txtEntryText.Text = entry.Text;
+						rowListName.Visible = false;
+						cmdSaveEntry.CommandName = "Update";
+
+						if (!SystemList)
+						{
+							cmdDelete.Visible = true;
+							ClientAPI.AddButtonConfirm(cmdDelete, Localization.GetString("DeleteItem"));
+						}
+						else
+						{
+							cmdDelete.Visible = false;
+						}
+				        e.Canceled = true;  //stop the grid from providing inline editing
+						DataBind();
+						break;
+					case "up":
+						ctlLists.UpdateListSortOrder(entryID, true);
+						DataBind();
+						break;
+					case "down":
+						ctlLists.UpdateListSortOrder(entryID, false);
+						DataBind();
+						break;
+				}
+			}
+			catch (Exception exc) //Module failed to load
+			{
+				Exceptions.ProcessModuleLoadException(this, exc);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="EntriesGridItemDataBound">
+          <declaration><![CDATA[protected void EntriesGridItemDataBound(object sender, GridItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="570" sc="3" el="592" ec="4">ListEntries.ascx.cs</location>
+            <body hash="294bfb52c2c8a22d9e222f5eed3624d0"><![CDATA[{
+			if (e.Item.ItemType == GridItemType.Item || e.Item.ItemType == GridItemType.EditItem || e.Item.ItemType == GridItemType.AlternatingItem || e.Item.ItemType == GridItemType.SelectedItem)
+			{
+	            var entry = (ListEntryInfo)e.Item.DataItem;
+				if (entry != null)
+				{
+					//Hide Edit option for system list
+                    var length = e.Item.Controls.Count;
+					var editCommand = e.Item.Controls[length - 2].Controls[0] as ImageButton;
+					if (editCommand != null)
+					{
+						editCommand.Visible = PortalSettings.ActiveTab.IsSuperTab || !(entry.SystemList || entry.PortalID == Null.NullInteger);
+					}
+
+					//Hide Delete option for system list
+					var delCommand = e.Item.Controls[length - 1].Controls[0] as ImageButton;
+					if (delCommand != null)
+					{
+						delCommand.Visible = PortalSettings.ActiveTab.IsSuperTab || !(entry.SystemList || entry.PortalID == Null.NullInteger);
+					}
+				}
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="GetList">
+          <declaration><![CDATA[private ListInfo GetList(string key, bool update)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="440" sc="3" el="455" ec="4">ListEntries.ascx.cs</location>
+            <body hash="c286d9e0f9bb8c8aec8d1e6c05603972"><![CDATA[{
+			var ctlLists = new ListController();
+			int index = key.IndexOf(":", StringComparison.Ordinal);
+			string listName = key.Substring(index + 1);
+			string parentKey = Null.NullString;
+			if (index > 0)
+			{
+				parentKey = key.Substring(0, index);
+			}
+			if (update)
+			{
+				ListName = listName;
+				ParentKey = parentKey;
+			}
+			return ctlLists.GetListInfo(listName, parentKey, ListPortalID);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="InitList">
+          <declaration><![CDATA[private void InitList()]]></declaration>
+          <documentation>
+            <summary>
+     Loads top level entry list
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="461" sc="3" el="468" ec="4">ListEntries.ascx.cs</location>
+            <body hash="051a48113ca9251c2776f47b4e9b9191"><![CDATA[{
+			if (SelectedList != null)
+			{
+				DefinitionID = SelectedList.DefinitionID;
+				EnableSortOrder = SelectedList.EnableSortOrder;
+				SystemList = SelectedList.SystemList;
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnAddEntryClick">
+          <declaration><![CDATA[protected void OnAddEntryClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+     Handles Add New Entry command
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param>
+ <remarks>
+     Using "CommandName" property of cmdSaveEntry to determine this is a new entry of an existing list
+ </remarks></documentation>
+          <codeblock>
+            <location sl="629" sc="3" el="632" ec="4">ListEntries.ascx.cs</location>
+            <body hash="3e9b89ca2aa130018dbf0a05ca3f9591"><![CDATA[{
+			Mode = "AddEntry";
+			DataBind();
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnCancelClick">
+          <declaration><![CDATA[protected void OnCancelClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+     Cancel
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param></documentation>
+          <codeblock>
+            <location sl="787" sc="3" el="804" ec="4">ListEntries.ascx.cs</location>
+            <body hash="5bcee845cf4f4caf20a75b507e366407"><![CDATA[{
+			try
+			{
+				Mode = "ListEntries";
+				if (!string.IsNullOrEmpty(SelectedKey))
+				{
+					DataBind();
+				}
+				else
+				{
+					Response.Redirect(DotNetNuke.Common.Globals.NavigateURL(TabId));
+				}
+			}
+			catch (Exception exc) //Module failed to load
+			{
+				Exceptions.ProcessModuleLoadException(this, exc);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDeleteClick">
+          <declaration><![CDATA[protected void OnDeleteClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+     Delete List
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param>
+ <remarks>
+     If deleting entry is not the last one in the list, rebinding the grid, otherwise return back to main page (rebinding DNNTree)
+ </remarks></documentation>
+          <codeblock>
+            <location sl="777" sc="3" el="779" ec="4">ListEntries.ascx.cs</location>
+            <body hash="7fc8659276b8803cb842d4c6763d370f"><![CDATA[{
+			DeleteItem(Convert.ToInt32(txtEntryID.Text));
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDeleteListClick">
+          <declaration><![CDATA[protected void OnDeleteListClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+     Delete List
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param></documentation>
+          <codeblock>
+            <location sl="764" sc="3" el="766" ec="4">ListEntries.ascx.cs</location>
+            <body hash="34e9a5a88478688df6102e748d743d35"><![CDATA[{
+			DeleteList();
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="486" sc="3" el="510" ec="4">ListEntries.ascx.cs</location>
+            <body hash="e8915c82fc270aed9d6b6086f1c0bda8"><![CDATA[{
+			base.OnInit(e);
+
+
+			grdEntries.ItemCommand += EntriesGridItemCommand;
+			grdEntries.ItemDataBound += EntriesGridItemDataBound;
+			ddlSelectList.SelectedIndexChanged += SelectListIndexChanged;
+			cmdAddEntry.Click += OnAddEntryClick;
+			cmdCancel.Click += OnCancelClick;
+			cmdDelete.Click += OnDeleteClick;
+			cmdDeleteList.Click += OnDeleteListClick;
+			cmdSaveEntry.Click += OnSaveEntryClick;
+
+			try
+			{
+				if (!Page.IsPostBack)
+				{
+					Mode = "ListEntries";
+				}
+			}
+			catch (Exception exc) //Module failed to load
+			{
+				Exceptions.ProcessModuleLoadException(this, exc);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnListCreated">
+          <declaration><![CDATA[protected void OnListCreated(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="807" sc="3" el="812" ec="4">ListEntries.ascx.cs</location>
+            <body hash="de93eb124fcdb53d7c273f5f9218a889"><![CDATA[{
+			if (ListCreated != null)
+			{
+				ListCreated(this, e);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnListEntryCreated">
+          <declaration><![CDATA[protected void OnListEntryCreated(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="815" sc="3" el="820" ec="4">ListEntries.ascx.cs</location>
+            <body hash="622aa1c6833b843b7270df44861cdcad"><![CDATA[{
+			if (ListEntryCreated != null)
+			{
+				ListEntryCreated(this, e);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSaveEntryClick">
+          <declaration><![CDATA[protected void OnSaveEntryClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+     Handles cmdSaveEntry.Click
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param>
+ <remarks>
+     Using "CommandName" property of cmdSaveEntry to determine action to take (ListUpdate/AddEntry/AddList)
+ </remarks></documentation>
+          <codeblock>
+            <location sl="643" sc="3" el="756" ec="4">ListEntries.ascx.cs</location>
+            <body hash="24b42084c25398fa699dc0c24cac163c"><![CDATA[{
+		    string entryValue;
+		    string entryText;
+            if (UserInfo.IsSuperUser)
+            {
+                entryValue = txtEntryValue.Text;
+                entryText = txtEntryText.Text;
+            }
+            else
+            {
+                var ps = new PortalSecurity();
+
+                entryValue = ps.InputFilter(txtEntryValue.Text, PortalSecurity.FilterFlag.NoScripting);
+                entryText = ps.InputFilter(txtEntryText.Text, PortalSecurity.FilterFlag.NoScripting);
+            }
+			var listController = new ListController();
+			var listName = string.IsNullOrEmpty(ListName) ? txtEntryName.Text : (!string.IsNullOrEmpty(ParentKey) ? ParentKey + ":" : string.Empty) + ListName;
+			var entry = new ListEntryInfo();
+			{
+				entry.DefinitionID = Null.NullInteger;
+				entry.PortalID = ListPortalID;
+				entry.ListName = listName;
+                entry.Value = entryValue;
+                entry.Text = entryText;
+			}
+			if (Page.IsValid)
+			{
+				Mode = "ListEntries";
+				switch (cmdSaveEntry.CommandName.ToLower())
+				{
+					case "update":
+                        entry.ListName = ListName;
+                        entry.ParentKey = SelectedList.ParentKey;
+						entry.EntryID = int.Parse(txtEntryID.Text);
+						bool canUpdate = true;
+						foreach (var curEntry in listController.GetListEntryInfoItems(SelectedList.Name, entry.ParentKey, entry.PortalID))
+						{
+							if (entry.EntryID != curEntry.EntryID) //not the same item we are trying to update
+							{
+								if (entry.Value == curEntry.Value)
+								{
+									Skin.AddModuleMessage(this, Localization.GetString("ItemAlreadyPresent", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+									canUpdate = false;
+									break;
+								}
+
+							}
+						}
+
+						if (canUpdate)
+						{
+							listController.UpdateListEntry(entry);
+							DataBind();
+						}
+						break;
+					case "saveentry":
+						if (SelectedList != null)
+						{
+							entry.ParentKey = SelectedList.ParentKey;
+							entry.ParentID = SelectedList.ParentID;
+							entry.Level = SelectedList.Level;
+						}
+						if (chkEnableSortOrder.Checked)
+						{
+							entry.SortOrder = 1;
+						}
+						else
+						{
+							entry.SortOrder = 0;
+						}
+
+				        if (listController.AddListEntry(entry) == Null.NullInteger) //entry already found in database
+				        {
+				            Skin.AddModuleMessage(this, Localization.GetString("ItemAlreadyPresent", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+				            Mode = "AddEntry";
+				        }
+				        else
+				        {
+				            DataBind();
+				        }
+						
+						break;
+					case "savelist":
+						if (ddlSelectParent.SelectedIndex != -1)
+						{
+							int parentID = int.Parse(ddlSelectParent.SelectedItem.Value);
+							ListEntryInfo parentEntry = listController.GetListEntryInfo(parentID);
+							entry.ParentID = parentID;
+							entry.DefinitionID = parentEntry.DefinitionID;
+							entry.Level = parentEntry.Level + 1;
+							entry.ParentKey = parentEntry.Key;
+						}
+						if (chkEnableSortOrder.Checked)
+						{
+							entry.SortOrder = 1;
+						}
+						else
+						{
+							entry.SortOrder = 0;
+						}
+
+						if (listController.AddListEntry(entry) == Null.NullInteger) //entry already found in database
+						{
+							Skin.AddModuleMessage(this, Localization.GetString("ItemAlreadyPresent", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+						}
+						else
+						{
+							SelectedKey = entry.ParentKey.Replace(":", ".") + ":" + entry.ListName;
+							Response.Redirect(DotNetNuke.Common.Globals.NavigateURL(TabId, "", "Key=" + SelectedKey));
+						}
+						break;
+				}
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_ListCreated">
+          <declaration><![CDATA[public void remove_ListCreated(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_ListEntryCreated">
+          <declaration><![CDATA[public void remove_ListEntryCreated(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="SelectListIndexChanged">
+          <declaration><![CDATA[protected void SelectListIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+     Select a list in dropdownlist
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param></documentation>
+          <codeblock>
+            <location sl="600" sc="3" el="618" ec="4">ListEntries.ascx.cs</location>
+            <body hash="4696f9139da6ac5d673a4decb8043198"><![CDATA[{
+			var ctlLists = new ListController();
+			if (!string.IsNullOrEmpty(ddlSelectList.SelectedValue))
+			{
+				ListInfo selList = GetList(ddlSelectList.SelectedItem.Value, false);
+				{
+					ddlSelectParent.Enabled = true;
+					ddlSelectParent.DataSource = ctlLists.GetListEntryInfoItems(selList.Name, selList.ParentKey);
+					ddlSelectParent.DataTextField = "DisplayName";
+					ddlSelectParent.DataValueField = "EntryID";
+					ddlSelectParent.DataBind();
+				}
+			}
+			else
+			{
+				ddlSelectParent.Enabled = false;
+				ddlSelectParent.Items.Clear();
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="chkEnableSortOrder">
+          <declaration><![CDATA[protected CheckBox chkEnableSortOrder;]]></declaration>
+          <documentation>
+            <summary>
+ chkEnableSortOrder control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdAddEntry">
+          <declaration><![CDATA[protected LinkButton cmdAddEntry;]]></declaration>
+          <documentation>
+            <summary>
+ cmdAddEntry control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdCancel">
+          <declaration><![CDATA[protected LinkButton cmdCancel;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCancel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdDelete">
+          <declaration><![CDATA[protected LinkButton cmdDelete;]]></declaration>
+          <documentation>
+            <summary>
+ cmdDelete control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdDeleteList">
+          <declaration><![CDATA[protected LinkButton cmdDeleteList;]]></declaration>
+          <documentation>
+            <summary>
+ cmdDeleteList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdSaveEntry">
+          <declaration><![CDATA[protected LinkButton cmdSaveEntry;]]></declaration>
+          <documentation>
+            <summary>
+ cmdSaveEntry control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ddlSelectList">
+          <declaration><![CDATA[protected DnnComboBox ddlSelectList;]]></declaration>
+          <documentation>
+            <summary>
+ ddlSelectList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ddlSelectParent">
+          <declaration><![CDATA[protected DnnComboBox ddlSelectParent;]]></declaration>
+          <documentation>
+            <summary>
+ ddlSelectParent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="grdEntries">
+          <declaration><![CDATA[protected DnnGrid grdEntries;]]></declaration>
+          <documentation>
+            <summary>
+ grdEntries control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblEntryCount">
+          <declaration><![CDATA[protected Label lblEntryCount;]]></declaration>
+          <documentation>
+            <summary>
+ lblEntryCount control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblListName">
+          <declaration><![CDATA[protected Label lblListName;]]></declaration>
+          <documentation>
+            <summary>
+ lblListName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblListParent">
+          <declaration><![CDATA[protected Label lblListParent;]]></declaration>
+          <documentation>
+            <summary>
+ lblListParent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ListCreated">
+          <declaration><![CDATA[private EventHandler ListCreated;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ListEntryCreated">
+          <declaration><![CDATA[private EventHandler ListEntryCreated;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="plEnableSortOrder">
+          <declaration><![CDATA[protected UserControl plEnableSortOrder;]]></declaration>
+          <documentation>
+            <summary>
+ plEnableSortOrder control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plEntryCount">
+          <declaration><![CDATA[protected UserControl plEntryCount;]]></declaration>
+          <documentation>
+            <summary>
+ plEntryCount control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plEntryName">
+          <declaration><![CDATA[protected UserControl plEntryName;]]></declaration>
+          <documentation>
+            <summary>
+ plEntryName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plEntryText">
+          <declaration><![CDATA[protected UserControl plEntryText;]]></declaration>
+          <documentation>
+            <summary>
+ plEntryText control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plEntryValue">
+          <declaration><![CDATA[protected UserControl plEntryValue;]]></declaration>
+          <documentation>
+            <summary>
+ plEntryValue control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plListName">
+          <declaration><![CDATA[protected UserControl plListName;]]></declaration>
+          <documentation>
+            <summary>
+ plListName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plListParent">
+          <declaration><![CDATA[protected UserControl plListParent;]]></declaration>
+          <documentation>
+            <summary>
+ plListParent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plParentKey">
+          <declaration><![CDATA[protected UserControl plParentKey;]]></declaration>
+          <documentation>
+            <summary>
+ plParentKey control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plSelectList">
+          <declaration><![CDATA[protected UserControl plSelectList;]]></declaration>
+          <documentation>
+            <summary>
+ plSelectList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plSelectParent">
+          <declaration><![CDATA[protected UserControl plSelectParent;]]></declaration>
+          <documentation>
+            <summary>
+ plSelectParent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rowEnableSortOrder">
+          <declaration><![CDATA[protected HtmlGenericControl rowEnableSortOrder;]]></declaration>
+          <documentation>
+            <summary>
+ rowEnableSortOrder control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rowEntryEdit">
+          <declaration><![CDATA[protected HtmlGenericControl rowEntryEdit;]]></declaration>
+          <documentation>
+            <summary>
+ rowEntryEdit control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rowEntryGrid">
+          <declaration><![CDATA[protected HtmlGenericControl rowEntryGrid;]]></declaration>
+          <documentation>
+            <summary>
+ rowEntryGrid control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rowListdetails">
+          <declaration><![CDATA[protected HtmlGenericControl rowListdetails;]]></declaration>
+          <documentation>
+            <summary>
+ rowListdetails control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rowListName">
+          <declaration><![CDATA[protected HtmlGenericControl rowListName;]]></declaration>
+          <documentation>
+            <summary>
+ rowListName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rowListParent">
+          <declaration><![CDATA[protected HtmlGenericControl rowListParent;]]></declaration>
+          <documentation>
+            <summary>
+ rowListParent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rowParentKey">
+          <declaration><![CDATA[protected HtmlGenericControl rowParentKey;]]></declaration>
+          <documentation>
+            <summary>
+ rowParentKey control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rowSelectList">
+          <declaration><![CDATA[protected HtmlGenericControl rowSelectList;]]></declaration>
+          <documentation>
+            <summary>
+ rowSelectList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rowSelectParent">
+          <declaration><![CDATA[protected HtmlGenericControl rowSelectParent;]]></declaration>
+          <documentation>
+            <summary>
+ rowSelectParent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtEntryID">
+          <declaration><![CDATA[protected TextBox txtEntryID;]]></declaration>
+          <documentation>
+            <summary>
+ txtEntryID control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtEntryName">
+          <declaration><![CDATA[protected TextBox txtEntryName;]]></declaration>
+          <documentation>
+            <summary>
+ txtEntryName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtEntryText">
+          <declaration><![CDATA[protected TextBox txtEntryText;]]></declaration>
+          <documentation>
+            <summary>
+ txtEntryText control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtEntryValue">
+          <declaration><![CDATA[protected TextBox txtEntryValue;]]></declaration>
+          <documentation>
+            <summary>
+ txtEntryValue control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtParentKey">
+          <declaration><![CDATA[protected TextBox txtParentKey;]]></declaration>
+          <documentation>
+            <summary>
+ txtParentKey control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="valEntryName">
+          <declaration><![CDATA[protected RequiredFieldValidator valEntryName;]]></declaration>
+          <documentation>
+            <summary>
+ valEntryName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="valEntryText">
+          <declaration><![CDATA[protected RequiredFieldValidator valEntryText;]]></declaration>
+          <documentation>
+            <summary>
+ valEntryText control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="valEntryValue">
+          <declaration><![CDATA[protected RequiredFieldValidator valEntryValue;]]></declaration>
+          <documentation>
+            <summary>
+ valEntryValue control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="DefinitionID">
+          <declaration><![CDATA[protected int DefinitionID]]></declaration>
+          <documentation>
+            <summary>
+     Gets and sets the DefinitionID of the current List
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="4" el="65" ec="5">ListEntries.ascx.cs</location>
+            <body hash="e5a7de26ab161eb96767dc063f1276f9"><![CDATA[{
+				if (ViewState["DefinitionID"] == null)
+				{
+					ViewState["DefinitionID"] = Null.NullInteger;
+				}
+				return Convert.ToInt32(ViewState["DefinitionID"]);
+			}]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="67" sc="4" el="69" ec="5">ListEntries.ascx.cs</location>
+            <body hash="8aa486ac83e014bc702d5813a099b0c4"><![CDATA[{
+				ViewState["DefinitionID"] = value;
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="EnableSortOrder">
+          <declaration><![CDATA[protected bool EnableSortOrder]]></declaration>
+          <documentation>
+            <summary>
+     Property to determine if this list has custom sort order
+ </summary>
+ <remarks>
+     Up/Down button in datagrid will be visibled based on this property.
+     If disable, list will be sorted anphabetically
+ </remarks></documentation>
+          <codeblock>
+            <location sl="82" sc="4" el="88" ec="5">ListEntries.ascx.cs</location>
+            <body hash="32abb0b64fb6e93ba873fc82d698bda4"><![CDATA[{
+				if (ViewState["EnableSortOrder"] == null)
+				{
+					ViewState["EnableSortOrder"] = false;
+				}
+				return Convert.ToBoolean(ViewState["EnableSortOrder"]);
+			}]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="90" sc="4" el="92" ec="5">ListEntries.ascx.cs</location>
+            <body hash="96f2ff286e0973d9eb0887a85adfa829"><![CDATA[{
+				ViewState["EnableSortOrder"] = value;
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="ListName">
+          <declaration><![CDATA[public string ListName]]></declaration>
+          <documentation>
+            <summary>
+ Get or set the ListName for this set of List Entries
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="156" sc="4" el="158" ec="5">ListEntries.ascx.cs</location>
+            <body hash="41ec1fd85e08a113125338d286d4cad5"><![CDATA[{
+				return HttpUtility.HtmlEncode(ViewState["ListName"] != null ? ViewState["ListName"].ToString() : "");
+			}]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="160" sc="4" el="162" ec="5">ListEntries.ascx.cs</location>
+            <body hash="c33b0b9081068cd114fb02426e507410"><![CDATA[{
+				ViewState["ListName"] = value;
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="ListPortalID">
+          <declaration><![CDATA[public int ListPortalID]]></declaration>
+          <documentation>
+            <summary>
+ Gets the portalId for this set of List Entries
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="171" sc="4" el="177" ec="5">ListEntries.ascx.cs</location>
+            <body hash="2ed46f61854b61c02e42f3d4f45370ac"><![CDATA[{
+				if (ViewState["ListPortalID"] == null)
+				{
+					ViewState["ListPortalID"] = Null.NullInteger;
+				}
+				return Convert.ToInt32(ViewState["ListPortalID"]);
+			}]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="179" sc="4" el="181" ec="5">ListEntries.ascx.cs</location>
+            <body hash="e02d75cc878b0b6bf9e716c7bdbd6b7b"><![CDATA[{
+				ViewState["ListPortalID"] = value;
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="Mode">
+          <declaration><![CDATA[public string Mode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="187" sc="4" el="189" ec="5">ListEntries.ascx.cs</location>
+            <body hash="afc358235dbe256120ee6d621739d555"><![CDATA[{
+				return ViewState["Mode"] != null ? ViewState["Mode"].ToString() : "";
+			}]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="191" sc="4" el="193" ec="5">ListEntries.ascx.cs</location>
+            <body hash="2754bd607c1b30228e562ebf7fe10bbe"><![CDATA[{
+				ViewState["Mode"] = value;
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="ParentKey">
+          <declaration><![CDATA[public string ParentKey]]></declaration>
+          <documentation>
+            <summary>
+ Get or set the ParentKey for this set of List Entries
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="202" sc="4" el="204" ec="5">ListEntries.ascx.cs</location>
+            <body hash="70eda0eb8f62ca2921b942d12381ddff"><![CDATA[{
+				return HttpUtility.HtmlEncode(ViewState["ParentKey"] != null ? ViewState["ParentKey"].ToString() : "");
+			}]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="206" sc="4" el="208" ec="5">ListEntries.ascx.cs</location>
+            <body hash="3285d8895889f04c0e4f9c9a28e9371c"><![CDATA[{
+				ViewState["ParentKey"] = value;
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="SelectedKey">
+          <declaration><![CDATA[public string SelectedKey]]></declaration>
+          <documentation>
+            <summary>
+ Gets or sets the Selected key
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="217" sc="4" el="219" ec="5">ListEntries.ascx.cs</location>
+            <body hash="7ca4b30692161446221732a5c03aa65b"><![CDATA[{
+				return ViewState["SelectedKey"] != null ? ViewState["SelectedKey"].ToString() : "";
+			}]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="221" sc="4" el="223" ec="5">ListEntries.ascx.cs</location>
+            <body hash="99cc5c076144bf3649f1b9946ecddba9"><![CDATA[{
+				ViewState["SelectedKey"] = value;
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="SelectedList">
+          <declaration><![CDATA[protected ListInfo SelectedList]]></declaration>
+          <documentation>
+            <summary>
+ Gets the selected ListInfo
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="101" sc="4" el="103" ec="5">ListEntries.ascx.cs</location>
+            <body hash="9a67e24dc7204dd12f56199946535844"><![CDATA[{
+				return GetList(SelectedKey, true);
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="SelectedListItems">
+          <declaration><![CDATA[protected IEnumerable<ListEntryInfo> SelectedListItems]]></declaration>
+          <documentation>
+            <summary>
+ Gets the selected collection of List Items
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="112" sc="4" el="120" ec="5">ListEntries.ascx.cs</location>
+            <body hash="81430c212848402788c5185c1aeefb96"><![CDATA[{
+				var ctlLists = new ListController();
+				if (SelectedList != null)
+				{
+					return ctlLists.GetListEntryInfoItems(SelectedList.Name, SelectedList.ParentKey, SelectedList.PortalID);
+				}
+
+				return ctlLists.GetListEntryInfoItems(ListName, ParentKey, ListPortalID);
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="ShowDelete">
+          <declaration><![CDATA[public bool ShowDelete]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="229" sc="4" el="231" ec="5">ListEntries.ascx.cs</location>
+            <body hash="f8217f2ada7b888cf6a5b845b75f3c55"><![CDATA[{
+				return ViewState["ShowDelete"] != null && Convert.ToBoolean(ViewState["ShowDelete"]);
+			}]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="233" sc="4" el="235" ec="5">ListEntries.ascx.cs</location>
+            <body hash="079d4a56e96bcd9a7c9c85216df9551d"><![CDATA[{
+				ViewState["ShowDelete"] = value;
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="SystemList">
+          <declaration><![CDATA[protected bool SystemList]]></declaration>
+          <documentation>
+            <summary>
+     Property to determine if this list is system (DNN core)
+ </summary>
+ <remarks>
+     Default entries in system list can not be deleted
+     Entries in system list is sorted anphabetically
+ </remarks></documentation>
+          <codeblock>
+            <location sl="133" sc="4" el="139" ec="5">ListEntries.ascx.cs</location>
+            <body hash="2254743f89c49f83be5a16ec4b99f315"><![CDATA[{
+				if (ViewState["SystemList"] == null)
+				{
+					ViewState["SystemList"] = false;
+				}
+				return Convert.ToBoolean(ViewState["SystemList"]);
+			}]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="141" sc="4" el="143" ec="5">ListEntries.ascx.cs</location>
+            <body hash="d003d6a81cf9494e2196710025a599a1"><![CDATA[{
+				ViewState["SystemList"] = value;
+			}]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+        <event name="ListCreated">
+          <declaration><![CDATA[public event EventHandler ListCreated;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="ListEntryCreated">
+          <declaration><![CDATA[public event EventHandler ListEntryCreated;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Lists.Components">
+    <class name="ListsController">
+      <declaration><![CDATA[public class ListsController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ListsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="54" ec="10">Components\ListsController.cs</location>
+            <body hash="67abc96a144fec1e91cc1f2ff9dacb31"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "08.00.00":
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

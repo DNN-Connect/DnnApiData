@@ -1,0 +1,494 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.Modules.ConfigurationManager.dll" version="08.00.01" generated="2017-06-19 22:48:57Z" generationTime="1.7631869">
+  <namespace name="Dnn.Modules.ConfigurationManager.Components">
+    <class name="BusinessController">
+      <declaration><![CDATA[public class BusinessController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="55" ec="10">Components\BusinessController.cs</location>
+            <body hash="67abc96a144fec1e91cc1f2ff9dacb31"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "08.00.00":
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.XmlMerge">
+    <class name="XmlMerge">
+      <declaration><![CDATA[public class XmlMerge : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public XmlMerge()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static XmlMerge()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="6" el="49" ec="95">XmlMerge.ascx.cs</location>
+            <body hash="df4f2b567304fafbb28b4d74d39eba90"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (XmlMerge))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindConfigList">
+          <declaration><![CDATA[private void BindConfigList()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="9" el="96" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="6943a521fd8865f09bfb1a2dad9fbf49"><![CDATA[{
+            var files = Directory.GetFiles(Globals.ApplicationMapPath, "*.config");
+            IEnumerable<string> fileList = (from file in files select Path.GetFileName(file));
+            ddlConfig.DataSource = fileList;
+            ddlConfig.DataBind();
+            ddlConfig.InsertItem(0, Localization.GetString("SelectConfig", LocalResourceFile), "-1");
+            ddlConfig.SelectedIndex = 0;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsValidDocType">
+          <declaration><![CDATA[private static bool IsValidDocType(string contentType)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="76" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="cc49e4f4507f4067a24002ec8b2ea1e1"><![CDATA[{
+            switch (contentType)
+            {
+                case "text/plain":
+                case "application/xml":
+                    return true;
+                default:
+                    return false;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsValidXmlMergDocument">
+          <declaration><![CDATA[private bool IsValidXmlMergDocument(string mergeDocText)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="9" el="86" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="2dd5c7e9107756412664a070963d662a"><![CDATA[{
+            if (string.IsNullOrEmpty(mergeDocText.Trim()))
+            {
+                return false;
+            }
+            //TODO: Add more checks here
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadConfig">
+          <declaration><![CDATA[private void LoadConfig(string configFile)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="108" sc="9" el="119" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="46aeade66c18f23eb192da8140bd0fa6"><![CDATA[{
+            var configDoc = Config.Load(configFile);
+            using (var txtWriter = new StringWriter())
+            {
+                using (var writer = new XmlTextWriter(txtWriter))
+                {
+                    writer.Formatting = Formatting.Indented;
+                    configDoc.WriteTo(writer);
+                }
+                txtConfiguration.Text = txtWriter.ToString();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnConfigFileIndexChanged">
+          <declaration><![CDATA[protected void OnConfigFileIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="228" sc="9" el="233" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="58c5e15542532db3c9821fac2882e9c0"><![CDATA[{
+            if (ddlConfig.SelectedIndex != 0)
+            {
+                LoadConfig(ddlConfig.SelectedValue.ToLowerInvariant());
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnExecuteClick">
+          <declaration><![CDATA[protected void OnExecuteClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="171" sc="9" el="191" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="b96df501f210b87258fb41042a42fca3"><![CDATA[{
+            ValidateSuperUser();
+            if (IsValidXmlMergDocument(txtScript.Text))
+            {
+                try
+                {
+                    var doc = new XmlDocument();
+                    doc.LoadXml(txtScript.Text);
+                    var app = DotNetNukeContext.Current.Application;
+                    var merge = new DotNetNuke.Services.Installer.XmlMerge(doc, Globals.FormatVersion(app.Version), app.Description);
+                    merge.UpdateConfigs();
+
+                    DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("Success", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+                }
+                catch (Exception ex)
+                {
+                    DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ERROR_Merge", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+                    Exceptions.LogException(ex);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="126" sc="9" el="135" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="80c6b78d77f7c9763b9aa91492ae4668"><![CDATA[{
+            base.OnInit(e);
+
+            cmdExecute.Click += OnExecuteClick;
+            cmdSave.Click += OnSaveClick;
+            cmdUpload.Click += OnUploadClick;
+            ddlConfig.SelectedIndexChanged += OnConfigFileIndexChanged;
+
+			JavaScript.RequestRegistration(CommonJs.DnnPlugins);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="138" sc="9" el="161" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="cff6f4fdbfb3178dd260f37e23789c41"><![CDATA[{
+            base.OnLoad(e);
+
+            ValidateSuperUser();
+
+            if (!Page.IsPostBack)
+            {
+                BindConfigList();
+            }
+            else
+            {
+                if (ddlConfig.SelectedIndex != 0)
+                {
+                    //ddlConfig.Attributes.Add("onClick", "javascript: alert('" + Localization.GetString("LoadConfigWarning", LocalResourceFile) + "');");
+                    txtConfiguration.Enabled = true;
+                }
+                else
+                {
+                    //ddlConfig.Attributes.Remove("onClick");
+                    txtConfiguration.Text = string.Empty;
+                    txtConfiguration.Enabled = true;
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnPreRender">
+          <declaration><![CDATA[protected override void OnPreRender(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="164" sc="9" el="168" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="4fd6d7403b9079ba2857ac0b9b636f64"><![CDATA[{
+            base.OnPreRender(e);
+
+            SetSaveButtonState();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSaveClick">
+          <declaration><![CDATA[protected void OnSaveClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="194" sc="9" el="211" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="8f55ae5417a68dd41db0a8f6b7a1f36f"><![CDATA[{
+            ValidateSuperUser();
+            var configDoc = new XmlDocument();
+            try
+            {
+                configDoc.LoadXml(txtConfiguration.Text);
+                Config.Save(configDoc, ddlConfig.SelectedValue);
+                LoadConfig(ddlConfig.SelectedValue);
+
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("Success", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, string.Format(Localization.GetString("ERROR_ConfigurationFormat", LocalResourceFile), ex.Message), ModuleMessage.ModuleMessageType.RedError);
+                return;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnUploadClick">
+          <declaration><![CDATA[protected void OnUploadClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="214" sc="9" el="225" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="71507f5469a7a8a52486f4d132bc7ab4"><![CDATA[{
+            ValidateSuperUser();
+            if (IsValidDocType(uplScript.PostedFile.ContentType))
+            {
+                var scriptFile = new StreamReader(uplScript.PostedFile.InputStream);
+                txtScript.Text = scriptFile.ReadToEnd();
+            }
+            else
+            {
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, string.Format(Localization.GetString("ERROR_ConfigurationFormat", LocalResourceFile), ""), ModuleMessage.ModuleMessageType.RedError);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetSaveButtonState">
+          <declaration><![CDATA[private void SetSaveButtonState()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="237" sc="9" el="258" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="53080821dc6b4ce65f309ee8698c1a39"><![CDATA[{
+
+            if (ddlConfig.SelectedIndex <= 0)
+            {
+                cmdSave.Enabled = false;
+                cmdExecute.Enabled = false;
+            }
+            else
+            {
+                cmdSave.Enabled = true;
+
+                if (!String.IsNullOrEmpty(txtScript.Text.Trim()))
+                {
+                    cmdExecute.Enabled = true;
+                }
+                else
+                {
+                    cmdExecute.Enabled = false;
+                }
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ValidateSuperUser">
+          <declaration><![CDATA[private void ValidateSuperUser()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="99" sc="9" el="105" ec="10">XmlMerge.ascx.cs</location>
+            <body hash="f28b422b9e720e6be26a876433eb78e6"><![CDATA[{
+            //Verify that the current user has access to access this page
+            if (!UserInfo.IsSuperUser)
+            {
+                Response.Redirect(Globals.NavigateURL("Access Denied"), true);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cmdExecute">
+          <declaration><![CDATA[protected LinkButton cmdExecute;]]></declaration>
+          <documentation>
+            <summary>
+ cmdExecute control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdSave">
+          <declaration><![CDATA[protected LinkButton cmdSave;]]></declaration>
+          <documentation>
+            <summary>
+ cmdSave control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdUpload">
+          <declaration><![CDATA[protected LinkButton cmdUpload;]]></declaration>
+          <documentation>
+            <summary>
+ cmdUpload control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ddlConfig">
+          <declaration><![CDATA[protected DnnComboBox ddlConfig;]]></declaration>
+          <documentation>
+            <summary>
+ ddlConfig control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblMessage">
+          <declaration><![CDATA[protected Label lblMessage;]]></declaration>
+          <documentation>
+            <summary>
+ lblMessage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(XmlMerge));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="plConfig">
+          <declaration><![CDATA[protected UserControl plConfig;]]></declaration>
+          <documentation>
+            <summary>
+ plConfig control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plScript">
+          <declaration><![CDATA[protected UserControl plScript;]]></declaration>
+          <documentation>
+            <summary>
+ plScript control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtConfiguration">
+          <declaration><![CDATA[protected TextBox txtConfiguration;]]></declaration>
+          <documentation>
+            <summary>
+ txtConfiguration control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtScript">
+          <declaration><![CDATA[protected TextBox txtScript;]]></declaration>
+          <documentation>
+            <summary>
+ txtScript control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="uplScript">
+          <declaration><![CDATA[protected FileUpload uplScript;]]></declaration>
+          <documentation>
+            <summary>
+ uplScript control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ConfirmText">
+          <declaration><![CDATA[protected string ConfirmText]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="7" el="61" ec="8">XmlMerge.ascx.cs</location>
+            <body hash="c046c32300807e681d5d5a5656aa6b9a"><![CDATA[{
+				if (ddlConfig.SelectedValue.ToLowerInvariant() == "web.config")
+				{
+					return Localization.GetSafeJSString("SaveWarning", LocalResourceFile);
+				}
+
+				return Localization.GetSafeJSString("SaveConfirm", LocalResourceFile);
+		    }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

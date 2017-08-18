@@ -1,0 +1,3117 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.UI.dll" version="01.01.00" generated="2017-08-10 12:35:00Z" generationTime="6.2946232">
+  <namespace name="Dnn.PersonaBar.UI.Components">
+    <class name="BusinessController">
+      <declaration><![CDATA[public class BusinessController : IUpgradeable]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CreateAdminLinks">
+          <declaration><![CDATA[private void CreateAdminLinks()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="26" sc="9" el="33" ec="10">Components\BusinessController.cs</location>
+            <body hash="a9c8b5cbca80d0046727e44b43b4b0e4"><![CDATA[{
+            foreach (PortalInfo portal in PortalController.Instance.GetPortals())
+            {
+                CreatePageLinks(portal.PortalID, "Admin");
+            }
+
+            CreatePageLinks(Null.NullInteger, "Host");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreatePageLinks">
+          <declaration><![CDATA[private void CreatePageLinks(int portalId, string parentPath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="9" el="48" ec="10">Components\BusinessController.cs</location>
+            <body hash="adcd3f8a8221e621363eb830231f388d"><![CDATA[{
+            var parentTab = TabController.GetTabByTabPath(portalId, "//" + parentPath, string.Empty);
+            if (parentTab == Null.NullInteger)
+            {
+                return;
+            }
+
+            var adminTabs = TabController.GetTabsByParent(parentTab, portalId);
+            foreach (var tab in adminTabs)
+            {
+                AdminMenuController.Instance.CreateLinkMenu(tab);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateControlPanel">
+          <declaration><![CDATA[private void UpdateControlPanel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="53" ec="10">Components\BusinessController.cs</location>
+            <body hash="c57a264e8f784a3de4f311fa2af0c1f1"><![CDATA[{
+            HostController.Instance.Update("ControlPanel", "DesktopModules/admin/Dnn.PersonaBar/UserControls/PersonaBarContainer.ascx");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="9" el="23" ec="10">Components\BusinessController.cs</location>
+            <body hash="a3addd0cc557a38b07f5bceb50e7df26"><![CDATA[{
+            switch (version)
+            {
+                case "01.00.00":
+                    UpdateControlPanel();
+                    CreateAdminLinks();
+                    break;
+            }
+
+            return "Success";
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.UI.Components.Controllers">
+    <class name="AdminMenuController">
+      <declaration><![CDATA[public class AdminMenuController : ServiceLocator<IAdminMenuController, AdminMenuController>, IAdminMenuController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AdminMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CreateLinkMenu">
+          <declaration><![CDATA[public void CreateLinkMenu(TabInfo tab)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="9" el="64" ec="10">Components\Controllers\AdminMenuController.cs</location>
+            <body hash="3d772b21bb0620437f757f18e4c87dc1"><![CDATA[{
+            if (!ValidateTab(tab))
+            {
+                return;
+            }
+
+            var portalId = tab.PortalID;
+            var tabId = tab.TabID;
+
+            var identifier = $"Link_{portalId}_{tabId}";
+            if (PersonaBarRepository.Instance.GetMenuItem(identifier) != null)
+            {
+                return;
+            }
+
+            var menuItem = new MenuItem
+            {
+                Identifier = identifier,
+                Path = $"LinkMenu?portalId={portalId}&tabId={tabId}",
+                ModuleName = "LinkMenu",
+                Controller = "Dnn.PersonaBar.UI.MenuControllers.LinkMenuController, Dnn.PersonaBar.UI",
+                ResourceKey = tab.LocalizedTabName,
+                ParentId = PersonaBarRepository.Instance.GetMenuItem("Manage").MenuId,
+                Order = tab.IsSuperTab ? 300 : 200, //show host menus after admin menus
+                AllowHost = true,
+                Enabled = true
+            };
+
+            PersonaBarRepository.Instance.SaveMenuItem(menuItem);
+
+            if (!tab.IsSuperTab)
+            {
+                var portal = PortalController.Instance.GetPortal(portalId);
+                PersonaBarRepository.Instance.SaveMenuDefaultPermissions(menuItem, portal.AdministratorRoleName);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLinkMenu">
+          <declaration><![CDATA[public void DeleteLinkMenu(TabInfo tab)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="74" ec="10">Components\Controllers\AdminMenuController.cs</location>
+            <body hash="e7af08de76ecc36b6be0fec9f4177b78"><![CDATA[{
+            var portalId = tab.PortalID;
+            var tabId = tab.TabID;
+
+            var identifier = $"Link_{portalId}_{tabId}";
+
+            PersonaBarRepository.Instance.DeleteMenuItem(identifier);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFactory">
+          <declaration><![CDATA[protected override Func<IAdminMenuController> GetFactory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="9" el="26" ec="10">Components\Controllers\AdminMenuController.cs</location>
+            <body hash="f3fc8a0aaaabcf9e344192307745b1d3"><![CDATA[{
+            return () => new AdminMenuController();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetKnownPages">
+          <declaration><![CDATA[private IList<string> GetKnownPages(string type)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="108" sc="9" el="127" ec="10">Components\Controllers\AdminMenuController.cs</location>
+            <body hash="e087b6e87521079e4c003e30479a5385"><![CDATA[{
+            if (_knownPages == null)
+            {
+                _knownPages = new Dictionary<string, IList<string>>();
+            }
+
+            if (_knownPages.ContainsKey(type))
+            {
+                return _knownPages[type];
+            }
+
+            var personaBarPath = Constants.PersonaBarRelativePath.Replace("~/", string.Empty);
+            var dataPath = Path.Combine(Globals.ApplicationMapPath, personaBarPath, "data/adminpages.resources");
+            var xmlDocument = new XmlDocument();
+            xmlDocument.Load(dataPath);
+            var pages = xmlDocument.SelectNodes($"//pages//{type}//name")?.Cast<XmlNode>().Select(n => n.InnerXml.Trim()).ToList();
+            _knownPages.Add(type, pages);
+
+            return pages;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ValidateTab">
+          <declaration><![CDATA[private bool ValidateTab(TabInfo tab)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="77" sc="9" el="105" ec="10">Components\Controllers\AdminMenuController.cs</location>
+            <body hash="349dc335b9ba9bca243fe0224631d1fb"><![CDATA[{
+            if (tab.IsDeleted || tab.DisableLink || !tab.IsVisible)
+            {
+                return false;
+            }
+
+            var type = tab.IsSuperTab ? "host" : "admin";
+            var portalId = tab.PortalID;
+            var tabName = tab.TabName;
+
+            var knownPages = GetKnownPages(type);
+            if (knownPages.Contains(tabName, StringComparer.InvariantCultureIgnoreCase))
+            {
+                return false;
+            }
+
+            if (!tab.IsSuperTab)
+            {
+                var adminPage = TabController.GetTabByTabPath(portalId, "//Admin", string.Empty);
+                if (adminPage == Null.NullInteger)
+                {
+                    return false;
+                }
+
+                return tab.ParentId == adminPage;
+            }
+
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_knownPages">
+          <declaration><![CDATA[private IDictionary<string, IList<string>> _knownPages;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="IAdminMenuController">
+      <declaration><![CDATA[public interface IAdminMenuController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="CreateLinkMenu">
+          <declaration><![CDATA[void CreateLinkMenu(TabInfo tab);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLinkMenu">
+          <declaration><![CDATA[void DeleteLinkMenu(TabInfo tab);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ILocalizationController">
+      <declaration><![CDATA[internal interface ILocalizationController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="GetLocalizedDictionary">
+          <declaration><![CDATA[Dictionary<string, string> GetLocalizedDictionary(string resourceFile, string culture, Localization localization);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLocalizedDictionary">
+          <declaration><![CDATA[Dictionary<string, string> GetLocalizedDictionary(string resourceFile, string culture);]]></declaration>
+          <documentation>
+            <summary>
+ Returns a dictionary of localized key for a resource file for a given culture
+ </summary>
+ <param name="resourceFile">The relative file path of the main resource file, e.g. ~/DesktopModules/SocialLibrary/App_LocalResources/CmxResources.resx</param>
+ <param name="culture">The culture for which this dictionay is requested</param>
+ <remarks>This API does not fallback to any other DNN resource files.</remarks></documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetResxTimeStamp">
+          <declaration><![CDATA[long GetResxTimeStamp(string resourceFile, Localization localization);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CultureName">
+          <declaration><![CDATA[string CultureName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="LocalizationController">
+      <declaration><![CDATA[internal class LocalizationController : ServiceLocator<ILocalizationController, LocalizationController>, ILocalizationController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public LocalizationController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static LocalizationController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="25" sc="9" el="26" ec="73">Components\Controllers\LocalizationController.cs</location>
+            <body hash="18c7bca7f625c12fdb8bc4282b20d270"><![CDATA[public static readonly TimeSpan FiveMinutes = TimeSpan.FromMinutes(5);
+        public static readonly TimeSpan OneHour = TimeSpan.FromHours(1);]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AssertHeaderValue">
+          <declaration><![CDATA[private static void AssertHeaderValue(IEnumerable<XmlNode> headers, string key, string value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="144" sc="9" el="157" ec="10">Components\Controllers\LocalizationController.cs</location>
+            <body hash="6df883bd95a1b7567aed670a6c7c6814"><![CDATA[{
+            var header = headers.FirstOrDefault(x => GetNameAttribute(x).Equals(key, StringComparison.InvariantCultureIgnoreCase));
+            if (header != null)
+            {
+                if (!header.InnerText.Equals(value, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    throw new ApplicationException(string.Format("Resource header '{0}' != '{1}'", key, value));
+                }
+            }
+            else
+            {
+                throw new ApplicationException(string.Format("Resource header '{0}' is missing", key));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFactory">
+          <declaration><![CDATA[protected override Func<ILocalizationController> GetFactory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="33" ec="10">Components\Controllers\LocalizationController.cs</location>
+            <body hash="ea68cc5987636d77769b63029d697e81"><![CDATA[{
+            return () => new LocalizationController();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLastModifiedTime">
+          <declaration><![CDATA[private DateTime GetLastModifiedTime(string resourceFile, string culture, Localization localization)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="9" el="84" ec="10">Components\Controllers\LocalizationController.cs</location>
+            <body hash="d2f639bbe5786319efab0e0b47a95a49"><![CDATA[{
+            Requires.NotNullOrEmpty("culture", culture);
+
+            var cacheKey = string.Format(localization.ResxModifiedDateCacheKey, culture);
+            var cachedData = DataCache.GetCache(cacheKey);
+            if (cachedData is DateTime) return (DateTime)DataCache.GetCache(cacheKey);
+            var lastModifiedDate = GetLastModifiedTimeInternal(resourceFile, culture);
+
+
+            DataCache.SetCache(cacheKey, lastModifiedDate, (DNNCacheDependency)null,
+                               Cache.NoAbsoluteExpiration, OneHour, CacheItemPriority.Normal, null);
+
+            return lastModifiedDate;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLastModifiedTimeInternal">
+          <declaration><![CDATA[private DateTime GetLastModifiedTimeInternal(string resourceFile, string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="87" sc="9" el="106" ec="10">Components\Controllers\LocalizationController.cs</location>
+            <body hash="965612c2a482d2fd1c9052620d36e984"><![CDATA[{
+
+            var cultureSpecificFile = System.Web.HttpContext.Current.Server.MapPath(resourceFile.Replace(".resx", "") + "." + culture + ".resx");
+            var lastModifiedDate = DateTime.MinValue;
+
+            if (File.Exists(cultureSpecificFile))
+            {
+                lastModifiedDate = File.GetLastWriteTime(cultureSpecificFile);
+            }
+            else
+            {
+                var cultureNeutralFile = System.Web.HttpContext.Current.Server.MapPath(resourceFile);
+                if (File.Exists(cultureNeutralFile))
+                {
+                    lastModifiedDate = File.GetLastWriteTime(cultureNeutralFile);
+                }
+
+            }
+            return lastModifiedDate;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLocalizationValues">
+          <declaration><![CDATA[private static IEnumerable<KeyValuePair<string, string>> GetLocalizationValues(string fullPath, string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLocalizedDictionary">
+          <declaration><![CDATA[public Dictionary<string, string> GetLocalizedDictionary(string resourceFile, string culture, Localization localization)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="68" ec="10">Components\Controllers\LocalizationController.cs</location>
+            <body hash="912df79cfabc5a5c155f139dd6776032"><![CDATA[{
+            Requires.NotNullOrEmpty("resourceFile", resourceFile);
+            Requires.NotNullOrEmpty("culture", culture);
+
+            var cacheKey = string.Format(localization.ResxDataCacheKey, culture, resourceFile);
+            var localizedDict = DataCache.GetCache(cacheKey) as Dictionary<string, string>;
+            if (localizedDict != null) return localizedDict;
+
+            var dictionary = new Dictionary<string, string>();
+
+
+            foreach (var kvp in GetLocalizationValues(resourceFile, culture).Where(kvp => !dictionary.ContainsKey(kvp.Key)))
+            {
+                dictionary[kvp.Key] = kvp.Value;
+            }
+
+            DataCache.SetCache(cacheKey, dictionary, (DNNCacheDependency)null,
+                               Cache.NoAbsoluteExpiration, FiveMinutes, CacheItemPriority.Normal, null);
+
+            return dictionary;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLocalizedDictionary">
+          <declaration><![CDATA[public Dictionary<string, string> GetLocalizedDictionary(string resourceFile, string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="109" sc="9" el="120" ec="10">Components\Controllers\LocalizationController.cs</location>
+            <body hash="8083a6c6614c46cb55586cae17e90ae7"><![CDATA[{
+            Requires.NotNullOrEmpty("resourceFile", resourceFile);
+            Requires.NotNullOrEmpty("culture", culture);
+
+            var dictionary = new Dictionary<string, string>();
+            foreach (var kvp in GetLocalizationValues(resourceFile, culture).Where(kvp => !dictionary.ContainsKey(kvp.Key)))
+            {
+                dictionary[kvp.Key] = kvp.Value;
+            }
+
+            return dictionary;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNameAttribute">
+          <declaration><![CDATA[private static string GetNameAttribute(XmlNode node)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="125" sc="9" el="136" ec="10">Components\Controllers\LocalizationController.cs</location>
+            <body hash="ab603d0387c7208c1dbccf642fe65970"><![CDATA[{
+            if (node.Attributes != null)
+            {
+                var attribute = node.Attributes.GetNamedItem("name");
+                if (attribute != null)
+                {
+                    return attribute.Value;
+                }
+            }
+
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNameAttribute">
+          <declaration><![CDATA[private static string GetNameAttribute(XPathNavigator navigator)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="139" sc="9" el="141" ec="10">Components\Controllers\LocalizationController.cs</location>
+            <body hash="e9f770e0111bf7608707e7d4a5fd2f3f"><![CDATA[{
+            return navigator.GetAttribute("name", string.Empty);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetResxTimeStamp">
+          <declaration><![CDATA[public long GetResxTimeStamp(string resourceFile, Localization localization)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="45" ec="10">Components\Controllers\LocalizationController.cs</location>
+            <body hash="f17f276a97932c5ea471e0da59f16226"><![CDATA[{
+            return GetLastModifiedTime(resourceFile, CultureName, localization).Ticks;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="FiveMinutes">
+          <declaration><![CDATA[public static readonly TimeSpan FiveMinutes = TimeSpan.FromMinutes(5.0);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="OneHour">
+          <declaration><![CDATA[public static readonly TimeSpan OneHour = TimeSpan.FromHours(1.0);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="CultureName">
+          <declaration><![CDATA[public string CultureName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.UI.Components.Dto">
+    <class name="Localization">
+      <declaration><![CDATA[public class Localization]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Localization()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ResxDataCacheKey">
+          <declaration><![CDATA[public string ResxDataCacheKey]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="42" el="13" ec="46">Components\Dto\Localization.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="13" sc="47" el="13" ec="51">Components\Dto\Localization.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ResxModifiedDateCacheKey">
+          <declaration><![CDATA[public string ResxModifiedDateCacheKey]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="14" sc="50" el="14" ec="54">Components\Dto\Localization.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="14" sc="55" el="14" ec="59">Components\Dto\Localization.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.UI.Components.EventHandlers">
+    <class name="TabEventsHandler">
+      <declaration><![CDATA[public class TabEventsHandler : ITabEventHandler]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public TabEventsHandler()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="TabCreated">
+          <declaration><![CDATA[public void TabCreated(object sender, TabEventArgs args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="11" sc="9" el="13" ec="10">Components\EventHandlers\TabEventsHandler.cs</location>
+            <body hash="3eda4498886e34cec0ef667082063da3"><![CDATA[{
+            AdminMenuController.Instance.CreateLinkMenu(args.Tab);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TabDeleted">
+          <declaration><![CDATA[public void TabDeleted(object sender, TabEventArgs args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="26" sc="9" el="28" ec="10">Components\EventHandlers\TabEventsHandler.cs</location>
+            <body hash="aeeb929efb889e11d79b0e6f1b83e309"><![CDATA[{
+            AdminMenuController.Instance.DeleteLinkMenu(args.Tab);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TabMarkedAsPublished">
+          <declaration><![CDATA[public void TabMarkedAsPublished(object sender, TabEventArgs args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="9" el="37" ec="10">Components\EventHandlers\TabEventsHandler.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TabRemoved">
+          <declaration><![CDATA[public void TabRemoved(object sender, TabEventArgs args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="9" el="23" ec="10">Components\EventHandlers\TabEventsHandler.cs</location>
+            <body hash="4a8f06184b6087940b8e4519251d0924"><![CDATA[{
+            
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TabRestored">
+          <declaration><![CDATA[public void TabRestored(object sender, TabEventArgs args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="33" ec="10">Components\EventHandlers\TabEventsHandler.cs</location>
+            <body hash="3eda4498886e34cec0ef667082063da3"><![CDATA[{
+            AdminMenuController.Instance.CreateLinkMenu(args.Tab);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TabUpdated">
+          <declaration><![CDATA[public void TabUpdated(object sender, TabEventArgs args)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="9" el="18" ec="10">Components\EventHandlers\TabEventsHandler.cs</location>
+            <body hash="3eda4498886e34cec0ef667082063da3"><![CDATA[{
+            AdminMenuController.Instance.CreateLinkMenu(args.Tab);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.UI.Components.Installers">
+    <class name="PersonaBarMenuInstaller">
+      <declaration><![CDATA[public class PersonaBarMenuInstaller : ComponentInstallerBase]]></declaration>
+      <documentation>
+        <summary>
+ Installer for persona bar menus.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly IList<MenuItem> _menuItems = new List<MenuItem>();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="9" el="32" ec="101">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="75dcb305ea61899042a595eb8b5b7bdf"><![CDATA[private readonly IList<MenuItem> _menuItems = new List<MenuItem>();
+        private readonly IList<PersonaBarExtension> _extensions = new List<PersonaBarExtension>();
+        private readonly IList<PermissionDefinition> _permissionDefinitions = new List<PermissionDefinition>();
+        private readonly IDictionary<string, string> _extensionMenus = new Dictionary<string, string>();
+        private readonly IDictionary<string, string> _menuRoles = new Dictionary<string, string>();
+        private readonly IDictionary<string, string> _parentMaps = new Dictionary<string, string>();]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Commit">
+          <declaration><![CDATA[public override void Commit()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="36" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteMenus">
+          <declaration><![CDATA[private void DeleteMenus()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="243" sc="9" el="256" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="1c7bb1c64b4385536f402f132487ca4b"><![CDATA[{
+            try
+            {
+                foreach (var menuItem in _menuItems)
+                {
+                    PersonaBarRepository.Instance.DeleteMenuItem(menuItem.Identifier);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.AddFailure(ex);
+                throw;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Install">
+          <declaration><![CDATA[public override void Install()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="61" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="576eb44f8e065495fbe8ff99ead1b534"><![CDATA[{
+            try
+            {
+                SaveMenuItems();
+
+                SaveMenuExtensions();
+
+                SavePermissionDefinitions();
+
+                if (_menuItems.Any())
+                {
+                    foreach (var menuItem in _menuItems)
+                    {
+                        SaveMenuPermissions(menuItem);
+                    }
+                }
+                Completed = true;
+            }
+            catch (Exception ex)
+            {
+                Log.AddFailure(ex);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ReadExtensionsFromManifest">
+          <declaration><![CDATA[private void ReadExtensionsFromManifest(XPathNavigator menuNavigator)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="178" sc="9" el="192" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="587de1ab2ad181f9de9e6cb096bc89b8"><![CDATA[{
+            var extension = new PersonaBarExtension()
+            {
+                Identifier = Util.ReadElement(menuNavigator, "identifier"),
+                FolderName = Util.ReadElement(menuNavigator, "folderName"),
+                Controller = Util.ReadElement(menuNavigator, "controller"),
+                Container = Util.ReadElement(menuNavigator, "container"),
+                Path = Util.ReadElement(menuNavigator, "path"),
+                Order = Convert.ToInt32(Util.ReadElement(menuNavigator, "order", "0")),
+                Enabled = true
+            };
+
+            _extensions.Add(extension);
+            _extensionMenus.Add(extension.Identifier, Util.ReadElement(menuNavigator, "menu"));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ReadManifest">
+          <declaration><![CDATA[public override void ReadManifest(XPathNavigator manifestNav)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="9" el="79" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="4babdc80587fdb30302b562ebbffe2a4"><![CDATA[{
+            foreach (XPathNavigator navigator in manifestNav.Select("menu"))
+            {
+                ReadMenuItemsFromManifest(navigator);
+            }
+
+            foreach (XPathNavigator navigator in manifestNav.Select("extension"))
+            {
+                ReadExtensionsFromManifest(navigator);
+            }
+
+            foreach (XPathNavigator navigator in manifestNav.Select("permission"))
+            {
+                ReadPermissionsFromManifest(navigator);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ReadMenuItemsFromManifest">
+          <declaration><![CDATA[private void ReadMenuItemsFromManifest(XPathNavigator menuNavigator)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="146" sc="9" el="175" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="90c317226c229dfdb1f3123f39d9ec2e"><![CDATA[{
+            var menuItem = new MenuItem()
+            {
+                Identifier = Util.ReadElement(menuNavigator, "identifier"),
+                ModuleName = Util.ReadElement(menuNavigator, "moduleName"),
+                FolderName = Util.ReadElement(menuNavigator, "folderName"),
+                Controller = Util.ReadElement(menuNavigator, "controller"),
+                ResourceKey = Util.ReadElement(menuNavigator, "resourceKey"),
+                Path = Util.ReadElement(menuNavigator, "path"),
+                Link = Util.ReadElement(menuNavigator, "link"),
+                CssClass = Util.ReadElement(menuNavigator, "css"),
+                ParentId = Null.NullInteger,
+                Order = Convert.ToInt32(Util.ReadElement(menuNavigator, "order", "0")),
+                AllowHost = Util.ReadElement(menuNavigator, "allowHost", "true").ToLowerInvariant() == "true",
+                Enabled = true
+            };
+
+            var parent = Util.ReadElement(menuNavigator, "parent", string.Empty);
+            if (!string.IsNullOrEmpty(parent))
+            {
+                _parentMaps.Add(menuItem.Identifier, parent);
+            }
+
+            var defaultPermissions = Util.ReadElement(menuNavigator, "defaultPermissions", string.Empty);
+            if (!string.IsNullOrEmpty(defaultPermissions))
+            {
+                _menuRoles.Add(menuItem.Identifier, defaultPermissions);
+            }
+            _menuItems.Add(menuItem);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ReadPermissionsFromManifest">
+          <declaration><![CDATA[private void ReadPermissionsFromManifest(XPathNavigator menuNavigator)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="195" sc="9" el="204" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="fd4c782c2a4c8b98313841a51e5b8a59"><![CDATA[{
+            var permission = new PermissionDefinition
+            {
+                Identifier = Util.ReadElement(menuNavigator, "identifier"),
+                Key = Util.ReadElement(menuNavigator, "key"),
+                Name = Util.ReadElement(menuNavigator, "name")
+            };
+
+            _permissionDefinitions.Add(permission);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Rollback">
+          <declaration><![CDATA[public override void Rollback()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="82" sc="9" el="84" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="814f8d56309a980eecf69a91a5a09b41"><![CDATA[{
+            DeleteMenus();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveMenuExtensions">
+          <declaration><![CDATA[private void SaveMenuExtensions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="111" sc="9" el="123" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="88dba6d84e4428f6d29550b9253b4087"><![CDATA[{
+            foreach (var extension in _extensions)
+            {
+                var menuIdentifier = _extensionMenus[extension.Identifier];
+                var menu = PersonaBarRepository.Instance.GetMenuItem(menuIdentifier);
+                if (menu != null)
+                {
+                    extension.MenuId = menu.MenuId;
+
+                    PersonaBarExtensionRepository.Instance.SaveExtension(extension);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveMenuItems">
+          <declaration><![CDATA[private void SaveMenuItems()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="94" sc="9" el="108" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="1e30c373359ee9eb652e2cc408b976f7"><![CDATA[{
+            foreach (var menuItem in _menuItems.Where(x=>!string.IsNullOrEmpty(x.Identifier) && !string.IsNullOrEmpty(x.ModuleName)))
+            {
+                if (_parentMaps.ContainsKey(menuItem.Identifier))
+                {
+                    var parentItem = PersonaBarRepository.Instance.GetMenuItem(_parentMaps[menuItem.Identifier]);
+                    if (parentItem != null)
+                    {
+                        menuItem.ParentId = parentItem.MenuId;
+                    }
+                }
+
+                PersonaBarRepository.Instance.SaveMenuItem(menuItem);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveMenuPermission">
+          <declaration><![CDATA[private void SaveMenuPermission(MenuItem menuItem, string roleName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="207" sc="9" el="218" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="40a2744a51c83c3a0a4fd933c9635c4e"><![CDATA[{
+            var portals = PortalController.Instance.GetPortals();
+            foreach (PortalInfo portal in portals)
+            {
+                var portalId = portal.PortalID;
+                //when default permission already initialized, then package need to save default permission immediately.
+                if (MenuPermissionController.PermissionAlreadyInitialized(portalId))
+                {
+                    MenuPermissionController.SaveMenuDefaultPermissions(portalId, menuItem, roleName);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveMenuPermissions">
+          <declaration><![CDATA[private void SaveMenuPermissions(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="221" sc="9" el="240" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="f6a7174d6f7cc683bb595b07c1c3a430"><![CDATA[{
+            if (_menuRoles.ContainsKey(menuItem.Identifier))
+            {
+                var defaultPermissions = _menuRoles[menuItem.Identifier].Split(',');
+                if (menuItem?.MenuId <= 0)
+                {
+                    menuItem = PersonaBarRepository.Instance.GetMenuItem(menuItem.Identifier);
+                }
+                PersonaBarRepository.Instance.GetMenuDefaultPermissions(menuItem.MenuId);
+                PersonaBarRepository.Instance.SaveMenuDefaultPermissions(menuItem, _menuRoles[menuItem.Identifier]);
+
+                foreach (var roleName in defaultPermissions)
+                {
+                    if (!string.IsNullOrEmpty(roleName.Trim()))
+                    {
+                        SaveMenuPermission(menuItem, roleName.Trim());
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SavePermissionDefinitions">
+          <declaration><![CDATA[private void SavePermissionDefinitions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="126" sc="9" el="143" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="1f67949245cf3b895d1757569876c08a"><![CDATA[{
+            if (!_menuItems.Any())
+            {
+                return;
+            }
+
+            foreach (var definition in _permissionDefinitions)
+            {
+                var identifier = definition.Identifier;
+                var menu = _menuItems.FirstOrDefault(m => string.IsNullOrEmpty(identifier) || m.Identifier == identifier);
+                if (menu?.MenuId <= 0)
+                {
+                    menu = PersonaBarRepository.Instance.GetMenuItem(identifier);
+                }
+                if (menu != null)
+                    MenuPermissionController.SavePersonaBarPermission(menu.MenuId, definition.Key, definition.Name);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UnInstall">
+          <declaration><![CDATA[public override void UnInstall()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="87" sc="9" el="89" ec="10">Components\Installers\PersonaBarMenuInstaller.cs</location>
+            <body hash="814f8d56309a980eecf69a91a5a09b41"><![CDATA[{
+            DeleteMenus();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_extensionMenus">
+          <declaration><![CDATA[private readonly IDictionary<string, string> _extensionMenus = new Dictionary<string, string>();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_extensions">
+          <declaration><![CDATA[private readonly IList<PersonaBarExtension> _extensions = new List<PersonaBarExtension>();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_menuItems">
+          <declaration><![CDATA[private readonly IList<MenuItem> _menuItems = new List<MenuItem>();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_menuRoles">
+          <declaration><![CDATA[private readonly IDictionary<string, string> _menuRoles = new Dictionary<string, string>();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_parentMaps">
+          <declaration><![CDATA[private readonly IDictionary<string, string> _parentMaps = new Dictionary<string, string>();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_permissionDefinitions">
+          <declaration><![CDATA[private readonly IList<PersonaBarMenuInstaller.PermissionDefinition> _permissionDefinitions = new List<PersonaBarMenuInstaller.PermissionDefinition>();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.UI.HttpModules">
+    <class name="PersonaBarModule">
+      <declaration><![CDATA[public class PersonaBarModule : IHttpModule]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PersonaBarModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static PersonaBarModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="9" el="24" ec="52">HttpModules\PersonaBarModule.cs</location>
+            <body hash="b320ff69b49698e6225f6cf125a84c77"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(PersonaBarModule));
+
+        private static readonly object LockAppStarted = new object();
+        private static bool _hasAppStarted = false;]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ApplicationStart">
+          <declaration><![CDATA[private void ApplicationStart()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="58" ec="10">HttpModules\PersonaBarModule.cs</location>
+            <body hash="adddb14265554554a8030e913137b6c8"><![CDATA[{
+            EventsController.Instance.ApplicationStartEvent();
+
+            DotNetNukeContext.Current.SkinEventListeners.Add(new SkinEventListener(SkinEventType.OnSkinInit, OnSkinInit));
+            DotNetNukeContext.Current.SkinEventListeners.Add(new SkinEventListener(SkinEventType.OnSkinLoad, OnSkinLoad));
+            DotNetNukeContext.Current.SkinEventListeners.Add(new SkinEventListener(SkinEventType.OnSkinPreRender, OnSkinPreRender));
+            DotNetNukeContext.Current.SkinEventListeners.Add(new SkinEventListener(SkinEventType.OnSkinUnLoad, OnSkinUnLoad));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="9" el="48" ec="10">HttpModules\PersonaBarModule.cs</location>
+            <body hash="aff2d94ec78d76a6bbb072981d84beca"><![CDATA[{
+            EventsController.Instance.ApplicationEndEvent();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication application)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="9" el="43" ec="10">HttpModules\PersonaBarModule.cs</location>
+            <body hash="822cbab262d1fdacaaa4837b8378f964"><![CDATA[{
+            if (_hasAppStarted)
+            {
+                return;
+            }
+
+            lock (LockAppStarted)
+            {
+                if (_hasAppStarted)
+                {
+                    return;
+                }
+
+                ApplicationStart();
+                _hasAppStarted = true;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSkinInit">
+          <declaration><![CDATA[private void OnSkinInit(object sender, SkinEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="9" el="74" ec="10">HttpModules\PersonaBarModule.cs</location>
+            <body hash="881d8df8d38ff6f452271294069d6daf"><![CDATA[{
+            IocUtil.GetInstanceContracts<ISkinEvents>().ForEach(instance =>
+            {
+                try
+                {
+                    instance.Init(e);
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorFormat("{0}.Init threw an exception.  {1}\r\n{2}",
+                        instance.GetType().FullName, ex.Message, ex.StackTrace);
+                }
+            });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSkinLoad">
+          <declaration><![CDATA[private void OnSkinLoad(object sender, SkinEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="77" sc="9" el="90" ec="10">HttpModules\PersonaBarModule.cs</location>
+            <body hash="97d807acb247d3fa16f8537cdf2aa916"><![CDATA[{
+            IocUtil.GetInstanceContracts<ISkinEvents>().ForEach(instance =>
+            {
+                try
+                {
+                    instance.Load(e);
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorFormat("{0}.Load threw an exception.  {1}\r\n{2}",
+                        instance.GetType().FullName, ex.Message, ex.StackTrace);
+                }
+            });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSkinPreRender">
+          <declaration><![CDATA[private void OnSkinPreRender(object sender, SkinEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="105" ec="10">HttpModules\PersonaBarModule.cs</location>
+            <body hash="ff727707c72d82f75b63f7b59572ca68"><![CDATA[{
+            IocUtil.GetInstanceContracts<ISkinEvents>().ForEach(instance =>
+            {
+                try
+                {
+                    instance.PreRender(e);
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorFormat("{0}.PreRender threw an exception.  {1}\r\n{2}",
+                        instance.GetType().FullName, ex.Message, ex.StackTrace);
+                }
+            });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSkinUnLoad">
+          <declaration><![CDATA[private void OnSkinUnLoad(object sender, SkinEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="108" sc="9" el="121" ec="10">HttpModules\PersonaBarModule.cs</location>
+            <body hash="35ea6333d9574a9f80251792301a665b"><![CDATA[{
+            IocUtil.GetInstanceContracts<ISkinEvents>().ForEach(instance =>
+            {
+                try
+                {
+                    instance.UnLoad(e);
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorFormat("{0}.UnLoad threw an exception.  {1}\r\n{2}",
+                        instance.GetType().FullName, ex.Message, ex.StackTrace);
+                }
+            });
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_hasAppStarted">
+          <declaration><![CDATA[private static bool _hasAppStarted = false;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LockAppStarted">
+          <declaration><![CDATA[private static readonly object LockAppStarted = new object();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(PersonaBarModule));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.UI.MenuControllers">
+    <class name="EditMenuController">
+      <declaration><![CDATA[public class EditMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="9" el="29" ec="10">MenuControllers\EditMenuController.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsModuleAdmin">
+          <declaration><![CDATA[private bool IsModuleAdmin()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="9" el="48" ec="10">MenuControllers\EditMenuController.cs</location>
+            <body hash="72fe2be7805bbc4a1e96402eabc7c83a"><![CDATA[{
+            bool moduleAdmin = Null.NullBoolean;
+            var portalSettings = PortalController.Instance.GetCurrentPortalSettings();
+            foreach (ModuleInfo module in TabController.CurrentPage.Modules)
+            {
+                if (!module.IsDeleted)
+                {
+                    bool hasEditPermissions = ModulePermissionController.HasModuleAccess(SecurityAccessLevel.Edit, Null.NullString, module);
+                    if (hasEditPermissions)
+                    {
+                        moduleAdmin = true;
+                        break;
+                    }
+                }
+            }
+            return portalSettings.ControlPanelSecurity == PortalSettings.ControlPanelPermission.ModuleEditor && moduleAdmin;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsPageAdmin">
+          <declaration><![CDATA[private bool IsPageAdmin()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="60" ec="10">MenuControllers\EditMenuController.cs</location>
+            <body hash="3323deea5b01e9d7f94a86f5dd598338"><![CDATA[{
+            return TabPermissionController.CanAddContentToPage() 
+                    || TabPermissionController.CanAddPage() 
+                    || TabPermissionController.CanAdminPage() 
+                    || TabPermissionController.CanCopyPage() 
+                    || TabPermissionController.CanDeletePage() 
+                    || TabPermissionController.CanExportPage() 
+                    || TabPermissionController.CanImportPage() 
+                    || TabPermissionController.CanManagePage();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="18" sc="9" el="19" ec="10">MenuControllers\EditMenuController.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="22" sc="9" el="24" ec="10">MenuControllers\EditMenuController.cs</location>
+            <body hash="e208dd266ccd8719ea2085c2b275fb38"><![CDATA[{
+            return IsPageAdmin() || IsModuleAdmin();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="LinkMenuController">
+      <declaration><![CDATA[public class LinkMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public LinkMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetPathQuery">
+          <declaration><![CDATA[private IDictionary<string, string> GetPathQuery(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="91" sc="9" el="103" ec="10">MenuControllers\LinkMenuController.cs</location>
+            <body hash="a01ce111f13cd801e4c518d7f0471817"><![CDATA[{
+            var path = menuItem.Path;
+            if (!path.Contains("?"))
+            {
+                return null;
+            }
+
+            return path.Substring(path.IndexOf("?", StringComparison.InvariantCultureIgnoreCase) + 1)
+                .Split('&')
+                .Select(p => p.Split('='))
+                .Where(q => q.Length == 2 && !string.IsNullOrEmpty(q[0]) && !string.IsNullOrEmpty(q[1]))
+                .ToDictionary(q => q[0], q => q[1]);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="9" el="88" ec="10">MenuControllers\LinkMenuController.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="9" el="40" ec="10">MenuControllers\LinkMenuController.cs</location>
+            <body hash="dc281f13eb8494c8e61e6c49f4a8119b"><![CDATA[{
+            if (Visible(menuItem))
+            {
+                var query = GetPathQuery(menuItem);
+
+                int tabId, portalId;
+                if (query.ContainsKey("path"))
+                {
+                    portalId = query.ContainsKey("portalId") ? Convert.ToInt32(query["portalId"]) : PortalSettings.Current.PortalId;
+                    tabId = TabController.GetTabByTabPath(portalId, query["path"], string.Empty);
+                }
+                else
+                {
+                    portalId = Convert.ToInt32(query["portalId"]);
+                    tabId = Convert.ToInt32(query["tabId"]);
+                }
+
+                var tabUrl = Globals.NavigateURL(tabId, portalId == Null.NullInteger);
+                var alias = Globals.AddHTTP(PortalSettings.Current.PortalAlias.HTTPAlias);
+                tabUrl = tabUrl.Replace(alias, string.Empty).TrimStart('/');
+
+                menuItem.Link = tabUrl;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="83" ec="10">MenuControllers\LinkMenuController.cs</location>
+            <body hash="76067099a3b3ce46b4797205253689a4"><![CDATA[{
+            var query = GetPathQuery(menuItem);
+            if (PortalSettings.Current == null || query == null)
+            {
+                return false;
+            }
+
+            if (query.ContainsKey("sku") && !string.IsNullOrEmpty(query["sku"]))
+            {
+                if (DotNetNukeContext.Current.Application.SKU != query["sku"])
+                {
+                    return false;
+                }
+            }
+
+            int tabId, portalId;
+            if (query.ContainsKey("path") && !string.IsNullOrEmpty(query["path"]))
+            {
+                portalId = query.ContainsKey("portalId") ? Convert.ToInt32(query["portalId"]) : PortalSettings.Current.PortalId;
+                tabId = TabController.GetTabByTabPath(portalId, query["path"], string.Empty);
+
+                if (tabId == Null.NullInteger)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (!query.ContainsKey("portalId") || !query.ContainsKey("tabId"))
+                {
+                    return false;
+                }
+
+                portalId = Convert.ToInt32(query["portalId"]);
+                tabId = Convert.ToInt32(query["tabId"]);
+            }
+
+            var tab = TabController.Instance.GetTab(tabId, portalId);
+            return (portalId == Null.NullInteger || portalId == PortalSettings.Current.PortalId)
+                    && tab != null && !tab.IsDeleted && !tab.DisableLink && tab.IsVisible;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="PlatformMenuController">
+      <declaration><![CDATA[public class PlatformMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PlatformMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="20" sc="9" el="22" ec="10">MenuControllers\PlatformMenuController.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="11" sc="9" el="12" ec="10">MenuControllers\PlatformMenuController.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="15" sc="9" el="17" ec="10">MenuControllers\PlatformMenuController.cs</location>
+            <body hash="753f0d39b61dcbfaccc5c8266c8b76f0"><![CDATA[{
+            return DotNetNukeContext.Current.Application.SKU == "DNN";
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.UI.Services">
+    <class name="CacheDto">
+      <declaration><![CDATA[public class CacheDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CacheDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ComponentsController">
+      <declaration><![CDATA[public class ComponentsController : PersonaBarApiController]]></declaration>
+      <documentation>
+        <summary>
+ Services used for common components.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ComponentsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ComponentsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="9" el="24" ec="110">Services\ComponentsController.cs</location>
+            <body hash="c3163ae86cd46a671a9dd8132347fb79"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (ComponentsController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetRoleGroups">
+          <declaration><![CDATA[public HttpResponseMessage GetRoleGroups(bool reload = false)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="50" ec="10">Services\ComponentsController.cs</location>
+            <body hash="ae638fa8417efafa1baf1712661c73f0"><![CDATA[{
+            try
+            {
+                if (reload)
+                {
+                    DataCache.RemoveCache(string.Format(DataCache.RoleGroupsCacheKey, PortalId));
+                }
+
+                var groups = RoleController.GetRoleGroups(PortalId)
+                                .Cast<RoleGroupInfo>()
+                                .Select(RoleGroupDto.FromRoleGroupInfo);
+
+                return Request.CreateResponse(HttpStatusCode.OK, groups);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Error = ex.Message });
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSuggestionRoles">
+          <declaration><![CDATA[public HttpResponseMessage GetSuggestionRoles(string keyword, int roleGroupId, int count)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="88" sc="9" el="113" ec="10">Services\ComponentsController.cs</location>
+            <body hash="479aefbc6f88302454538294a825b97e"><![CDATA[{
+            try
+            {
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, new List<SuggestionDto>());
+                }
+
+                var matchedRoles = RoleController.Instance.GetRoles(PortalId)
+                    .Where(r => (roleGroupId == -2 || r.RoleGroupID == roleGroupId)
+                                && r.RoleName.IndexOf(keyword, StringComparison.InvariantCultureIgnoreCase) > -1)
+                    .Select(r => new SuggestionDto()
+                    {
+                        Value = r.RoleID,
+                        Label = r.RoleName
+                    });
+
+                return Request.CreateResponse(HttpStatusCode.OK, matchedRoles);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Error = ex.Message });
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSuggestionUsers">
+          <declaration><![CDATA[public HttpResponseMessage GetSuggestionUsers(string keyword, int count)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="9" el="85" ec="10">Services\ComponentsController.cs</location>
+            <body hash="15bb88ee005c6781d8b904297f73c947"><![CDATA[{
+            try
+            {
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, new List<SuggestionDto>());
+                }
+
+                var displayMatch = keyword + "%";
+                var totalRecords = 0;
+                var matchedUsers = UserController.GetUsersByDisplayName(PortalId, displayMatch, 0, count,
+                    ref totalRecords, false, false)
+                    .Cast<UserInfo>()
+                    .Select(u => new SuggestionDto()
+                    {
+                        Value = u.UserID,
+                        Label = $"{u.DisplayName}"
+                    });
+
+                return Request.CreateResponse(HttpStatusCode.OK, matchedUsers);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { Error = ex.Message });
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ComponentsController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="LocalizationController">
+      <declaration><![CDATA[public class LocalizationController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public LocalizationController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static LocalizationController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="30" ec="60">Services\LocalizationController.cs</location>
+            <body hash="e3b56d630b854fd01f9c4446e4796936"><![CDATA[private static object _threadLocker = new object()]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Expired">
+          <declaration><![CDATA[private bool Expired(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="9" el="108" ec="10">Services\LocalizationController.cs</location>
+            <body hash="8b00b7d67f536fb8e417e9dd31874011"><![CDATA[{
+            var cacheKey = $"PersonaBarResources{culture}";
+            if (DataCache.GetCache(cacheKey) != null)
+            {
+                return false;
+            }
+
+            var jsonFilePath = GetResourcesJsonFilePath(culture);
+            var jsonFile = new FileInfo(jsonFilePath);
+            if (!jsonFile.Exists)
+            {
+                return true;
+            }
+
+            var lastModifiedTime = jsonFile.LastWriteTime;
+            var resourceFiles = GetAllResourceFiles(culture);
+
+            var expired = resourceFiles.Select(file => new FileInfo(file.Value))
+                .Any(resourceFile => resourceFile.LastWriteTime > lastModifiedTime);
+            if (!expired)
+            {
+                DataCache.SetCache(cacheKey, new CacheDto(), TimeSpan.FromMinutes(5));
+            }
+
+            return expired;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GenerateJsonFile">
+          <declaration><![CDATA[private IDictionary<string, IDictionary<string, string>> GenerateJsonFile(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="117" sc="9" el="139" ec="10">Services\LocalizationController.cs</location>
+            <body hash="aebba5275bbb3cb54e12bcbebdb8bf6b"><![CDATA[{
+            var resources = new Dictionary<string, IDictionary<string, string>>();
+            var resourceFiles = GetAllResourceFiles(culture);
+            foreach (var resourcesFile in resourceFiles)
+            {
+                var key = resourcesFile.Key;
+                var relativePath = resourcesFile.Value.Replace(Globals.ApplicationMapPath, "~").Replace("\\", "/");
+                var keys = GetLocalizedDictionary(relativePath, culture);
+                resources.Add(key, keys);
+            }
+
+            var content = JsonConvert.SerializeObject(resources);
+            var filePath = GetResourcesJsonFilePath(culture);
+            var folderPath = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            File.WriteAllText(filePath, content, Encoding.UTF8);
+
+            return resources;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAllResourceFiles">
+          <declaration><![CDATA[private IDictionary<string, string> GetAllResourceFiles(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="192" sc="9" el="249" ec="10">Services\LocalizationController.cs</location>
+            <body hash="faa9a0c9cbb86058ad29ffbd1e1c6be2"><![CDATA[{
+            var physicalPath = HttpContext.Current.Server.MapPath(Constants.PersonaBarRelativePath);
+            var allFiles = Directory.GetFiles(physicalPath, "*.resx", SearchOption.AllDirectories);
+            var resourceFiles = new Dictionary<string, string>();
+            foreach (var resourceFile in allFiles)
+            {
+                var key = Path.GetFileNameWithoutExtension(resourceFile);
+                var folder = Path.GetDirectoryName(resourceFile);
+                if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(folder))
+                {
+                    continue;
+                }
+
+                if (key.Contains("."))
+                {
+                    key = key.Substring(0, key.IndexOf(".", StringComparison.InvariantCultureIgnoreCase));
+                }
+
+                if (resourceFiles.ContainsKey(key))
+                {
+                    continue;
+                }
+
+                var filePath = Path.Combine(folder, key + ".resx");
+                if (!culture.Equals(Localization.SystemLocale, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var cultureSpecificFileName = $"{key}.{culture}.resx";
+                    var cultureSpecificFile = allFiles.FirstOrDefault(f =>
+                    {
+                        var name = Path.GetFileName(f);
+                        return !string.IsNullOrEmpty(name) 
+                                    && name.Equals(cultureSpecificFileName, StringComparison.InvariantCultureIgnoreCase);
+                    });
+
+                    if (string.IsNullOrEmpty(cultureSpecificFile))
+                    {
+                        var fallbackCulture = GetFallbackCulture(culture);
+                        cultureSpecificFileName = $"{key}.{fallbackCulture}.resx";
+                        cultureSpecificFile = allFiles.FirstOrDefault(f =>
+                        {
+                            var name = Path.GetFileName(f);
+                            return !string.IsNullOrEmpty(name)
+                                        && name.Equals(cultureSpecificFileName, StringComparison.InvariantCultureIgnoreCase);
+                        });
+
+                    }
+
+                    if (!string.IsNullOrEmpty(cultureSpecificFile))
+                    {
+                        filePath = cultureSpecificFile;
+                    }
+                }
+
+                resourceFiles.Add(key, filePath);
+            }
+
+            return resourceFiles;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFallbackCulture">
+          <declaration><![CDATA[private string GetFallbackCulture(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="175" sc="9" el="183" ec="10">Services\LocalizationController.cs</location>
+            <body hash="e0928115695c580246b86343cfd83c94"><![CDATA[{
+            var locale = LocaleController.Instance.GetLocale(PortalId, culture);
+            if (locale != null && !string.IsNullOrEmpty(locale.Fallback))
+            {
+                return locale.Fallback;
+            }
+
+            return Localization.SystemLocale;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetJsonFileContent">
+          <declaration><![CDATA[private string GetJsonFileContent(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="111" sc="9" el="114" ec="10">Services\LocalizationController.cs</location>
+            <body hash="f861def2fabfc27f29e070191e392dce"><![CDATA[{
+            var path = GetResourcesJsonFilePath(culture);
+            return File.Exists(path) ? File.ReadAllText(path, Encoding.UTF8) : null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLocalizedDictionary">
+          <declaration><![CDATA[private IDictionary<string, string> GetLocalizedDictionary(string relativePath, string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="142" sc="9" el="172" ec="10">Services\LocalizationController.cs</location>
+            <body hash="55d9f3e6935a6ff68d96bece6aab74c6"><![CDATA[{
+            var localizedDict = Components.Controllers.LocalizationController.Instance.GetLocalizedDictionary(relativePath, culture);
+            if (!culture.Equals(Localization.SystemLocale, StringComparison.InvariantCultureIgnoreCase))
+            {
+                var fallbackCulture = GetFallbackCulture(culture);
+                var folder = Path.GetDirectoryName(relativePath)?.Replace("\\", "/");
+                var fileName = Path.GetFileNameWithoutExtension(relativePath)?
+                                .ToLowerInvariant().Replace("." + culture.ToLowerInvariant(), "");
+                var culturePart = fallbackCulture.Equals(Localization.SystemLocale, StringComparison.InvariantCultureIgnoreCase)
+                                    ? "" : "." + fallbackCulture;
+                var fallbackFilePath = $"{folder}//{fileName}{culturePart}.resx";
+                if (!File.Exists(HttpContext.Current.Server.MapPath(fallbackFilePath)))
+                {
+                    fallbackFilePath = $"{folder}//{fileName}.resx";
+                }
+
+                if (File.Exists(HttpContext.Current.Server.MapPath(fallbackFilePath)))
+                {
+                    var fallbackDict = Components.Controllers.LocalizationController.Instance.GetLocalizedDictionary(fallbackFilePath, culture);
+                    foreach (var kvp in fallbackDict)
+                    {
+                        if (!localizedDict.ContainsKey(kvp.Key))
+                        {
+                            localizedDict.Add(kvp.Key, kvp.Value);
+                        }
+                    }
+                }
+            }
+
+            return localizedDict;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetResourcesFromFile">
+          <declaration><![CDATA[private IDictionary<string, IDictionary<string, string>> GetResourcesFromFile(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="80" ec="10">Services\LocalizationController.cs</location>
+            <body hash="4b30f6b771eb0935018973ec18e84709"><![CDATA[{
+
+            if (!Expired(culture))
+            {
+                var jsonFileContent = GetJsonFileContent(culture);
+                return jsonFileContent != null
+                    ? JsonConvert.DeserializeObject<IDictionary<string, IDictionary<string, string>>>(jsonFileContent)
+                    : null;
+            }
+
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetResourcesJsonFilePath">
+          <declaration><![CDATA[private string GetResourcesJsonFilePath(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="186" sc="9" el="189" ec="10">Services\LocalizationController.cs</location>
+            <body hash="b8f37945e4cc39fe5408304f1b2910fe"><![CDATA[{
+            var path = Path.Combine(Constants.PersonaBarRelativePath, "Resources", $"LocalResources.{culture}.resources");
+            return HttpContext.Current.Server.MapPath(path);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTable">
+          <declaration><![CDATA[public HttpResponseMessage GetTable(string culture)]]></declaration>
+          <documentation>
+            <summary>
+ Retrieve a list of CMX related Localization Keys with it's values for the current culture.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="62" ec="10">Services\LocalizationController.cs</location>
+            <body hash="de251864049d0b0559e5d7017e61482c"><![CDATA[{
+            try
+            {
+                var resources = GetResourcesFromFile(culture);
+                if (resources == null)
+                {
+                    lock (_threadLocker)
+                    {
+                        resources = GetResourcesFromFile(culture);
+                        if (resources == null)
+                        {
+                            resources = GenerateJsonFile(culture);
+                        }
+                    }
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, resources);
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_threadLocker">
+          <declaration><![CDATA[private static object _threadLocker = new object();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="MenuExtensionsController">
+      <declaration><![CDATA[public class MenuExtensionsController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MenuExtensionsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static MenuExtensionsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="30" ec="111">Services\MenuExtensionsController.cs</location>
+            <body hash="4c20a7da8d10c871fd4ba6ff8ca218ca"><![CDATA[private static readonly DnnLogger Logger = DnnLogger.GetClassLogger(typeof(MenuExtensionsController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetExtensionController">
+          <declaration><![CDATA[private IExtensionController GetExtensionController(PersonaBarExtension extension)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="98" sc="9" el="118" ec="10">Services\MenuExtensionsController.cs</location>
+            <body hash="b79d3e42483b6c85da43881e6dd6c45f"><![CDATA[{
+            var identifier = extension.Identifier;
+            var controller = extension.Controller;
+
+            if (string.IsNullOrEmpty(controller))
+            {
+                return null;
+            }
+
+            try
+            {
+                var cacheKey = $"PersonaBarExtensionController_{identifier}";
+                return Reflection.CreateObject(controller, cacheKey) as IExtensionController;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return null;
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetExtensionPathByController">
+          <declaration><![CDATA[private string GetExtensionPathByController(PersonaBarExtension extension)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="82" ec="10">Services\MenuExtensionsController.cs</location>
+            <body hash="bc1fed4c115c4f1d7d0179edaf5c6641"><![CDATA[{
+            var menuItem = PersonaBarRepository.Instance.GetMenuItem(extension.MenuId);
+            if (menuItem == null)
+            {
+                return extension.Path;
+            }
+
+            var extensionController = GetExtensionController(extension);
+            var path = extensionController?.GetPath(extension);
+            return !string.IsNullOrEmpty(path) ? path : extension.Path;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetExtensions">
+          <declaration><![CDATA[public HttpResponseMessage GetExtensions(string menu)]]></declaration>
+          <documentation>
+            <summary>
+ Retrieve a list of extensions for menu.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="67" ec="10">Services\MenuExtensionsController.cs</location>
+            <body hash="cd41f97f0cad327752976ede79fc82f8"><![CDATA[{
+            try
+            {
+                var menuItem = PersonaBarRepository.Instance.GetMenuItem(menu);
+
+                if (menuItem != null)
+                {
+                    var extensions = PersonaBarExtensionRepository.Instance.GetExtensions(menuItem.MenuId)
+                        .Where(IsVisible)
+                        .Select(t => new
+                        {
+                            identifier = t.Identifier,
+                            folderName = t.FolderName,
+                            container = t.Container,
+                            path = GetExtensionPathByController(t),
+                            settings = GetExtensionSettings(t)
+                        });
+
+                    return Request.CreateResponse(HttpStatusCode.OK, extensions);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetExtensionSettings">
+          <declaration><![CDATA[private IDictionary<string, object> GetExtensionSettings(PersonaBarExtension extension)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="91" sc="9" el="95" ec="10">Services\MenuExtensionsController.cs</location>
+            <body hash="80decd6ac7e01e40cf20a00c0b216ee4"><![CDATA[{
+            var extensionController = GetExtensionController(extension);
+            var settings = extensionController?.GetSettings(extension);
+            return settings;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsVisible">
+          <declaration><![CDATA[private bool IsVisible(PersonaBarExtension extension)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="85" sc="9" el="88" ec="10">Services\MenuExtensionsController.cs</location>
+            <body hash="bc34d247f790fc535847d561391f4aa9"><![CDATA[{
+            var extensionController = GetExtensionController(extension);
+            return extensionController == null || extensionController.Visible(extension);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly DnnLogger Logger = DnnLogger.GetClassLogger(typeof(MenuExtensionsController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="PortalsController">
+      <declaration><![CDATA[public class PortalsController : PersonaBarApiController]]></declaration>
+      <documentation>
+        <summary>
+ Service to perform portal operations.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PortalsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static PortalsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="9" el="19" ec="106">Services\PortalsController.cs</location>
+            <body hash="66ac00a6abd36d3959316924ff5cb150"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(PortalsController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetPortals">
+          <declaration><![CDATA[public HttpResponseMessage GetPortals(bool addAll = false)]]></declaration>
+          <documentation>GET: api/Portals/GetPortals
+ <summary>
+ Gets portals
+ </summary>
+ <param></param>
+ <param name="addAll">Add all portals item in list.</param>
+ <returns>List of portals</returns></documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="70" ec="10">Services\PortalsController.cs</location>
+            <body hash="08261e2651a4d314006c04eca9bab769"><![CDATA[{
+            try
+            {
+                var portals = PortalController.Instance.GetPortals().OfType<PortalInfo>();
+                if (!UserInfo.IsSuperUser)
+                {
+                    portals = portals.Where(portal => portal.PortalID == PortalId);
+                }
+
+                var availablePortals = portals.Select(v => new
+                {
+                    v.PortalID,
+                    v.PortalName
+                }).ToList();
+
+                if (addAll)
+                {
+                    availablePortals.Insert(0, new
+                    {
+                        PortalID = -1,
+                        PortalName =
+                            DotNetNuke.Services.Localization.Localization.GetString("AllSites", Constants.SharedResources)
+                    });
+                }
+
+                var response = new
+                {
+                    Success = true,
+                    Results = availablePortals,
+                    TotalResults = availablePortals.Count
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(PortalsController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ServerSummaryController">
+      <declaration><![CDATA[public class ServerSummaryController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServerSummaryController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetServerInfo">
+          <declaration><![CDATA[public HttpResponseMessage GetServerInfo()]]></declaration>
+          <documentation>
+            <summary>
+ Return server info.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="72" ec="10">Services\ServerSummaryController.cs</location>
+            <body hash="9513e26c7d76d2660da65aa2aa991161"><![CDATA[{
+            try
+            {
+                var isHost = UserController.Instance.GetCurrentUserInfo().IsSuperUser;
+                var response = new
+                {
+                    ProductName = DotNetNukeContext.Current.Application.Description,
+                    ProductVersion = "v. " + Globals.FormatVersion(DotNetNukeContext.Current.Application.Version, true),
+                    FrameworkVersion = isHost ? Globals.NETFrameworkVersion.ToString(2) : string.Empty,
+                    ServerName = isHost ? Globals.ServerName : string.Empty,
+                    LicenseVisible = isHost && GetVisibleSetting("LicenseVisible"),
+                    DocCenterVisible = GetVisibleSetting("DocCenterVisible"),
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUpdateLink">
+          <declaration><![CDATA[public HttpResponseMessage GetUpdateLink()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="9" el="81" ec="10">Services\ServerSummaryController.cs</location>
+            <body hash="46b94995b9e7d10434ae3b968bc17cdf"><![CDATA[{
+            UpdateType updateType;
+            var url = NeedUpdate(out updateType) ? Upgrade.UpgradeRedirect() : string.Empty;
+
+            return Request.CreateResponse(HttpStatusCode.OK, new {Url = url, Type = updateType});
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetVisibleSetting">
+          <declaration><![CDATA[private bool GetVisibleSetting(string settingName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="84" sc="9" el="89" ec="10">Services\ServerSummaryController.cs</location>
+            <body hash="552477a585bfe58ad6e732c0c9f8ccd0"><![CDATA[{
+            var portalSettings = PortalController.Instance.GetPortalSettings(PortalId);
+            return !portalSettings.ContainsKey(settingName)
+                   || string.IsNullOrEmpty(portalSettings[settingName])
+                   || portalSettings[settingName] == "true";
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="NeedUpdate">
+          <declaration><![CDATA[private bool NeedUpdate(out ServerSummaryController.UpdateType updateType)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="153" ec="10">Services\ServerSummaryController.cs</location>
+            <body hash="f065d35f4eb25c20bff855919dae17c7"><![CDATA[{
+            updateType = UpdateType.None;
+            
+            if (HttpContext.Current == null || !Host.CheckUpgrade || !UserInfo.IsSuperUser)
+            {
+                return false;
+            }
+
+            var version = DotNetNukeContext.Current.Application.Version;
+            var request = HttpContext.Current.Request;
+
+            var imageUrl = Upgrade.UpgradeIndicator(version, request.IsLocal, request.IsSecureConnection); ;
+            imageUrl = Globals.AddHTTP(imageUrl.TrimStart('/'));
+
+            try
+            {
+                string hash;
+                const string cacheKey = "UpdateServiceUrlCacheKey";
+                var cachedData = DataCache.GetCache(cacheKey) as string;
+                if (cachedData != null)
+                {
+                    hash = cachedData;
+                }
+                else
+                {
+                    var webRequest = WebRequest.CreateHttp(imageUrl);
+                    webRequest.Timeout = Host.WebRequestTimeout;
+                    webRequest.UserAgent = request.UserAgent;
+                    webRequest.Referer = request.RawUrl;
+
+                    using (var stream = ((HttpWebResponse) webRequest.GetResponse()).GetResponseStream())
+                    {
+                        if (stream == null)
+                        {
+                            return false;
+                        }
+                        using (var sha256 = SHA256.Create())
+                        {
+                            hash =
+                                BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
+                            DataCache.SetCache(cacheKey, hash, (DNNCacheDependency) null,
+                                Cache.NoAbsoluteExpiration, TimeSpan.FromDays(1), CacheItemPriority.Normal, null);
+                        }
+                    }
+                }
+                switch (hash)
+                {
+                    case NormalUpdateHash:
+                        updateType = UpdateType.Normal;
+                        return true;
+                    case CriticalUpdateHash:
+                        updateType = UpdateType.Critical;
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="CriticalUpdateHash">
+          <declaration><![CDATA[private const string CriticalUpdateHash = "e67b666fb40c4f304a41d1706d455c09017b7bcf4ec1e411450ebfcd2c8f12d0";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="NormalUpdateHash">
+          <declaration><![CDATA[private const string NormalUpdateHash = "df29e1cda367bb8fa8534b5fb2415406100252dec057138b8d63cbadb44fb8e7";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ServiceRouteMapper">
+      <declaration><![CDATA[public class ServiceRouteMapper : IServiceRouteMapper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServiceRouteMapper()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="FindPersonaBarServices">
+          <declaration><![CDATA[private IList<string> FindPersonaBarServices()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="9" el="48" ec="10">Services\ServiceRouteMapper.cs</location>
+            <body hash="d425c022944bf33341d4754421374792"><![CDATA[{
+            var controllerTypes = GetAllApiControllers();
+            var namespaces = new List<string>();
+            foreach (var type in controllerTypes)
+            {
+                var scopeAttr = (MenuPermissionAttribute)type.GetCustomAttributes(false).Cast<Attribute>().FirstOrDefault(a => a is MenuPermissionAttribute);
+                if (scopeAttr != null)
+                {
+                    if (!namespaces.Contains(type.Namespace))
+                    {
+                        namespaces.Add(type.Namespace);
+                    }
+                }
+            }
+
+            return namespaces;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAllApiControllers">
+          <declaration><![CDATA[private static IEnumerable<Type> GetAllApiControllers()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="59" ec="10">Services\ServiceRouteMapper.cs</location>
+            <body hash="aa6f8ea5f68c23c59ad27cb8a26356ef"><![CDATA[{
+            var typeLocator = new TypeLocator();
+            return typeLocator.GetAllMatchingTypes(
+                t => t != null &&
+                     t.IsClass &&
+                     !t.IsAbstract &&
+                     t.IsVisible &&
+                     typeof(PersonaBarApiController).IsAssignableFrom(t));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterRoutes">
+          <declaration><![CDATA[public void RegisterRoutes(IMapRoute routeManager)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="9" el="29" ec="10">Services\ServiceRouteMapper.cs</location>
+            <body hash="7f632e7aaca5b138e0d176ed7513fccb"><![CDATA[{
+            //get all persona bar services from persona bar modules.
+            var services = FindPersonaBarServices();
+
+            if (services.Count > 0)
+            {
+                routeManager.MapHttpRoute("PersonaBar", "default", "{controller}/{action}", services.ToArray());
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="TabsController">
+      <declaration><![CDATA[public class TabsController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly TabsController _controller = new TabsController();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="14" sc="9" el="14" ec="116">Services\TabsController.cs</location>
+            <body hash="ba1628aa25f2f777d1265043fe36eed4"><![CDATA[private readonly Library.Controllers.TabsController _controller = new Library.Controllers.TabsController()]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static TabsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="9" el="13" ec="104">Services\TabsController.cs</location>
+            <body hash="c184770ff1f10464cf153bc3e37b1c56"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (TabsController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetPortalTab">
+          <declaration><![CDATA[public HttpResponseMessage GetPortalTab(int portalId, int tabId, string cultureCode)]]></declaration>
+          <documentation>GET: api/Tabs/GetPortalTab
+ <summary>
+ Gets list of portal tabs
+ </summary>
+ <param name="portalId"></param>
+ <param name="tabId"></param>
+ <param name="cultureCode"></param>
+ <returns>List of portal tabs</returns></documentation>
+          <codeblock>
+            <location sl="99" sc="9" el="115" ec="10">Services\TabsController.cs</location>
+            <body hash="db9731181019bb928da096c862fbc741"><![CDATA[{
+            try
+            {
+                var response = new
+                {
+                    Success = true,
+                    Results = _controller.GetTabByCulture(tabId, portalId < 0 ? PortalId : portalId, cultureCode)
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalTabs">
+          <declaration><![CDATA[public HttpResponseMessage GetPortalTabs(int portalId, string cultureCode, bool isMultiLanguage = false, bool excludeAdminTabs = true, string roles = "", bool disabledNotSelectable = false, int sortOrder = 0, int selectedTabId = -1, string validateTab = "", bool includeHostPages = false, bool includeDisabled = false)]]></declaration>
+          <documentation>GET: api/Tabs/GetPortalTabs
+ <summary>
+ Gets list of portal tabs
+ </summary>
+ <param name="portalId"></param>
+ <param name="cultureCode"></param>
+ <param name="isMultiLanguage"></param>
+ <param name="excludeAdminTabs"></param>
+ <param name="roles"></param>
+ <param name="disabledNotSelectable"></param>
+ <param name="sortOrder"></param>
+ <param name="selectedTabId">Currently Selected tab id</param>
+ <param name="validateTab"></param>
+ <param name="includeHostPages"></param>
+ <param name="includeDisabled"></param>
+ <returns>List of portal tabs</returns></documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="54" ec="10">Services\TabsController.cs</location>
+            <body hash="682996189e96f71058cf0b4b8ca017ec"><![CDATA[{
+            try
+            {
+                var response = new
+                {
+                    Success = true,
+                    Results =
+                        _controller.GetPortalTabs(UserInfo, portalId < 0 ? PortalId : portalId, cultureCode, isMultiLanguage,
+                            excludeAdminTabs, roles,
+                            disabledNotSelectable, sortOrder, selectedTabId, validateTab, includeHostPages, includeDisabled)
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTabsDescendants">
+          <declaration><![CDATA[public HttpResponseMessage GetTabsDescendants(int portalId, int parentId, string cultureCode, bool isMultiLanguage = false, string roles = "", bool disabledNotSelectable = false, int sortOrder = 0, string validateTab = "", bool includeHostPages = false, bool includeDisabled = false)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="portalId"></param>
+ <param name="parentId"></param>
+ <param name="cultureCode"></param>
+ <param name="isMultiLanguage"></param>
+ <param name="roles"></param>
+ <param name="disabledNotSelectable"></param>
+ <param name="sortOrder"></param>
+ <param name="validateTab"></param>
+ <param name="includeHostPages"></param>
+ <param name="includeDisabled"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="134" sc="9" el="152" ec="10">Services\TabsController.cs</location>
+            <body hash="c58581950e3d2b4dd858864e19c6aafb"><![CDATA[{
+            try
+            {
+                var response = new
+                {
+                    Success = true,
+                    Results =
+                        _controller.GetTabsDescendants(portalId < 0 ? PortalId : portalId, parentId, cultureCode, isMultiLanguage, roles,
+                            disabledNotSelectable, sortOrder, validateTab, includeHostPages, includeDisabled)
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SearchPortalTabs">
+          <declaration><![CDATA[public HttpResponseMessage SearchPortalTabs(string searchText, int portalId, string roles = "", bool disabledNotSelectable = false, int sortOrder = 0, string validateTab = "", bool includeHostPages = false, bool includeDisabled = false)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="searchText"></param>
+ <param name="portalId"></param>
+ <param name="roles"></param>
+ <param name="disabledNotSelectable"></param>
+ <param name="sortOrder"></param>
+ <param name="validateTab"></param>
+ <param name="includeHostPages"></param>
+ <param name="includeDisabled"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="87" ec="10">Services\TabsController.cs</location>
+            <body hash="22b07cfccc3134535401e9fb746705b1"><![CDATA[{
+            try
+            {
+                var response = new
+                {
+                    Success = true,
+                    Results =
+                        _controller.SearchPortalTabs(UserInfo, searchText, portalId < 0 ? PortalId : portalId, roles, disabledNotSelectable, sortOrder, validateTab, includeHostPages, includeDisabled)
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_controller">
+          <declaration><![CDATA[private readonly TabsController _controller = new TabsController();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(TabsController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UserSettingsController">
+      <declaration><![CDATA[public class UserSettingsController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UserSettingsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpdateUserSettings">
+          <declaration><![CDATA[public HttpResponseMessage UpdateUserSettings(UserSettings settings)]]></declaration>
+          <documentation>
+            <summary>
+ Update Person Bar's User Settings
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="44" ec="10">Services\UserSettingsController.cs</location>
+            <body hash="d4047e3787edde18265942e3081c1830"><![CDATA[{
+            try
+            {
+                var controller = PersonaBarUserSettingsController.Instance;
+                var portalId = PortalController.GetEffectivePortalId(PortalSettings.PortalId);
+                controller.UpdatePersonaBarUserSettings(settings, UserInfo.UserID, portalId);
+                return Request.CreateResponse(HttpStatusCode.OK, new {});
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.UI.Services.DTO">
+    <class name="RoleGroupDto">
+      <declaration><![CDATA[public class RoleGroupDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RoleGroupDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="9" el="16" ec="10">Services\Dto\RoleGroupDto.cs</location>
+            <body hash="edbd0df3f200ec8c7152d1b4ef662ab8"><![CDATA[public RoleGroupDto()
+        {
+            Id = -2;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="FromRoleGroupInfo">
+          <declaration><![CDATA[public static RoleGroupDto FromRoleGroupInfo(RoleGroupInfo roleGroup)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="38" ec="10">Services\Dto\RoleGroupDto.cs</location>
+            <body hash="d936e60e03d2793dc0ca5b76d8ba1c56"><![CDATA[{
+            return new RoleGroupDto()
+            {
+                Id = roleGroup.RoleGroupID,
+                Name = roleGroup.RoleGroupName,
+                Description = roleGroup.Description,
+                RolesCount = roleGroup.Roles?.Count ?? 0
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ToRoleGroupInfo">
+          <declaration><![CDATA[public RoleGroupInfo ToRoleGroupInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="48" ec="10">Services\Dto\RoleGroupDto.cs</location>
+            <body hash="0f0047249e4a53825579743a03d11a99"><![CDATA[{
+            return new RoleGroupInfo()
+            {
+                RoleGroupID = Id,
+                RoleGroupName = Name,
+                Description = Description ?? ""
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Description">
+          <declaration><![CDATA[public string Description]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="37" el="27" ec="41">Services\Dto\RoleGroupDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="27" sc="42" el="27" ec="46">Services\Dto\RoleGroupDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Id">
+          <declaration><![CDATA[public int Id]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="18" sc="25" el="18" ec="29">Services\Dto\RoleGroupDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="18" sc="30" el="18" ec="34">Services\Dto\RoleGroupDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="30" el="21" ec="34">Services\Dto\RoleGroupDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="21" sc="35" el="21" ec="39">Services\Dto\RoleGroupDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RolesCount">
+          <declaration><![CDATA[public int RolesCount]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="33" el="24" ec="37">Services\Dto\RoleGroupDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="24" sc="38" el="24" ec="42">Services\Dto\RoleGroupDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SuggestionDto">
+      <declaration><![CDATA[public class SuggestionDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SuggestionDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Label">
+          <declaration><![CDATA[public string Label]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="12" sc="31" el="12" ec="35">Services\Dto\SuggestionDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="12" sc="36" el="12" ec="40">Services\Dto\SuggestionDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Value">
+          <declaration><![CDATA[public int Value]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="9" sc="28" el="9" ec="32">Services\Dto\SuggestionDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="9" sc="33" el="9" ec="37">Services\Dto\SuggestionDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.UI.UserControls">
+    <class name="PersonaBarContainer">
+      <declaration><![CDATA[public class PersonaBarContainer : ControlPanelBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly IPersonaBarContainer _personaBarContainer = PersonaBarContainer.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="30" ec="118">admin\personaBar\UserControls\PersonaBarContainer.ascx.cs</location>
+            <body hash="09ef6dd445fa254124993bcbf4d20480"><![CDATA[private readonly IPersonaBarContainer _personaBarContainer = Library.Containers.PersonaBarContainer.Instance]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="InjectPersonaBar">
+          <declaration><![CDATA[private bool InjectPersonaBar()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="95" ec="10">admin\personaBar\UserControls\PersonaBarContainer.ascx.cs</location>
+            <body hash="293a08bfdeab5a30d4e7c264a270f46a"><![CDATA[{
+            if (!_personaBarContainer.Visible)
+            {
+                return false;
+            }
+
+            //copied this logic from DotNetNuke.UI.Skins.Skin.InjectControlPanel
+            if (Request.QueryString["dnnprintmode"] == "true" || Request.QueryString["popUp"] == "true")
+                return false;
+
+            var menuStructure = PersonaBarController.Instance.GetMenu(PortalSettings, UserController.Instance.GetCurrentUserInfo());
+            if (menuStructure.MenuItems == null || !menuStructure.MenuItems.Any())
+            {
+                return false;
+            }
+
+            RegisterPersonaBarStyleSheet();
+
+            JavaScript.RegisterClientReference(Page, ClientAPI.ClientNamespaceReferences.dnn);
+            JavaScript.RequestRegistration(CommonJs.DnnPlugins); //We need to add the Dnn JQuery plugins because the Edit Bar removes the Control Panel from the page
+            JavaScript.RequestRegistration(CommonJs.KnockoutMapping);
+
+            ServicesFramework.Instance.RequestAjaxAntiForgerySupport();
+
+            ClientResourceManager.RegisterScript(Page, "~/Resources/Shared/Components/Tokeninput/jquery.tokeninput.js");
+            ClientResourceManager.RegisterStyleSheet(Page, "~/Resources/Shared/Components/Tokeninput/Themes/token-input-facebook.css");
+
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="9" el="54" ec="10">admin\personaBar\UserControls\PersonaBarContainer.ascx.cs</location>
+            <body hash="b91aabe510ab223cd05e4a26543df938"><![CDATA[{
+            base.OnInit(e);
+
+            if (_personaBarContainer.Visible)
+            {
+                _personaBarContainer.Initialize(this);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="9" el="60" ec="10">admin\personaBar\UserControls\PersonaBarContainer.ascx.cs</location>
+            <body hash="2d66fcbc7b22bce54918430a742ec3b0"><![CDATA[{
+            base.OnLoad(e);
+            PersonaBarPanel.Visible = InjectPersonaBar();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterPersonaBarStyleSheet">
+          <declaration><![CDATA[private void RegisterPersonaBarStyleSheet()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="98" sc="9" el="100" ec="10">admin\personaBar\UserControls\PersonaBarContainer.ascx.cs</location>
+            <body hash="1ebe64ed3598dae18c3b95d0b09051e0"><![CDATA[{
+            ClientResourceManager.RegisterStyleSheet(Page, "~/DesktopModules/admin/Dnn.PersonaBar/css/personaBarContainer.css");
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_personaBarContainer">
+          <declaration><![CDATA[private readonly IPersonaBarContainer _personaBarContainer = PersonaBarContainer.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="PersonaBarPanel">
+          <declaration><![CDATA[protected Panel PersonaBarPanel;]]></declaration>
+          <documentation>
+            <summary>
+ PersonaBarPanel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="AppPath">
+          <declaration><![CDATA[public string AppPath]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="34" el="38" ec="57">admin\personaBar\UserControls\PersonaBarContainer.ascx.cs</location>
+            <body hash="32ccd7a5ed98d62f5f13b6da3584d7c7"><![CDATA[Globals.ApplicationPat]]></body>
+          </codeblock>
+        </property>
+        <property name="BuildNumber">
+          <declaration><![CDATA[public string BuildNumber]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="38" el="40" ec="92">admin\personaBar\UserControls\PersonaBarContainer.ascx.cs</location>
+            <body hash="0d71a0e8671641f704aee65b72e11467"><![CDATA[Host.CrmVersion.ToString(CultureInfo.InvariantCulture]]></body>
+          </codeblock>
+        </property>
+        <property name="PersonaBarSettings">
+          <declaration><![CDATA[public string PersonaBarSettings]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="45" el="36" ec="113">admin\personaBar\UserControls\PersonaBarContainer.ascx.cs</location>
+            <body hash="56c2fea8fcdeab5cf5846927a8689954"><![CDATA[JsonConvert.SerializeObject(_personaBarContainer.GetConfiguration()]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

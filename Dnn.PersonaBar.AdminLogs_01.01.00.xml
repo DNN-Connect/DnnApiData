@@ -1,0 +1,1349 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.AdminLogs.dll" version="01.01.00" generated="2017-08-10 12:34:03Z" generationTime="2.7049933">
+  <namespace name="">
+    <class name="&lt;PrivateImplementationDetails&gt;">
+      <declaration><![CDATA[internal sealed class <PrivateImplementationDetails>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="1456763F890A84558F99AFA687C36B9037697848">
+          <declaration><![CDATA[internal static readonly <PrivateImplementationDetails>.__StaticArrayInitTypeSize=16 1456763F890A84558F99AFA687C36B9037697848;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="E63479360E61B6F9A95AC1024468063BAA5E7908">
+          <declaration><![CDATA[internal static readonly <PrivateImplementationDetails>.__StaticArrayInitTypeSize=44 E63479360E61B6F9A95AC1024468063BAA5E7908;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="E6504EB4416888183FB64295F3AD737955A446DB">
+          <declaration><![CDATA[internal static readonly <PrivateImplementationDetails>.__StaticArrayInitTypeSize=40 E6504EB4416888183FB64295F3AD737955A446DB;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="FC5E8879B367A393776AC76A3029C61586DFED7D">
+          <declaration><![CDATA[internal static readonly <PrivateImplementationDetails>.__StaticArrayInitTypeSize=60 FC5E8879B367A393776AC76A3029C61586DFED7D;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.AdminLogs.Components">
+    <class name="AdminLogsController">
+      <declaration><![CDATA[public class AdminLogsController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AdminLogsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddLogTypeConfig">
+          <declaration><![CDATA[public void AddLogTypeConfig(LogTypeConfigInfo logTypeConfigInfo)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="212" sc="9" el="214" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="59eeaf9506ef18992752974ef49d43fa"><![CDATA[{
+            LogController.Instance.AddLogTypeConfigInfo(logTypeConfigInfo);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ClearLog">
+          <declaration><![CDATA[public void ClearLog()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="111" sc="9" el="120" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="f1f2a05e25b10a30c595d9b4e8346e19"><![CDATA[{
+            LogController.Instance.ClearLog();
+
+            //add entry to log recording it was cleared
+            EventLogController.Instance.AddLog(Localization.GetString("LogCleared", Constants.LocalResourcesFile),
+                               Localization.GetString("Username", Constants.LocalResourcesFile) + ":" + UserController.Instance.GetCurrentUserInfo().Username,
+                               PortalSettings,
+                               -1,
+                               EventLogController.EventLogType.ADMIN_ALERT);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogTypeConfig">
+          <declaration><![CDATA[public void DeleteLogTypeConfig(string logTypeConfigId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="217" sc="9" el="221" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="5f92c2c9598b73f1c158e8747a6704c5"><![CDATA[{
+            var logTypeConfigInfo = new LogTypeConfigInfo();
+            logTypeConfigInfo.ID = logTypeConfigId;
+            LogController.Instance.DeleteLogTypeConfigInfo(logTypeConfigInfo);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="EmailLogItems">
+          <declaration><![CDATA[public string EmailLogItems(string subject, string fromEmailAddress, string toEmailAddress, string message, IEnumerable<string> logItemIds, out string error)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="229" sc="9" el="270" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="a3596ea3b8e99cd18384cdd63d6a117a"><![CDATA[{
+            if (string.IsNullOrEmpty(subject))
+            {
+                subject = PortalSettings.PortalName + @" Exceptions";
+            }
+
+            string returnMsg;
+            if (Globals.EmailValidatorRegex.IsMatch(fromEmailAddress))
+            {
+                const string tempFileName = "errorlog.xml";
+                var filePath = PortalSettings.HomeDirectoryMapPath + tempFileName;
+                var xmlDoc = GetExceptions(logItemIds);
+                xmlDoc.Save(filePath);
+
+                var attachments = new List<Attachment>();
+                var ct = new ContentType { MediaType = MediaTypeNames.Text.Xml, Name = tempFileName };
+
+                using (var attachment = new Attachment(filePath, ct))
+                {
+                    attachments.Add(attachment);
+
+                    returnMsg = Mail.SendEmail(fromEmailAddress, fromEmailAddress, toEmailAddress, subject, message, attachments);
+                }
+
+                FileSystemUtils.DeleteFile(filePath);
+
+                if (string.IsNullOrEmpty(returnMsg))
+                {
+                    error = Localization.GetString("EmailSuccess", Constants.LocalResourcesFile);
+                }
+                else
+                {
+                    error = Localization.GetString("EmailFailure", Constants.LocalResourcesFile);
+                }
+            }
+            else
+            {
+                returnMsg = string.Format(Localization.GetString("InavlidEmailAddress", Constants.LocalResourcesFile), fromEmailAddress);
+                error = Localization.GetString("EmailFailure", Constants.LocalResourcesFile);
+            }
+            return returnMsg;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetExceptions">
+          <declaration><![CDATA[private XmlDocument GetExceptions(IEnumerable<string> logIds)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="275" sc="9" el="296" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="603daf58a8766e091fe17f324eff09de"><![CDATA[{
+            var objXml = new XmlDocument();
+            try
+            {
+                objXml.LoadXml("<LogEntries></LogEntries>");
+
+                foreach (var logId in logIds)
+                {
+                    var objLogInfo = new LogInfo { LogGUID = logId };
+                    var objNode = objXml.ImportNode((XmlNode)LogController.Instance.GetSingleLog(objLogInfo, LoggingProvider.ReturnType.XML), true);
+                    if (objXml.DocumentElement != null)
+                    {
+                        objXml.DocumentElement.AppendChild(objNode);
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                throw exc;
+            }
+            return objXml;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetKeepMostRecentOptions">
+          <declaration><![CDATA[public Dictionary<string, string> GetKeepMostRecentOptions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="123" sc="9" el="141" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="8ac20b9bd6698a4fb82ad7c6626a138a"><![CDATA[{
+            Dictionary<string, string> options = new Dictionary<string, string>();
+            int[] items = { 1, 2, 3, 4, 5, 10, 25, 100, 250, 500 };
+            options.Add(Localization.GetString("All", Constants.LocalResourcesFile), "*");
+            foreach (int item in items)
+            {
+                if (item == 1)
+                {
+                    options.Add(item + Localization.GetString("LogEntry", Constants.LocalResourcesFile),
+                        item.ToString(CultureInfo.InvariantCulture));
+                }
+                else
+                {
+                    options.Add(item + Localization.GetString("LogEntries", Constants.LocalResourcesFile),
+                        item.ToString(CultureInfo.InvariantCulture));
+                }
+            }
+            return options;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeConfig">
+          <declaration><![CDATA[public LogTypeConfigInfo GetLogTypeConfig(string logTypeConfigId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="224" sc="9" el="226" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="c3132673f1bccb80deb352589587c83f"><![CDATA[{
+            return LogController.Instance.GetLogTypeConfigInfoByID(logTypeConfigId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetMyLogType">
+          <declaration><![CDATA[public LogTypeInfo GetMyLogType(string logTypeKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="9" el="75" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="06a1de4c72e61a390dc19fceae4de602"><![CDATA[{
+            LogTypeInfo logType;
+            LogTypeDictionary.TryGetValue(logTypeKey, out logType);
+
+            if (logType == null)
+            {
+                logType = new LogTypeInfo();
+            }
+            return logType;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetOccurenceThresholdNotificationTimes">
+          <declaration><![CDATA[public Dictionary<string, string> GetOccurenceThresholdNotificationTimes()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="185" sc="9" el="193" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="07d654fa6b6bd1d4751043689ac26bea"><![CDATA[{
+            Dictionary<string, string> notificationTimes = new Dictionary<string, string>();
+            foreach (int item in new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 60, 90, 120 })
+            {
+                notificationTimes.Add(item.ToString(CultureInfo.InvariantCulture), item.ToString(CultureInfo.InvariantCulture));
+            }
+
+            return notificationTimes;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetOccurenceThresholdNotificationTimeTypes">
+          <declaration><![CDATA[public Dictionary<string, string> GetOccurenceThresholdNotificationTimeTypes()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="196" sc="9" el="204" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="963e16d7802d558f8d593d47909ebd80"><![CDATA[{
+            Dictionary<string, string> notificationTimeTypes = new Dictionary<string, string>();
+            foreach (int item in new[] { 1, 2, 3, 4 })
+            {
+                notificationTimeTypes.Add(Localization.GetString(string.Format("TimeType_{0}", item), Constants.LocalResourcesFile), item.ToString(CultureInfo.InvariantCulture));
+            }
+
+            return notificationTimeTypes;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetOccurenceThresholdOptions">
+          <declaration><![CDATA[public Dictionary<string, string> GetOccurenceThresholdOptions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="144" sc="9" el="161" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="27b1d53e8bdb2be36f53b29285f1622c"><![CDATA[{
+            Dictionary<string, string> thresholds = new Dictionary<string, string>();
+            int[] items = { 1, 2, 3, 4, 5, 10, 25, 100, 250, 500, 1000 };
+            foreach (int item in items)
+            {
+                if (item == 1)
+                {
+                    thresholds.Add(item + Localization.GetString("Occurence", Constants.LocalResourcesFile),
+                        item.ToString(CultureInfo.InvariantCulture));
+                }
+                else
+                {
+                    thresholds.Add(item + Localization.GetString("Occurences", Constants.LocalResourcesFile),
+                        item.ToString(CultureInfo.InvariantCulture));
+                }
+            }
+            return thresholds;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetOccurenceThresholds">
+          <declaration><![CDATA[public Dictionary<string, string> GetOccurenceThresholds()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="164" sc="9" el="182" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="7ee16a7c5282b3b890575122eb5f91f4"><![CDATA[{
+            Dictionary<string, string> thresholds = new Dictionary<string, string>();
+            int[] items = { 1, 2, 3, 4, 5, 10, 25, 100, 250, 500, 1000 };
+            foreach (int item in items)
+            {
+                if (item == 1)
+                {
+                    thresholds.Add(item + Localization.GetString("Occurence", Constants.LocalResourcesFile),
+                        item.ToString(CultureInfo.InvariantCulture));
+                }
+                else
+                {
+                    thresholds.Add(item + Localization.GetString("Occurences", Constants.LocalResourcesFile),
+                        item.ToString(CultureInfo.InvariantCulture));
+                }
+            }
+
+            return thresholds;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPropertiesText">
+          <declaration><![CDATA[public string GetPropertiesText(object obj)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="108" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="e4ad1cebe4f46f4bfc7a2a6f0e9b426f"><![CDATA[{
+            var str = new StringBuilder();
+            var objLogInfo = (LogInfo)obj;
+            if (objLogInfo != null)
+            {
+                var objLogProperties = objLogInfo.LogProperties;
+                int i;
+                for (i = 0; i <= objLogProperties.Count - 1; i++)
+                {
+                    //display the values in the Panel child controls.
+                    var ldi = (LogDetailInfo)objLogProperties[i];
+                    if (ldi.PropertyName == "Message")
+                    {
+                        str.Append("<p><strong>" + ldi.PropertyName + "</strong>:</br><pre>" +
+                                   HttpUtility.HtmlEncode(ldi.PropertyValue) + "</pre></p>");
+                    }
+                    else
+                    {
+                        str.Append("<p><strong>" + ldi.PropertyName + "</strong>:" +
+                                   HttpUtility.HtmlEncode(ldi.PropertyValue) + "</p>");
+                    }
+                }
+                if (!string.IsNullOrEmpty(objLogInfo.Exception.ExceptionHash))
+                {
+                    str.Append(objLogInfo.Exception);
+                }
+                str.Append("<p>" + Localization.GetString("ServerName",Constants.LocalResourcesFile) +
+                           HttpUtility.HtmlEncode(objLogInfo.LogServerName) + "</p>");
+            }
+            return str.ToString();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateLogTypeConfig">
+          <declaration><![CDATA[public void UpdateLogTypeConfig(LogTypeConfigInfo logTypeConfigInfo)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="207" sc="9" el="209" ec="10">Components\AdminLogsController.cs</location>
+            <body hash="1845bb64b425c86228b93dace4b8b1a7"><![CDATA[{
+            LogController.Instance.UpdateLogTypeConfigInfo(logTypeConfigInfo);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_logTypeDictionary">
+          <declaration><![CDATA[private Dictionary<string, LogTypeInfo> _logTypeDictionary;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_portalSettings">
+          <declaration><![CDATA[private PortalSettings _portalSettings;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="LogTypeDictionary">
+          <declaration><![CDATA[protected Dictionary<string, LogTypeInfo> LogTypeDictionary]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="13" el="62" ec="14">Components\AdminLogsController.cs</location>
+            <body hash="3366c5decca16a787fc04bf980d72c5b"><![CDATA[{
+                _logTypeDictionary = LogController.Instance.GetLogTypeInfoDictionary();
+                return _logTypeDictionary;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalSettings">
+          <declaration><![CDATA[private PortalSettings PortalSettings]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="13" el="53" ec="14">Components\AdminLogsController.cs</location>
+            <body hash="53caf5a4e987441978f705239754999b"><![CDATA[{
+                _portalSettings = PortalController.Instance.GetCurrentPortalSettings();
+                return _portalSettings;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Constants">
+      <declaration><![CDATA[public static class Constants]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="LocalResourcesFile">
+          <declaration><![CDATA[public const string LocalResourcesFile = "~/DesktopModules/admin/Dnn.PersonaBar/Modules/Dnn.AdminLogs/App_LocalResources/AdminLogs.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.AdminLogs.MenuControllers">
+    <class name="AdminMenuController">
+      <declaration><![CDATA[public class AdminMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AdminMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="9" el="27" ec="10">MenuControllers\AdminMenuController.cs</location>
+            <body hash="5ed46893a78362d630a49113ef535d5c"><![CDATA[{
+            var settings = new Dictionary<string, object>();
+            settings.Add("isHost", UserController.Instance.GetCurrentUserInfo().IsSuperUser);
+            return settings;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="12" sc="9" el="14" ec="10">MenuControllers\AdminMenuController.cs</location>
+            <body hash="4a8f06184b6087940b8e4519251d0924"><![CDATA[{
+            
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="9" el="20" ec="10">MenuControllers\AdminMenuController.cs</location>
+            <body hash="d4c78a0d5351d270343f678a4a02cf22"><![CDATA[{
+            var user = UserController.Instance.GetCurrentUserInfo();
+            return user.IsSuperUser || user.IsInRole(PortalSettings.Current?.AdministratorRoleName);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.AdminLogs.Services">
+    <class name="AdminLogsController">
+      <declaration><![CDATA[public class AdminLogsController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly AdminLogsController _controller = new AdminLogsController();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="9" el="33" ec="108">Services\AdminLogsController.cs</location>
+            <body hash="c51476aa462d7a750c8bdf521d46aeb7"><![CDATA[private readonly Components.AdminLogsController _controller = new Components.AdminLogsController()]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static AdminLogsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="9" el="32" ec="109">Services\AdminLogsController.cs</location>
+            <body hash="2292b992ec9d896402e0653915229d2c"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (AdminLogsController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddLogSetting">
+          <declaration><![CDATA[public HttpResponseMessage AddLogSetting([FromBody] UpdateLogSettingsRequest request)]]></declaration>
+          <documentation>POST: api/AdminLogs/AddLogSettings
+ <summary>
+ Adds a new log settings
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="391" sc="9" el="403" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="6bb45fbcb05de04f5a28a11c8b413bcf"><![CDATA[{
+            try
+            {
+                var logTypeConfigInfo = JObject.FromObject(request).ToObject<LogTypeConfigInfo>();
+                _controller.AddLogTypeConfig(logTypeConfigInfo);
+                return GetLatestLogSetting();
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ClearLog">
+          <declaration><![CDATA[public HttpResponseMessage ClearLog()]]></declaration>
+          <documentation>POST: api/AdminLogs/ClearLog
+ <summary>
+ Clears all log items
+ </summary>
+ <param></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="214" sc="9" el="225" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="179bfcbe6ec410c362162afa195b0e19"><![CDATA[{
+            try
+            {
+                _controller.ClearLog();
+                return Request.CreateResponse(HttpStatusCode.OK, new {Success = true});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogItems">
+          <declaration><![CDATA[public HttpResponseMessage DeleteLogItems(IEnumerable<string> logIds)]]></declaration>
+          <documentation>POST: api/AdminLogs/DeleteLogItems
+ <summary>
+ Deletes log items
+ </summary>
+ <param name="logIds">List of log items to be deleted</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="141" sc="9" el="156" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="10c06b17cf75591500f5247b2e27cd93"><![CDATA[{
+            try
+            {
+                foreach (var logId in logIds)
+                {
+                    var objLogInfo = new LogInfo {LogGUID = logId};
+                    LogController.Instance.DeleteLog(objLogInfo);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, new {Success = true});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogSetting">
+          <declaration><![CDATA[public HttpResponseMessage DeleteLogSetting(DeleteLogSettingsRequest request)]]></declaration>
+          <documentation>POST: api/AdminLogs/DeleteLogSettings
+ <summary>
+ Deletes an existing log settings
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="439" sc="9" el="451" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="6b124a7db6a5ac07eb29702cf9110738"><![CDATA[{
+            try
+            {
+                _controller.DeleteLogTypeConfig(request.LogTypeConfigId);
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    new {Success = true, LogSettingId = request.LogTypeConfigId});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="EmailLogItems">
+          <declaration><![CDATA[public HttpResponseMessage EmailLogItems(EmailLogItemsRequest request)]]></declaration>
+          <documentation>POST: api/AdminLogs/EmailLogItems
+ <summary>
+ Sends log items via email
+ </summary>
+ <param name="request">send email request</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="167" sc="9" el="202" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="b3ff6bccf71f3209f7f4fc37a9fbfa6c"><![CDATA[{
+            try
+            {
+                if (!UserInfo.IsSuperUser && request.LogIds.Any(
+                    x =>
+                        ((LogInfo)
+                            LogController.Instance.GetSingleLog(new LogInfo {LogGUID = x},
+                                LoggingProvider.ReturnType.LogInfoObjects))?.LogPortalID != PortalId))
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized,
+                        Localization.GetString("UnAuthorizedToSendLog", Components.Constants.LocalResourcesFile));
+                }
+                string error;
+                var subject = request.Subject;
+                var strFromEmailAddress = !string.IsNullOrEmpty(UserInfo.Email) ? UserInfo.Email : PortalSettings.Email;
+
+                if (string.IsNullOrEmpty(subject))
+                {
+                    subject = PortalSettings.PortalName + @" Exceptions";
+                }
+
+                string returnMsg = _controller.EmailLogItems(subject, strFromEmailAddress, request.Email,
+                    request.Message, request.LogIds, out error);
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    Success = string.IsNullOrEmpty(returnMsg) ? true : false,
+                    ErrorMessage = error,
+                    ReturnMessage = returnMsg
+                });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetKeepMostRecentOptions">
+          <declaration><![CDATA[public HttpResponseMessage GetKeepMostRecentOptions()]]></declaration>
+          <documentation>GET: api/AdminLogs/GetKeepMostRecentOptions
+ <summary>
+ Gets options of Keep Most Recent
+ </summary>
+ <param></param>
+ <returns>Option list of Keep Most Recent</returns></documentation>
+          <codeblock>
+            <location sl="241" sc="9" el="260" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="ff965a2efd5ad1cd8bc63c5cce3f1939"><![CDATA[{
+            try
+            {
+                var options = _controller.GetKeepMostRecentOptions().ToList();
+
+                var response = new
+                {
+                    Success = true,
+                    Results = options,
+                    TotalResults = options.Count
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLatestLogSetting">
+          <declaration><![CDATA[private HttpResponseMessage GetLatestLogSetting()]]></declaration>
+          <documentation>GET: api/AdminLogs/GetLatestLogSetting
+ <summary>
+ Gets latest log setting
+ </summary>
+ <param></param>
+ <returns>Log Setting</returns></documentation>
+          <codeblock>
+            <location sl="464" sc="9" el="502" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="bffce8613b483e39665e3563257e8495"><![CDATA[{
+            try
+            {
+                var logTypes = LogController.Instance.GetLogTypeConfigInfo().Cast<LogTypeConfigInfo>()
+                    .OrderByDescending(l => Convert.ToInt32(l.ID)).ToList();
+                var configInfo = logTypes.FirstOrDefault();
+
+                if (configInfo != null)
+                {
+                    int portalId;
+                    return Request.CreateResponse(HttpStatusCode.OK, new
+                    {
+                        configInfo.ID,
+                        configInfo.LoggingIsActive,
+                        configInfo.LogTypeFriendlyName,
+                        configInfo.LogTypeKey,
+                        LogTypePortalID =
+                            int.TryParse(configInfo.LogTypePortalID, out portalId) ? portalId.ToString() : "*",
+                        LogTypePortalName =
+                            int.TryParse(configInfo.LogTypePortalID, out portalId)
+                                ? PortalController.Instance.GetPortal(portalId).PortalName
+                                : "*",
+                        configInfo.KeepMostRecent,
+                        configInfo.EmailNotificationIsActive,
+                        configInfo.NotificationThreshold,
+                        configInfo.NotificationThresholdTime,
+                        configInfo.NotificationThresholdTimeType,
+                        configInfo.MailFromAddress,
+                        configInfo.MailToAddress
+                    });
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, new {Success = true});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogItems">
+          <declaration><![CDATA[public HttpResponseMessage GetLogItems(string logType, int pageSize, int pageIndex, int portalId = -1)]]></declaration>
+          <documentation>GET: api/AdminLogs/GetLogItems
+ <summary>
+ Gets log items
+ </summary>
+ <param></param>
+ <param name="logType"></param>
+ <param name="pageSize"></param>
+ <param name="pageIndex"></param>
+ <param name="portalId"></param>
+ <returns>List of log items</returns></documentation>
+          <codeblock>
+            <location sl="94" sc="9" el="129" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="b75d9ef113f5b6ce1b08946e9cb84216"><![CDATA[{
+            try
+            {
+                var totalRecords = 0;
+                var logItems = LogController.Instance.GetLogs(UserInfo.IsSuperUser ? portalId : PortalId,
+                    logType == "*" ? string.Empty : logType,
+                    pageSize, pageIndex, ref totalRecords);
+
+                var items = logItems.Select(v => new
+                {
+                    v.LogGUID,
+                    v.LogFileID,
+                    _controller.GetMyLogType(v.LogTypeKey).LogTypeCSSClass,
+                    _controller.GetMyLogType(v.LogTypeKey).LogTypeFriendlyName,
+                    v.LogUserName,
+                    v.LogPortalName,
+                    LogCreateDate = v.LogCreateDate.ToString("G", CultureInfo.InvariantCulture),
+                    v.LogProperties.Summary,
+                    LogProperties = _controller.GetPropertiesText(v)
+                });
+
+                var response = new
+                {
+                    Success = true,
+                    Results = items,
+                    TotalResults = totalRecords
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogSetting">
+          <declaration><![CDATA[public HttpResponseMessage GetLogSetting(string logTypeConfigId)]]></declaration>
+          <documentation>GET: api/AdminLogs/GetLogSettings
+ <summary>
+ Gets log type settings
+ </summary>
+ <param name="logTypeConfigId"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="349" sc="9" el="379" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="24af69180a30d21f33ecf9b4292d4e97"><![CDATA[{
+            try
+            {
+                var configInfo = _controller.GetLogTypeConfig(logTypeConfigId);
+                int portalId;
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    configInfo.ID,
+                    configInfo.LoggingIsActive,
+                    configInfo.LogTypeFriendlyName,
+                    configInfo.LogTypeKey,
+                    LogTypePortalID = int.TryParse(configInfo.LogTypePortalID, out portalId) ? portalId.ToString() : "*",
+                    LogTypePortalName =
+                        int.TryParse(configInfo.LogTypePortalID, out portalId)
+                            ? PortalController.Instance.GetPortal(portalId).PortalName
+                            : "*",
+                    configInfo.KeepMostRecent,
+                    configInfo.EmailNotificationIsActive,
+                    configInfo.NotificationThreshold,
+                    configInfo.NotificationThresholdTime,
+                    configInfo.NotificationThresholdTimeType,
+                    configInfo.MailFromAddress,
+                    configInfo.MailToAddress
+                });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogSettings">
+          <declaration><![CDATA[public HttpResponseMessage GetLogSettings()]]></declaration>
+          <documentation>GET: api/AdminLogs/GetLogSettings
+ <summary>
+ Gets log settings
+ </summary>
+ <param></param>
+ <returns>List of log settings</returns></documentation>
+          <codeblock>
+            <location sl="304" sc="9" el="338" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="c6881c574e699f3ebc29aaeedeea9e6b"><![CDATA[{
+            try
+            {
+                var logTypes = LogController.Instance.GetLogTypeConfigInfo().Cast<LogTypeConfigInfo>();
+
+                int portalId;
+                var types = logTypes.Select(v => new
+                {
+                    v.LogTypeFriendlyName,
+                    v.LogTypeKey,
+                    v.LogTypePortalID,
+                    LogTypePortalName =
+                        int.TryParse(v.LogTypePortalID, out portalId)
+                            ? PortalController.Instance.GetPortal(portalId).PortalName
+                            : "*",
+                    v.LoggingIsActive,
+                    v.LogFileName,
+                    v.ID
+                }).ToList();
+
+                var response = new
+                {
+                    Success = true,
+                    Results = types,
+                    TotalResults = types.Count
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypes">
+          <declaration><![CDATA[public HttpResponseMessage GetLogTypes()]]></declaration>
+          <documentation>GET: api/AdminLogs/GetLogTypes
+ <summary>
+ Gets log types
+ </summary>
+ <param></param>
+ <returns>List of log types</returns></documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="77" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="bafaa694d35025918399f4772ad30679"><![CDATA[{
+            try
+            {
+                var logTypes =
+                    LogController.Instance.GetLogTypeInfoDictionary()
+                        .Values.OrderBy(t => t.LogTypeFriendlyName)
+                        .ToList();
+
+                logTypes.Insert(0, new LogTypeInfo
+                {
+                    LogTypeFriendlyName = Localization.GetString("AllTypes", Components.Constants.LocalResourcesFile),
+                LogTypeKey = "*"
+                });
+
+                var types = logTypes.Select(v => new
+                {
+                    v.LogTypeFriendlyName,
+                    v.LogTypeKey
+                }).ToList();
+
+                var response = new
+                {
+                    Success = true,
+                    Results = types,
+                    TotalResults = types.Count
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetOccurrenceOptions">
+          <declaration><![CDATA[public HttpResponseMessage GetOccurrenceOptions()]]></declaration>
+          <documentation>GET: api/AdminLogs/GetOccurenceThresholdOptions
+ <summary>
+ Gets options of Occurence Threshold
+ </summary>
+ <param></param>
+ <returns>Option list of Occurence Threshold</returns></documentation>
+          <codeblock>
+            <location sl="271" sc="9" el="293" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="5d255644bd46885af1204506d7b226d3"><![CDATA[{
+            try
+            {
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        Thresholds = _controller.GetOccurenceThresholds().ToList(),
+                        NotificationTimes = _controller.GetOccurenceThresholdNotificationTimes().ToList(),
+                        NotificationTimeTypes = _controller.GetOccurenceThresholdNotificationTimeTypes().ToList()
+                    },
+                    TotalResults = 1
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateLogSetting">
+          <declaration><![CDATA[public HttpResponseMessage UpdateLogSetting([FromBody] UpdateLogSettingsRequest request)]]></declaration>
+          <documentation>POST: api/AdminLogs/UpdateLogSettings
+ <summary>
+ Updates an existing log settings
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="415" sc="9" el="427" ec="10">Services\AdminLogsController.cs</location>
+            <body hash="9a4593314e2ab44666548e5ce1362bcb"><![CDATA[{
+            try
+            {
+                var logTypeConfigInfo = JObject.FromObject(request).ToObject<LogTypeConfigInfo>();
+                _controller.UpdateLogTypeConfig(logTypeConfigInfo);
+                return GetLogSetting(request.ID);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_controller">
+          <declaration><![CDATA[private readonly AdminLogsController _controller = new AdminLogsController();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(AdminLogsController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.AdminLogs.Services.Dto">
+    <class name="DeleteLogItemsRequest">
+      <declaration><![CDATA[public class DeleteLogItemsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DeleteLogItemsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="LogIds">
+          <declaration><![CDATA[public IEnumerable<string> LogIds]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="45" el="37" ec="49">Services\Dto\DeleteLogItemsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="50" el="37" ec="54">Services\Dto\DeleteLogItemsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DeleteLogSettingsRequest">
+      <declaration><![CDATA[public class DeleteLogSettingsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DeleteLogSettingsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="LogTypeConfigId">
+          <declaration><![CDATA[public string LogTypeConfigId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="41" el="37" ec="45">Services\Dto\DeleteLogSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="46" el="37" ec="50">Services\Dto\DeleteLogSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="EmailLogItemsRequest">
+      <declaration><![CDATA[public class EmailLogItemsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EmailLogItemsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Email">
+          <declaration><![CDATA[public string Email]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="31" el="39" ec="35">Services\Dto\EmailLogItemsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="39" sc="36" el="39" ec="40">Services\Dto\EmailLogItemsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LogIds">
+          <declaration><![CDATA[public IEnumerable<string> LogIds]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="45" el="43" ec="49">Services\Dto\EmailLogItemsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="50" el="43" ec="54">Services\Dto\EmailLogItemsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Message">
+          <declaration><![CDATA[public string Message]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="33" el="41" ec="37">Services\Dto\EmailLogItemsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="41" sc="38" el="41" ec="42">Services\Dto\EmailLogItemsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Subject">
+          <declaration><![CDATA[public string Subject]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="33" el="37" ec="37">Services\Dto\EmailLogItemsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="38" el="37" ec="42">Services\Dto\EmailLogItemsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateLogSettingsRequest">
+      <declaration><![CDATA[public class UpdateLogSettingsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateLogSettingsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="EmailNotificationIsActive">
+          <declaration><![CDATA[public bool EmailNotificationIsActive]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="49" el="47" ec="53">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="47" sc="54" el="47" ec="58">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ID">
+          <declaration><![CDATA[public string ID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="28" el="37" ec="32">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="33" el="37" ec="37">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="KeepMostRecent">
+          <declaration><![CDATA[public string KeepMostRecent]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="40" el="45" ec="44">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="45" sc="45" el="45" ec="49">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LoggingIsActive">
+          <declaration><![CDATA[public bool LoggingIsActive]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="39" el="39" ec="43">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="39" sc="44" el="39" ec="48">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LogTypeKey">
+          <declaration><![CDATA[public string LogTypeKey]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="36" el="41" ec="40">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="41" sc="41" el="41" ec="45">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LogTypePortalID">
+          <declaration><![CDATA[public string LogTypePortalID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="41" el="43" ec="45">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="46" el="43" ec="50">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="MailFromAddress">
+          <declaration><![CDATA[public string MailFromAddress]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="41" el="55" ec="45">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="55" sc="46" el="55" ec="50">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="MailToAddress">
+          <declaration><![CDATA[public string MailToAddress]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="39" el="57" ec="43">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="57" sc="44" el="57" ec="48">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="NotificationThreshold">
+          <declaration><![CDATA[public int NotificationThreshold]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="44" el="49" ec="48">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="49" sc="49" el="49" ec="53">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="NotificationThresholdTime">
+          <declaration><![CDATA[public int NotificationThresholdTime]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="48" el="51" ec="52">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="51" sc="53" el="51" ec="57">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="NotificationThresholdTimeType">
+          <declaration><![CDATA[public int NotificationThresholdTimeType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="52" el="53" ec="56">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="53" sc="57" el="53" ec="61">Services\Dto\UpdateLogSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

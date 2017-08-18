@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.SitemapProviders.CoreSitemapProvider.dll" version="06.01.00" generated="2017-06-18 21:13:06Z" generationTime="2.5498764">
+  <namespace name="DotNetNuke.SitemapProviders">
+    <class name="CoreSitemapProvider">
+      <declaration><![CDATA[public class CoreSitemapProvider : SitemapProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CoreSitemapProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetPageUrl">
+          <declaration><![CDATA[private SitemapUrl GetPageUrl(TabInfo objTab, string language)]]></declaration>
+          <documentation>
+            <summary>
+   Return the sitemap url node for the page
+ </summary>
+ <param name="objTab">The page being indexed</param>
+ <param name="language">Culture code to use in the URL</param>
+ <returns>A SitemapUrl object for the current page</returns>
+ <remarks>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="100" sc="9" el="137" ec="10">CoreSitemapProvider.cs</location>
+            <body hash="e6736d72492746000beb42bcea1a6d7a"><![CDATA[{
+            var pageUrl = new SitemapUrl();
+            if (String.IsNullOrEmpty(language))
+            {
+                pageUrl.Url = Globals.NavigateURL(objTab.TabID, objTab.IsSuperTab, null, "", "");
+            }
+            else
+            {
+                pageUrl.Url = Globals.NavigateURL(objTab.TabID, objTab.IsSuperTab, ps, "", language);
+            }
+
+            if (pageUrl.Url.ToLower().IndexOf(ps.PortalAlias.HTTPAlias.ToLower()) == -1)
+            {
+                // code to fix a bug in dnn5.1.2 for navigateurl
+                if ((HttpContext.Current != null))
+                {
+                    pageUrl.Url = Globals.AddHTTP(HttpContext.Current.Request.Url.Host + pageUrl.Url);
+                }
+                else
+                {
+                    // try to use the portalalias
+                    pageUrl.Url = Globals.AddHTTP(ps.PortalAlias.HTTPAlias.ToLower()) + pageUrl.Url;
+                }
+            }
+            pageUrl.Priority = GetPriority(objTab);
+            pageUrl.LastModified = objTab.LastModifiedOnDate;
+            var modCtrl = new ModuleController();
+            foreach (ModuleInfo m in modCtrl.GetTabModules(objTab.TabID).Values)
+            {
+                if (m.LastModifiedOnDate > objTab.LastModifiedOnDate)
+                {
+                    pageUrl.LastModified = m.LastModifiedOnDate;
+                }
+            }
+            pageUrl.ChangeFrequency = SitemapChangeFrequency.Daily;
+
+            return pageUrl;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPriority">
+          <declaration><![CDATA[protected float GetPriority(TabInfo objTab)]]></declaration>
+          <documentation>
+            <summary>
+   When page level priority is used, the priority for each page will be computed from
+   the hierarchy level of the page.
+   Top level pages will have a value of 1, second level 0.9, third level 0.8, ...
+ </summary>
+ <param name="objTab">The page being indexed</param>
+ <returns>The priority assigned to the page</returns>
+ <remarks>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="149" sc="9" el="170" ec="10">CoreSitemapProvider.cs</location>
+            <body hash="f6c017d9ea3ad392ab6e3bd01322ef21"><![CDATA[{
+            float priority = objTab.SiteMapPriority;
+
+            if (useLevelBasedPagePriority)
+            {
+                if (objTab.Level >= 9)
+                {
+                    priority = 0.1F;
+                }
+                else
+                {
+                    priority = Convert.ToSingle(1 - (objTab.Level*0.1));
+                }
+
+                if (priority < minPagePriority)
+                {
+                    priority = minPagePriority;
+                }
+            }
+
+            return priority;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUrls">
+          <declaration><![CDATA[public override List<SitemapUrl> GetUrls(int portalId, PortalSettings ps, string version)]]></declaration>
+          <documentation>
+            <summary>
+   Includes page urls on the sitemap
+ </summary>
+ <remarks>
+   Pages that are included:
+   - are not deleted
+   - are not disabled
+   - are normal pages (not links,...)
+   - are visible (based on date and permissions)
+ </remarks></documentation>
+          <codeblock>
+            <location sl="63" sc="9" el="89" ec="10">CoreSitemapProvider.cs</location>
+            <body hash="2a5acdb97ff0bcaca761fb463d4c4bd1"><![CDATA[{
+            var objTabs = new TabController();
+            SitemapUrl pageUrl = null;
+            var urls = new List<SitemapUrl>();
+
+            useLevelBasedPagePriority = bool.Parse(PortalController.GetPortalSetting("SitemapLevelMode", portalId, "False"));
+            minPagePriority = float.Parse(PortalController.GetPortalSetting("SitemapMinPriority", portalId, "0.1"), CultureInfo.InvariantCulture);
+            includeHiddenPages = bool.Parse(PortalController.GetPortalSetting("SitemapIncludeHidden", portalId, "True"));
+
+            this.ps = ps;
+
+            foreach (TabInfo objTab in objTabs.GetTabsByPortal(portalId).Values)
+            {
+                if (!objTab.IsDeleted && !objTab.DisableLink && objTab.TabType == TabType.Normal && (Null.IsNull(objTab.StartDate) || objTab.StartDate < DateTime.Now) &&
+                    (Null.IsNull(objTab.EndDate) || objTab.EndDate > DateTime.Now) && IsTabPublic(objTab.TabPermissions))
+                {
+                    if (includeHiddenPages || objTab.IsVisible)
+                    {
+                        pageUrl = GetPageUrl(objTab, (ps.ContentLocalizationEnabled) ? objTab.CultureCode : String.Empty);
+                        urls.Add(pageUrl);
+                    }
+                }
+            }
+
+
+            return urls;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsTabPublic">
+          <declaration><![CDATA[public virtual bool IsTabPublic(TabPermissionCollection objTabPermissions)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="175" sc="9" el="211" ec="10">CoreSitemapProvider.cs</location>
+            <body hash="618d398cb195c2d734d4b55ae525c1db"><![CDATA[{
+            string roles = objTabPermissions.ToString("VIEW");
+            bool hasPublicRole = false;
+
+
+            if ((roles != null))
+            {
+                // permissions strings are encoded with Deny permissions at the beginning and Grant permissions at the end for optimal performance
+                foreach (string role in roles.Split(new[] {';'}))
+                {
+                    if (!string.IsNullOrEmpty(role))
+                    {
+                        // Deny permission
+                        if (role.StartsWith("!"))
+                        {
+                            string denyRole = role.Replace("!", "");
+                            if ((denyRole == Globals.glbRoleUnauthUserName || denyRole == Globals.glbRoleAllUsersName))
+                            {
+                                hasPublicRole = false;
+                                break;
+                            }
+                            // Grant permission
+                        }
+                        else
+                        {
+                            if ((role == Globals.glbRoleUnauthUserName || role == Globals.glbRoleAllUsersName))
+                            {
+                                hasPublicRole = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return hasPublicRole;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="includeHiddenPages">
+          <declaration><![CDATA[private bool includeHiddenPages;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="minPagePriority">
+          <declaration><![CDATA[private float minPagePriority;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ps">
+          <declaration><![CDATA[private PortalSettings ps;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="useLevelBasedPagePriority">
+          <declaration><![CDATA[private bool useLevelBasedPagePriority;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.DNNDropDownNavigationProvider.dll" version="06.01.02" generated="2017-06-18 21:28:52Z" generationTime="1.0566729">
+  <namespace name="DotNetNuke.NavigationControl">
+    <class name="DNNDropDownNavigationProvider">
+      <declaration><![CDATA[public class DNNDropDownNavigationProvider : NavigationProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DNNDropDownNavigationProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Bind">
+          <declaration><![CDATA[public override void Bind(DNNNodeCollection objNodes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="98" sc="9" el="121" ec="10">DNNDropDownNavigationProvider.cs</location>
+            <body hash="77d352bf05f76e25ab91a700cba53e5b"><![CDATA[{
+            string strLevelPrefix;
+            foreach (DNNNode objNode in objNodes)
+            {
+                if (objNode.Level == 0)
+                {
+                    DropDown.Items.Clear();
+                }
+                if (objNode.ClickAction == eClickAction.PostBack)
+                {
+                    DropDown.AutoPostBack = true;
+                }
+                strLevelPrefix = new string('_', objNode.Level);
+                if (objNode.IsBreak)
+                {
+                    DropDown.Items.Add("-------------------");
+                }
+                else
+                {
+                    DropDown.Items.Add(new ListItem(strLevelPrefix + objNode.Text, objNode.ID));
+                }
+                Bind(objNode.DNNNodes);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DropDown_SelectedIndexChanged">
+          <declaration><![CDATA[private void DropDown_SelectedIndexChanged(object source, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="124" sc="9" el="129" ec="10">DNNDropDownNavigationProvider.cs</location>
+            <body hash="7e9f3516f4c273c7ed8a7482b300a763"><![CDATA[{
+            if (DropDown.SelectedIndex > -1)
+            {
+                base.RaiseEvent_NodeClick(DropDown.SelectedItem.Value);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Initialize">
+          <declaration><![CDATA[public override void Initialize()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="91" sc="9" el="95" ec="10">DNNDropDownNavigationProvider.cs</location>
+            <body hash="245b92c1874f969f0f96fec18882e529"><![CDATA[{
+            m_objDropDown = new DropDownList();
+            DropDown.ID = m_strControlID;
+            DropDown.SelectedIndexChanged += DropDown_SelectedIndexChanged;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="m_objDropDown">
+          <declaration><![CDATA[private DropDownList m_objDropDown;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strControlID">
+          <declaration><![CDATA[private string m_strControlID;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ControlID">
+          <declaration><![CDATA[public override string ControlID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="13" el="63" ec="14">DNNDropDownNavigationProvider.cs</location>
+            <body hash="2b8710fb27eb8a745bb841a8a55c8060"><![CDATA[{
+                return m_strControlID;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="65" sc="13" el="67" ec="14">DNNDropDownNavigationProvider.cs</location>
+            <body hash="2b90542a7872430773e1d683b78b82f5"><![CDATA[{
+                m_strControlID = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSControl">
+          <declaration><![CDATA[public override string CSSControl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="81" sc="13" el="83" ec="14">DNNDropDownNavigationProvider.cs</location>
+            <body hash="4e6c780067c0bca00dc4c236f1139364"><![CDATA[{
+                return DropDown.CssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="85" sc="13" el="87" ec="14">DNNDropDownNavigationProvider.cs</location>
+            <body hash="ff7451f53a5e2cb960d209d50c0ab8c2"><![CDATA[{
+                DropDown.CssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DropDown">
+          <declaration><![CDATA[public DropDownList DropDown]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="13" el="47" ec="14">DNNDropDownNavigationProvider.cs</location>
+            <body hash="d4ba5b09405ad0856ab3e2bd5fdb9357"><![CDATA[{
+                return m_objDropDown;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NavigationControl">
+          <declaration><![CDATA[public override Control NavigationControl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="13" el="55" ec="14">DNNDropDownNavigationProvider.cs</location>
+            <body hash="cfab0bf103bce1914b62f43e7045a559"><![CDATA[{
+                return DropDown;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SupportsPopulateOnDemand">
+          <declaration><![CDATA[public override bool SupportsPopulateOnDemand]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="13" el="75" ec="14">DNNDropDownNavigationProvider.cs</location>
+            <body hash="479cced518a49e9e626d5350fca9bbad"><![CDATA[{
+                return false;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

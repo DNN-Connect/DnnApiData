@@ -1,0 +1,1119 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.DNNMenuNavigationProvider.dll" version="06.01.02" generated="2017-06-18 21:28:53Z" generationTime="1.8978374">
+  <namespace name="DotNetNuke.NavigationControl">
+    <class name="DNNMenuNavigationProvider">
+      <declaration><![CDATA[public class DNNMenuNavigationProvider : NavigationProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private List<CustomAttribute> m_objCustomAttributes = new List<CustomAttribute>();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="9" el="59" ec="63">DNNMenuNavigationProvider.cs</location>
+            <body hash="96c6647e53aa67de75fa07ca31fcbeb9"><![CDATA[private List<CustomAttribute> m_objCustomAttributes = new List<CustomAttribute>();
+        private DNNMenu m_objMenu;
+        private string m_strControlID;
+        private string m_strNodeLeftHTMLBreadCrumbRoot = "";
+        private string m_strNodeLeftHTMLBreadCrumbSub = "";
+        private string m_strNodeLeftHTMLRoot = "";
+        private string m_strNodeLeftHTMLSub = "";
+        private string m_strNodeRightHTMLBreadCrumbRoot = "";
+        private string m_strNodeRightHTMLBreadCrumbSub = "";
+        private string m_strNodeRightHTMLRoot = "";
+        private string m_strNodeRightHTMLSub = "";
+        private string m_strSeparatorHTML = "";
+        private string m_strSeparatorLeftHTML = "";
+        private string m_strSeparatorLeftHTMLActive = "";
+        private string m_strSeparatorLeftHTMLBreadCrumb = "";
+        private string m_strSeparatorRightHTML = "";
+        private string m_strSeparatorRightHTMLActive = "";
+        private string m_strSeparatorRightHTMLBreadCrumb = "";]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddSeparator">
+          <declaration><![CDATA[private void AddSeparator(string strType, DNNNode objPrevNode, DNNNode objNextNode, MenuNode objMenuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="706" sc="9" el="749" ec="10">DNNMenuNavigationProvider.cs</location>
+            <body hash="f03f363811d6d408c0f32a7ae33365a1"><![CDATA[{
+            string strLeftHTML = SeparatorLeftHTML + SeparatorLeftHTMLBreadCrumb + SeparatorLeftHTMLActive;
+            string strRightHTML = SeparatorRightHTML + SeparatorRightHTMLBreadCrumb + SeparatorRightHTMLActive;
+            string strHTML = SeparatorHTML + strLeftHTML + strRightHTML;
+            if (!String.IsNullOrEmpty(strHTML))
+            {
+                string strSeparator = "";
+                string strSeparatorLeftHTML = "";
+                string strSeparatorRightHTML = "";
+                string strSeparatorClass = "";
+                string strLeftSeparatorClass = "";
+                string strRightSeparatorClass = "";
+                if (string.IsNullOrEmpty(strLeftHTML) == false)
+                {
+                    strLeftSeparatorClass = GetSeparatorText(CSSLeftSeparator, CSSLeftSeparatorBreadCrumb, CSSLeftSeparatorSelection, objNextNode);
+                    strSeparatorLeftHTML = GetSeparatorText(SeparatorLeftHTML, SeparatorLeftHTMLBreadCrumb, SeparatorLeftHTMLActive, objNextNode);
+                }
+                if (string.IsNullOrEmpty(SeparatorHTML) == false)
+                {
+                    if (!String.IsNullOrEmpty(CSSSeparator))
+                    {
+                        strSeparatorClass = CSSSeparator;
+                    }
+                    strSeparator = SeparatorHTML;
+                }
+                if (string.IsNullOrEmpty(strRightHTML) == false)
+                {
+                    strRightSeparatorClass = GetSeparatorText(CSSRightSeparator, CSSRightSeparatorBreadCrumb, CSSRightSeparatorSelection, objNextNode);
+                    strSeparatorRightHTML = GetSeparatorText(SeparatorRightHTML, SeparatorRightHTMLBreadCrumb, SeparatorRightHTMLActive, objNextNode);
+                }
+                if (string.IsNullOrEmpty(strSeparatorRightHTML) == false)
+                {
+                    objMenuItem.RightHTML += GetSeparatorMarkup(strRightSeparatorClass, strSeparatorRightHTML);
+                }
+                if (string.IsNullOrEmpty(strSeparator) == false && strType == "All")
+                {
+                    objMenuItem.LeftHTML += GetSeparatorMarkup(strSeparatorClass, strSeparator);
+                }
+                if (string.IsNullOrEmpty(strSeparatorLeftHTML) == false)
+                {
+                    objMenuItem.LeftHTML += GetSeparatorMarkup(strLeftSeparatorClass, strSeparatorLeftHTML);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Bind">
+          <declaration><![CDATA[public override void Bind(DNNNodeCollection objNodes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="512" sc="9" el="703" ec="10">DNNMenuNavigationProvider.cs</location>
+            <body hash="67e0c77c66450658b60ebcbb461dcb37"><![CDATA[{
+            DNNNode objNode = null;
+            MenuNode objMenuItem;
+            DNNNode objPrevNode = null;
+            bool RootFlag = false;
+            int intIndex;
+            if (IndicateChildren == false)
+            {
+                IndicateChildImageSub = "";
+                IndicateChildImageRoot = "";
+            }
+            if (!String.IsNullOrEmpty(CSSNodeSelectedRoot) && CSSNodeSelectedRoot == CSSNodeSelectedSub)
+            {
+                Menu.DefaultNodeCssClassSelected = CSSNodeSelectedRoot;	//set on parent, thus decreasing overall payload
+            }
+			
+            //JH - 2/5/07 - support for custom attributes
+            foreach (CustomAttribute objAttr in CustomAttributes)
+            {
+                switch (objAttr.Name.ToLower())
+                {
+                    case "submenuorientation":
+                        Menu.SubMenuOrientation = (UI.WebControls.Orientation) Enum.Parse(Menu.SubMenuOrientation.GetType(), objAttr.Value);
+                        break;
+                    case "usetables":
+                        Menu.RenderMode = DNNMenu.MenuRenderMode.Normal;
+                        break;
+                    case "rendermode":
+                        Menu.RenderMode = (DNNMenu.MenuRenderMode) Enum.Parse(typeof (DNNMenu.MenuRenderMode), objAttr.Value);
+                        break;
+                    case "animationtype":
+                        Menu.Animation.AnimationType = (AnimationType) Enum.Parse(typeof (AnimationType), objAttr.Value);
+                        break;
+                    case "easingdirection":
+                        Menu.Animation.EasingDirection = (EasingDirection) Enum.Parse(typeof (EasingDirection), objAttr.Value);
+                        break;
+                    case "easingtype":
+                        Menu.Animation.EasingType = (EasingType) Enum.Parse(typeof (EasingType), objAttr.Value);
+                        break;
+                    case "animationinterval":
+                        Menu.Animation.Interval = int.Parse(objAttr.Value);
+                        break;
+                    case "animationlength":
+                        Menu.Animation.Length = int.Parse(objAttr.Value);
+                        break;
+                }
+            }
+            foreach (DNNNode node in objNodes)
+            {
+                objNode = node;
+                if (objNode.Level == 0) //root menu
+                {
+                    intIndex = Menu.MenuNodes.Import(objNode, false);
+                    objMenuItem = Menu.MenuNodes[intIndex];
+                    if (objNode.BreadCrumb && string.IsNullOrEmpty(NodeRightHTMLBreadCrumbRoot) == false)
+                    {
+                        objMenuItem.RightHTML += NodeRightHTMLBreadCrumbRoot;
+                    }
+                    else if (string.IsNullOrEmpty(NodeRightHTMLRoot) == false)
+                    {
+                        objMenuItem.RightHTML = NodeRightHTMLRoot;
+                    }
+                    if (RootFlag) //first root item has already been entered
+                    {
+                        AddSeparator("All", objPrevNode, objNode, objMenuItem);
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(SeparatorLeftHTML) == false || string.IsNullOrEmpty(SeparatorLeftHTMLBreadCrumb) == false || string.IsNullOrEmpty(SeparatorLeftHTMLActive) == false)
+                        {
+                            AddSeparator("Left", objPrevNode, objNode, objMenuItem);
+                        }
+                        RootFlag = true;
+                    }
+                    if (objNode.BreadCrumb && string.IsNullOrEmpty(NodeLeftHTMLBreadCrumbRoot) == false)
+                    {
+                        objMenuItem.LeftHTML += NodeLeftHTMLBreadCrumbRoot;
+                    }
+                    else if (string.IsNullOrEmpty(NodeLeftHTMLRoot) == false)
+                    {
+                        objMenuItem.LeftHTML += NodeLeftHTMLRoot;
+                    }
+                    if (!String.IsNullOrEmpty(CSSNodeRoot))
+                    {
+                        objMenuItem.CSSClass = CSSNodeRoot;
+                    }
+                    if (!String.IsNullOrEmpty(CSSNodeHoverRoot) && CSSNodeHoverRoot != CSSNodeHoverSub)
+                    {
+                        objMenuItem.CSSClassHover = CSSNodeHoverRoot;
+                    }
+                    objMenuItem.CSSIcon = " "; //< ignore for root...???
+                    if (objNode.BreadCrumb)
+                    {
+                        if (!String.IsNullOrEmpty(CSSBreadCrumbRoot))
+                        {
+                            objMenuItem.CSSClass = CSSBreadCrumbRoot;
+                        }
+                        if (objNode.Selected && String.IsNullOrEmpty(Menu.DefaultNodeCssClassSelected))
+                        {
+                            objMenuItem.CSSClassSelected = CSSNodeSelectedRoot;
+                        }
+                    }
+                }
+                else //If Not blnRootOnly Then
+                {
+                    try
+                    {
+                        MenuNode objParent = Menu.MenuNodes.FindNode(objNode.ParentNode.ID);
+                        if (objParent == null) //POD
+                        {
+                            objParent = Menu.MenuNodes[Menu.MenuNodes.Import(objNode.ParentNode.Clone(), true)];
+                        }
+                        objMenuItem = objParent.MenuNodes.FindNode(objNode.ID);
+                        if (objMenuItem == null) //POD
+                        {
+                            objMenuItem = objParent.MenuNodes[objParent.MenuNodes.Import(objNode.Clone(), true)];
+                        }
+                        if (!String.IsNullOrEmpty(NodeLeftHTMLSub))
+                        {
+                            objMenuItem.LeftHTML = NodeLeftHTMLSub;
+                        }
+                        if (!String.IsNullOrEmpty(NodeRightHTMLSub))
+                        {
+                            objMenuItem.RightHTML = NodeRightHTMLSub;
+                        }
+                        if (!String.IsNullOrEmpty(CSSNodeHoverSub) && CSSNodeHoverRoot != CSSNodeHoverSub)
+                        {
+                            objMenuItem.CSSClassHover = CSSNodeHoverSub;
+                        }
+                        if (objNode.BreadCrumb)
+                        {
+                            if (!String.IsNullOrEmpty(CSSBreadCrumbSub))
+                            {
+                                objMenuItem.CSSClass = CSSBreadCrumbSub;
+                            }
+                            if (!String.IsNullOrEmpty(NodeLeftHTMLBreadCrumbSub))
+                            {
+                                objMenuItem.LeftHTML = NodeLeftHTMLBreadCrumbSub;
+                            }
+                            if (!String.IsNullOrEmpty(NodeRightHTMLBreadCrumbSub))
+                            {
+                                objMenuItem.RightHTML = NodeRightHTMLBreadCrumbSub;
+                            }
+                            if (objNode.Selected && String.IsNullOrEmpty(Menu.DefaultNodeCssClassSelected))
+                            {
+                                objMenuItem.CSSClass = CSSNodeSelectedSub;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //throws exception if the parent tab has not been loaded ( may be related to user role security not allowing access to a parent tab )
+                        objMenuItem = null;
+                    }
+                }
+                if (!String.IsNullOrEmpty(objNode.Image))
+                {
+                    if (objNode.Image.StartsWith("~/images/"))
+                    {
+                        objNode.Image = objNode.Image.Replace("~/images/", PathSystemImage);
+                    }
+                    else if (objNode.Image.StartsWith("~/"))
+                    {
+                        objNode.Image = Globals.ResolveUrl(objNode.Image);
+                    }
+                    else if (!objNode.Image.Contains("://") && objNode.Image.StartsWith("/") == false && !String.IsNullOrEmpty(PathImage))
+                    {
+                        objNode.Image = PathImage + objNode.Image;
+                    }
+                    objMenuItem.Image = objNode.Image;
+                }
+                if (objMenuItem.IsBreak)
+                {
+                    objMenuItem.CSSClass = CSSBreak;
+                }
+                objMenuItem.ToolTip = objNode.ToolTip;
+                Bind(objNode.DNNNodes);
+                objPrevNode = objNode;
+            }
+            if (objNode != null && objNode.Level == 0) //root menu
+            {
+                //solpartactions has a hardcoded image with no path information.  Assume if value is present and no path we need to add one.
+                if (!String.IsNullOrEmpty(IndicateChildImageSub) && IndicateChildImageSub.IndexOf("/") == -1)
+                {
+                    IndicateChildImageSub = PathSystemImage + IndicateChildImageSub;
+                }
+                if (!String.IsNullOrEmpty(IndicateChildImageRoot) && IndicateChildImageRoot.IndexOf("/") == -1)
+                {
+                    IndicateChildImageRoot = PathSystemImage + IndicateChildImageRoot;
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ClearNodes">
+          <declaration><![CDATA[public override void ClearNodes()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="794" sc="9" el="796" ec="10">DNNMenuNavigationProvider.cs</location>
+            <body hash="a83d803775b19ff5f9dd745c63c4711e"><![CDATA[{
+            Menu.MenuNodes.Clear();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DNNMenu_NodeClick">
+          <declaration><![CDATA[private void DNNMenu_NodeClick(object source, DNNMenuNodeClickEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="784" sc="9" el="786" ec="10">DNNMenuNavigationProvider.cs</location>
+            <body hash="4969ca47df65de3f05bf08a13f2d2c82"><![CDATA[{
+            base.RaiseEvent_NodeClick(e.Node);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DNNMenu_PopulateOnDemand">
+          <declaration><![CDATA[private void DNNMenu_PopulateOnDemand(object source, DNNMenuEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="789" sc="9" el="791" ec="10">DNNMenuNavigationProvider.cs</location>
+            <body hash="5718f90fda21dce686527fcca0306550"><![CDATA[{
+            base.RaiseEvent_PopulateOnDemand(e.Node);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSeparatorMarkup">
+          <declaration><![CDATA[private string GetSeparatorMarkup(string strClass, string strHTML)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="770" sc="9" el="781" ec="10">DNNMenuNavigationProvider.cs</location>
+            <body hash="3af28318d2c2dce867cdfcfdbd4bba91"><![CDATA[{
+            string strRet = "";
+            if (string.IsNullOrEmpty(strClass) == false)
+            {
+                strRet += "<span class=\"" + strClass + "\">" + strHTML + "</span>";
+            }
+            else
+            {
+                strRet += strHTML;
+            }
+            return strRet;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSeparatorText">
+          <declaration><![CDATA[private string GetSeparatorText(string strNormal, string strBreadCrumb, string strSelection, DNNNode objNode)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="752" sc="9" el="767" ec="10">DNNMenuNavigationProvider.cs</location>
+            <body hash="241552aa6cf4185366239299f0beb065"><![CDATA[{
+            string strRet = "";
+            if (!String.IsNullOrEmpty(strNormal))
+            {
+                strRet = strNormal;
+            }
+            if (!String.IsNullOrEmpty(strBreadCrumb) && objNode != null && objNode.BreadCrumb)
+            {
+                strRet = strBreadCrumb;
+            }
+            if (!String.IsNullOrEmpty(strSelection) && objNode != null && objNode.Selected)
+            {
+                strRet = strSelection;
+            }
+            return strRet;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Initialize">
+          <declaration><![CDATA[public override void Initialize()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="503" sc="9" el="509" ec="10">DNNMenuNavigationProvider.cs</location>
+            <body hash="4f79f99d0a35106550c5ab14c98260e1"><![CDATA[{
+            m_objMenu = new DNNMenu();
+            Menu.ID = m_strControlID;
+            Menu.EnableViewState = false;
+            Menu.NodeClick += DNNMenu_NodeClick;
+            Menu.PopulateOnDemand += DNNMenu_PopulateOnDemand;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="m_objCustomAttributes">
+          <declaration><![CDATA[private List<CustomAttribute> m_objCustomAttributes = new List<CustomAttribute>();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_objMenu">
+          <declaration><![CDATA[private DNNMenu m_objMenu;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strControlID">
+          <declaration><![CDATA[private string m_strControlID;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeLeftHTMLBreadCrumbRoot">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLBreadCrumbRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeLeftHTMLBreadCrumbSub">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLBreadCrumbSub = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeLeftHTMLRoot">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeLeftHTMLSub">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLSub = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeRightHTMLBreadCrumbRoot">
+          <declaration><![CDATA[private string m_strNodeRightHTMLBreadCrumbRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeRightHTMLBreadCrumbSub">
+          <declaration><![CDATA[private string m_strNodeRightHTMLBreadCrumbSub = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeRightHTMLRoot">
+          <declaration><![CDATA[private string m_strNodeRightHTMLRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeRightHTMLSub">
+          <declaration><![CDATA[private string m_strNodeRightHTMLSub = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorHTML">
+          <declaration><![CDATA[private string m_strSeparatorHTML = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorLeftHTML">
+          <declaration><![CDATA[private string m_strSeparatorLeftHTML = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorLeftHTMLActive">
+          <declaration><![CDATA[private string m_strSeparatorLeftHTMLActive = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorLeftHTMLBreadCrumb">
+          <declaration><![CDATA[private string m_strSeparatorLeftHTMLBreadCrumb = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorRightHTML">
+          <declaration><![CDATA[private string m_strSeparatorRightHTML = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorRightHTMLActive">
+          <declaration><![CDATA[private string m_strSeparatorRightHTMLActive = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorRightHTMLBreadCrumb">
+          <declaration><![CDATA[private string m_strSeparatorRightHTMLBreadCrumb = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ControlID">
+          <declaration><![CDATA[public override string ControlID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="137" sc="13" el="139" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="2b8710fb27eb8a745bb841a8a55c8060"><![CDATA[{
+                return m_strControlID;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="141" sc="13" el="143" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="2b90542a7872430773e1d683b78b82f5"><![CDATA[{
+                m_strControlID = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ControlOrientation">
+          <declaration><![CDATA[public override NavigationProvider.Orientation ControlOrientation]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="149" sc="13" el="158" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="3a994fd97d045c018291faf6002c44e9"><![CDATA[{
+                if (Menu.Orientation == UI.WebControls.Orientation.Horizontal)
+                {
+                    return Orientation.Horizontal;
+                }
+                else
+                {
+                    return Orientation.Vertical;
+                }
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="160" sc="13" el="170" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="ba66dc9e420d8a5a2530cf882678cec5"><![CDATA[{
+                switch (value)
+                {
+                    case Orientation.Horizontal:
+                        Menu.Orientation = UI.WebControls.Orientation.Horizontal;
+                        break;
+                    case Orientation.Vertical:
+                        Menu.Orientation = UI.WebControls.Orientation.Vertical;
+                        break;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSBreadCrumbRoot">
+          <declaration><![CDATA[public override string CSSBreadCrumbRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSBreadCrumbSub">
+          <declaration><![CDATA[public override string CSSBreadCrumbSub]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSBreak">
+          <declaration><![CDATA[public override string CSSBreak]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSContainerSub">
+          <declaration><![CDATA[public override string CSSContainerSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="262" sc="13" el="264" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="ce35b820d9330d992e5ef779c15c4e0e"><![CDATA[{
+                return Menu.MenuCssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="266" sc="13" el="268" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="ebd9b284d84885e38135a9197e3d93c9"><![CDATA[{
+                Menu.MenuCssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSControl">
+          <declaration><![CDATA[public override string CSSControl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="204" sc="13" el="206" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="ccddcb0ff410d6a39ee0437a9c757aa8"><![CDATA[{
+                return Menu.MenuBarCssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="208" sc="13" el="210" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="7719da239a1eb51c7acd20ceaa1cb33a"><![CDATA[{
+                Menu.MenuBarCssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSIcon">
+          <declaration><![CDATA[public override string CSSIcon]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="216" sc="13" el="218" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="05ca7011006c6cb4e9b77cfdf442a84b"><![CDATA[{
+                return Menu.DefaultIconCssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="220" sc="13" el="222" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="e60b95a7185919e54a7e10def7cdd567"><![CDATA[{
+                Menu.DefaultIconCssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSIndicateChildRoot">
+          <declaration><![CDATA[public override string CSSIndicateChildRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="187" sc="13" el="189" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="d1771df833eaead88883236b2312e3aa"><![CDATA[{
+                return "";
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="191" sc="13" el="192" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="dcf329278ec483df0390d9bf53626976"><![CDATA[{
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSIndicateChildSub">
+          <declaration><![CDATA[public override string CSSIndicateChildSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="176" sc="13" el="178" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="d1771df833eaead88883236b2312e3aa"><![CDATA[{
+                return "";
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="180" sc="13" el="181" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="dcf329278ec483df0390d9bf53626976"><![CDATA[{
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNode">
+          <declaration><![CDATA[public override string CSSNode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="228" sc="13" el="230" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="9619f69ed40718bf6e2f1fc38954e13b"><![CDATA[{
+                return Menu.DefaultNodeCssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="232" sc="13" el="234" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="e86f71c052ffe5a1fabf5e71a5308bd0"><![CDATA[{
+                Menu.DefaultNodeCssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNodeHover">
+          <declaration><![CDATA[public override string CSSNodeHover]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="244" sc="13" el="246" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="522e79dc35b70c1f8e47505f7e3c0df2"><![CDATA[{
+                return Menu.DefaultNodeCssClassOver;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="248" sc="13" el="250" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="1237206a90f2a99d207d8fe770cc718e"><![CDATA[{
+                Menu.DefaultNodeCssClassOver = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNodeHoverRoot">
+          <declaration><![CDATA[public override string CSSNodeHoverRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNodeHoverSub">
+          <declaration><![CDATA[public override string CSSNodeHoverSub]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNodeRoot">
+          <declaration><![CDATA[public override string CSSNodeRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNodeSelectedRoot">
+          <declaration><![CDATA[public override string CSSNodeSelectedRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNodeSelectedSub">
+          <declaration><![CDATA[public override string CSSNodeSelectedSub]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CustomAttributes">
+          <declaration><![CDATA[public override List<CustomAttribute> CustomAttributes]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="13" el="75" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="9971a174b4064ef4df42b56a7bc4530c"><![CDATA[{
+                return m_objCustomAttributes;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="77" sc="13" el="79" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="61bb3813df80931665430a76026b5e0a"><![CDATA[{
+                m_objCustomAttributes = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ForceDownLevel">
+          <declaration><![CDATA[public override string ForceDownLevel]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="274" sc="13" el="276" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="57aa877e42e2e64f9395c98875005259"><![CDATA[{
+                return Menu.ForceDownLevel.ToString();
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="278" sc="13" el="280" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="782e78ba472bd7a760fd1c68472fda0e"><![CDATA[{
+                Menu.ForceDownLevel = Convert.ToBoolean(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildImageRoot">
+          <declaration><![CDATA[public override string IndicateChildImageRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="125" sc="13" el="127" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="fe90670623d45516c72dcb65996a6b7c"><![CDATA[{
+                return Menu.RootArrowImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="129" sc="13" el="131" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="d56bd7b73c3769eab3da955524a3a2a5"><![CDATA[{
+                Menu.RootArrowImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildImageSub">
+          <declaration><![CDATA[public override string IndicateChildImageSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="113" sc="13" el="115" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="8bb756bc40548e7222411571418f8af2"><![CDATA[{
+                return Menu.ChildArrowImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="117" sc="13" el="119" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="09d43ac0b9aa78cb87a6518aecabffb8"><![CDATA[{
+                Menu.ChildArrowImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildren">
+          <declaration><![CDATA[public override bool IndicateChildren]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Menu">
+          <declaration><![CDATA[public DNNMenu Menu]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="13" el="66" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="9a27af22f064ef03902036a5d2f75c18"><![CDATA[{
+                return m_objMenu;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NavigationControl">
+          <declaration><![CDATA[public override Control NavigationControl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="85" sc="13" el="87" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="72bfb39c469f0a1ea25f37b6ae41eeb0"><![CDATA[{
+                return Menu;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeLeftHTMLBreadCrumbRoot">
+          <declaration><![CDATA[public override string NodeLeftHTMLBreadCrumbRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="324" sc="13" el="326" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="146b83e8ea8375936038453a3ec87c4b"><![CDATA[{
+                return m_strNodeLeftHTMLBreadCrumbRoot;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="328" sc="13" el="330" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="9342dcf8a1705a3bdd1ec406e5b3c573"><![CDATA[{
+                m_strNodeLeftHTMLBreadCrumbRoot = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeLeftHTMLBreadCrumbSub">
+          <declaration><![CDATA[public override string NodeLeftHTMLBreadCrumbSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="312" sc="13" el="314" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="636df91e65c7e673e70546b1868b7086"><![CDATA[{
+                return m_strNodeLeftHTMLBreadCrumbSub;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="316" sc="13" el="318" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="7a482b4a31d384092bc2acc99d4772de"><![CDATA[{
+                m_strNodeLeftHTMLBreadCrumbSub = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeLeftHTMLRoot">
+          <declaration><![CDATA[public override string NodeLeftHTMLRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="336" sc="13" el="338" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="c9bc47c63e95a2e959bdb971834d70bc"><![CDATA[{
+                return m_strNodeLeftHTMLRoot;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="340" sc="13" el="342" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="6dfc55f39b98488c9b99bd80d55ebe8f"><![CDATA[{
+                m_strNodeLeftHTMLRoot = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeLeftHTMLSub">
+          <declaration><![CDATA[public override string NodeLeftHTMLSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="300" sc="13" el="302" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="225fee6938cc5e23be350a5f5767dcb0"><![CDATA[{
+                return m_strNodeLeftHTMLSub;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="304" sc="13" el="306" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="18a5b7874d00dfd1924ede9223516690"><![CDATA[{
+                m_strNodeLeftHTMLSub = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeRightHTMLBreadCrumbRoot">
+          <declaration><![CDATA[public override string NodeRightHTMLBreadCrumbRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="372" sc="13" el="374" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="71d6778c708d99b38fe09b148978df95"><![CDATA[{
+                return m_strNodeRightHTMLBreadCrumbRoot;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="376" sc="13" el="378" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="78e335c84ffe0cb007cb0850e8c20c05"><![CDATA[{
+                m_strNodeRightHTMLBreadCrumbRoot = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeRightHTMLBreadCrumbSub">
+          <declaration><![CDATA[public override string NodeRightHTMLBreadCrumbSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="360" sc="13" el="362" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="5ec7ce3b1fc97d05b0ad0d2013760288"><![CDATA[{
+                return m_strNodeRightHTMLBreadCrumbSub;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="364" sc="13" el="366" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="2f8b8e8df3c870a9023e7e1bc4ae0250"><![CDATA[{
+                m_strNodeRightHTMLBreadCrumbSub = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeRightHTMLRoot">
+          <declaration><![CDATA[public override string NodeRightHTMLRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="384" sc="13" el="386" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="40a28d2ce802ef502870e18298c367ff"><![CDATA[{
+                return m_strNodeRightHTMLRoot;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="388" sc="13" el="390" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="2d164e390b0bce74819c7611e41ae63e"><![CDATA[{
+                m_strNodeRightHTMLRoot = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeRightHTMLSub">
+          <declaration><![CDATA[public override string NodeRightHTMLSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="348" sc="13" el="350" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="7beeaa0d9f44c8af7a57b771cf3982fd"><![CDATA[{
+                return m_strNodeRightHTMLSub;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="352" sc="13" el="354" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="dd5b9651b2c1a954721682e858d673af"><![CDATA[{
+                m_strNodeRightHTMLSub = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PathImage">
+          <declaration><![CDATA[public override string PathImage]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="PathSystemImage">
+          <declaration><![CDATA[public override string PathSystemImage]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="480" sc="13" el="482" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="584c7025acc1a26fb97bd78f116a59c8"><![CDATA[{
+                return Menu.SystemImagesPath;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="484" sc="13" el="486" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="d45a0c7b4c3b116a1194c30800c2bdf6"><![CDATA[{
+                Menu.SystemImagesPath = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PathSystemScript">
+          <declaration><![CDATA[public override string PathSystemScript]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="494" sc="13" el="496" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="91b8913db46e23d709870bc42914603e"><![CDATA[{
+                return Menu.MenuScriptPath;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="498" sc="13" el="499" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="dcf329278ec483df0390d9bf53626976"><![CDATA[{
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PopulateNodesFromClient">
+          <declaration><![CDATA[public override bool PopulateNodesFromClient]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="288" sc="13" el="290" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="16ecb81617bb47bf5b1153f7376d3723"><![CDATA[{
+                return Menu.PopulateNodesFromClient;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="292" sc="13" el="294" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="20b46fca6c7817fa11fbdaab0bbbb82f"><![CDATA[{
+                Menu.PopulateNodesFromClient = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorHTML">
+          <declaration><![CDATA[public override string SeparatorHTML]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="396" sc="13" el="398" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="8061fbf2eff3365a817be2487d6ec995"><![CDATA[{
+                return m_strSeparatorHTML;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="400" sc="13" el="402" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="9e66da4117e25b2d34d6a305ece8e199"><![CDATA[{
+                m_strSeparatorHTML = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorLeftHTML">
+          <declaration><![CDATA[public override string SeparatorLeftHTML]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="408" sc="13" el="410" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="5893491fadc7408620810e7c6695e9c9"><![CDATA[{
+                return m_strSeparatorLeftHTML;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="412" sc="13" el="414" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="a98f0f82e181044685ec05b75c655668"><![CDATA[{
+                m_strSeparatorLeftHTML = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorLeftHTMLActive">
+          <declaration><![CDATA[public override string SeparatorLeftHTMLActive]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="420" sc="13" el="422" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="3a194bfefa45d7b3f8a842999f3f89c8"><![CDATA[{
+                return m_strSeparatorLeftHTMLActive;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="424" sc="13" el="426" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="2a3f685e3cbae23f1c2d421680653953"><![CDATA[{
+                m_strSeparatorLeftHTMLActive = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorLeftHTMLBreadCrumb">
+          <declaration><![CDATA[public override string SeparatorLeftHTMLBreadCrumb]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="432" sc="13" el="434" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="d3a82822d2d06faf45ad351fd6235c74"><![CDATA[{
+                return m_strSeparatorLeftHTMLBreadCrumb;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="436" sc="13" el="438" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="01cb0f87e6f4a01a30e67953ae8be124"><![CDATA[{
+                m_strSeparatorLeftHTMLBreadCrumb = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorRightHTML">
+          <declaration><![CDATA[public override string SeparatorRightHTML]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="444" sc="13" el="446" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="6c660d4205d80cb0ba0e19bd67cedf48"><![CDATA[{
+                return m_strSeparatorRightHTML;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="448" sc="13" el="450" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="6102dc564e6214c6a0385d0a4ec599b9"><![CDATA[{
+                m_strSeparatorRightHTML = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorRightHTMLActive">
+          <declaration><![CDATA[public override string SeparatorRightHTMLActive]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="456" sc="13" el="458" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="d41a91a1db3e3c23874bbcaa51e62f4f"><![CDATA[{
+                return m_strSeparatorRightHTMLActive;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="460" sc="13" el="462" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="c882c9504e9107b794476fdb8cbcc4b7"><![CDATA[{
+                m_strSeparatorRightHTMLActive = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorRightHTMLBreadCrumb">
+          <declaration><![CDATA[public override string SeparatorRightHTMLBreadCrumb]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="468" sc="13" el="470" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="a56587c4058ef9798791f624bbcc04f5"><![CDATA[{
+                return m_strSeparatorRightHTMLBreadCrumb;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="472" sc="13" el="474" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="b7e72c0e48860944170b2203cc8a8cd6"><![CDATA[{
+                m_strSeparatorRightHTMLBreadCrumb = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SupportsPopulateOnDemand">
+          <declaration><![CDATA[public override bool SupportsPopulateOnDemand]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="93" sc="13" el="95" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="f5368e81f663038061ec388beff126aa"><![CDATA[{
+                return true;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="WorkImage">
+          <declaration><![CDATA[public override string WorkImage]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="101" sc="13" el="103" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="23cc91755ea83eb1e0172056acf6d185"><![CDATA[{
+                return Menu.WorkImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="105" sc="13" el="107" ec="14">DNNMenuNavigationProvider.cs</location>
+            <body hash="c5aa6562f4d9b0ef1fac10d053cb5d2a"><![CDATA[{
+                Menu.WorkImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

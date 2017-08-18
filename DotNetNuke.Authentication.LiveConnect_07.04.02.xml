@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Authentication.LiveConnect.dll" version="07.04.02" generated="2017-06-19 14:52:01Z" generationTime="2.2023315">
+  <namespace name="DotNetNuke.Authentication.LiveConnect">
+    <class name="Login">
+      <declaration><![CDATA[public class Login : OAuthLoginBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Login()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetCurrentUser">
+          <declaration><![CDATA[protected override UserData GetCurrentUser()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="53" ec="10">Login.ascx.cs</location>
+            <body hash="fad8ed66c708288b392ff0c848f1939b"><![CDATA[{
+            return OAuthClient.GetCurrentUser<LiveUserData>();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="loginButton_Click">
+          <declaration><![CDATA[private void loginButton_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="76" ec="10">Login.ascx.cs</location>
+            <body hash="76944cbf91753e40cb579db220cdab17"><![CDATA[{
+            AuthorisationResult result = OAuthClient.Authorize();
+            if (result == AuthorisationResult.Denied)
+            {
+                UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("PrivateConfirmationMessage", Localization.SharedResourceFile), ModuleMessage.ModuleMessageType.YellowWarning);
+
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="9" el="66" ec="10">Login.ascx.cs</location>
+            <body hash="cdcb7d09b973a9b1d9ada41dd21c2c7b"><![CDATA[{
+            base.OnInit(e);
+
+            loginButton.Click += loginButton_Click;
+            registerButton.Click += loginButton_Click;
+
+            OAuthClient = new LiveClient(PortalId, Mode);
+
+            loginItem.Visible = (Mode == AuthMode.Login);
+            registerItem.Visible = (Mode == AuthMode.Register);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="loginButton">
+          <declaration><![CDATA[protected LinkButton loginButton;]]></declaration>
+          <documentation>
+            <summary>
+ loginButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="loginItem">
+          <declaration><![CDATA[protected HtmlGenericControl loginItem;]]></declaration>
+          <documentation>
+            <summary>
+ loginItem control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="registerButton">
+          <declaration><![CDATA[protected LinkButton registerButton;]]></declaration>
+          <documentation>
+            <summary>
+ registerButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="registerItem">
+          <declaration><![CDATA[protected HtmlGenericControl registerItem;]]></declaration>
+          <documentation>
+            <summary>
+ registerItem control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="AuthSystemApplicationName">
+          <declaration><![CDATA[protected override string AuthSystemApplicationName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SupportsRegistration">
+          <declaration><![CDATA[public override bool SupportsRegistration]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Settings">
+      <declaration><![CDATA[public class Settings : OAuthSettingsBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Settings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AuthSystemApplicationName">
+          <declaration><![CDATA[protected override string AuthSystemApplicationName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Authentication.LiveConnect.Components">
+    <class name="LiveClient">
+      <declaration><![CDATA[public class LiveClient : OAuthClientBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public LiveClient(int portalId, AuthMode mode) : base(portalId, mode, "Live")]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="9" el="58" ec="10">Components\LiveClient.cs</location>
+            <body hash="5a821c86cc2c3fdf85ba0508a160e4af"><![CDATA[public LiveClient(int portalId, AuthMode mode) : base(portalId, mode, "Live")
+        {
+            //DNN-6464 Correct TokenEndpoint and AuthorizationEndpoint Urls
+            // Add TokenMethod of Post to conform to other OAuth extensions
+            TokenMethod = HttpMethod.POST;
+            TokenEndpoint = new Uri("https://login.live.com/oauth20_token.srf");
+            AuthorizationEndpoint = new Uri("https://login.live.com/oauth20_authorize.srf");
+            MeGraphEndpoint = new Uri("https://apis.live.net/v5.0/me");
+
+            Scope = HttpContext.Current.Server.UrlEncode("wl.signin wl.basic wl.emails");
+
+            AuthTokenName = "LiveUserToken";
+
+            OAuthVersion = "2.0";
+
+            LoadTokenCookie(String.Empty);
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetExpiry">
+          <declaration><![CDATA[protected override TimeSpan GetExpiry(string responseText)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="9" el="68" ec="10">Components\LiveClient.cs</location>
+            <body hash="4bd54d36127996a8fc1f54bcef0fe4ae"><![CDATA[{
+            var jsonSerializer = new JavaScriptSerializer();
+            var tokenDictionary = jsonSerializer.DeserializeObject(responseText) as Dictionary<string, object>;
+
+            return new TimeSpan(0, 0, Convert.ToInt32(tokenDictionary["expires_in"]));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetToken">
+          <declaration><![CDATA[protected override string GetToken(string responseText)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="9" el="75" ec="10">Components\LiveClient.cs</location>
+            <body hash="d0baf35f1038f159ff97a9332cd44ba4"><![CDATA[{
+            var jsonSerializer = new JavaScriptSerializer();
+            var tokenDictionary = jsonSerializer.DeserializeObject(responseText) as Dictionary<string, object>;
+            return Convert.ToString(tokenDictionary["access_token"]);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="LiveUserData">
+      <declaration><![CDATA[public class LiveUserData : UserData]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public LiveUserData()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="FirstName">
+          <declaration><![CDATA[public override string FirstName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LastName">
+          <declaration><![CDATA[public override string LastName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Link">
+          <declaration><![CDATA[public Uri Link]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LiveFirstName">
+          <declaration><![CDATA[public string LiveFirstName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LiveLastName">
+          <declaration><![CDATA[public string LiveLastName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

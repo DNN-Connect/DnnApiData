@@ -1,0 +1,2599 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.EditBar.UI.dll" version="01.01.00" generated="2017-08-10 12:33:44Z" generationTime="4.9586647">
+  <namespace name="Dnn.EditBar.UI.Components">
+    <class name="BusinessController">
+      <declaration><![CDATA[public class BusinessController : IUpgradeable]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static BusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="9" sc="9" el="9" ec="105">Components\BusinessController.cs</location>
+            <body hash="d76ae0ba76c33c4222d80cade870cd9c"><![CDATA[private static readonly DnnLogger Logger = DnnLogger.GetClassLogger(typeof(BusinessController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="12" sc="9" el="20" ec="10">Components\BusinessController.cs</location>
+            <body hash="cedc6779883b86bc61abbcd00f8e7ac6"><![CDATA[{
+            switch (version)
+            {
+                case "01.00.00":
+                    break;
+            }
+
+            return "Success";
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly DnnLogger Logger = DnnLogger.GetClassLogger(typeof(BusinessController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.EditBar.UI.Controllers">
+    <class name="ContentEditorManager">
+      <declaration><![CDATA[public class ContentEditorManager : UserControlBase]]></declaration>
+      <documentation>
+        <summary>
+ Content Editor Manager
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private bool _supportAjax = true;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="48" ec="42">Controllers\ContentEditorManager.cs</location>
+            <body hash="add0cb86c9f6ebb651b6c117d27d62d3"><![CDATA[private bool _supportAjax = true]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AutoSetUserMode">
+          <declaration><![CDATA[private void AutoSetUserMode()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="633" sc="9" el="670" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="4cacdfabcc42923c27fcc94535f01cbb"><![CDATA[{
+            int tabId = PortalSettings.ActiveTab.TabID;
+            int portalId = PortalSettings.Current.PortalId;
+            string pageId = string.Format("{0}:{1}", portalId, tabId);
+
+            HttpCookie cookie = Request.Cookies["StayInEditMode"];
+            if (cookie != null && cookie.Value == "YES")
+            {
+                if (PortalSettings.Current.UserMode != PortalSettings.Mode.Edit)
+                {
+                    SetUserMode("EDIT");
+                    SetLastPageHistory(pageId);
+                    Response.Redirect(Request.RawUrl, true);
+
+                }
+
+                return;
+            }
+
+            string lastPageId = GetLastPageHistory();
+            var isShowAsCustomError = Request.QueryString.AllKeys.Contains("aspxerrorpath");
+
+            if (lastPageId != pageId && !isShowAsCustomError)
+            {
+                // navigate between pages
+                if (PortalSettings.Current.UserMode != PortalSettings.Mode.View)
+                {
+                    SetUserMode("VIEW");
+                    SetLastPageHistory(pageId);
+                    Response.Redirect(Request.RawUrl, true);
+                }
+            }
+
+            if (!isShowAsCustomError)
+            {
+                SetLastPageHistory(pageId);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CheckCallbackData">
+          <declaration><![CDATA[private void CheckCallbackData()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="510" sc="9" el="528" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="8fa167ee35df319e607eb346be2a558f"><![CDATA[{
+            if (Request.Cookies["CEM_CallbackData"] != null)
+            {
+                var cookie = Request.Cookies["CEM_CallbackData"];
+                var callbackData = cookie.Value;
+                if (!string.IsNullOrEmpty(callbackData) && callbackData.StartsWith("module-"))
+                {
+                    var moduleId = Convert.ToInt32(callbackData.Substring(7));
+
+                    var moduleContainer = FindModuleContainer(moduleId);
+                    var moduleInfo = FindModuleInfo(moduleId);
+                    if (moduleContainer != null && moduleInfo != null && moduleContainer.Parent is HtmlContainerControl)
+                    {
+                        ((HtmlContainerControl) moduleContainer.Parent).Attributes["data-module-title"] = moduleInfo.ModuleTitle;
+                        ProcessDragTipShown(moduleContainer);
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CheckPendingData">
+          <declaration><![CDATA[private void CheckPendingData()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="465" sc="9" el="493" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="922f35f7531639d84a2327c9139b01d4"><![CDATA[{
+            if (Request.Cookies["cem_pending"] != null)
+            {
+                var cookie = Request.Cookies["cem_pending"];
+                var pendingData = cookie.Value;
+                if (!string.IsNullOrEmpty(pendingData))
+                {
+                    var tabId = PortalSettings.ActiveTab.TabID;
+                    int moduleId;
+                    if (pendingData.StartsWith("module-")
+                            && Int32.TryParse(pendingData.Substring(7), out moduleId)
+                            && ModuleController.Instance.GetModule(moduleId, tabId, false) != null)
+                    {
+                        RemoveTabModule(tabId, moduleId);
+
+                        //remove related modules
+                        ModuleController.Instance.GetTabModules(tabId).Values
+                            .Where(m => m.ModuleID > moduleId)
+                            .ForEach(m =>
+                            {
+                                RemoveTabModule(tabId, m.ModuleID);
+                            });
+                    }
+                }
+
+                cookie.Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies.Add(cookie);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateChildControls">
+          <declaration><![CDATA[protected override void CreateChildControls()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="140" sc="9" el="213" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="3dcff7a00efde075a94083b1a4191e53"><![CDATA[{
+            base.CreateChildControls();
+
+            foreach (string paneId in PortalSettings.ActiveTab.Panes)
+            {
+                var pane = Skin.FindControl(paneId) as HtmlContainerControl;
+                if (pane == null)
+                {
+                    continue;
+                }
+
+                var ajaxPanel = new DnnAjaxPanel
+                {
+                    ID = pane.ID + "_SyncPanel",
+                    RestoreOriginalRenderDelegate = false,
+
+                };
+
+                try
+                {
+                    if (!Page.IsPostBack)
+                    {
+                        //find update panels in pane and fire the unload event for a known issue: CONTENT-4039
+                        var updatePanels = GetUpdatePanelsInPane(pane);
+                        updatePanels.ForEach(p => p.Unload += UpdatePanelUnloadEvent);
+                    }
+
+                    var paneIndex = pane.Parent.Controls.IndexOf(pane);
+                    pane.Parent.Controls.AddAt(paneIndex, ajaxPanel);
+                    ajaxPanel.Controls.Add(pane);
+                }
+                catch (Exception ex)
+                {
+                    SupportAjax = false;
+                    return;
+                }
+
+                ajaxPanel.CssClass = pane.Attributes["class"];
+                pane.Attributes["class"] = string.Empty;
+
+                var scriptManager = ScriptManager.GetCurrent(Page);
+                if (scriptManager != null && scriptManager.IsInAsyncPostBack
+                        && ajaxPanel.UniqueID == Request.Form["__EVENTTARGET"]
+                        && !string.IsNullOrEmpty(Request.Form["__EVENTARGUMENT"])
+                        && Request.Form["__EVENTARGUMENT"].ToLowerInvariant() != "undefined"
+                        && Request.Form["__EVENTARGUMENT"].ToLowerInvariant().StartsWith("module-"))
+                {
+                    var moduleId = Convert.ToInt32(Request.Form["__EVENTARGUMENT"].Substring(7));
+
+                    var moduleContainer = FindModuleContainer(moduleId);
+                    if (moduleContainer != null)
+                    {
+                        var moduleControl = FindModuleControl(moduleId);
+                        var moduleInfo = FindModuleInfo(moduleId);
+
+                        if (moduleControl != null && moduleInfo != null && moduleContainer.Parent is HtmlContainerControl)
+                        {
+                            ((HtmlContainerControl) moduleContainer.Parent).Attributes["data-module-title"] = moduleInfo.ModuleTitle;
+                            
+                            if (HaveContentLayoutModuleOnPage())
+                            {
+                                Page.Items[typeof(ProxyPage)] = moduleControl;
+                            }
+                            else
+                            {
+                                moduleControl.Page = new ProxyPage(Page);
+                            }
+
+                            ProcessDragTipShown(moduleContainer);
+                        }
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FindControlRecursive">
+          <declaration><![CDATA[private static void FindControlRecursive(Control rootControl, string controlId, ICollection<Control> foundControls)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="327" sc="9" el="338" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="a2b782c9b87c8bcf1b73c14c06244f90"><![CDATA[{
+
+            if (rootControl.ID == controlId)
+            {
+                foundControls.Add(rootControl);
+            }
+
+            foreach(Control subControl in rootControl.Controls)
+            {
+                FindControlRecursive(subControl, controlId, foundControls);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FindModuleContainer">
+          <declaration><![CDATA[private Container FindModuleContainer(int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="541" sc="9" el="543" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="675369b485cf99f6dc5b00efd7cdb833"><![CDATA[{
+            return ControlUtilities.FindFirstDescendent<Container>(Skin, c => c.ID == "ctr" + moduleId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FindModuleControl">
+          <declaration><![CDATA[private Control FindModuleControl(int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="546" sc="9" el="559" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="90093e72bf3ad83aa43280074b0b1805"><![CDATA[{
+            var moduleContainer = FindModuleContainer(moduleId);
+            if (moduleContainer != null)
+            {
+                var moduleInfo = FindModuleInfo(moduleId);
+                if (moduleInfo != null)
+                {
+                    var controlId = Path.GetFileNameWithoutExtension(moduleInfo.ModuleControl.ControlSrc);
+                    return ControlUtilities.FindFirstDescendent<Control>(moduleContainer, c => c.ID == controlId);
+                }
+            }
+
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FindModuleInfo">
+          <declaration><![CDATA[private ModuleInfo FindModuleInfo(int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="562" sc="9" el="565" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="206ce3578068643dd5941f9928f9a236"><![CDATA[{
+            return PortalSettings.ActiveTab.Modules.Cast<ModuleInfo>()
+                        .FirstOrDefault(m => m.ModuleID == moduleId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCurrent">
+          <declaration><![CDATA[internal static ContentEditorManager GetCurrent(Page page)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="77" sc="9" el="84" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="a7361aaf561f56411016280170d49b67"><![CDATA[{
+            if (page.Items.Contains("ContentEditorManager"))
+            {
+                return page.Items["ContentEditorManager"] as ContentEditorManager;
+            }
+
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLastPageHistory">
+          <declaration><![CDATA[private string GetLastPageHistory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="619" sc="9" el="625" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="649c2a5e817a30bd21df43025cc8e29e"><![CDATA[{
+            var cookie = Request.Cookies["LastPageId"];
+            if (cookie != null)
+                return cookie.Value;
+
+            return "NEW";
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPaneClientIdCollection">
+          <declaration><![CDATA[private IEnumerable<IEnumerable<string>> GetPaneClientIdCollection()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="304" sc="9" el="324" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="4efe6da3e07b2e9a6fb58cf24a1941c6"><![CDATA[{
+            var panelClientIds = new List<List<string>>(PortalSettings.ActiveTab.Panes.Count);
+
+            try
+            {
+                var skinControl = Page.FindControl("SkinPlaceHolder").Controls[0];
+
+                foreach (var pane in PortalSettings.ActiveTab.Panes.Cast<string>())
+                {
+                    var foundControls = new List<Control>();
+                    FindControlRecursive(skinControl, pane, foundControls);
+                    panelClientIds.Add((from control in foundControls select control.ClientID).ToList());
+                }
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+            }
+
+            return panelClientIds;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPanesClientIds">
+          <declaration><![CDATA[private string GetPanesClientIds(IEnumerable<IEnumerable<string>> panelCliendIdCollection)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="385" sc="9" el="387" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="ed6f22cc1b0dcc9ff2450ed315fc4e73"><![CDATA[{
+            return string.Join(";", panelCliendIdCollection.Select(x => String.Join(",", x)));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUpdatePanelsInPane">
+          <declaration><![CDATA[private List<UpdatePanel> GetUpdatePanelsInPane(Control parent)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="568" sc="9" el="583" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="9e307efa5679914a37d7146da25a5ffa"><![CDATA[{
+            var panels = new List<UpdatePanel>();
+            if (parent is UpdatePanel)
+            {
+                panels.Add(parent as UpdatePanel);
+            }
+            else
+            {
+                foreach (Control childControl in parent.Controls)
+                {
+                    panels.AddRange(GetUpdatePanelsInPane(childControl));
+                }
+            }
+
+            return panels;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="HasTabPermission">
+          <declaration><![CDATA[public static bool HasTabPermission(string permissionKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="288" sc="9" el="301" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="404ad733870627838c5dc6769d20ad26"><![CDATA[{
+            var principal = Thread.CurrentPrincipal;
+            if (!principal.Identity.IsAuthenticated)
+            {
+                return false;
+            }
+
+            var currentPortal = PortalController.Instance.GetCurrentPortalSettings();
+
+            bool isAdminUser = currentPortal.UserInfo.IsSuperUser || PortalSecurity.IsInRole(currentPortal.AdministratorRoleName);
+            if (isAdminUser) return true;
+
+            return TabPermissionController.HasTabPermission(permissionKey);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="HaveContentLayoutModuleOnPage">
+          <declaration><![CDATA[private bool HaveContentLayoutModuleOnPage()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="601" sc="9" el="611" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="8d57602af31e292d5b672102bafbda50"><![CDATA[{
+            var moduleDefinition =
+                ModuleDefinitionController.GetModuleDefinitions().Values
+                    .FirstOrDefault(m => m.DefinitionName == "Content Layout");
+            if (moduleDefinition != null)
+            {
+                return PortalSettings.ActiveTab.Modules.Cast<ModuleInfo>().Any(m => m.ModuleDefID == moduleDefinition.ModuleDefID);
+            }
+
+            return false;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsAdmin">
+          <declaration><![CDATA[private bool IsAdmin()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="673" sc="9" el="676" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="2713cc20e34bea6c415e04d3604e7dd4"><![CDATA[{
+            var user = PortalSettings.UserInfo;
+            return user.IsSuperUser || PortalSecurity.IsInRole(PortalSettings.AdministratorRoleName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsPageEditor">
+          <declaration><![CDATA[private bool IsPageEditor()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="282" sc="9" el="285" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="12147b7966ddece7350860c90a218365"><![CDATA[{
+            return HasTabPermission("EDIT");
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="91" sc="9" el="129" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="5553c6a601e0f602952871426eb91445"><![CDATA[{
+            base.OnInit(e);
+
+            if (GetCurrent(Page) != null)
+            {
+                throw new Exception("Instance has already initialized");
+            }
+
+            AutoSetUserMode();
+
+            var user = PortalSettings.UserInfo;
+
+            if (user.UserID > 0)
+            {
+                ClientAPI.RegisterClientVariable(Page, "dnn_current_userid", PortalSettings.UserInfo.UserID.ToString(), true);
+            }
+
+            if (PortalSettings.UserMode != PortalSettings.Mode.Edit
+                    || !IsPageEditor()
+                    || EditBarController.Instance.GetMenuItems().Count == 0)
+            {
+                Parent.Controls.Remove(this);
+                return;
+            }
+
+            RegisterClientResources();
+
+            RegisterEditBarResources();
+
+            Page.Items.Add("ContentEditorManager", this);
+
+            //if there is pending work cookie, then reset it
+            CheckPendingData();
+
+            //if there is callback data cookie, then process the module for drag.
+            CheckCallbackData();
+
+            EnsureChildControls();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnPreRender">
+          <declaration><![CDATA[protected override void OnPreRender(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="132" sc="9" el="137" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="043a5f3b1a5bae094078d332a808af87"><![CDATA[{
+            base.OnPreRender(e);
+
+            RemoveEmptyPaneClass();
+            RegisterInitScripts();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ProcessDragTipShown">
+          <declaration><![CDATA[private void ProcessDragTipShown(Container moduleContainer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="531" sc="9" el="538" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="20d541f82b0adb50ca15b3f5a5cc4e0b"><![CDATA[{
+            var dragTipShown = Convert.ToString(Personalization.GetProfile("Usability", "DragTipShown" + PortalSettings.PortalId));
+            if (string.IsNullOrEmpty(dragTipShown) && moduleContainer.Parent is HtmlContainerControl && Request.Cookies["noFloat"] == null)
+            {
+                Personalization.SetProfile("Usability", "DragTipShown" + PortalSettings.PortalId, "true");
+                ((HtmlContainerControl) moduleContainer.Parent).Attributes["class"] += " dragtip";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterClientResources">
+          <declaration><![CDATA[private void RegisterClientResources()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="231" sc="9" el="262" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="003b997aca405751414ecd15d01fed4b"><![CDATA[{
+            ClientResourceManager.EnableAsyncPostBackHandler();
+            //register drop down list required resources
+            ClientResourceManager.RegisterStyleSheet(Page, "~/Resources/Shared/components/DropDownList/dnn.DropDownList.css", FileOrder.Css.ResourceCss);
+            ClientResourceManager.RegisterStyleSheet(Page, "~/Resources/Shared/scripts/jquery/dnn.jScrollBar.css", FileOrder.Css.ResourceCss);
+
+            ClientResourceManager.RegisterScript(Page, "~/Resources/Shared/scripts/dnn.extensions.js");
+            ClientResourceManager.RegisterScript(Page, "~/Resources/Shared/scripts/dnn.jquery.extensions.js");
+            ClientResourceManager.RegisterScript(Page, "~/Resources/Shared/scripts/dnn.DataStructures.js");
+            ClientResourceManager.RegisterScript(Page, "~/Resources/Shared/scripts/jquery/jquery.mousewheel.js");
+            ClientResourceManager.RegisterScript(Page, "~/Resources/Shared/scripts/jquery/dnn.jScrollBar.js");
+            ClientResourceManager.RegisterScript(Page, "~/Resources/Shared/scripts/TreeView/dnn.TreeView.js");
+            ClientResourceManager.RegisterScript(Page, "~/Resources/Shared/scripts/TreeView/dnn.DynamicTreeView.js");
+            ClientResourceManager.RegisterScript(Page, "~/Resources/Shared/Components/DropDownList/dnn.DropDownList.js");
+
+            ClientResourceManager.RegisterScript(Page, Path.Combine(ControlFolder, "ContentEditorManager/Js/ModuleManager.js"));
+            ClientResourceManager.RegisterScript(Page, Path.Combine(ControlFolder, "ContentEditorManager/Js/ModuleDialog.js"));
+            ClientResourceManager.RegisterScript(Page, Path.Combine(ControlFolder, "ContentEditorManager/Js/ExistingModuleDialog.js"));
+            ClientResourceManager.RegisterScript(Page, Path.Combine(ControlFolder, "ContentEditorManager/Js/ModuleService.js"));
+            ClientResourceManager.RegisterScript(Page, Path.Combine(ControlFolder, "ContentEditorManager/Js/ContentEditor.js"));
+            ClientResourceManager.RegisterStyleSheet(Page,
+                Path.Combine(ControlFolder, "ContentEditorManager/Styles/ContentEditor.css"), CssFileOrder);
+            ServicesFramework.Instance.RequestAjaxScriptSupport();
+
+            JavaScript.RequestRegistration(CommonJs.DnnPlugins);
+            //We need to add the Dnn JQuery plugins because the Edit Bar removes the Control Panel from the page
+            JavaScript.RequestRegistration(CommonJs.KnockoutMapping);
+
+            ClientResourceManager.RegisterScript(Page, "~/Resources/Shared/Components/Tokeninput/jquery.tokeninput.js");
+            ClientResourceManager.RegisterStyleSheet(Page,
+                "~/Resources/Shared/Components/Tokeninput/Themes/token-input-facebook.css");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterEditBarResources">
+          <declaration><![CDATA[private void RegisterEditBarResources()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="265" sc="9" el="279" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="84713f6201ad81adc75948e584514a2b"><![CDATA[{
+            JavaScript.RequestRegistration(CommonJs.jQuery);
+            ServicesFramework.Instance.RequestAjaxAntiForgerySupport();
+
+            ClientAPI.RegisterClientVariable(Page, "editbar_isAdmin", IsAdmin().ToString(), true);
+
+            var settings = EditBarController.Instance.GetConfigurations(PortalSettings.PortalId);
+            var settingsScript = "window.editBarSettings = " + JsonConvert.SerializeObject(settings) + ";";
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "EditBarSettings", settingsScript, true);
+
+            ClientResourceManager.RegisterScript(Page, "~/DesktopModules/admin/Dnn.EditBar/scripts/editBarContainer.js");
+
+            ClientResourceManager.RegisterStyleSheet(Page, "~/DesktopModules/admin/Dnn.EditBar/css/editBarContainer.css");
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterInitScripts">
+          <declaration><![CDATA[private void RegisterInitScripts()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="360" sc="9" el="382" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="5d7e299540c3e214acaf3db6384b603e"><![CDATA[{
+            RegisterLocalResources();
+
+            ClientAPI.RegisterClientVariable(Page, "cem_loginurl", Globals.LoginURL(HttpContext.Current.Request.RawUrl, false), true);
+
+            var panes = string.Join(",", PortalSettings.ActiveTab.Panes.Cast<string>());
+            var panesClientIds = GetPanesClientIds(GetPaneClientIdCollection());
+            const string scriptFormat = @"dnn.ContentEditorManager.init({{type: 'moduleManager', panes: '{0}', panesClientIds: '{2}', supportAjax: {1}}});";
+            var script = string.Format(scriptFormat,
+                                            panes,
+                                            SupportAjax ? "true" : "false",
+                                            panesClientIds);
+
+            if (ScriptManager.GetCurrent(Page) != null)
+            {
+                // respect MS AJAX
+                ScriptManager.RegisterStartupScript(Page, GetType(), "ContentEditorManager", script, true);
+            }
+            else
+            {
+                Page.ClientScript.RegisterStartupScript(GetType(), "ContentEditorManager", script, true);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterLocalResources">
+          <declaration><![CDATA[private void RegisterLocalResources()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="390" sc="9" el="462" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="2a45f0d45c580156fa7912669ed70650"><![CDATA[{
+            const string scriptFormat = @"dnn.ContentEditorManagerResources = {{
+                                                                                    title: '{0}',
+                                                                                    nomodules: '{1}',
+                                                                                    dragtip: '{2}',
+                                                                                    pendingsave: '{3}',
+                                                                                    confirmTitle: '{4}',
+                                                                                    confirmYes: '{5}',
+                                                                                    confirmNo: '{6}',
+                                                                                    cancelConfirm: '{7}',
+                                                                                    deleteModuleConfirm: '{8}',
+                                                                                    cancel: '{9}',
+                                                                                    searchPlaceHolder: '{10}',
+                                                                                    categoryRecommended: '{11}',
+                                                                                    categoryAll: '{12}',
+                                                                                    pagePicker_clearButtonTooltip: '{13}',
+                                                                                    pagePicker_loadingResultText: '{14}',
+                                                                                    pagePicker_resultsText: '{15}',
+                                                                                    pagePicker_searchButtonTooltip: '{16}',
+                                                                                    pagePicker_searchInputPlaceHolder: '{17}',
+                                                                                    pagePicker_selectedItemCollapseTooltip: '{18}',
+                                                                                    pagePicker_selectedItemExpandTooltip: '{19}',
+                                                                                    pagePicker_selectItemDefaultText: '{20}',
+                                                                                    pagePicker_sortAscendingButtonTitle: '{21}',
+                                                                                    pagePicker_sortAscendingButtonTooltip: '{22}',
+                                                                                    pagePicker_sortDescendingButtonTooltip: '{23}',
+                                                                                    pagePicker_unsortedOrderButtonTooltip: '{24}',
+                                                                                    site: '{25}',
+                                                                                    page: '{26}',
+                                                                                    addExistingModule: '{27}'
+                                                                                }};";
+
+            var script = string.Format(scriptFormat,
+                Localization.GetSafeJSString("AddModule.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("NoModules.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("DragTip.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("PendingSave.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("ConfirmTitle.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("ConfirmYes.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("ConfirmNo.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("CancelConfirm.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("DeleteModuleConfirm.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("Cancel.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("SearchPlaceHolder.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("Category_Recommended.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("Category_All.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("pagePicker_clearButtonTooltip.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("pagePicker_loadingResultText.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("pagePicker_resultsText.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("pagePicker_searchButtonTooltip.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("pagePicker_searchInputPlaceHolder.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("pagePicker_selectedItemCollapseTooltip.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("pagePicker_selectedItemExpandTooltip.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("pagePicker_selectItemDefaultText.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("pagePicker_sortAscendingButtonTitle.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("pagePicker_sortAscendingButtonTooltip.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("pagePicker_sortDescendingButtonTooltip.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("pagePicker_unsortedOrderButtonTooltip.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("Site.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("Page.Text", LocalResourcesFile),
+                Localization.GetSafeJSString("AddExistingModule.Text", LocalResourcesFile)
+                );
+
+            if (ScriptManager.GetCurrent(Page) != null)
+            {
+                // respect MS AJAX
+                ScriptManager.RegisterStartupScript(Page, GetType(), "ContentEditorManagerResources", script, true);
+            }
+            else
+            {
+                Page.ClientScript.RegisterStartupScript(GetType(), "ContentEditorManagerResources", script, true);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveEmptyPaneClass">
+          <declaration><![CDATA[private void RemoveEmptyPaneClass()]]></declaration>
+          <documentation>
+            <summary>
+ remove default empty pane class as some skin have special style on it
+ and it may caught style issues with content editor feature, then we use a
+ new style to cover it.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="346" sc="9" el="357" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="d025f816c8dd13fc1c8afeb5c16bf67c"><![CDATA[{
+            foreach (string paneId in PortalSettings.ActiveTab.Panes)
+            {
+                var paneControl = Skin.FindControl(paneId) as HtmlContainerControl;
+                if (paneControl != null
+                        && !string.IsNullOrEmpty(paneControl.Attributes["class"])
+                        && paneControl.Attributes["class"].Contains("DNNEmptyPane"))
+                {
+                    paneControl.Attributes["class"] = $"{paneControl.Attributes["class"]} EditBarEmptyPane";
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveTabModule">
+          <declaration><![CDATA[private void RemoveTabModule(int tabId, int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="496" sc="9" el="507" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="f028975e4ca0272019a0db1a408c18cf"><![CDATA[{
+            ModuleController.Instance.DeleteTabModule(tabId, moduleId, false);
+
+            //remove that module control
+            var moduleControl = ControlUtilities.FindFirstDescendent<Container>(Skin,
+                c => c.ID == "ctr" + moduleId);
+
+            if (moduleControl != null)
+            {
+                moduleControl.Parent.Parent.Controls.Remove(moduleControl.Parent);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Render">
+          <declaration><![CDATA[protected override void Render(HtmlTextWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="216" sc="9" el="224" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="272c347ba3066ba3e62751ac49049ac2"><![CDATA[{
+            var scripts = ScriptManager.GetCurrent(Page).GetRegisteredStartupScripts()
+                .Where(s => s.Control is ProxyPage).ToList();
+            foreach (var script in scripts)
+            {
+                ScriptManager.RegisterStartupScript(Page, script.Type, script.Key, script.Script, script.AddScriptTags);
+            }
+            base.Render(writer);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetLastPageHistory">
+          <declaration><![CDATA[private void SetLastPageHistory(string pageId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="614" sc="9" el="616" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="70a12db5f2df804064baa9a361d05cac"><![CDATA[{
+            Response.Cookies.Add(new HttpCookie("LastPageId", pageId) { Path = !string.IsNullOrEmpty(Globals.ApplicationPath) ? Globals.ApplicationPath : "/" });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetUserMode">
+          <declaration><![CDATA[private void SetUserMode(string userMode)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="628" sc="9" el="630" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="e43f827c53fc2d6e484eaf081f1e03f5"><![CDATA[{
+            Personalization.SetProfile("Usability", "UserMode" + PortalSettings.PortalId, userMode.ToUpper());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdatePanelUnloadEvent">
+          <declaration><![CDATA[private void UpdatePanelUnloadEvent(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="586" sc="9" el="598" ec="10">Controllers\ContentEditorManager.cs</location>
+            <body hash="6c0ee21323422ca9559a005f4c9ce1dd"><![CDATA[{
+            try
+            {
+                var methodInfo = typeof(ScriptManager).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+                            .First(i => i.Name.Equals("System.Web.UI.IScriptManagerInternal.RegisterUpdatePanel"));
+                methodInfo.Invoke(ScriptManager.GetCurrent(Page),
+                    new[] { sender });
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_supportAjax">
+          <declaration><![CDATA[private bool _supportAjax = true;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ControlFolder">
+          <declaration><![CDATA[public const string ControlFolder = "~/DesktopModules/admin/Dnn.EditBar/Resources";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="CssFileOrder">
+          <declaration><![CDATA[private const int CssFileOrder = 40;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="LocalResourcesFile">
+          <declaration><![CDATA[private string LocalResourcesFile]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Skin">
+          <declaration><![CDATA[public Skin Skin]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="28" el="53" ec="32">Controllers\ContentEditorManager.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="53" sc="33" el="53" ec="37">Controllers\ContentEditorManager.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SupportAjax">
+          <declaration><![CDATA[private bool SupportAjax]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="13" el="65" ec="14">Controllers\ContentEditorManager.cs</location>
+            <body hash="87440019119c10e8ac5ce377dd0de069"><![CDATA[{
+                return ScriptManager.GetCurrent(Page) != null && _supportAjax;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="67" sc="13" el="69" ec="14">Controllers\ContentEditorManager.cs</location>
+            <body hash="b47afbd54aeff916823cadb58296d4f2"><![CDATA[{
+                _supportAjax = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="EditBarController">
+      <declaration><![CDATA[public class EditBarController : ServiceLocator<IEditBarController, EditBarController>, IEditBarController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditBarController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static EditBarController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="9" el="29" ec="60">Controllers\EditBarController.cs</location>
+            <body hash="ee452195b613518a3577c9c3b7b99f88"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(EditBarController));
+
+        private static object _threadLocker = new object();]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetAllMenuItemTypes">
+          <declaration><![CDATA[private static IEnumerable<Type> GetAllMenuItemTypes()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="111" sc="9" el="118" ec="10">Controllers\EditBarController.cs</location>
+            <body hash="ae4248f611f5936c1b06c490ba465f15"><![CDATA[{
+            var typeLocator = new TypeLocator();
+            return typeLocator.GetAllMatchingTypes(
+                t => t != null &&
+                     t.IsClass &&
+                     !t.IsAbstract &&
+                     typeof(BaseMenuItem).IsAssignableFrom(t));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetConfigurations">
+          <declaration><![CDATA[public IDictionary<string, object> GetConfigurations(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="55" ec="10">Controllers\EditBarController.cs</location>
+            <body hash="234f0f159e753184af9f0a5c1d2e21d8"><![CDATA[{
+            var settings = new Dictionary<string, object>();
+            var portalSettings = PortalSettings.Current;
+            var user = portalSettings.UserInfo;
+
+
+            settings.Add("applicationPath", Globals.ApplicationPath);
+            settings.Add("buildNumber", Host.CrmVersion.ToString(CultureInfo.InvariantCulture));
+            settings.Add("userId", user.UserID);
+            settings.Add("debugMode", HttpContext.Current != null && HttpContext.Current.IsDebuggingEnabled);
+            settings.Add("portalId", portalSettings.PortalId);
+            settings.Add("culture", portalSettings.CultureCode);
+            settings.Add("loginUrl", Globals.LoginURL(HttpContext.Current?.Request.RawUrl, false));
+            settings.Add("items", GetMenuItems());
+
+            return settings;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFactory">
+          <declaration><![CDATA[protected override Func<IEditBarController> GetFactory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="9" el="34" ec="10">Controllers\EditBarController.cs</location>
+            <body hash="9ceb03885baad2b67a0e5e686bbd2431"><![CDATA[{
+            return () => new EditBarController();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetMenuItemInstances">
+          <declaration><![CDATA[private static IEnumerable<BaseMenuItem> GetMenuItemInstances()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetMenuItems">
+          <declaration><![CDATA[public IList<BaseMenuItem> GetMenuItems()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="9" el="79" ec="10">Controllers\EditBarController.cs</location>
+            <body hash="273ffdf9d284a1c29385b8a8d18a890a"><![CDATA[{
+            var menuItems = DataCache.GetCache<IList<BaseMenuItem>>(Constants.MenuItemsCacheKey);
+            if (menuItems == null)
+            {
+                lock (_threadLocker)
+                {
+                    menuItems = DataCache.GetCache<IList<BaseMenuItem>>(Constants.MenuItemsCacheKey);
+                    if (menuItems == null)
+                    {
+                        menuItems = GetMenuItemInstances().ToList();
+
+                        DataCache.SetCache(Constants.MenuItemsCacheKey, menuItems);
+                    }
+                }
+            }
+
+            return menuItems
+                    .Where(m => m.Visible())
+                    .OrderBy(m => m.Parent)
+                    .ThenBy(m => m.Order)
+                    .ToList();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_threadLocker">
+          <declaration><![CDATA[private static object _threadLocker = new object();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(EditBarController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="IEditBarController">
+      <declaration><![CDATA[public interface IEditBarController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="GetConfigurations">
+          <declaration><![CDATA[IDictionary<string, object> GetConfigurations(int portalId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetMenuItems">
+          <declaration><![CDATA[IList<BaseMenuItem> GetMenuItems();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ILocalizationController">
+      <declaration><![CDATA[internal interface ILocalizationController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="GetLocalizedDictionary">
+          <declaration><![CDATA[Dictionary<string, string> GetLocalizedDictionary(string resourceFile, string culture);]]></declaration>
+          <documentation>
+            <summary>
+ Returns a dictionary of localized key for a resource file for a given culture
+ </summary>
+ <param name="resourceFile">The relative file path of the main resource file, e.g. ~/DesktopModules/SocialLibrary/App_LocalResources/CmxResources.resx</param>
+ <param name="culture">The culture for which this dictionay is requested</param>
+ <remarks>This API does not fallback to any other DNN resource files.</remarks></documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CultureName">
+          <declaration><![CDATA[string CultureName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="LocalizationController">
+      <declaration><![CDATA[internal class LocalizationController : ServiceLocator<ILocalizationController, LocalizationController>, ILocalizationController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public LocalizationController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static LocalizationController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="25" sc="9" el="26" ec="73">Controllers\LocalizationController.cs</location>
+            <body hash="18c7bca7f625c12fdb8bc4282b20d270"><![CDATA[public static readonly TimeSpan FiveMinutes = TimeSpan.FromMinutes(5);
+        public static readonly TimeSpan OneHour = TimeSpan.FromHours(1);]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AssertHeaderValue">
+          <declaration><![CDATA[private static void AssertHeaderValue(IEnumerable<XmlNode> headers, string key, string value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="91" ec="10">Controllers\LocalizationController.cs</location>
+            <body hash="6df883bd95a1b7567aed670a6c7c6814"><![CDATA[{
+            var header = headers.FirstOrDefault(x => GetNameAttribute(x).Equals(key, StringComparison.InvariantCultureIgnoreCase));
+            if (header != null)
+            {
+                if (!header.InnerText.Equals(value, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    throw new ApplicationException(string.Format("Resource header '{0}' != '{1}'", key, value));
+                }
+            }
+            else
+            {
+                throw new ApplicationException(string.Format("Resource header '{0}' is missing", key));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFactory">
+          <declaration><![CDATA[protected override Func<ILocalizationController> GetFactory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="33" ec="10">Controllers\LocalizationController.cs</location>
+            <body hash="ea68cc5987636d77769b63029d697e81"><![CDATA[{
+            return () => new LocalizationController();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLocalizationValues">
+          <declaration><![CDATA[private static IEnumerable<KeyValuePair<string, string>> GetLocalizationValues(string fullPath, string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLocalizedDictionary">
+          <declaration><![CDATA[public Dictionary<string, string> GetLocalizedDictionary(string resourceFile, string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="54" ec="10">Controllers\LocalizationController.cs</location>
+            <body hash="8083a6c6614c46cb55586cae17e90ae7"><![CDATA[{
+            Requires.NotNullOrEmpty("resourceFile", resourceFile);
+            Requires.NotNullOrEmpty("culture", culture);
+
+            var dictionary = new Dictionary<string, string>();
+            foreach (var kvp in GetLocalizationValues(resourceFile, culture).Where(kvp => !dictionary.ContainsKey(kvp.Key)))
+            {
+                dictionary[kvp.Key] = kvp.Value;
+            }
+
+            return dictionary;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNameAttribute">
+          <declaration><![CDATA[private static string GetNameAttribute(XmlNode node)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="9" el="70" ec="10">Controllers\LocalizationController.cs</location>
+            <body hash="ab603d0387c7208c1dbccf642fe65970"><![CDATA[{
+            if (node.Attributes != null)
+            {
+                var attribute = node.Attributes.GetNamedItem("name");
+                if (attribute != null)
+                {
+                    return attribute.Value;
+                }
+            }
+
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNameAttribute">
+          <declaration><![CDATA[private static string GetNameAttribute(XPathNavigator navigator)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="9" el="75" ec="10">Controllers\LocalizationController.cs</location>
+            <body hash="e9f770e0111bf7608707e7d4a5fd2f3f"><![CDATA[{
+            return navigator.GetAttribute("name", string.Empty);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="FiveMinutes">
+          <declaration><![CDATA[public static readonly TimeSpan FiveMinutes = TimeSpan.FromMinutes(5.0);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="OneHour">
+          <declaration><![CDATA[public static readonly TimeSpan OneHour = TimeSpan.FromHours(1.0);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="CultureName">
+          <declaration><![CDATA[public string CultureName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.EditBar.UI.Helpers">
+    <class name="LocalizationHelper">
+      <declaration><![CDATA[public static class LocalizationHelper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="GetString">
+          <declaration><![CDATA[public static string GetString(string key, string resourcesFile = "~/DesktopModules/admin/Dnn.EditBar/App_LocalResources/EditBar.resx")]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="15" sc="9" el="17" ec="10">Helpers\LocalizationHelper.cs</location>
+            <body hash="065a317fb1695ba95e4e3963a7c03a99"><![CDATA[{
+            return Localization.GetString(key, resourcesFile);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="ResourcesFile">
+          <declaration><![CDATA[private const string ResourcesFile = "~/DesktopModules/admin/Dnn.EditBar/App_LocalResources/EditBar.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="PageSecurityHelper">
+      <declaration><![CDATA[public class PageSecurityHelper]]></declaration>
+      <documentation>
+        <summary>
+ This class offers some common methods to work with pages and their permission
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PageSecurityHelper()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="IsModuleAdmin">
+          <declaration><![CDATA[public static bool IsModuleAdmin(PortalSettings portalSettings)]]></declaration>
+          <documentation>
+            <summary>
+ Check if current user is Module admin of any module in the current page
+ </summary>
+ <param name="portalSettings">Portal Settings related with the portal which contains the tab</param>
+ <returns>Returns true if current user has admin permission over some module in the current page. Otherwise, returns false</returns></documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="50" ec="10">Helpers\PageSecurityHelper.cs</location>
+            <body hash="489416f21b855de80b6d1021ff0f4a74"><![CDATA[{
+            return IsModuleAdmin(portalSettings, portalSettings.ActiveTab);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsModuleAdmin">
+          <declaration><![CDATA[public static bool IsModuleAdmin(PortalSettings portalSettings, TabInfo tab)]]></declaration>
+          <documentation>
+            <summary>
+ Check if current user is Module admin of any module in the passed page
+ </summary>
+ <param name="portalSettings">Portal Settings related with the portal which contains the tab</param>
+ <param name="tab">Tab to check</param>
+ <returns>Returns true if current user has admin permission over some module in the passed page. Otherwise, returns false</returns></documentation>
+          <codeblock>
+            <location sl="59" sc="9" el="74" ec="10">Helpers\PageSecurityHelper.cs</location>
+            <body hash="682b3d47473de46b52a627a2cb9d0726"><![CDATA[{
+            var isModuleAdmin = false;
+            foreach (ModuleInfo objModule in tab.Modules)
+            {
+                if (!objModule.IsDeleted)
+                {
+                    bool blnHasModuleEditPermissions = ModulePermissionController.HasModuleAccess(SecurityAccessLevel.Edit, Null.NullString, objModule);
+                    if (blnHasModuleEditPermissions)
+                    {
+                        isModuleAdmin = true;
+                        break;
+                    }
+                }
+            }
+            return portalSettings.ControlPanelSecurity == PortalSettings.ControlPanelPermission.ModuleEditor && isModuleAdmin;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsPageAdmin">
+          <declaration><![CDATA[public static bool IsPageAdmin()]]></declaration>
+          <documentation>
+            <summary>
+ Checks if current user is page admin of the currentpage
+ </summary>
+ <returns>Returns true if current user has any admin permission. Otherwise returns false</returns></documentation>
+          <codeblock>
+            <location sl="37" sc="9" el="40" ec="10">Helpers\PageSecurityHelper.cs</location>
+            <body hash="aed15963927972b698601719f75fe15d"><![CDATA[{
+            return TabPermissionController.CanAddContentToPage() || TabPermissionController.CanAddPage() || TabPermissionController.CanAdminPage() || TabPermissionController.CanCopyPage() ||
+                TabPermissionController.CanDeletePage() || TabPermissionController.CanExportPage() || TabPermissionController.CanImportPage() || TabPermissionController.CanManagePage();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsPageEditor">
+          <declaration><![CDATA[public static bool IsPageEditor(int tabId, PortalSettings portalSettings)]]></declaration>
+          <documentation>
+            <summary>
+ Checks if current user is page editor of the passed tab
+ </summary>
+ <param name="tabId">Tab ID</param>
+ <param name="portalSettings">Portal Settings related with the portal which contains the tab</param>
+ <returns>Returns true if current user has a edit permission on the page or is admin of some module in the page. Otherwise, returns false</returns></documentation>
+          <codeblock>
+            <location sl="26" sc="9" el="30" ec="10">Helpers\PageSecurityHelper.cs</location>
+            <body hash="5e687217baa1aa1eaf784989f214274f"><![CDATA[{
+            var tabPermissions = TabPermissionController.GetTabPermissions(tabId, portalSettings.PortalId);
+            return TabPermissionController.HasTabPermission(tabPermissions, "EDIT,CONTENT,MANAGE") 
+                || IsModuleAdmin(portalSettings, TabController.Instance.GetTab(tabId, portalSettings.PortalId));
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.EditBar.UI.HttpModules">
+    <class name="EditBarModule">
+      <declaration><![CDATA[public class EditBarModule : IHttpModule]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditBarModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static EditBarModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="9" el="25" ec="52">HttpModules\EditBarModule.cs</location>
+            <body hash="6e2c06443124e193f3410aa07a187b7c"><![CDATA[private static readonly object LockAppStarted = new object();
+        private static bool _hasAppStarted = false;]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ApplicationStart">
+          <declaration><![CDATA[private void ApplicationStart()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="9" el="48" ec="10">HttpModules\EditBarModule.cs</location>
+            <body hash="d1ea90f7e76f9045013a7181e0ab5a03"><![CDATA[{
+            DotNetNukeContext.Current.SkinEventListeners.Add(new SkinEventListener(SkinEventType.OnSkinInit, OnSkinInit));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="52" ec="10">HttpModules\EditBarModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication application)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="9" el="43" ec="10">HttpModules\EditBarModule.cs</location>
+            <body hash="2edae64f1e1829fb0efc42448dbf86e0"><![CDATA[{
+            if (_hasAppStarted)
+            {
+                return;
+            }
+            lock (LockAppStarted)
+            {
+                if (_hasAppStarted)
+                {
+                    return;
+                }
+
+                ApplicationStart();
+                _hasAppStarted = true;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSkinInit">
+          <declaration><![CDATA[private void OnSkinInit(object sender, SkinEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="9" el="76" ec="10">HttpModules\EditBarModule.cs</location>
+            <body hash="cadd8d4818692dbcfd3a5e0ba20cc5b9"><![CDATA[{
+            if (DotNetNukeContext.Current.Application.SKU != "DNN")
+            {
+                return;
+            }
+
+            var request = e.Skin.Page.Request;
+            var isSpecialPageMode = request.QueryString["dnnprintmode"] == "true" || request.QueryString["popUp"] == "true";
+            if (isSpecialPageMode 
+                    || Globals.IsAdminControl())
+            {
+                return;
+            }
+
+            if (ContentEditorManager.GetCurrent(e.Skin.Page) == null && !Globals.IsAdminControl())
+            {
+                if (PortalSettings.Current.UserId > 0)
+                {
+                    e.Skin.Page.Form.Controls.Add(new ContentEditorManager { Skin = e.Skin });
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_hasAppStarted">
+          <declaration><![CDATA[private static bool _hasAppStarted = false;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LockAppStarted">
+          <declaration><![CDATA[private static readonly object LockAppStarted = new object();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.EditBar.UI.Items">
+    <class name="AddExistingModuleMenu">
+      <declaration><![CDATA[public class AddExistingModuleMenu : BaseMenuItem]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly string <Name>k__BackingField = "AddExistingModule";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="48" el="40" ec="48">Items\AddExistingModuleMenu.cs</location>
+            <body hash="6853af59f4de0a5c5d3320f89b0f8da8"><![CDATA["AddExistingModule";
+
+        public override string Text
+        {
+            get
+            {
+                return "Add Existing Module";
+            }
+        }
+
+        public override string CssClass
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        public override string Template { get; } = "";
+
+        public override string Parent { get;} = Constants.LeftMenu;
+
+        public override string Loader { get; } = "AddExistingModule";
+
+        public override int Order { get; } = 10]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Visible">
+          <declaration><![CDATA[public override bool Visible()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="45" ec="10">Items\AddExistingModuleMenu.cs</location>
+            <body hash="8568e54e178f6aad5e77f667e2edb5b3"><![CDATA[{
+            return PortalSettings.Current?.UserMode == PortalSettings.Mode.Edit;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CssClass">
+          <declaration><![CDATA[public override string CssClass]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="13" el="31" ec="14">Items\AddExistingModuleMenu.cs</location>
+            <body hash="ba15f94cdc554fe958a4ffc1ecd73d21"><![CDATA[{
+                return string.Empty;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Loader">
+          <declaration><![CDATA[public override string Loader]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="41" el="38" ec="45">Items\AddExistingModuleMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public override string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="39" el="16" ec="43">Items\AddExistingModuleMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Order">
+          <declaration><![CDATA[public override int Order]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="37" el="40" ec="41">Items\AddExistingModuleMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Parent">
+          <declaration><![CDATA[public override string Parent]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="41" el="36" ec="45">Items\AddExistingModuleMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Template">
+          <declaration><![CDATA[public override string Template]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="43" el="34" ec="47">Items\AddExistingModuleMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Text">
+          <declaration><![CDATA[public override string Text]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="13" el="23" ec="14">Items\AddExistingModuleMenu.cs</location>
+            <body hash="6f6ef0f26f0accf8fb338b4cebd27e92"><![CDATA[{
+                return "Add Existing Module";
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="AddModuleMenu">
+      <declaration><![CDATA[public class AddModuleMenu : BaseMenuItem]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly string <Name>k__BackingField = "AddModule";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="48" el="41" ec="47">Items\AddModuleMenu.cs</location>
+            <body hash="90a3b842b1b1f832720f225df495e8f0"><![CDATA["AddModule";
+
+        public override string Text
+        {
+            get
+            {
+                return "Add Module";
+            }
+        }
+
+        public override string CssClass
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        public override string Template { get; } = "";
+
+        public override string Parent { get;} = Constants.LeftMenu;
+
+        public override string Loader { get; } = "AddModule";
+
+        public override int Order { get; } = 5]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Visible">
+          <declaration><![CDATA[public override bool Visible()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="9" el="53" ec="10">Items\AddModuleMenu.cs</location>
+            <body hash="9cbc61168ffcfb216ae2dc293815ec4e"><![CDATA[{
+            var portalSettings = PortalSettings.Current;
+            if (portalSettings == null)
+            {
+                return false;
+            }
+
+            return portalSettings.UserMode == PortalSettings.Mode.Edit
+                && ControlBarController.Instance.GetCategoryDesktopModules(portalSettings.PortalId, "All", string.Empty).Any();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CssClass">
+          <declaration><![CDATA[public override string CssClass]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="13" el="32" ec="14">Items\AddModuleMenu.cs</location>
+            <body hash="ba15f94cdc554fe958a4ffc1ecd73d21"><![CDATA[{
+                return string.Empty;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Loader">
+          <declaration><![CDATA[public override string Loader]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="41" el="39" ec="45">Items\AddModuleMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public override string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="39" el="17" ec="43">Items\AddModuleMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Order">
+          <declaration><![CDATA[public override int Order]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="37" el="41" ec="41">Items\AddModuleMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Parent">
+          <declaration><![CDATA[public override string Parent]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="41" el="37" ec="45">Items\AddModuleMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Template">
+          <declaration><![CDATA[public override string Template]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="43" el="35" ec="47">Items\AddModuleMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Text">
+          <declaration><![CDATA[public override string Text]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="22" sc="13" el="24" ec="14">Items\AddModuleMenu.cs</location>
+            <body hash="623a4f05b0fadae446b23d47927149ac"><![CDATA[{
+                return "Add Module";
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ExitEditModeMenu">
+      <declaration><![CDATA[public class ExitEditModeMenu : BaseMenuItem]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly string <Name>k__BackingField = "ExitEditMode";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="48" el="29" ec="49">Items\ExitEditModeMenu.cs</location>
+            <body hash="7ea9b3b5fc6ad864cd83daa10b34e4d2"><![CDATA["ExitEditMode";
+
+        public override string Text => "ExitEditMode";
+
+        public override string CssClass => string.Empty;
+
+        public override string Template { get; } = "";
+
+        public override string Parent { get;} = Constants.RightMenu;
+
+        public override string Loader { get; } = "ExitEditMode";
+
+        public override int Order { get; } = 100]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Visible">
+          <declaration><![CDATA[public override bool Visible()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="9" el="34" ec="10">Items\ExitEditModeMenu.cs</location>
+            <body hash="8568e54e178f6aad5e77f667e2edb5b3"><![CDATA[{
+            return PortalSettings.Current?.UserMode == PortalSettings.Mode.Edit;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CssClass">
+          <declaration><![CDATA[public override string CssClass]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="44" el="21" ec="56">Items\ExitEditModeMenu.cs</location>
+            <body hash="f45b7df0cfa43f5c0ca0bd13d1fa2075"><![CDATA[string.Empt]]></body>
+          </codeblock>
+        </property>
+        <property name="Loader">
+          <declaration><![CDATA[public override string Loader]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="41" el="27" ec="45">Items\ExitEditModeMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public override string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="39" el="17" ec="43">Items\ExitEditModeMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Order">
+          <declaration><![CDATA[public override int Order]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="37" el="29" ec="41">Items\ExitEditModeMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Parent">
+          <declaration><![CDATA[public override string Parent]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="25" sc="41" el="25" ec="45">Items\ExitEditModeMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Template">
+          <declaration><![CDATA[public override string Template]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="43" el="23" ec="47">Items\ExitEditModeMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Text">
+          <declaration><![CDATA[public override string Text]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="40" el="19" ec="54">Items\ExitEditModeMenu.cs</location>
+            <body hash="f0341ddacbe2c494c7667314e7f05813"><![CDATA["ExitEditMode]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="PageSettingsMenu">
+      <declaration><![CDATA[public class PageSettingsMenu : BaseMenuItem]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly string <Name>k__BackingField = "PageSettings";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="48" el="27" ec="48">Items\PageSettingsMenu.cs</location>
+            <body hash="f61bdab36d6e41d3f63b1c6d69e7e53b"><![CDATA["PageSettings";
+
+        public override string Text { get; } = "PageSettings";
+
+        public override string Parent { get; } = Constants.LeftMenu;
+
+        public override string Loader { get; } = "PageSettings";
+
+        public override int Order { get; } = 15]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Visible">
+          <declaration><![CDATA[public override bool Visible()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="33" ec="10">Items\PageSettingsMenu.cs</location>
+            <body hash="9487780a86f17402473baac7c0b1443a"><![CDATA[{
+            return PortalSettings.Current?.UserMode == PortalSettings.Mode.Edit
+                && Host.ControlPanel.EndsWith("PersonaBarContainer.ascx", StringComparison.InvariantCultureIgnoreCase);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Loader">
+          <declaration><![CDATA[public override string Loader]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="25" sc="41" el="25" ec="45">Items\PageSettingsMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public override string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="39" el="19" ec="43">Items\PageSettingsMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Order">
+          <declaration><![CDATA[public override int Order]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="37" el="27" ec="41">Items\PageSettingsMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Parent">
+          <declaration><![CDATA[public override string Parent]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="41" el="23" ec="45">Items\PageSettingsMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Text">
+          <declaration><![CDATA[public override string Text]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="39" el="21" ec="43">Items\PageSettingsMenu.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.EditBar.UI.Services">
+    <class name="CacheDto">
+      <declaration><![CDATA[public class CacheDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CacheDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CommonController">
+      <declaration><![CDATA[public class CommonController : DnnApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CommonController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CheckAuthorized">
+          <declaration><![CDATA[public HttpResponseMessage CheckAuthorized()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="9" el="30" ec="10">Services\CommonController.cs</location>
+            <body hash="fee0089affdeb1a6e5244fb6199da10f"><![CDATA[{
+            return Request.CreateResponse(HttpStatusCode.OK, new { success = IsPageEditor() });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserSetting">
+          <declaration><![CDATA[public HttpResponseMessage GetUserSetting(string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="52" ec="10">Services\CommonController.cs</location>
+            <body hash="5e985ce5aca9015089820485358b85a5"><![CDATA[{
+            var personalizationController = new DotNetNuke.Services.Personalization.PersonalizationController();
+            var personalization = personalizationController.LoadProfile(UserInfo.UserID, PortalSettings.PortalId);
+            var value = personalization.Profile[key + PortalSettings.PortalId];
+
+            if (value == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { Value = false });
+            }
+
+            var userSetting = new UserSetting
+            {
+                Key = key,
+                Value = value
+            };
+
+            return Request.CreateResponse(HttpStatusCode.OK, userSetting);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsModuleAdmin">
+          <declaration><![CDATA[private bool IsModuleAdmin(PortalSettings portalSettings)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="9" el="89" ec="10">Services\CommonController.cs</location>
+            <body hash="dae5e58b19a5426ff72ba02e4110a485"><![CDATA[{
+            bool isModuleAdmin = false;
+            foreach (ModuleInfo objModule in TabController.CurrentPage.Modules)
+            {
+                if (!objModule.IsDeleted)
+                {
+                    bool blnHasModuleEditPermissions = ModulePermissionController.HasModuleAccess(SecurityAccessLevel.Edit, Null.NullString, objModule);
+                    if (blnHasModuleEditPermissions)
+                    {
+                        isModuleAdmin = true;
+                        break;
+                    }
+                }
+            }
+            return portalSettings.ControlPanelSecurity == PortalSettings.ControlPanelPermission.ModuleEditor && isModuleAdmin;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsPageEditor">
+          <declaration><![CDATA[private bool IsPageEditor()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="71" ec="10">Services\CommonController.cs</location>
+            <body hash="c6f1e83e42cdf3586349919fb47f6d7b"><![CDATA[{
+            return PagePermissionsAttributesHelper.HasTabPermission("EDIT,CONTENT,MANAGE") || IsModuleAdmin(PortalSettings);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetUserSetting">
+          <declaration><![CDATA[public HttpResponseMessage SetUserSetting(UserSetting setting)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="9" el="66" ec="10">Services\CommonController.cs</location>
+            <body hash="4be38fc6b74343503871332a4779ce9c"><![CDATA[{
+            var personalizationController = new DotNetNuke.Services.Personalization.PersonalizationController();
+            var personalization = personalizationController.LoadProfile(UserInfo.UserID, PortalSettings.PortalId);
+            personalization.Profile[setting.Key + PortalSettings.PortalId] = setting.Value;
+            personalization.IsModified = true;
+            personalizationController.SaveProfile(personalization);
+
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ContentEditorController">
+      <declaration><![CDATA[public class ContentEditorController : DnnApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ContentEditorController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ContentEditorController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="9" el="50" ec="112">Services\ContentEditorController.cs</location>
+            <body hash="7c0696c212f32517079667f45e717aac"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ContentEditorController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="DeleteModule">
+          <declaration><![CDATA[public HttpResponseMessage DeleteModule([FromUri] int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="89" ec="10">Services\ContentEditorController.cs</location>
+            <body hash="085d619386f4dfeeacbb254261e9e123"><![CDATA[{
+            var module = ModuleController.Instance.GetModule(moduleId, PortalSettings.ActiveTab.TabID, false);
+            if (module == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { Status = 1, Message = LocalizeString("Service_ModuleNotExist") });
+            }
+
+            var tabId = PortalSettings.ActiveTab.TabID;
+            ModuleController.Instance.DeleteTabModule(tabId, moduleId, false);
+
+            //remove related modules
+            ModuleController.Instance.GetTabModules(tabId).Values
+                .Where(m => m.ModuleID > moduleId)
+                .ForEach(m =>
+                {
+                    ModuleController.Instance.DeleteTabModule(tabId, m.ModuleID, false);
+                });
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { Status = 0 });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDeskTopModuleImage">
+          <declaration><![CDATA[private string GetDeskTopModuleImage(int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="165" sc="9" el="177" ec="10">Services\ContentEditorController.cs</location>
+            <body hash="faacbdb90c47feeb15887e7a07fe50fc"><![CDATA[{
+            var portalDesktopModules = DesktopModuleController.GetDesktopModules(PortalSettings.PortalId);
+            var packages = PackageController.Instance.GetExtensionPackages(PortalSettings.PortalId);
+
+            string imageUrl =
+                    (from pkgs in packages
+                     join portMods in portalDesktopModules on pkgs.PackageID equals portMods.Value.PackageID
+                     where portMods.Value.DesktopModuleID == moduleId
+                     select pkgs.IconFile).FirstOrDefault();
+
+            imageUrl = String.IsNullOrEmpty(imageUrl) ? Globals.ImagePath + DefaultExtensionImage : imageUrl;
+            return System.Web.VirtualPathUtility.ToAbsolute(imageUrl);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRecommendedModules">
+          <declaration><![CDATA[public HttpResponseMessage GetRecommendedModules()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="93" sc="9" el="123" ec="10">Services\ContentEditorController.cs</location>
+            <body hash="fc464d9e6e9599c86b8bc0d6551b1fd9"><![CDATA[{
+            var recommendedModuleNames = new List<string> ();
+            var filteredList = DesktopModuleController.GetPortalDesktopModules(PortalSettings.PortalId)
+                                        .Where(kvp => kvp.Value.DesktopModule.Category == "Recommended");
+
+            var result = filteredList.Select(kvp => new ControlBarController.ModuleDefDTO
+            {
+                ModuleID = kvp.Value.DesktopModuleID,
+                ModuleName = kvp.Key,
+                ModuleImage = GetDeskTopModuleImage(kvp.Value.DesktopModuleID),
+                Bookmarked = true,
+                ExistsInBookmarkCategory = true
+            }).ToList();
+
+            foreach (var moduleName in recommendedModuleNames)
+            {
+                if (result.All(t => t.ModuleName != moduleName))
+                {
+                    result.Add(new ControlBarController.ModuleDefDTO
+                    {
+                        ModuleID = Null.NullInteger,
+                        ModuleName = moduleName,
+                        ModuleImage = GetDeskTopModuleImage(Null.NullInteger),
+                        Bookmarked = true,
+                        ExistsInBookmarkCategory = true
+                    });
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, result.OrderBy(m => recommendedModuleNames.IndexOf(m.ModuleName)));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadModuleScript">
+          <declaration><![CDATA[public HttpResponseMessage LoadModuleScript(int desktopModuleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="128" sc="9" el="153" ec="10">Services\ContentEditorController.cs</location>
+            <body hash="129e04c3e10814a5a7f05add7d448983"><![CDATA[{
+            var desktopModule = DesktopModuleController.GetDesktopModule(desktopModuleId, Null.NullInteger);
+            if (desktopModule == null)
+            {
+                throw new ArgumentException("Can't find the desktop module");
+            }
+
+            var moduleScriptPath = string.Format("{0}/DesktopModules/{1}/ClientScripts/ModuleEditor.js", Globals.ApplicationMapPath, desktopModule.FolderName);
+            var moduleScriptContent = string.Empty;
+            if (File.Exists(moduleScriptPath))
+            {
+                moduleScriptContent = File.ReadAllText(moduleScriptPath);
+            }
+
+            var moduleStylePath = string.Format("/DesktopModules/{0}/Css/ModuleEditor.css", desktopModule.FolderName);
+            if (File.Exists(Globals.ApplicationMapPath + moduleStylePath))
+            {
+                moduleStylePath = Globals.ApplicationPath + moduleStylePath;
+            }
+            else
+            {
+                moduleStylePath = string.Empty;
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { Script = moduleScriptContent, StyleFile = moduleStylePath });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LocalizeString">
+          <declaration><![CDATA[private string LocalizeString(string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="160" sc="9" el="162" ec="10">Services\ContentEditorController.cs</location>
+            <body hash="77d79a8b8e7e2a1c3c5c0fdaedfc0735"><![CDATA[{
+            return Localization.GetString(key, LocalResourcesFile);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="DefaultExtensionImage">
+          <declaration><![CDATA[private const string DefaultExtensionImage = "icon_extensions_32px.png";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ContentEditorController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="LocalResourcesFile">
+          <declaration><![CDATA[private string LocalResourcesFile]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="LocalizationController">
+      <declaration><![CDATA[public class LocalizationController : DnnApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public LocalizationController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static LocalizationController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="9" el="28" ec="60">Services\LocalizationController.cs</location>
+            <body hash="e3b56d630b854fd01f9c4446e4796936"><![CDATA[private static object _threadLocker = new object()]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Expired">
+          <declaration><![CDATA[private bool Expired(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="81" sc="9" el="106" ec="10">Services\LocalizationController.cs</location>
+            <body hash="efd1bdeb6991e3a437fc15f832c4ade6"><![CDATA[{
+            var cacheKey = $"EditBarResources{culture}";
+            if (DataCache.GetCache(cacheKey) != null)
+            {
+                return false;
+            }
+
+            var jsonFilePath = GetResourcesJsonFilePath(culture);
+            var jsonFile = new FileInfo(jsonFilePath);
+            if (!jsonFile.Exists)
+            {
+                return true;
+            }
+
+            var lastModifiedTime = jsonFile.LastWriteTime;
+            var resourceFiles = GetAllResourceFiles(culture);
+
+            var expired = resourceFiles.Select(file => new FileInfo(file))
+                .Any(resourceFile => resourceFile.LastWriteTime > lastModifiedTime);
+            if (!expired)
+            {
+                DataCache.SetCache(cacheKey, new CacheDto(), TimeSpan.FromMinutes(5));
+            }
+
+            return expired;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GenerateJsonFile">
+          <declaration><![CDATA[private IDictionary<string, IDictionary<string, string>> GenerateJsonFile(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="115" sc="9" el="139" ec="10">Services\LocalizationController.cs</location>
+            <body hash="6a0908140698c2b759c2208361580ff8"><![CDATA[{
+            var resources = new Dictionary<string, IDictionary<string, string>>();
+            var resourceFiles = GetAllResourceFiles(culture);
+            var editBarResourcesPath = Path.Combine(Constants.EditBarRelativePath, "App_LocalResources");
+            foreach (var resourcesFile in resourceFiles)
+            {
+                var key = Path.GetFileNameWithoutExtension(resourcesFile);
+                var filename = Path.GetFileName(resourcesFile);
+                var relativePath = Path.Combine(editBarResourcesPath, filename);
+                var keys = EditBar.UI.Controllers.LocalizationController.Instance.GetLocalizedDictionary(relativePath, culture);
+                resources.Add(key, keys);
+            }
+
+            var content = JsonConvert.SerializeObject(resources);
+            var filePath = GetResourcesJsonFilePath(culture);
+            var folderPath = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            File.WriteAllText(filePath, content, Encoding.UTF8);
+
+            return resources;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAllResourceFiles">
+          <declaration><![CDATA[private IList<string> GetAllResourceFiles(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="148" sc="9" el="152" ec="10">Services\LocalizationController.cs</location>
+            <body hash="8268ffd16b15ca17ece810a8d65ad647"><![CDATA[{
+            var editBarResourcesPath = Path.Combine(Constants.EditBarRelativePath, "App_LocalResources");
+            var physicalPath = HttpContext.Current.Server.MapPath(editBarResourcesPath);
+            return Directory.GetFiles(physicalPath, "*.resx");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetJsonFileContent">
+          <declaration><![CDATA[private string GetJsonFileContent(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="109" sc="9" el="112" ec="10">Services\LocalizationController.cs</location>
+            <body hash="f861def2fabfc27f29e070191e392dce"><![CDATA[{
+            var path = GetResourcesJsonFilePath(culture);
+            return File.Exists(path) ? File.ReadAllText(path, Encoding.UTF8) : null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetResourcesFromFile">
+          <declaration><![CDATA[private IDictionary<string, IDictionary<string, string>> GetResourcesFromFile(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="78" ec="10">Services\LocalizationController.cs</location>
+            <body hash="4b30f6b771eb0935018973ec18e84709"><![CDATA[{
+
+            if (!Expired(culture))
+            {
+                var jsonFileContent = GetJsonFileContent(culture);
+                return jsonFileContent != null
+                    ? JsonConvert.DeserializeObject<IDictionary<string, IDictionary<string, string>>>(jsonFileContent)
+                    : null;
+            }
+
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetResourcesJsonFilePath">
+          <declaration><![CDATA[private string GetResourcesJsonFilePath(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="142" sc="9" el="145" ec="10">Services\LocalizationController.cs</location>
+            <body hash="85a234cb03cf0aef2c1aaed7ec512e02"><![CDATA[{
+            var path = Path.Combine(Constants.EditBarRelativePath, "Resources", $"LocalResources.{culture}.resources");
+            return HttpContext.Current.Server.MapPath(path);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTable">
+          <declaration><![CDATA[public HttpResponseMessage GetTable(string culture)]]></declaration>
+          <documentation>
+            <summary>
+ Retrieve a list of CMX related Localization Keys with it's values for the current culture.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="9" el="60" ec="10">Services\LocalizationController.cs</location>
+            <body hash="de251864049d0b0559e5d7017e61482c"><![CDATA[{
+            try
+            {
+                var resources = GetResourcesFromFile(culture);
+                if (resources == null)
+                {
+                    lock (_threadLocker)
+                    {
+                        resources = GetResourcesFromFile(culture);
+                        if (resources == null)
+                        {
+                            resources = GenerateJsonFile(culture);
+                        }
+                    }
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, resources);
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_threadLocker">
+          <declaration><![CDATA[private static object _threadLocker = new object();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ServiceRouteMapper">
+      <declaration><![CDATA[public class ServiceRouteMapper : IServiceRouteMapper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServiceRouteMapper()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="RegisterRoutes">
+          <declaration><![CDATA[public void RegisterRoutes(IMapRoute routeManager)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="9" el="24" ec="10">Services\ServiceRouteMapper.cs</location>
+            <body hash="0eb99adb4e34aa6c913f76364c588a3b"><![CDATA[{
+            routeManager.MapHttpRoute("editBar/Common",
+                                      "default",
+                                      "{controller}/{action}",
+                                      new[] { "Dnn.EditBar.UI.Services" });
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.EditBar.UI.Services.DTO">
+    <class name="UserSetting">
+      <declaration><![CDATA[public class UserSetting]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UserSetting()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Key">
+          <declaration><![CDATA[public string Key]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="12" sc="29" el="12" ec="33">Services\DTO\UserSetting.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="12" sc="34" el="12" ec="38">Services\DTO\UserSetting.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Value">
+          <declaration><![CDATA[public object Value]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="31" el="13" ec="35">Services\DTO\UserSetting.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="13" sc="36" el="13" ec="40">Services\DTO\UserSetting.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

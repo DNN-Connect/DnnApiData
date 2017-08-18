@@ -1,0 +1,1379 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Modules.RazorHost.dll" version="07.00.00" generated="2017-06-18 23:18:50Z" generationTime="1.5959059">
+  <namespace name="DotNetNuke.Modules.RazorHost">
+    <class name="AddScript">
+      <declaration><![CDATA[public class AddScript : ModuleUserControlBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private string razorScriptFileFormatString = "~/DesktopModules/RazorModules/RazorHost/Scripts/{0}";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="9" el="37" ec="108">AddScript.ascx.cs</location>
+            <body hash="796414003c9ce0cac2e426d9e493d61d"><![CDATA[private string razorScriptFileFormatString = "~/DesktopModules/RazorModules/RazorHost/Scripts/{0}"]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="cmdAdd_Click">
+          <declaration><![CDATA[protected void cmdAdd_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="9" el="100" ec="10">AddScript.ascx.cs</location>
+            <body hash="8f568e76c1936d3adbba9b935028cbca"><![CDATA[{
+            try
+            {
+                if (!ModuleContext.PortalSettings.UserInfo.IsSuperUser)
+                {
+                    Response.Redirect(Globals.NavigateURL("Access Denied"), true);
+                }
+
+                if (Page.IsValid)
+                {
+                    string scriptFileName = "_" + Path.GetFileNameWithoutExtension(fileName.Text) + "." + scriptFileType.SelectedValue.ToLowerInvariant();
+
+                    string srcFile = Server.MapPath(string.Format(razorScriptFileFormatString, scriptFileName));
+
+                    // write file
+                    StreamWriter objStream = null;
+                    objStream = File.CreateText(srcFile);
+                    objStream.WriteLine(Localization.GetString("NewScript", LocalResourceFile));
+                    objStream.Close();
+
+                    Response.Redirect(ModuleContext.EditUrl("Edit"), true);
+                }
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="cmdCancel_Click">
+          <declaration><![CDATA[protected void cmdCancel_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="9" el="70" ec="10">AddScript.ascx.cs</location>
+            <body hash="0ab8dc610834102def61e1afe36d3e47"><![CDATA[{
+            try
+            {
+                Response.Redirect(ModuleContext.EditUrl("Edit"), true);
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DisplayExtension">
+          <declaration><![CDATA[private void DisplayExtension()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="42" ec="10">AddScript.ascx.cs</location>
+            <body hash="3b3de20115648140b6cbd8a413a859f8"><![CDATA[{
+            fileExtension.Text = "." + scriptFileType.SelectedValue.ToLowerInvariant();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="51" ec="10">AddScript.ascx.cs</location>
+            <body hash="e83ed0377f7a928dca49dc5c15a1b47e"><![CDATA[{
+            base.OnInit(e);
+ 
+            cmdCancel.Click += cmdCancel_Click;
+            cmdAdd.Click += cmdAdd_Click;
+            scriptFileType.SelectedIndexChanged += scriptFileType_SelectedIndexChanged;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="9" el="58" ec="10">AddScript.ascx.cs</location>
+            <body hash="a3a459530845ce656b3953876f2c74bf"><![CDATA[{
+            base.OnLoad(e);
+ 
+            DisplayExtension();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="scriptFileType_SelectedIndexChanged">
+          <declaration><![CDATA[private void scriptFileType_SelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="103" sc="9" el="105" ec="10">AddScript.ascx.cs</location>
+            <body hash="809458369f8c71e6a27bb63269cdb086"><![CDATA[{
+            DisplayExtension();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cmdAdd">
+          <declaration><![CDATA[protected LinkButton cmdAdd;]]></declaration>
+          <documentation>
+            <summary>
+ cmdAdd control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdCancel">
+          <declaration><![CDATA[protected LinkButton cmdCancel;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCancel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="createNewScriptLabel">
+          <declaration><![CDATA[protected Label createNewScriptLabel;]]></declaration>
+          <documentation>
+            <summary>
+ createNewScriptLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fileExtension">
+          <declaration><![CDATA[protected Label fileExtension;]]></declaration>
+          <documentation>
+            <summary>
+ fileExtension control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fileName">
+          <declaration><![CDATA[protected TextBox fileName;]]></declaration>
+          <documentation>
+            <summary>
+ fileName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fileNameLabel">
+          <declaration><![CDATA[protected UserControl fileNameLabel;]]></declaration>
+          <documentation>
+            <summary>
+ fileNameLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fileTypeLabel">
+          <declaration><![CDATA[protected UserControl fileTypeLabel;]]></declaration>
+          <documentation>
+            <summary>
+ fileTypeLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="razorScriptFileFormatString">
+          <declaration><![CDATA[private string razorScriptFileFormatString = "~/DesktopModules/RazorModules/RazorHost/Scripts/{0}";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="scriptFileType">
+          <declaration><![CDATA[protected DropDownList scriptFileType;]]></declaration>
+          <documentation>
+            <summary>
+ scriptFileType control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CreateModule">
+      <declaration><![CDATA[public class CreateModule : ModuleUserControlBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private string razorScriptFileFormatString = "~/DesktopModules/RazorModules/RazorHost/Scripts/{0}";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="46" ec="95">CreateModule.ascx.cs</location>
+            <body hash="318dcb03389d76900cf853ff0b32dbca"><![CDATA[private string razorScriptFileFormatString = "~/DesktopModules/RazorModules/RazorHost/Scripts/{0}";
+        private string razorScriptFolder = "~/DesktopModules/RazorModules/RazorHost/Scripts/";]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="cmdCancel_Click">
+          <declaration><![CDATA[private void cmdCancel_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="282" sc="9" el="291" ec="10">CreateModule.ascx.cs</location>
+            <body hash="52d8100f3119c6fa59ad573041986637"><![CDATA[{
+            try
+            {
+                Response.Redirect(Globals.NavigateURL(), true);
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="cmdCreate_Click">
+          <declaration><![CDATA[private void cmdCreate_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="294" sc="9" el="311" ec="10">CreateModule.ascx.cs</location>
+            <body hash="14f0c90ec3736793d6effb84f90d46ee"><![CDATA[{
+            try
+            {
+                if (! ModuleContext.PortalSettings.UserInfo.IsSuperUser)
+                {
+                    Response.Redirect(Globals.NavigateURL("Access Denied"), true);
+                }
+
+                if (Page.IsValid)
+                {
+                    Create();
+                }
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Create">
+          <declaration><![CDATA[private void Create()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="9" el="181" ec="10">CreateModule.ascx.cs</location>
+            <body hash="aa5d77b78e7b5b0c425d2145793fe594"><![CDATA[{
+            //Create new Folder
+            string folderMapPath = Server.MapPath(string.Format("~/DesktopModules/RazorModules/{0}", txtFolder.Text));
+            if (Directory.Exists(folderMapPath))
+            {
+                UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("FolderExists", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+                return;
+            }
+            else
+            {
+                //Create folder
+                Directory.CreateDirectory(folderMapPath);
+            }
+
+            //Create new Module Control
+            string moduleControlMapPath = folderMapPath + "/" + ModuleControl;
+            try
+            {
+                using (var moduleControlWriter = new StreamWriter(moduleControlMapPath))
+                {
+                    moduleControlWriter.Write(Localization.GetString("ModuleControlText.Text", LocalResourceFile));
+                    moduleControlWriter.Flush();
+                }
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+                UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ModuleControlCreationError", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+                return;
+            }
+
+            //Copy Script to new Folder
+            string scriptSourceFile = Server.MapPath(string.Format(razorScriptFileFormatString, scriptList.SelectedValue));
+            string scriptTargetFile = folderMapPath + "/" + scriptList.SelectedValue;
+            try
+            {
+                File.Copy(scriptSourceFile, scriptTargetFile);
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+                UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ScriptCopyError", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+                return;
+            }
+
+            //Create new Manifest in target folder
+            string manifestMapPath = folderMapPath + "/" + ModuleControl.Replace(".ascx", ".dnn");
+            try
+            {
+                using (var manifestWriter = new StreamWriter(manifestMapPath))
+                {
+                    string manifestTemplate = Localization.GetString("ManifestText.Text", LocalResourceFile);
+                    string manifest = string.Format(manifestTemplate, txtName.Text, txtDescription.Text, txtFolder.Text, ModuleControl, scriptList.SelectedValue);
+                    manifestWriter.Write(manifest);
+                    manifestWriter.Flush();
+                }
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+                UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ManifestCreationError", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+                return;
+            }
+
+            //Register Module
+            ModuleDefinitionInfo moduleDefinition = ImportManifest(manifestMapPath);
+
+            //Optionally goto new Page
+            if (chkAddPage.Checked)
+            {
+                string tabName = "Test " + txtName.Text + " Page";
+                string tabPath = Globals.GenerateTabPath(Null.NullInteger, tabName);
+                int tabID = TabController.GetTabByTabPath(ModuleContext.PortalId, tabPath, ModuleContext.PortalSettings.CultureCode);
+
+                if (tabID == Null.NullInteger)
+                {
+                    //Create a new page
+                    var newTab = new TabInfo();
+                    newTab.TabName = "Test " + txtName.Text + " Page";
+                    newTab.ParentId = Null.NullInteger;
+                    newTab.PortalID = ModuleContext.PortalId;
+                    newTab.IsVisible = true;
+                    newTab.TabID = new TabController().AddTabBefore(newTab, ModuleContext.PortalSettings.AdminTabId);
+
+                    var objModule = new ModuleInfo();
+                    objModule.Initialize(ModuleContext.PortalId);
+
+                    objModule.PortalID = ModuleContext.PortalId;
+                    objModule.TabID = newTab.TabID;
+                    objModule.ModuleOrder = Null.NullInteger;
+                    objModule.ModuleTitle = moduleDefinition.FriendlyName;
+                    objModule.PaneName = Globals.glbDefaultPane;
+                    objModule.ModuleDefID = moduleDefinition.ModuleDefID;
+                    objModule.InheritViewPermissions = true;
+                    objModule.AllTabs = false;
+                    var moduleCtl = new ModuleController();
+                    moduleCtl.AddModule(objModule);
+
+                    Response.Redirect(Globals.NavigateURL(newTab.TabID), true);
+                }
+                else
+                {
+                    UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("TabExists", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+                }
+            }
+            else
+            {
+                //Redirect to main extensions page
+                Response.Redirect(Globals.NavigateURL(), true);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DisplayFile">
+          <declaration><![CDATA[private void DisplayFile()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="249" sc="9" el="254" ec="10">CreateModule.ascx.cs</location>
+            <body hash="5da0c8566a5683de0e36c19b2fffe3f2"><![CDATA[{
+            string scriptFile = string.Format(razorScriptFileFormatString, scriptList.SelectedValue);
+
+            lblSourceFile.Text = string.Format(Localization.GetString("SourceFile", LocalResourceFile), scriptFile);
+            lblModuleControl.Text = string.Format(Localization.GetString("SourceControl", LocalResourceFile), ModuleControl);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ImportManifest">
+          <declaration><![CDATA[private ModuleDefinitionInfo ImportManifest(string manifest)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="184" sc="9" el="229" ec="10">CreateModule.ascx.cs</location>
+            <body hash="244aa11fc82dec097043f5d4b3d4cc25"><![CDATA[{
+            ModuleDefinitionInfo moduleDefinition = null;
+            try
+            {
+                var _Installer = new Installer(manifest, Request.MapPath("."), true);
+
+                if (_Installer.IsValid)
+                {
+                    //Reset Log
+                    _Installer.InstallerInfo.Log.Logs.Clear();
+
+                    //Install
+                    _Installer.Install();
+
+                    if (_Installer.IsValid)
+                    {
+                        DesktopModuleInfo desktopModule = DesktopModuleController.GetDesktopModuleByPackageID(_Installer.InstallerInfo.PackageID);
+                        if (desktopModule != null && desktopModule.ModuleDefinitions.Count > 0)
+                        {
+                            foreach (KeyValuePair<string, ModuleDefinitionInfo> kvp in desktopModule.ModuleDefinitions)
+                            {
+                                moduleDefinition = kvp.Value;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("InstallError.Text", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+                        phInstallLogs.Controls.Add(_Installer.InstallerInfo.Log.GetLogsTable());
+                    }
+                }
+                else
+                {
+                    UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("InstallError.Text", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+                    phInstallLogs.Controls.Add(_Installer.InstallerInfo.Log.GetLogsTable());
+                }
+            }
+            catch (Exception exc)
+            {
+                Exceptions.LogException(exc);
+                UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ImportControl.ErrorMessage", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+            }
+
+            return moduleDefinition;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadScripts">
+          <declaration><![CDATA[private void LoadScripts()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="232" sc="9" el="246" ec="10">CreateModule.ascx.cs</location>
+            <body hash="f1f436c1611841a5fc46053f85e5b837"><![CDATA[{
+            string basePath = Server.MapPath(razorScriptFolder);
+            var scriptFileSetting = ModuleContext.Settings["ScriptFile"] as string;
+
+            foreach (string script in Directory.GetFiles(Server.MapPath(razorScriptFolder), "*.??html"))
+            {
+                string scriptPath = script.Replace(basePath, "");
+                var item = new ListItem(scriptPath, scriptPath);
+                if (! (string.IsNullOrEmpty(scriptFileSetting)) && scriptPath.ToLowerInvariant() == scriptFileSetting.ToLowerInvariant())
+                {
+                    item.Selected = true;
+                }
+                scriptList.Items.Add(item);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="257" sc="9" el="263" ec="10">CreateModule.ascx.cs</location>
+            <body hash="fecf0f1b57ec3e1d3cbf3fc6750e8741"><![CDATA[{
+            base.OnInit(e);
+
+            cmdCancel.Click += cmdCancel_Click;
+            cmdCreate.Click += cmdCreate_Click;
+            scriptList.SelectedIndexChanged += scriptList_SelectedIndexChanged;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="266" sc="9" el="279" ec="10">CreateModule.ascx.cs</location>
+            <body hash="361b0056829f36fcd89e651982528a03"><![CDATA[{
+            base.OnLoad(e);
+
+            if (! ModuleContext.PortalSettings.UserInfo.IsSuperUser)
+            {
+                Response.Redirect(Globals.NavigateURL("Access Denied"), true);
+            }
+
+            if (! Page.IsPostBack)
+            {
+                LoadScripts();
+                DisplayFile();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="scriptList_SelectedIndexChanged">
+          <declaration><![CDATA[private void scriptList_SelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="314" sc="9" el="316" ec="10">CreateModule.ascx.cs</location>
+            <body hash="304205dc8110914bdbe1f82468184942"><![CDATA[{
+            DisplayFile();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="chkAddPage">
+          <declaration><![CDATA[protected CheckBox chkAddPage;]]></declaration>
+          <documentation>
+            <summary>
+ chkAddPage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdCancel">
+          <declaration><![CDATA[protected LinkButton cmdCancel;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCancel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdCreate">
+          <declaration><![CDATA[protected LinkButton cmdCreate;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCreate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblModuleControl">
+          <declaration><![CDATA[protected Label lblModuleControl;]]></declaration>
+          <documentation>
+            <summary>
+ lblModuleControl control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblSourceFile">
+          <declaration><![CDATA[protected Label lblSourceFile;]]></declaration>
+          <documentation>
+            <summary>
+ lblSourceFile control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="phInstallLogs">
+          <declaration><![CDATA[protected PlaceHolder phInstallLogs;]]></declaration>
+          <documentation>
+            <summary>
+ phInstallLogs control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plAddPage">
+          <declaration><![CDATA[protected UserControl plAddPage;]]></declaration>
+          <documentation>
+            <summary>
+ plAddPage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plDescription">
+          <declaration><![CDATA[protected UserControl plDescription;]]></declaration>
+          <documentation>
+            <summary>
+ plDescription control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plFolder">
+          <declaration><![CDATA[protected UserControl plFolder;]]></declaration>
+          <documentation>
+            <summary>
+ plFolder control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plName">
+          <declaration><![CDATA[protected UserControl plName;]]></declaration>
+          <documentation>
+            <summary>
+ plName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="razorScriptFileFormatString">
+          <declaration><![CDATA[private string razorScriptFileFormatString = "~/DesktopModules/RazorModules/RazorHost/Scripts/{0}";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="razorScriptFolder">
+          <declaration><![CDATA[private string razorScriptFolder = "~/DesktopModules/RazorModules/RazorHost/Scripts/";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="scriptList">
+          <declaration><![CDATA[protected DropDownList scriptList;]]></declaration>
+          <documentation>
+            <summary>
+ scriptList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="scriptsLabel">
+          <declaration><![CDATA[protected UserControl scriptsLabel;]]></declaration>
+          <documentation>
+            <summary>
+ scriptsLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="toolTipManager">
+          <declaration><![CDATA[protected DnnToolTipManager toolTipManager;]]></declaration>
+          <documentation>
+            <summary>
+ toolTipManager control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtDescription">
+          <declaration><![CDATA[protected TextBox txtDescription;]]></declaration>
+          <documentation>
+            <summary>
+ txtDescription control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtFolder">
+          <declaration><![CDATA[protected TextBox txtFolder;]]></declaration>
+          <documentation>
+            <summary>
+ txtFolder control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtName">
+          <declaration><![CDATA[protected TextBox txtName;]]></declaration>
+          <documentation>
+            <summary>
+ txtName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="valFolder">
+          <declaration><![CDATA[protected RequiredFieldValidator valFolder;]]></declaration>
+          <documentation>
+            <summary>
+ valFolder control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="valName">
+          <declaration><![CDATA[protected RequiredFieldValidator valName;]]></declaration>
+          <documentation>
+            <summary>
+ valName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ModuleControl">
+          <declaration><![CDATA[protected string ModuleControl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="13" el="53" ec="14">CreateModule.ascx.cs</location>
+            <body hash="6f8cc441a1374e5a46af1e8df7030dad"><![CDATA[{
+                return Path.GetFileNameWithoutExtension(scriptList.SelectedValue).TrimStart('_') + ".ascx";
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="RazorScriptFile">
+          <declaration><![CDATA[protected string RazorScriptFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="13" el="67" ec="14">CreateModule.ascx.cs</location>
+            <body hash="1e36813420378d8b22fd2374026eb86f"><![CDATA[{
+                string m_RazorScriptFile = Null.NullString;
+                var scriptFileSetting = ModuleContext.Settings["ScriptFile"] as string;
+                if (! (string.IsNullOrEmpty(scriptFileSetting)))
+                {
+                    m_RazorScriptFile = string.Format(razorScriptFileFormatString, scriptFileSetting);
+                }
+                return m_RazorScriptFile;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="EditScript">
+      <declaration><![CDATA[public class EditScript : ModuleUserControlBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private string razorScriptFileFormatString = "~/DesktopModules/RazorModules/RazorHost/Scripts/{0}";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="41" ec="95">EditScript.ascx.cs</location>
+            <body hash="318dcb03389d76900cf853ff0b32dbca"><![CDATA[private string razorScriptFileFormatString = "~/DesktopModules/RazorModules/RazorHost/Scripts/{0}";
+        private string razorScriptFolder = "~/DesktopModules/RazorModules/RazorHost/Scripts/";]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="cmdAdd_Click">
+          <declaration><![CDATA[private void cmdAdd_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="172" sc="9" el="181" ec="10">EditScript.ascx.cs</location>
+            <body hash="099ba0e8cd06f384852e091ded9753ed"><![CDATA[{
+            try
+            {
+                Response.Redirect(ModuleContext.EditUrl("Add"), true);
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="cmdCancel_Click">
+          <declaration><![CDATA[private void cmdCancel_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="135" sc="9" el="144" ec="10">EditScript.ascx.cs</location>
+            <body hash="52d8100f3119c6fa59ad573041986637"><![CDATA[{
+            try
+            {
+                Response.Redirect(Globals.NavigateURL(), true);
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="cmdSave_Click">
+          <declaration><![CDATA[private void cmdSave_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="147" sc="9" el="156" ec="10">EditScript.ascx.cs</location>
+            <body hash="48cad5fb83f76da7a22d421836220a6b"><![CDATA[{
+            try
+            {
+                SaveScript();
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="cmdSaveClose_Click">
+          <declaration><![CDATA[private void cmdSaveClose_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="159" sc="9" el="169" ec="10">EditScript.ascx.cs</location>
+            <body hash="8c2d88bd6b93ee1b5163ddb63850366e"><![CDATA[{
+            try
+            {
+                SaveScript();
+                Response.Redirect(Globals.NavigateURL(), true);
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DisplayFile">
+          <declaration><![CDATA[private void DisplayFile()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="9" el="92" ec="10">EditScript.ascx.cs</location>
+            <body hash="a42c2062fd5ac18ac8d72d2ca1ac7152"><![CDATA[{
+            var scriptFileSetting = ModuleContext.Settings["ScriptFile"] as string;
+            string scriptFile = string.Format(razorScriptFileFormatString, scriptList.SelectedValue);
+            string srcFile = Server.MapPath(scriptFile);
+
+            lblSourceFile.Text = string.Format(Localization.GetString("SourceFile", LocalResourceFile), scriptFile);
+
+            StreamReader objStreamReader = null;
+            objStreamReader = File.OpenText(srcFile);
+            txtSource.Text = objStreamReader.ReadToEnd();
+            objStreamReader.Close();
+
+            if (!(string.IsNullOrEmpty(scriptFileSetting)))
+            {
+                isCurrentScript.Checked = (scriptList.SelectedValue.ToLowerInvariant() == scriptFileSetting.ToLowerInvariant());
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadScripts">
+          <declaration><![CDATA[private void LoadScripts()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="9" el="73" ec="10">EditScript.ascx.cs</location>
+            <body hash="e249f6dfb24041d31a31bee421e80d77"><![CDATA[{
+            string basePath = Server.MapPath(razorScriptFolder);
+            var scriptFileSetting = ModuleContext.Settings["ScriptFile"] as string;
+
+            foreach (string script in Directory.GetFiles(Server.MapPath(razorScriptFolder), "*.??html"))
+            {
+                string scriptPath = script.Replace(basePath, "");
+                var item = new ListItem(scriptPath, scriptPath);
+                if (!(string.IsNullOrEmpty(scriptFileSetting)) && scriptPath.ToLowerInvariant() == scriptFileSetting.ToLowerInvariant())
+                {
+                    item.Selected = true;
+                }
+                scriptList.Items.Add(item);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="113" sc="9" el="121" ec="10">EditScript.ascx.cs</location>
+            <body hash="c6772620b821147a8f6a11e4a5329878"><![CDATA[{
+            base.OnInit(e);
+
+            cmdCancel.Click += cmdCancel_Click;
+            cmdSave.Click += cmdSave_Click;
+            cmdSaveClose.Click += cmdSaveClose_Click;
+            cmdAdd.Click += cmdAdd_Click;
+            scriptList.SelectedIndexChanged += scriptList_SelectedIndexChanged;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="124" sc="9" el="132" ec="10">EditScript.ascx.cs</location>
+            <body hash="664cb0d5854099cd90141ba1ed446513"><![CDATA[{
+            base.OnLoad(e);
+
+            if (!Page.IsPostBack)
+            {
+                LoadScripts();
+                DisplayFile();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveScript">
+          <declaration><![CDATA[private void SaveScript()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="95" sc="9" el="110" ec="10">EditScript.ascx.cs</location>
+            <body hash="6712e481d98d14f9bee196e36bd2572b"><![CDATA[{
+            string srcFile = Server.MapPath(string.Format(razorScriptFileFormatString, scriptList.SelectedValue));
+
+            // write file
+            StreamWriter objStream = null;
+            objStream = File.CreateText(srcFile);
+            objStream.WriteLine(txtSource.Text);
+            objStream.Close();
+
+            if (isCurrentScript.Checked)
+            {
+                //Update setting
+                var controller = new ModuleController();
+                controller.UpdateModuleSetting(ModuleContext.ModuleId, "ScriptFile", scriptList.SelectedValue);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="scriptList_SelectedIndexChanged">
+          <declaration><![CDATA[private void scriptList_SelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="184" sc="9" el="186" ec="10">EditScript.ascx.cs</location>
+            <body hash="304205dc8110914bdbe1f82468184942"><![CDATA[{
+            DisplayFile();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cmdAdd">
+          <declaration><![CDATA[protected LinkButton cmdAdd;]]></declaration>
+          <documentation>
+            <summary>
+ cmdAdd control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdCancel">
+          <declaration><![CDATA[protected LinkButton cmdCancel;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCancel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdSave">
+          <declaration><![CDATA[protected LinkButton cmdSave;]]></declaration>
+          <documentation>
+            <summary>
+ cmdSave control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdSaveClose">
+          <declaration><![CDATA[protected LinkButton cmdSaveClose;]]></declaration>
+          <documentation>
+            <summary>
+ cmdSaveClose control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="currentScriptLabel">
+          <declaration><![CDATA[protected UserControl currentScriptLabel;]]></declaration>
+          <documentation>
+            <summary>
+ currentScriptLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="isCurrentScript">
+          <declaration><![CDATA[protected CheckBox isCurrentScript;]]></declaration>
+          <documentation>
+            <summary>
+ isCurrentScript control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblSourceFile">
+          <declaration><![CDATA[protected Label lblSourceFile;]]></declaration>
+          <documentation>
+            <summary>
+ lblSourceFile control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plSource">
+          <declaration><![CDATA[protected UserControl plSource;]]></declaration>
+          <documentation>
+            <summary>
+ plSource control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="razorScriptFileFormatString">
+          <declaration><![CDATA[private string razorScriptFileFormatString = "~/DesktopModules/RazorModules/RazorHost/Scripts/{0}";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="razorScriptFolder">
+          <declaration><![CDATA[private string razorScriptFolder = "~/DesktopModules/RazorModules/RazorHost/Scripts/";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="scriptList">
+          <declaration><![CDATA[protected DropDownList scriptList;]]></declaration>
+          <documentation>
+            <summary>
+ scriptList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="scriptsLabel">
+          <declaration><![CDATA[protected UserControl scriptsLabel;]]></declaration>
+          <documentation>
+            <summary>
+ scriptsLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="toolTipManager">
+          <declaration><![CDATA[protected DnnToolTipManager toolTipManager;]]></declaration>
+          <documentation>
+            <summary>
+ toolTipManager control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtSource">
+          <declaration><![CDATA[protected TextBox txtSource;]]></declaration>
+          <documentation>
+            <summary>
+ txtSource control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="RazorScriptFile">
+          <declaration><![CDATA[protected string RazorScriptFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="13" el="55" ec="14">EditScript.ascx.cs</location>
+            <body hash="cb7d32d55af4aac7fdd8875a23b1af8c"><![CDATA[{
+                string m_RazorScriptFile = Null.NullString;
+                var scriptFileSetting = ModuleContext.Settings["ScriptFile"] as string;
+                if (!(string.IsNullOrEmpty(scriptFileSetting)))
+                {
+                    m_RazorScriptFile = string.Format(razorScriptFileFormatString, scriptFileSetting);
+                }
+                return m_RazorScriptFile;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RazorHost">
+      <declaration><![CDATA[public class RazorHost : RazorModuleBase, IActionable]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private string razorScriptFileFormatString = "~/DesktopModules/RazorModules/RazorHost/Scripts/{0}";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="35" ec="108">RazorHost.ascx.cs</location>
+            <body hash="796414003c9ce0cac2e426d9e493d61d"><![CDATA[private string razorScriptFileFormatString = "~/DesktopModules/RazorModules/RazorHost/Scripts/{0}"]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="razorScriptFileFormatString">
+          <declaration><![CDATA[private string razorScriptFileFormatString = "~/DesktopModules/RazorModules/RazorHost/Scripts/{0}";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ModuleActions">
+          <declaration><![CDATA[public ModuleActionCollection ModuleActions]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="13" el="79" ec="14">RazorHost.ascx.cs</location>
+            <body hash="c83030568922aa1a2f8edd67ee3ea9cb"><![CDATA[{
+                var Actions = new ModuleActionCollection();
+                Actions.Add(ModuleContext.GetNextActionID(),
+                            Localization.GetString(ModuleActionType.EditContent, LocalResourceFile),
+                            ModuleActionType.AddContent,
+                            "",
+                            "edit.gif",
+                            ModuleContext.EditUrl(),
+                            false,
+                            SecurityAccessLevel.Host,
+                            true,
+                            false);
+                Actions.Add(ModuleContext.GetNextActionID(),
+                            Localization.GetString("CreateModule.Action", LocalResourceFile),
+                            ModuleActionType.AddContent,
+                            "",
+                            "edit.gif",
+                            ModuleContext.EditUrl("CreateModule"),
+                            false,
+                            SecurityAccessLevel.Host,
+                            true,
+                            false);
+                return Actions;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="RazorScriptFile">
+          <declaration><![CDATA[protected override string RazorScriptFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="13" el="48" ec="14">RazorHost.ascx.cs</location>
+            <body hash="a19dbf9505b9f436a06e244bce031e42"><![CDATA[{
+                string m_RazorScriptFile = base.RazorScriptFile;
+                var scriptFileSetting = ModuleContext.Settings["ScriptFile"] as string;
+                if (! (string.IsNullOrEmpty(scriptFileSetting)))
+                {
+                    m_RazorScriptFile = string.Format(razorScriptFileFormatString, scriptFileSetting);
+                }
+                return m_RazorScriptFile;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RazorHostSettingsExtensions">
+      <declaration><![CDATA[public static class RazorHostSettingsExtensions]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="EnsureEditScriptControlIsRegistered">
+          <declaration><![CDATA[private static void EnsureEditScriptControlIsRegistered(int moduleDefId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="51" ec="10">RazorHostSettingsExtensions.cs</location>
+            <body hash="83bd59e084dfaed36b1b6b80552ed1b5"><![CDATA[{
+            if (ModuleControlController.GetModuleControlByControlKey("EditRazorScript", moduleDefId) != null) return;
+            var m = new ModuleControlInfo
+                        {
+                            ControlKey = "EditRazorScript",
+                            ControlSrc = "DesktopModules/RazorModules/RazorHost/EditScript.ascx",
+                            ControlTitle = "Edit Script",
+                            ControlType = SecurityAccessLevel.Host,
+                            ModuleDefID = moduleDefId
+                        };
+            ModuleControlController.UpdateModuleControl(m);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadRazorSettingsControl">
+          <declaration><![CDATA[public static Settings LoadRazorSettingsControl(this UserControl parent, ModuleInfo configuration, string localResourceFile)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="36" ec="10">RazorHostSettingsExtensions.cs</location>
+            <body hash="ebdb48a3a0f6779da0755a27bb3a4bd9"><![CDATA[{
+            var control = (Settings) parent.LoadControl("~/DesktopModules/RazorModules/RazorHost/Settings.ascx");
+            control.ModuleConfiguration = configuration;
+            control.LocalResourceFile = localResourceFile;
+            EnsureEditScriptControlIsRegistered(configuration.ModuleDefID);
+            return control;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Settings">
+      <declaration><![CDATA[public class Settings : ModuleSettingsBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private string razorScriptFolder = "~/DesktopModules/RazorModules/RazorHost/Scripts/";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="9" el="34" ec="95">Settings.ascx.cs</location>
+            <body hash="078668da91b8c16947939d8e3d2ae7b9"><![CDATA[private string razorScriptFolder = "~/DesktopModules/RazorModules/RazorHost/Scripts/"]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="LoadSettings">
+          <declaration><![CDATA[public override void LoadSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="9" el="53" ec="10">Settings.ascx.cs</location>
+            <body hash="0fffe112b25d54b793b8d6e6a805aed6"><![CDATA[{
+            string basePath = Server.MapPath(razorScriptFolder);
+            var scriptFileSetting = Settings["ScriptFile"] as string;
+
+            foreach (string script in Directory.GetFiles(Server.MapPath(razorScriptFolder), "*.??html"))
+            {
+                string scriptPath = script.Replace(basePath, "");
+                var item = new ListItem(scriptPath, scriptPath);
+                if (! (string.IsNullOrEmpty(scriptFileSetting)) && scriptPath.ToLowerInvariant() == scriptFileSetting.ToLowerInvariant())
+                {
+                    item.Selected = true;
+                }
+                scriptList.Items.Add(item);
+            }
+
+            base.LoadSettings();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSettings">
+          <declaration><![CDATA[public override void UpdateSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="9" el="59" ec="10">Settings.ascx.cs</location>
+            <body hash="bffa9bbc39db7d7be610de2478d301c6"><![CDATA[{
+            var controller = new ModuleController();
+            controller.UpdateModuleSetting(ModuleId, "ScriptFile", scriptList.SelectedValue);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="razorScriptFolder">
+          <declaration><![CDATA[private string razorScriptFolder = "~/DesktopModules/RazorModules/RazorHost/Scripts/";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="scriptList">
+          <declaration><![CDATA[protected DropDownList scriptList;]]></declaration>
+          <documentation>
+            <summary>
+ scriptList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="scriptListLabel">
+          <declaration><![CDATA[protected UserControl scriptListLabel;]]></declaration>
+          <documentation>
+            <summary>
+ scriptListLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

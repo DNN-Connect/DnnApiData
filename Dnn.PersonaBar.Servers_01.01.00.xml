@@ -1,0 +1,2752 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.Servers.dll" version="01.01.00" generated="2017-08-10 12:34:43Z" generationTime="3.7067487">
+  <namespace name="Dnn.PersonaBar.Servers.Components">
+    <class name="Constants">
+      <declaration><![CDATA[public static class Constants]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="ServersResourcersPath">
+          <declaration><![CDATA[internal const string ServersResourcersPath = "~/DesktopModules/admin/Dnn.PersonaBar//Modules/Dnn.Servers/App_LocalResources/Servers.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="SizeUnknown">
+          <declaration><![CDATA[internal const string SizeUnknown = "?";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="UseSSLKey">
+          <declaration><![CDATA[internal const string UseSSLKey = "UseSSLForCacheSync";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ValueCannotSerialize">
+          <declaration><![CDATA[internal const string ValueCannotSerialize = "CannotSerialize";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Servers.Components.DatabaseServer">
+    <class name="BackupInfo">
+      <declaration><![CDATA[public class BackupInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BackupInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="BackupType">
+          <declaration><![CDATA[public string BackupType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="36" el="36" ec="40">Components\DatabaseServer\BackupInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="36" sc="41" el="36" ec="45">Components\DatabaseServer\BackupInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="FinishDate">
+          <declaration><![CDATA[public DateTime FinishDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="38" el="32" ec="42">Components\DatabaseServer\BackupInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="32" sc="43" el="32" ec="47">Components\DatabaseServer\BackupInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="30" el="28" ec="34">Components\DatabaseServer\BackupInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="28" sc="35" el="28" ec="39">Components\DatabaseServer\BackupInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Size">
+          <declaration><![CDATA[public long Size]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="28" el="34" ec="32">Components\DatabaseServer\BackupInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="34" sc="33" el="34" ec="37">Components\DatabaseServer\BackupInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="StartDate">
+          <declaration><![CDATA[public DateTime StartDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="37" el="30" ec="41">Components\DatabaseServer\BackupInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="30" sc="42" el="30" ec="46">Components\DatabaseServer\BackupInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DatabaseController">
+      <declaration><![CDATA[public class DatabaseController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DatabaseController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetDbBackups">
+          <declaration><![CDATA[public List<BackupInfo> GetDbBackups()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="37" ec="10">Components\DatabaseServer\DatabaseController.cs</location>
+            <body hash="db6a0b0879ff39ed380747b15040cb04"><![CDATA[{
+            return CBO.FillCollection<BackupInfo>(DataService.GetDbBackups());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDbFileInfo">
+          <declaration><![CDATA[public List<DbFileInfo> GetDbFileInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="42" ec="10">Components\DatabaseServer\DatabaseController.cs</location>
+            <body hash="7d0dde8426ed39d75afe5a7e7e12b828"><![CDATA[{
+            return CBO.FillCollection<DbFileInfo>(DataService.GetDbFileInfo());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDbInfo">
+          <declaration><![CDATA[public DbInfo GetDbInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="32" ec="10">Components\DatabaseServer\DatabaseController.cs</location>
+            <body hash="73564f2d78f925b6df3f96b671f39f6b"><![CDATA[{
+            return CBO.FillObject<DbInfo>(DataService.GetDbInfo());
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DataService">
+      <declaration><![CDATA[public class DataService]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DataService()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static DataService()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="32" ec="62">Components\DatabaseServer\DataService.cs</location>
+            <body hash="1c79d6bff319f3d1d44e3dcdcb4c67a7"><![CDATA[private static readonly DataProvider Provider = DataProvider.Instance();
+        private static string moduleQualifier = "Dashboard_";]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddDashboardControl">
+          <declaration><![CDATA[public static int AddDashboardControl(int packageId, string dashboardControlKey, bool isEnabled, string dashboardControlSrc, string dashboardControlLocalResources, string controllerClass, int viewOrder)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="50" ec="10">Components\DatabaseServer\DataService.cs</location>
+            <body hash="41cec19fe0f78fe51466907027463201"><![CDATA[{
+            return Provider.ExecuteScalar<int>(GetFullyQualifiedName("AddControl"),
+                                               packageId,
+                                               dashboardControlKey,
+                                               isEnabled,
+                                               dashboardControlSrc,
+                                               dashboardControlLocalResources,
+                                               controllerClass,
+                                               viewOrder);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteDashboardControl">
+          <declaration><![CDATA[public static void DeleteDashboardControl(int dashboardControlId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="9" el="55" ec="10">Components\DatabaseServer\DataService.cs</location>
+            <body hash="a26f52850e408773ef69606963bb4dea"><![CDATA[{
+            Provider.ExecuteNonQuery(GetFullyQualifiedName("DeleteControl"), dashboardControlId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDashboardControlByKey">
+          <declaration><![CDATA[public static IDataReader GetDashboardControlByKey(string dashboardControlKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="9" el="60" ec="10">Components\DatabaseServer\DataService.cs</location>
+            <body hash="d79d22d5537fb67c2e5fee465096aeb9"><![CDATA[{
+            return Provider.ExecuteReader(GetFullyQualifiedName("GetDashboardControlByKey"), dashboardControlKey);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDashboardControlByPackageId">
+          <declaration><![CDATA[public static IDataReader GetDashboardControlByPackageId(int packageId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="9" el="65" ec="10">Components\DatabaseServer\DataService.cs</location>
+            <body hash="eec4fdcd61dd6b5f48eaa315f1cfbfb4"><![CDATA[{
+            return Provider.ExecuteReader(GetFullyQualifiedName("GetDashboardControlByPackageId"), packageId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDashboardControls">
+          <declaration><![CDATA[public static IDataReader GetDashboardControls(bool isEnabled)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="9" el="70" ec="10">Components\DatabaseServer\DataService.cs</location>
+            <body hash="46d6fae6a22e0034886d1ab8bf54f401"><![CDATA[{
+            return Provider.ExecuteReader(GetFullyQualifiedName("GetControls"), isEnabled);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDbBackups">
+          <declaration><![CDATA[public static IDataReader GetDbBackups()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="9" el="85" ec="10">Components\DatabaseServer\DataService.cs</location>
+            <body hash="fe65e97989467e32430bdf191eeec192"><![CDATA[{
+            return Provider.ExecuteReader(GetFullyQualifiedName("GetDbBackups"));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDbFileInfo">
+          <declaration><![CDATA[public static IDataReader GetDbFileInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="80" ec="10">Components\DatabaseServer\DataService.cs</location>
+            <body hash="273e63c4ad1262220cff77c9767b4948"><![CDATA[{
+            return Provider.ExecuteReader(GetFullyQualifiedName("GetDbFileInfo"));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDbInfo">
+          <declaration><![CDATA[public static IDataReader GetDbInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="9" el="75" ec="10">Components\DatabaseServer\DataService.cs</location>
+            <body hash="5ffda52e2561968b989b035495777cbc"><![CDATA[{
+            return Provider.ExecuteReader(GetFullyQualifiedName("GetDbInfo"));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFullyQualifiedName">
+          <declaration><![CDATA[private static string GetFullyQualifiedName(string name)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="37" ec="10">Components\DatabaseServer\DataService.cs</location>
+            <body hash="2e6459954c4794843e8e0a25f5f242d0"><![CDATA[{
+            return String.Concat(moduleQualifier, name);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortals">
+          <declaration><![CDATA[public static IDataReader GetPortals()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="88" sc="9" el="91" ec="10">Components\DatabaseServer\DataService.cs</location>
+            <body hash="6af18680ba29a3672996cc778429329b"><![CDATA[{
+            string cultureCode = Localization.SystemLocale;
+            return Provider.GetPortals(cultureCode);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetServerErrors">
+          <declaration><![CDATA[public static IDataReader GetServerErrors()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="94" sc="9" el="96" ec="10">Components\DatabaseServer\DataService.cs</location>
+            <body hash="adba4a7a15e6cc3a5ece986e77d3b22f"><![CDATA[{
+            return Provider.ExecuteReader(GetFullyQualifiedName("GetServerErrors"));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateDashboardControl">
+          <declaration><![CDATA[public static void UpdateDashboardControl(int dashboardControlId, string dashboardControlKey, bool isEnabled, string dashboardControlSrc, string dashboardControlLocalResources, string controllerClass, int viewOrder)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="100" sc="9" el="109" ec="10">Components\DatabaseServer\DataService.cs</location>
+            <body hash="965c7ab2d9f4ab30c8123f3263b36991"><![CDATA[{
+            Provider.ExecuteNonQuery(GetFullyQualifiedName("UpdateControl"),
+                                     dashboardControlId,
+                                     dashboardControlKey,
+                                     isEnabled,
+                                     dashboardControlSrc,
+                                     dashboardControlLocalResources,
+                                     controllerClass,
+                                     viewOrder);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="moduleQualifier">
+          <declaration><![CDATA[private static string moduleQualifier = "Dashboard_";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Provider">
+          <declaration><![CDATA[private static readonly DataProvider Provider = DataProvider.Instance();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DbFileInfo">
+      <declaration><![CDATA[public class DbFileInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DbFileInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="FileName">
+          <declaration><![CDATA[public string FileName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="34" el="36" ec="38">Components\DatabaseServer\DbFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="36" sc="39" el="36" ec="43">Components\DatabaseServer\DbFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="FileType">
+          <declaration><![CDATA[public string FileType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="34" el="28" ec="38">Components\DatabaseServer\DbFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="28" sc="39" el="28" ec="43">Components\DatabaseServer\DbFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Megabytes">
+          <declaration><![CDATA[public decimal Megabytes]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="37" el="34" ec="65">Components\DatabaseServer\DbFileInfo.cs</location>
+            <body hash="81a32e52aab75f4435df99d90fbb2ee7"><![CDATA[Convert.ToDecimal(Size/1024]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="30" el="30" ec="34">Components\DatabaseServer\DbFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="30" sc="35" el="30" ec="39">Components\DatabaseServer\DbFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ShortFileName">
+          <declaration><![CDATA[public string ShortFileName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="13" el="48" ec="14">Components\DatabaseServer\DbFileInfo.cs</location>
+            <body hash="10db39f060cfef2620fe6fdb5f01c63c"><![CDATA[{
+                if(FileName.IndexOf('\\') == FileName.LastIndexOf('\\'))
+                {
+                    return FileName;
+                }
+
+                return string.Format("{0}...{1}", FileName.Substring(0, FileName.IndexOf('\\') + 1), FileName.Substring(FileName.LastIndexOf('\\', FileName.LastIndexOf('\\') - 1)));
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Size">
+          <declaration><![CDATA[public long Size]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="28" el="32" ec="32">Components\DatabaseServer\DbFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="32" sc="33" el="32" ec="37">Components\DatabaseServer\DbFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DbInfo">
+      <declaration><![CDATA[public class DbInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DbInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ProductEdition">
+          <declaration><![CDATA[public string ProductEdition]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="40" el="30" ec="44">Components\DatabaseServer\DbInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="30" sc="45" el="30" ec="49">Components\DatabaseServer\DbInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ProductVersion">
+          <declaration><![CDATA[public string ProductVersion]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="26" sc="40" el="26" ec="44">Components\DatabaseServer\DbInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="26" sc="45" el="26" ec="49">Components\DatabaseServer\DbInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ServicePack">
+          <declaration><![CDATA[public string ServicePack]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="37" el="28" ec="41">Components\DatabaseServer\DbInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="28" sc="42" el="28" ec="46">Components\DatabaseServer\DbInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SoftwarePlatform">
+          <declaration><![CDATA[public string SoftwarePlatform]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="42" el="32" ec="46">Components\DatabaseServer\DbInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="32" sc="47" el="32" ec="51">Components\DatabaseServer\DbInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Servers.Components.Log">
+    <class name="LogController">
+      <declaration><![CDATA[public class LogController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public LogController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetLogFilesList">
+          <declaration><![CDATA[public List<string> GetLogFilesList()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="39" ec="10">Components\Log\LogController.cs</location>
+            <body hash="9595734532817d6c947dd57cd22d8665"><![CDATA[{
+            var files = Directory.GetFiles(Globals.ApplicationMapPath + @"\portals\_default\logs", "*.resources");
+            var fileList = (from file in files select Path.GetFileName(file)).ToList();
+            return fileList;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUpgradeLogList">
+          <declaration><![CDATA[public ArrayList GetUpgradeLogList()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="9" el="53" ec="10">Components\Log\LogController.cs</location>
+            <body hash="bd2ac995740ef6e8f1c2411fd30261b4"><![CDATA[{
+            var objProviderConfiguration = ProviderConfiguration.GetProviderConfiguration("data");
+            var strProviderPath = DataProvider.Instance().GetProviderPath();
+            var arrScriptFiles = new ArrayList();
+            var arrFiles = Directory.GetFiles(strProviderPath, "*." + objProviderConfiguration.DefaultProvider);
+            foreach (var strFile in arrFiles)
+            {
+                arrScriptFiles.Add(Path.GetFileNameWithoutExtension(strFile));
+            }
+            arrScriptFiles.Sort();
+            return arrScriptFiles;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Servers.Components.PerformanceSettings">
+    <class name="PerformanceController">
+      <declaration><![CDATA[public class PerformanceController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PerformanceController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetCacheabilityOptions">
+          <declaration><![CDATA[public object GetCacheabilityOptions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="80" ec="10">Components\PerformanceSettings\PerformanceController.cs</location>
+            <body hash="c9877b96a617779ab214441f8d7ae492"><![CDATA[{
+            return new []
+            {
+                new KeyValuePair<string, string>("NoCache", "0"),
+                new KeyValuePair<string, string>("Private", "1"),
+                new KeyValuePair<string, string>("Public", "2"),
+                new KeyValuePair<string, string>("Server", "3"),
+                new KeyValuePair<string, string>("ServerAndNoCache", "4"),
+                new KeyValuePair<string, string>("ServerAndPrivate", "5")
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCacheSettingOptions">
+          <declaration><![CDATA[public object GetCacheSettingOptions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="9" el="67" ec="10">Components\PerformanceSettings\PerformanceController.cs</location>
+            <body hash="0d9f5187f3a68f49ffc4940ed5aaebfe"><![CDATA[{
+            return new []
+            {
+                new KeyValuePair<string, int>("NoCaching", 0),
+                new KeyValuePair<string, int>("LightCaching", 1),
+                new KeyValuePair<string, int>("ModerateCaching", 3),
+                new KeyValuePair<string, int>("HeavyCaching", 6)
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCachingProvider">
+          <declaration><![CDATA[public string GetCachingProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="9" el="91" ec="10">Components\PerformanceSettings\PerformanceController.cs</location>
+            <body hash="083da83e8a8a7f2d9069895a0e60109e"><![CDATA[{
+            return ProviderConfiguration.GetProviderConfiguration("caching").DefaultProvider;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCachingProviderOptions">
+          <declaration><![CDATA[public IEnumerable<KeyValuePair<string, string>> GetCachingProviderOptions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="9" el="56" ec="10">Components\PerformanceSettings\PerformanceController.cs</location>
+            <body hash="b7d39ca7144876976fb12c84a57a5fd9"><![CDATA[{
+            var providers = ProviderConfiguration.GetProviderConfiguration("caching").Providers;
+
+            return (from object key in providers.Keys select new KeyValuePair<string, string>((string) key, (string) key)).ToList();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFilteredProviders">
+          <declaration><![CDATA[private IEnumerable<KeyValuePair<string, string>> GetFilteredProviders<T>(Dictionary<string, T> providerList, string keyFilter)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="9" el="86" ec="10">Components\PerformanceSettings\PerformanceController.cs</location>
+            <body hash="fa1746ed2cb98bc57764f592b046b9bc"><![CDATA[{
+            var providers = from provider in providerList let filteredkey = provider.Key.Replace(keyFilter, string.Empty) select new KeyValuePair<string, string> (filteredkey, provider.Key);
+            return providers;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetModuleCacheProviders">
+          <declaration><![CDATA[public IEnumerable<KeyValuePair<string, string>> GetModuleCacheProviders()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="9" el="44" ec="10">Components\PerformanceSettings\PerformanceController.cs</location>
+            <body hash="a05aac7b970180cff145871e7fb49b40"><![CDATA[{
+            return GetFilteredProviders(ModuleCachingProvider.GetProviderList(), "ModuleCachingProvider");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPageCacheProviders">
+          <declaration><![CDATA[public IEnumerable<KeyValuePair<string, string>> GetPageCacheProviders()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="9" el="49" ec="10">Components\PerformanceSettings\PerformanceController.cs</location>
+            <body hash="30654d9064f6c932bd18b6d235f56d27"><![CDATA[{
+            return GetFilteredProviders(OutputCachingProvider.GetProviderList(), "OutputCachingProvider");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPageStatePersistenceOptions">
+          <declaration><![CDATA[public object GetPageStatePersistenceOptions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="9" el="39" ec="10">Components\PerformanceSettings\PerformanceController.cs</location>
+            <body hash="cb01c94f35008774b310588c4577a3f7"><![CDATA[{
+            return new[]
+            {
+                new KeyValuePair<string, string>("Page", "P"),
+                new KeyValuePair<string, string>("Memory", "M")
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Servers.Components.WebServer">
+    <class name="ServerInfo">
+      <declaration><![CDATA[public class ServerInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServerInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Framework">
+          <declaration><![CDATA[public string Framework]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="36" el="32" ec="66">Components\WebServer\ServerInfo.cs</location>
+            <body hash="c3514103eafaa50dd517c8cd1bb726f6"><![CDATA[Environment.Version.ToString(]]></body>
+          </codeblock>
+        </property>
+        <property name="HostName">
+          <declaration><![CDATA[public string HostName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="35" el="34" ec="52">Components\WebServer\ServerInfo.cs</location>
+            <body hash="7391e37a8954c7e290e07aacb37858eb"><![CDATA[Dns.GetHostName(]]></body>
+          </codeblock>
+        </property>
+        <property name="Identity">
+          <declaration><![CDATA[public string Identity]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="35" el="36" ec="68">Components\WebServer\ServerInfo.cs</location>
+            <body hash="4ffb69a3ceef030f1e5a62d86aebd8af"><![CDATA[WindowsIdentity.GetCurrent().Nam]]></body>
+          </codeblock>
+        </property>
+        <property name="IISVersion">
+          <declaration><![CDATA[public string IISVersion]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="37" el="38" ec="99">Components\WebServer\ServerInfo.cs</location>
+            <body hash="09ef2b492eefb7b028be7c136d184f74"><![CDATA[HttpContext.Current.Request.ServerVariables["SERVER_SOFTWARE"]]></body>
+          </codeblock>
+        </property>
+        <property name="OSVersion">
+          <declaration><![CDATA[public string OSVersion]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="36" el="40" ec="68">Components\WebServer\ServerInfo.cs</location>
+            <body hash="131a372eeb33af31079704aabd0c42c5"><![CDATA[Environment.OSVersion.ToString(]]></body>
+          </codeblock>
+        </property>
+        <property name="PhysicalPath">
+          <declaration><![CDATA[public string PhysicalPath]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="39" el="42" ec="65">Components\WebServer\ServerInfo.cs</location>
+            <body hash="535233a629d668d1864148ff2f4c64ac"><![CDATA[Globals.ApplicationMapPat]]></body>
+          </codeblock>
+        </property>
+        <property name="RelativePath">
+          <declaration><![CDATA[public string RelativePath]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="39" el="46" ec="116">Components\WebServer\ServerInfo.cs</location>
+            <body hash="d0a67d0591262e1be0f0a5a5ba05db70"><![CDATA[string.IsNullOrEmpty(Globals.ApplicationPath) ? "/" : Globals.ApplicationPat]]></body>
+          </codeblock>
+        </property>
+        <property name="ServerTime">
+          <declaration><![CDATA[public string ServerTime]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="37" el="48" ec="60">Components\WebServer\ServerInfo.cs</location>
+            <body hash="718f3b1382083cc65385165a8203ef54"><![CDATA[DateTime.Now.ToString(]]></body>
+          </codeblock>
+        </property>
+        <property name="Url">
+          <declaration><![CDATA[public string Url]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="30" el="44" ec="80">Components\WebServer\ServerInfo.cs</location>
+            <body hash="8624b7673734be21588c4502bf33c821"><![CDATA[Globals.GetDomainName(HttpContext.Current.Request]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Servers.MenuControllers">
+    <class name="ServersMenuController">
+      <declaration><![CDATA[public class ServersMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServersMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="50" ec="10">MenuControllers\ServersMenuController.cs</location>
+            <body hash="5e6a32c66f78950353a635cf7f6ce282"><![CDATA[{
+            var settings = new Dictionary<string, object>
+            {
+                {"isHost", UserController.Instance.GetCurrentUserInfo().IsSuperUser}
+            };
+
+            return settings;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="9" el="34" ec="10">MenuControllers\ServersMenuController.cs</location>
+            <body hash="4a8f06184b6087940b8e4519251d0924"><![CDATA[{
+            
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="9" el="40" ec="10">MenuControllers\ServersMenuController.cs</location>
+            <body hash="d4c78a0d5351d270343f678a4a02cf22"><![CDATA[{
+            var user = UserController.Instance.GetCurrentUserInfo();
+            return user.IsSuperUser || user.IsInRole(PortalSettings.Current?.AdministratorRoleName);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Servers.Services">
+    <class name="ServerController">
+      <declaration><![CDATA[public class ServerController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServerController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ServerController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="43" ec="105">Services\ServerController.cs</location>
+            <body hash="2c2f2e35f6575905da4aa865914f364d"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ServerController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ClearCache">
+          <declaration><![CDATA[public HttpResponseMessage ClearCache()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="81" ec="10">Services\ServerController.cs</location>
+            <body hash="b4d9bf2f0dd896ee30c57bf11026497f"><![CDATA[{
+            try
+            {
+                DataCache.ClearCache();
+                ClientResourceManager.ClearCache();
+                return Request.CreateResponse(HttpStatusCode.OK, new {url = Globals.NavigateURL() });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RestartApplication">
+          <declaration><![CDATA[public HttpResponseMessage RestartApplication()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="9" el="64" ec="10">Services\ServerController.cs</location>
+            <body hash="364af6969b5056a13634280907231f76"><![CDATA[{
+            try
+            {
+                var log = new LogInfo { BypassBuffering = true, LogTypeKey = EventLogController.EventLogType.HOST_ALERT.ToString() };
+                log.AddProperty("Message", Localization.GetString("UserRestart", LocalResourceFile));
+                LogController.Instance.AddLog(log);
+                Config.Touch();
+                return Request.CreateResponse(HttpStatusCode.OK, new {url = Globals.NavigateURL()});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ServerController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="LocalResourceFile">
+          <declaration><![CDATA[internal static string LocalResourceFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="53" el="45" ec="158">Services\ServerController.cs</location>
+            <body hash="65da679eea994b850594c449eddb7a39"><![CDATA[Path.Combine("~/DesktopModules/admin/Dnn.PersonaBar/Modules/Dnn.Servers/App_LocalResources/Servers.resx"]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ServerSettingsLogsController">
+      <declaration><![CDATA[public class ServerSettingsLogsController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly LogController _logController = new LogController();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="41" ec="77">Services\ServerSettingsLogsController.cs</location>
+            <body hash="75614e926cf8786db39101dce4156f24"><![CDATA[private readonly LogController _logController = new LogController()]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ServerSettingsLogsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="40" ec="117">Services\ServerSettingsLogsController.cs</location>
+            <body hash="ff4f98eb7bbcebbcde7a99ad8e4bc2ee"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ServerSettingsLogsController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetLogFile">
+          <declaration><![CDATA[public HttpResponseMessage GetLogFile(string fileName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="84" ec="10">Services\ServerSettingsLogsController.cs</location>
+            <body hash="f6199cac5d63d9eb26a1f43319a1650f"><![CDATA[{
+            try
+            {
+                var logFilePath = Path.Combine(Globals.ApplicationMapPath, @"portals\_default\logs", fileName);
+                using (var reader = File.OpenText(logFilePath))
+                {
+                    var logText = reader.ReadToEnd();
+                    return Request.CreateResponse(HttpStatusCode.OK, logText);
+                }
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogs">
+          <declaration><![CDATA[public HttpResponseMessage GetLogs()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="65" ec="10">Services\ServerSettingsLogsController.cs</location>
+            <body hash="50440545f22ce77d173de9980f9291fb"><![CDATA[{
+            try
+            {
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        LogList = _logController.GetLogFilesList(),
+                        UpgradeLogList = _logController.GetUpgradeLogList()
+                    },
+                    TotalResults = 1
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUpgradeLogFile">
+          <declaration><![CDATA[public HttpResponseMessage GetUpgradeLogFile(string logName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="88" sc="9" el="111" ec="10">Services\ServerSettingsLogsController.cs</location>
+            <body hash="d845dae5863741a734b4bb614fd7af89"><![CDATA[{
+            try
+            {
+                var upgradeText = string.Empty;
+                var providerPath = DataProvider.Instance().GetProviderPath();
+                var logFilePath = Path.Combine(providerPath, logName + ".log.resources");
+                if (File.Exists(logFilePath))
+                {
+                    using (var reader = File.OpenText(logFilePath))
+                    {
+                        upgradeText = reader.ReadToEnd();
+                        upgradeText = upgradeText.Replace("\n", "<br>");
+                        reader.Close();
+                    }
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, upgradeText);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_logController">
+          <declaration><![CDATA[private readonly LogController _logController = new LogController();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ServerSettingsLogsController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ServerSettingsPerformanceController">
+      <declaration><![CDATA[public class ServerSettingsPerformanceController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly PerformanceController _performanceController = new PerformanceController();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="9" el="50" ec="101">Services\ServerSettingsPerformanceController.cs</location>
+            <body hash="730323860aed0a4ee688c5311645a2d7"><![CDATA[private readonly PerformanceController _performanceController = new PerformanceController()]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ServerSettingsPerformanceController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="49" ec="124">Services\ServerSettingsPerformanceController.cs</location>
+            <body hash="929cc35b697d795f0a06d3fb634dff77"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ServerSettingsPerformanceController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetPerformanceSettings">
+          <declaration><![CDATA[public HttpResponseMessage GetPerformanceSettings()]]></declaration>
+          <documentation>GET: api/Servers/GetPerformanceSettings
+ <summary>
+ Gets performance settings
+ </summary>
+ <param></param>
+ <returns>performance settings</returns></documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="103" ec="10">Services\ServerSettingsPerformanceController.cs</location>
+            <body hash="c0878f40396c99331ade01737a9b3c25"><![CDATA[{
+            try
+            {
+                var portalId = PortalSettings.Current.PortalId;
+                var perfSettings = new
+                {
+                    PortalName = PortalSettings.Current.PortalName,
+
+                    CachingProvider = _performanceController.GetCachingProvider(),
+                    PageStatePersistence = Host.PageStatePersister,
+                    ModuleCacheProvider = Host.ModuleCachingMethod,
+                    PageCacheProvider = Host.PageCachingMethod,
+                    CacheSetting = Host.PerformanceSetting,
+                    AuthCacheability = Host.AuthenticatedCacheability,
+                    UnauthCacheability = Host.UnauthenticatedCacheability,
+                    SslForCacheSynchronization = Host.UpgradeForceSsl,
+                    ClientResourcesManagementMode = PortalController.GetPortalSetting("ClientResourcesManagementMode", portalId, "h"),
+
+                    CurrentHostVersion = Host.CrmVersion.ToString(CultureInfo.InvariantCulture),
+                    HostEnableCompositeFiles = Host.CrmEnableCompositeFiles,
+                    HostMinifyCss = Host.CrmMinifyCss,
+                    HostMinifyJs = Host.CrmMinifyJs,
+                    CurrentPortalVersion = GetPortalVersion(portalId),
+                    PortalEnableCompositeFiles = Parse(PortalController.GetPortalSetting(ClientResourceSettings.EnableCompositeFilesKey, portalId, "false")),
+                    PortalMinifyCss = Parse(PortalController.GetPortalSetting(ClientResourceSettings.MinifyCssKey, portalId, "false")),
+                    PortalMinifyJs = Parse(PortalController.GetPortalSetting(ClientResourceSettings.MinifyJsKey, portalId, "false")),
+
+                    // Options
+                    CachingProviderOptions = _performanceController.GetCachingProviderOptions(),
+                    PageStatePersistenceOptions = _performanceController.GetPageStatePersistenceOptions(),
+                    ModuleCacheProviders = _performanceController.GetModuleCacheProviders(),
+                    PageCacheProviders = _performanceController.GetPageCacheProviders(),
+                    CacheSettingOptions = _performanceController.GetCacheSettingOptions(),
+                    AuthCacheabilityOptions = _performanceController.GetCacheabilityOptions(),
+                    UnauthCacheabilityOptions = _performanceController.GetCacheabilityOptions()
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, perfSettings);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalVersion">
+          <declaration><![CDATA[private int GetPortalVersion(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="106" sc="9" el="119" ec="10">Services\ServerSettingsPerformanceController.cs</location>
+            <body hash="ebdf591a1ecb82aa4b9e4ab8577a66b8"><![CDATA[{
+            var settingValue = PortalController.GetPortalSetting(ClientResourceSettings.VersionKey, portalId, "0");
+            int version;
+            if (int.TryParse(settingValue, out version))
+            {
+                if (version == 0)
+                {
+                    version = 1;
+                    PortalController.UpdatePortalSetting(portalId, ClientResourceSettings.VersionKey, "1", true);
+                }
+            }
+
+            return version;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IncrementHostVersion">
+          <declaration><![CDATA[public HttpResponseMessage IncrementHostVersion()]]></declaration>
+          <documentation>POST: api/Servers/IncrementHostVersion
+ <summary>
+ Increment host resources management version
+ </summary>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="154" sc="9" el="169" ec="2">Services\ServerSettingsPerformanceController.cs</location>
+            <body hash="85adf0c03dff7e54814af417c1f5c7bb"><![CDATA[{
+            try
+            {
+                var portalId = PortalSettings.Current.PortalId;
+                HostController.Instance.IncrementCrmVersion(false);
+                PortalController.UpdatePortalSetting(portalId, ClientResourceSettings.OverrideDefaultSettingsKey, FalseString, false);
+                PortalController.UpdatePortalSetting(portalId, "ClientResourcesManagementMode", "h", false);
+                DataCache.ClearCache();
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+}]]></body>
+          </codeblock>
+        </method>
+        <method name="IncrementPortalVersion">
+          <declaration><![CDATA[public HttpResponseMessage IncrementPortalVersion()]]></declaration>
+          <documentation>POST: api/Servers/IncrementPortalVersion
+ <summary>
+ Increment portal resources management version
+ </summary>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="129" sc="9" el="144" ec="10">Services\ServerSettingsPerformanceController.cs</location>
+            <body hash="737da50fb391c8cd3db9e1328fb88fb5"><![CDATA[{
+            try
+            { 
+                var portalId = PortalSettings.Current.PortalId;
+                PortalController.IncrementCrmVersion(portalId);
+                PortalController.UpdatePortalSetting(portalId, ClientResourceSettings.OverrideDefaultSettingsKey, TrueString, false);
+                PortalController.UpdatePortalSetting(portalId, "ClientResourcesManagementMode", "p", false);
+                DataCache.ClearCache();
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveCachingProvider">
+          <declaration><![CDATA[private void SaveCachingProvider(string cachingProvider)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="231" sc="9" el="241" ec="10">Services\ServerSettingsPerformanceController.cs</location>
+            <body hash="d2d56427294bc61342a214498177b000"><![CDATA[{
+            if (!string.IsNullOrEmpty(cachingProvider))
+            {
+                var xmlConfig = Config.Load();
+
+                var xmlCaching = xmlConfig.SelectSingleNode("configuration/dotnetnuke/caching");
+                XmlUtils.UpdateAttribute(xmlCaching, "defaultProvider", cachingProvider);
+
+                Config.Save(xmlConfig);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdatePerformanceSettings">
+          <declaration><![CDATA[public HttpResponseMessage UpdatePerformanceSettings(UpdatePerfSettingsRequest request)]]></declaration>
+          <documentation>POST: api/Servers/UpdatePerformanceSettings
+ <summary>
+ Updates performance settings
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="180" sc="9" el="228" ec="10">Services\ServerSettingsPerformanceController.cs</location>
+            <body hash="756a4c4b6983d031f3370be12c4d0530"><![CDATA[{
+            try
+            {
+                var portalId = PortalSettings.Current.PortalId;
+                SaveCachingProvider(request.CachingProvider);
+                HostController.Instance.Update("PageStatePersister", request.PageStatePersistence);
+                HostController.Instance.Update("ModuleCaching", request.ModuleCacheProvider, false);
+                if (_performanceController.GetPageCacheProviders().Any())
+                {
+                    HostController.Instance.Update("PageCaching", request.PageCacheProvider, false);
+                }
+                HostController.Instance.Update("PerformanceSetting", request.CacheSetting, false);
+
+                Globals.PerformanceSettings perfSetting;
+                Enum.TryParse(request.CacheSetting, false, out perfSetting);
+                Host.PerformanceSetting = perfSetting;
+
+                HostController.Instance.Update("AuthenticatedCacheability", request.AuthCacheability, false);
+                HostController.Instance.Update("UnauthenticatedCacheability", request.UnauthCacheability, false);
+
+                HostController.Instance.Update(UseSSLKey, request.SslForCacheSynchronization.ToString(), true);
+
+                PortalController.UpdatePortalSetting(portalId, "ClientResourcesManagementMode", request.ClientResourcesManagementMode, false);
+
+                if (request.ClientResourcesManagementMode == "h")
+                {
+                    PortalController.UpdatePortalSetting(portalId, ClientResourceSettings.OverrideDefaultSettingsKey, FalseString, false);
+                    HostController.Instance.Update(ClientResourceSettings.EnableCompositeFilesKey, request.HostEnableCompositeFiles.ToString(CultureInfo.InvariantCulture));
+                    HostController.Instance.Update(ClientResourceSettings.MinifyCssKey, request.HostMinifyCss.ToString(CultureInfo.InvariantCulture));
+                    HostController.Instance.Update(ClientResourceSettings.MinifyJsKey, request.HostMinifyJs.ToString(CultureInfo.InvariantCulture));
+                }
+                else
+                {
+                    PortalController.UpdatePortalSetting(portalId, ClientResourceSettings.OverrideDefaultSettingsKey, TrueString, false);
+                    PortalController.UpdatePortalSetting(portalId, ClientResourceSettings.EnableCompositeFilesKey, request.PortalEnableCompositeFiles.ToString(CultureInfo.InvariantCulture), false);
+                    PortalController.UpdatePortalSetting(portalId, ClientResourceSettings.MinifyCssKey, request.PortalMinifyCss.ToString(CultureInfo.InvariantCulture), false);
+                    PortalController.UpdatePortalSetting(portalId, ClientResourceSettings.MinifyJsKey, request.PortalMinifyJs.ToString(CultureInfo.InvariantCulture), false);
+                }
+
+                DataCache.ClearCache();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_performanceController">
+          <declaration><![CDATA[private readonly PerformanceController _performanceController = new PerformanceController();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ServerSettingsPerformanceController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="UseSSLKey">
+          <declaration><![CDATA[private const string UseSSLKey = "UseSSLForCacheSync";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ServerSettingsSmtpAdminController">
+      <declaration><![CDATA[public class ServerSettingsSmtpAdminController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServerSettingsSmtpAdminController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ServerSettingsSmtpAdminController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="9" el="46" ec="121">Services\ServerSettingsSmtpAdminController.cs</location>
+            <body hash="2ec3b19f6d175698f323695c67083d98"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ServerSettingsSmtpHostController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSmtpSettings">
+          <declaration><![CDATA[public HttpResponseMessage GetSmtpSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="9" el="78" ec="10">Services\ServerSettingsSmtpAdminController.cs</location>
+            <body hash="2632a06c16cdc9afe11d23a9aafed3db"><![CDATA[{
+            try
+            {
+                var portalId = PortalSettings.Current.PortalId;
+
+                var smtpSettings = new
+                {
+                    smtpServerMode = PortalController.GetPortalSetting("SMTPmode", portalId, "h"),
+                    host = new{},
+                    site = new
+                    {
+                        smtpServer = PortalController.GetPortalSetting("SMTPServer", portalId, string.Empty),
+                        smtpConnectionLimit = PortalController.GetPortalSettingAsInteger("SMTPConnectionLimit", portalId, 1),
+                        smtpMaxIdleTime = PortalController.GetPortalSettingAsInteger("SMTPMaxIdleTime", portalId, 0),
+                        smtpAuthentication = PortalController.GetPortalSetting("SMTPAuthentication", portalId, "0"),
+                        enableSmtpSsl = PortalController.GetPortalSetting("SMTPEnableSSL", portalId, string.Empty) == "Y",
+                        smtpUserName = PortalController.GetPortalSetting("SMTPUsername", portalId, string.Empty),
+                        smtpPassword = PortalController.GetEncryptedString("SMTPPassword", portalId, Config.GetDecryptionkey())
+                    },
+                    portalName = PortalSettings.Current.PortalName
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, smtpSettings);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SendTestEmail">
+          <declaration><![CDATA[public HttpResponseMessage SendTestEmail(SendTestEmailRequest request)]]></declaration>
+          <documentation>POST: api/Servers/SendTestEmail
+ <summary>
+ Tests SMTP settings
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="119" sc="9" el="157" ec="10">Services\ServerSettingsSmtpAdminController.cs</location>
+            <body hash="4d770be1c725d25c8fb174eedf2050b8"><![CDATA[{
+            try
+            {
+                var smtpHostMode = request.SmtpServerMode == "h";
+                var mailFrom = Host.HostEmail;
+                var mailTo = smtpHostMode ? Host.HostEmail : PortalSettings.UserInfo.Email;
+
+                var errMessage = Mail.SendMail(mailFrom,
+                    mailTo,
+                    "",
+                    "",
+                    MailPriority.Normal,
+                    Localization.GetSystemMessage(PortalSettings, "EMAIL_SMTP_TEST_SUBJECT"),
+                    MailFormat.Text,
+                    Encoding.UTF8,
+                    "",
+                    "",
+                    smtpHostMode ? HostController.Instance.GetString("SMTPServer") : request.SmtpServer,
+                    smtpHostMode ? HostController.Instance.GetString("SMTPAuthentication") : request.SmtpAuthentication.ToString(),
+                    smtpHostMode ? HostController.Instance.GetString("SMTPUsername") : request.SmtpUsername,
+                    smtpHostMode ? HostController.Instance.GetEncryptedString("SMTPPassword", Config.GetDecryptionkey()) : request.SmtpPassword,
+                    smtpHostMode ? HostController.Instance.GetBoolean("SMTPEnableSSL", false) : request.EnableSmtpSsl);
+
+                var success = string.IsNullOrEmpty(errMessage);
+                return Request.CreateResponse(success ? HttpStatusCode.OK : HttpStatusCode.BadRequest, new
+                {
+                    success,
+                    errMessage,
+                    confirmationMessage =
+                        string.Format(Localization.GetString("EmailSentMessage", Components.Constants.ServersResourcersPath),
+                        mailFrom, mailTo)
+                });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSmtpSettings">
+          <declaration><![CDATA[public HttpResponseMessage UpdateSmtpSettings(UpdateSmtpSettingsRequest request)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="9" el="108" ec="10">Services\ServerSettingsSmtpAdminController.cs</location>
+            <body hash="802c2ceeb03aa082187493e035b63637"><![CDATA[{
+            try
+            {
+                var portalId = PortalSettings.Current.PortalId;
+                PortalController.UpdatePortalSetting(portalId, "SMTPmode", request.SmtpServerMode, false);
+
+                //admins can only change site settings
+                PortalController.UpdatePortalSetting(portalId, "SMTPServer", request.SmtpServer, false);
+                PortalController.UpdatePortalSetting(portalId, "SMTPConnectionLimit", request.SmtpConnectionLimit, false);
+                PortalController.UpdatePortalSetting(portalId, "SMTPMaxIdleTime", request.SmtpMaxIdleTime, false);
+                PortalController.UpdatePortalSetting(portalId, "SMTPAuthentication",
+                    request.SmtpAuthentication.ToString(), false);
+                PortalController.UpdatePortalSetting(portalId, "SMTPUsername", request.SmtpUsername, false);
+                PortalController.UpdateEncryptedString(portalId, "SMTPPassword", request.SmtpPassword,
+                    Config.GetDecryptionkey());
+                PortalController.UpdatePortalSetting(portalId, "SMTPEnableSSL", request.EnableSmtpSsl ? "Y" : "N", false);
+
+                DataCache.ClearCache();
+                return Request.CreateResponse(HttpStatusCode.OK, new {success = true});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ServerSettingsSmtpHostController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ServerSettingsSmtpHostController">
+      <declaration><![CDATA[public class ServerSettingsSmtpHostController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServerSettingsSmtpHostController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ServerSettingsSmtpHostController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="45" ec="121">Services\ServerSettingsSmtpHostController.cs</location>
+            <body hash="2ec3b19f6d175698f323695c67083d98"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ServerSettingsSmtpHostController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSmtpPassword">
+          <declaration><![CDATA[private static string GetSmtpPassword()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="182" sc="9" el="203" ec="10">Services\ServerSettingsSmtpHostController.cs</location>
+            <body hash="f48bfd82726f048700c1a4c8b16e825f"><![CDATA[{
+            string decryptedText;
+            try
+            {
+                decryptedText = HostController.Instance.GetEncryptedString("SMTPPassword", Config.GetDecryptionkey());
+            }
+            catch (Exception)
+            {
+                //fixes case where smtppassword failed to encrypt due to failing upgrade
+                var current = HostController.Instance.GetString("SMTPPassword");
+                if (!string.IsNullOrEmpty(current))
+                {
+                    HostController.Instance.UpdateEncryptedString("SMTPPassword", current, Config.GetDecryptionkey());
+                    decryptedText = current;
+                }
+                else
+                {
+                    decryptedText = string.Empty;
+                }
+            }
+            return decryptedText;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSmtpSettings">
+          <declaration><![CDATA[public HttpResponseMessage GetSmtpSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="87" ec="10">Services\ServerSettingsSmtpHostController.cs</location>
+            <body hash="7874792acc7eaeaae2860334ffc2741b"><![CDATA[{
+            try
+            {
+                var portalId = PortalSettings.Current.PortalId;
+
+                var smtpSettings = new
+                {
+                    smtpServerMode = PortalController.GetPortalSetting("SMTPmode", portalId, "h"),
+                    host = new
+                    {
+                        smtpServer = HostController.Instance.GetString("SMTPServer"),
+                        smtpConnectionLimit = HostController.Instance.GetInteger("SMTPConnectionLimit", 1),
+                        smtpMaxIdleTime = HostController.Instance.GetInteger("SMTPMaxIdleTime", 0),
+                        smtpAuthentication = HostController.Instance.GetString("SMTPAuthentication"),
+                        enableSmtpSsl = HostController.Instance.GetBoolean("SMTPEnableSSL", false),
+                        smtpUserName = HostController.Instance.GetString("SMTPUsername"),
+                        smtpPassword = GetSmtpPassword(),
+                        messageSchedulerBatchSize = Host.MessageSchedulerBatchSize
+                    },
+                    site = new 
+                    {
+                        smtpServer = PortalController.GetPortalSetting("SMTPServer", portalId, string.Empty),
+                        smtpConnectionLimit = PortalController.GetPortalSettingAsInteger("SMTPConnectionLimit", portalId, 1),
+                        smtpMaxIdleTime = PortalController.GetPortalSettingAsInteger("SMTPMaxIdleTime", portalId, 0),
+                        smtpAuthentication = PortalController.GetPortalSetting("SMTPAuthentication", portalId, "0"),
+                        enableSmtpSsl = PortalController.GetPortalSetting("SMTPEnableSSL", portalId, string.Empty) == "Y",
+                        smtpUserName = PortalController.GetPortalSetting("SMTPUsername", portalId, string.Empty),
+                        smtpPassword = PortalController.GetEncryptedString("SMTPPassword", portalId, Config.GetDecryptionkey())
+                    },
+                    portalName = PortalSettings.Current.PortalName
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, smtpSettings);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SendTestEmail">
+          <declaration><![CDATA[public HttpResponseMessage SendTestEmail(SendTestEmailRequest request)]]></declaration>
+          <documentation>POST: api/Servers/SendTestEmail
+ <summary>
+ Tests SMTP settings
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="142" sc="9" el="179" ec="10">Services\ServerSettingsSmtpHostController.cs</location>
+            <body hash="93b19202b755161490c0a4f3a984a804"><![CDATA[{
+            try
+            {
+                var mailFrom = Host.HostEmail;
+                var mailTo = request.SmtpServerMode == "h" ? Host.HostEmail : PortalSettings.UserInfo.Email;
+
+                var errMessage = Mail.SendMail(mailFrom,
+                    mailTo,
+                    "",
+                    "",
+                    MailPriority.Normal,
+                    Localization.GetSystemMessage(PortalSettings, "EMAIL_SMTP_TEST_SUBJECT"),
+                    MailFormat.Text,
+                    Encoding.UTF8,
+                    "",
+                    "",
+                    request.SmtpServer,
+                    request.SmtpAuthentication.ToString(),
+                    request.SmtpUsername,
+                    request.SmtpPassword,
+                    request.EnableSmtpSsl);
+
+                var success = string.IsNullOrEmpty(errMessage);
+                return Request.CreateResponse(success ? HttpStatusCode.OK : HttpStatusCode.BadRequest, new
+                {
+                    success,
+                    errMessage,
+                    confirmationMessage = success ?
+                        string.Format(Localization.GetString("EmailSentMessage", Components.Constants.ServersResourcersPath),
+                        mailFrom, mailTo) : Localization.GetString("errorMessageSendingTestEmail")
+                });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSmtpSettings">
+          <declaration><![CDATA[public HttpResponseMessage UpdateSmtpSettings(UpdateSmtpSettingsRequest request)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="131" ec="10">Services\ServerSettingsSmtpHostController.cs</location>
+            <body hash="624716229a0f632cf9e5b838887ee5cb"><![CDATA[{
+            try
+            {
+                var portalId = PortalSettings.Current.PortalId;
+                PortalController.UpdatePortalSetting(portalId, "SMTPmode", request.SmtpServerMode, false);
+
+                if (request.SmtpServerMode == "h")
+                {
+                    HostController.Instance.Update("SMTPServer", request.SmtpServer, false);
+                    HostController.Instance.Update("SMTPConnectionLimit", request.SmtpConnectionLimit, false);
+                    HostController.Instance.Update("SMTPMaxIdleTime", request.SmtpMaxIdleTime, false);
+                    HostController.Instance.Update("SMTPAuthentication", request.SmtpAuthentication.ToString(), false);
+                    HostController.Instance.Update("SMTPUsername", request.SmtpUsername, false);
+                    HostController.Instance.UpdateEncryptedString("SMTPPassword", request.SmtpPassword,
+                        Config.GetDecryptionkey());
+                    HostController.Instance.Update("SMTPEnableSSL", request.EnableSmtpSsl ? "Y" : "N", false);
+                    HostController.Instance.Update("MessageSchedulerBatchSize",
+                        request.MessageSchedulerBatchSize.ToString(), false);
+                }
+                else
+                {
+                    PortalController.UpdatePortalSetting(portalId, "SMTPServer", request.SmtpServer, false);
+                    PortalController.UpdatePortalSetting(portalId, "SMTPConnectionLimit", request.SmtpConnectionLimit, false);
+                    PortalController.UpdatePortalSetting(portalId, "SMTPMaxIdleTime", request.SmtpMaxIdleTime, false);
+                    PortalController.UpdatePortalSetting(portalId, "SMTPAuthentication",
+                        request.SmtpAuthentication.ToString(), false);
+                    PortalController.UpdatePortalSetting(portalId, "SMTPUsername", request.SmtpUsername, false);
+                    PortalController.UpdateEncryptedString(portalId, "SMTPPassword", request.SmtpPassword, Config.GetDecryptionkey());
+                    PortalController.UpdatePortalSetting(portalId, "SMTPEnableSSL", request.EnableSmtpSsl ? "Y" : "N", false);
+                }
+
+                DataCache.ClearCache();
+                return Request.CreateResponse(HttpStatusCode.OK, new {success = true});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ServerSettingsSmtpHostController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SystemInfoApplicationAdminController">
+      <declaration><![CDATA[public class SystemInfoApplicationAdminController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SystemInfoApplicationAdminController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static SystemInfoApplicationAdminController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="41" ec="125">Services\SystemInfoApplicationAdminController.cs</location>
+            <body hash="870cdb023773c305c615f9f9724a963b"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SystemInfoApplicationAdminController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="FirstCharToUpper">
+          <declaration><![CDATA[public static string FirstCharToUpper(string input)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="85" sc="9" el="91" ec="10">Services\SystemInfoApplicationAdminController.cs</location>
+            <body hash="2c05067f3c6434a9d0b1af05e160d053"><![CDATA[{
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+            return input.First().ToString().ToUpper() + string.Join("", input.Skip(1));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetApplicationInfo">
+          <declaration><![CDATA[public HttpResponseMessage GetApplicationInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="70" ec="10">Services\SystemInfoApplicationAdminController.cs</location>
+            <body hash="42d6ee7beaf136df4766f7379641f988"><![CDATA[{
+            try
+            {
+                var friendlyUrlProvider = GetProviderConfiguration("friendlyUrl");
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    product = DotNetNukeContext.Current.Application.Description,
+                    version = DotNetNukeContext.Current.Application.Version.ToString(3),
+                    htmlEditorProvider = GetProviderConfiguration("htmlEditor"),
+                    dataProvider = GetProviderConfiguration("data"),
+                    cachingProvider = GetProviderConfiguration("caching"),
+                    loggingProvider = GetProviderConfiguration("logging"),
+                    friendlyUrlProvider,
+                    friendlyUrlsEnabled = DotNetNuke.Entities.Host.Host.UseFriendlyUrls.ToString(),
+                    friendlyUrlType = GetFriendlyUrlType(friendlyUrlProvider),
+                    schedulerMode = DotNetNuke.Entities.Host.Host.SchedulerMode.ToString(),
+                    webFarmEnabled = DotNetNuke.Services.Cache.CachingProvider.Instance().IsWebFarm().ToString(),
+                    casPermissions = SecurityPolicy.Permissions
+                });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFriendlyUrlType">
+          <declaration><![CDATA[private static string GetFriendlyUrlType(string friendlyUrlProvider)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="82" ec="10">Services\SystemInfoApplicationAdminController.cs</location>
+            <body hash="7b7d09b9bf867a8d2cdd320be01513ea"><![CDATA[{
+            var urlProvider = (Provider)ProviderConfiguration.GetProviderConfiguration("friendlyUrl").Providers[friendlyUrlProvider];
+            var urlFormat = urlProvider.Attributes["urlformat"];
+            return string.IsNullOrWhiteSpace(urlFormat) ? "SearchFriendly" : FirstCharToUpper(urlFormat);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetProviderConfiguration">
+          <declaration><![CDATA[private string GetProviderConfiguration(string providerName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="9" el="75" ec="10">Services\SystemInfoApplicationAdminController.cs</location>
+            <body hash="05b55635a645c80f2c6669adbcda165f"><![CDATA[{
+            return ProviderConfiguration.GetProviderConfiguration(providerName).DefaultProvider;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SystemInfoApplicationAdminController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SystemInfoApplicationHostController">
+      <declaration><![CDATA[public class SystemInfoApplicationHostController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SystemInfoApplicationHostController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static SystemInfoApplicationHostController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="40" ec="124">Services\SystemInfoApplicationHostController.cs</location>
+            <body hash="b62e5a8753bf9c8ada9093c70541da06"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SystemInfoApplicationHostController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="FirstCharToUpper">
+          <declaration><![CDATA[public static string FirstCharToUpper(string input)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="85" sc="9" el="91" ec="10">Services\SystemInfoApplicationHostController.cs</location>
+            <body hash="2c05067f3c6434a9d0b1af05e160d053"><![CDATA[{
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+            return input.First().ToString().ToUpper() + string.Join("", input.Skip(1));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetApplicationInfo">
+          <declaration><![CDATA[public HttpResponseMessage GetApplicationInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="9" el="70" ec="10">Services\SystemInfoApplicationHostController.cs</location>
+            <body hash="3aa0914f2d8fc22a1e63bff31ed59071"><![CDATA[{
+            try
+            {
+                var friendlyUrlProvider = GetProviderConfiguration("friendlyUrl");
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                   product = DotNetNukeContext.Current.Application.Description,
+                   version = DotNetNukeContext.Current.Application.Version.ToString(3),
+                   guid = DotNetNuke.Entities.Host.Host.GUID,
+                   htmlEditorProvider = GetProviderConfiguration("htmlEditor"),
+                   dataProvider = GetProviderConfiguration("data"),
+                   cachingProvider = GetProviderConfiguration("caching"),
+                   loggingProvider = GetProviderConfiguration("logging"),
+                   friendlyUrlProvider,
+                   friendlyUrlsEnabled = DotNetNuke.Entities.Host.Host.UseFriendlyUrls.ToString(),
+                   friendlyUrlType = GetFriendlyUrlType(friendlyUrlProvider),
+                   schedulerMode = DotNetNuke.Entities.Host.Host.SchedulerMode.ToString(),
+                   webFarmEnabled = DotNetNuke.Services.Cache.CachingProvider.Instance().IsWebFarm().ToString(),
+                   casPermissions = SecurityPolicy.Permissions
+                });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFriendlyUrlType">
+          <declaration><![CDATA[private static string GetFriendlyUrlType(string friendlyUrlProvider)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="82" ec="10">Services\SystemInfoApplicationHostController.cs</location>
+            <body hash="c630b8859d09f6bff1fe7c83cfdc5f25"><![CDATA[{
+            var urlProvider = (Provider) ProviderConfiguration.GetProviderConfiguration("friendlyUrl").Providers[friendlyUrlProvider];
+            var urlFormat = urlProvider.Attributes["urlformat"];
+            return string.IsNullOrWhiteSpace(urlFormat) ? "SearchFriendly" : FirstCharToUpper(urlFormat);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetProviderConfiguration">
+          <declaration><![CDATA[private string GetProviderConfiguration(string providerName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="9" el="75" ec="10">Services\SystemInfoApplicationHostController.cs</location>
+            <body hash="05b55635a645c80f2c6669adbcda165f"><![CDATA[{
+            return ProviderConfiguration.GetProviderConfiguration(providerName).DefaultProvider;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SystemInfoApplicationHostController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SystemInfoDatabaseController">
+      <declaration><![CDATA[public class SystemInfoDatabaseController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly DatabaseController _databaseController = new DatabaseController();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="39" ec="92">Services\SystemInfoDatabaseController.cs</location>
+            <body hash="200c688884dbce3419005e8fdd91cf87"><![CDATA[private readonly DatabaseController _databaseController = new DatabaseController()]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static SystemInfoDatabaseController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="9" el="38" ec="117">Services\SystemInfoDatabaseController.cs</location>
+            <body hash="df055cf25664ce481e18cf6aa620c0a1"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SystemInfoDatabaseController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetDatabaseServerInfo">
+          <declaration><![CDATA[public HttpResponseMessage GetDatabaseServerInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="78" ec="10">Services\SystemInfoDatabaseController.cs</location>
+            <body hash="8f841ec5c4e2b7a675d5d34606aafa3c"><![CDATA[{
+            try
+            {
+                var dbInfo = _databaseController.GetDbInfo();
+                var dbBackups = _databaseController.GetDbBackups().Select(b => new
+                {
+                    name = b.Name,
+                    startDate = b.StartDate,
+                    finishDate = b.FinishDate,
+                    size = b.Size,
+                    backupType = b.BackupType
+                });
+                var dbFileInfo = _databaseController.GetDbFileInfo().Select(f => new
+                {
+                    name = f.Name,
+                    size = f.Megabytes,
+                    fileType = f.FileType,
+                    fileName = f.ShortFileName
+                });
+
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    productVersion = dbInfo.ProductVersion,
+                    servicePack = dbInfo.ServicePack,
+                    productEdition = dbInfo.ProductEdition,
+                    softwarePlatform = dbInfo.SoftwarePlatform,
+                    backups = dbBackups,
+                    files = dbFileInfo
+                });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_databaseController">
+          <declaration><![CDATA[private readonly DatabaseController _databaseController = new DatabaseController();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SystemInfoDatabaseController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SystemInfoWebController">
+      <declaration><![CDATA[public class SystemInfoWebController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SystemInfoWebController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static SystemInfoWebController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="9" el="37" ec="112">Services\SystemInfoWebController.cs</location>
+            <body hash="66446f681dcd55168350995dcab1e50a"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SystemInfoWebController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetWebServerInfo">
+          <declaration><![CDATA[public HttpResponseMessage GetWebServerInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="63" ec="10">Services\SystemInfoWebController.cs</location>
+            <body hash="cb3ec77feea6caf248eafd30e798ade1"><![CDATA[{
+            try
+            {
+                var serverInfo = new ServerInfo();
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    osVersion = serverInfo.OSVersion,
+                    iisVersion = serverInfo.IISVersion,
+                    framework = serverInfo.Framework,
+                    identity = serverInfo.Identity,
+                    hostName = serverInfo.HostName,
+                    physicalPath = serverInfo.PhysicalPath,
+                    url = serverInfo.Url,
+                    relativePath = serverInfo.RelativePath,
+                    serverTime = serverInfo.ServerTime
+                });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SystemInfoWebController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Servers.Services.Dto">
+    <class name="SendTestEmailRequest">
+      <declaration><![CDATA[public class SendTestEmailRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SendTestEmailRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="EnableSmtpSsl">
+          <declaration><![CDATA[public bool EnableSmtpSsl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="37" el="36" ec="41">Services\Dto\SendTestEmailRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="36" sc="42" el="36" ec="46">Services\Dto\SendTestEmailRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SmtpAuthentication">
+          <declaration><![CDATA[public int SmtpAuthentication]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="41" el="30" ec="45">Services\Dto\SendTestEmailRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="30" sc="46" el="30" ec="50">Services\Dto\SendTestEmailRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SmtpPassword">
+          <declaration><![CDATA[public string SmtpPassword]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="38" el="34" ec="42">Services\Dto\SendTestEmailRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="34" sc="43" el="34" ec="47">Services\Dto\SendTestEmailRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SmtpServer">
+          <declaration><![CDATA[public string SmtpServer]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="36" el="28" ec="40">Services\Dto\SendTestEmailRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="28" sc="41" el="28" ec="45">Services\Dto\SendTestEmailRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SmtpServerMode">
+          <declaration><![CDATA[public string SmtpServerMode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="26" sc="40" el="26" ec="44">Services\Dto\SendTestEmailRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="26" sc="45" el="26" ec="49">Services\Dto\SendTestEmailRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SmtpUsername">
+          <declaration><![CDATA[public string SmtpUsername]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="38" el="32" ec="42">Services\Dto\SendTestEmailRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="32" sc="43" el="32" ec="47">Services\Dto\SendTestEmailRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateCachingSettingsRequest">
+      <declaration><![CDATA[public class UpdateCachingSettingsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateCachingSettingsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CachingProvider">
+          <declaration><![CDATA[public string CachingProvider]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="26" sc="41" el="26" ec="45">Services\Dto\UpdateCachingSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="26" sc="46" el="26" ec="50">Services\Dto\UpdateCachingSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UseSSL">
+          <declaration><![CDATA[public bool UseSSL]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="30" el="28" ec="34">Services\Dto\UpdateCachingSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="28" sc="35" el="28" ec="39">Services\Dto\UpdateCachingSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdatePerfSettingsRequest">
+      <declaration><![CDATA[public class UpdatePerfSettingsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdatePerfSettingsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AuthCacheability">
+          <declaration><![CDATA[public string AuthCacheability]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="42" el="35" ec="46">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="35" sc="47" el="35" ec="51">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CacheSetting">
+          <declaration><![CDATA[public string CacheSetting]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="38" el="33" ec="42">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="33" sc="43" el="33" ec="47">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CachingProvider">
+          <declaration><![CDATA[public string CachingProvider]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="26" sc="41" el="26" ec="45">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="26" sc="46" el="26" ec="50">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ClientResourcesManagementMode">
+          <declaration><![CDATA[public string ClientResourcesManagementMode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="55" el="39" ec="59">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="39" sc="60" el="39" ec="64">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CurrentHostVersion">
+          <declaration><![CDATA[public string CurrentHostVersion]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="44" el="40" ec="48">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="40" sc="49" el="40" ec="53">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CurrentPortalVersion">
+          <declaration><![CDATA[public string CurrentPortalVersion]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="38" el="44" ec="42">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="44" sc="43" el="44" ec="47">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="HostEnableCompositeFiles">
+          <declaration><![CDATA[public bool HostEnableCompositeFiles]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="48" el="41" ec="52">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="41" sc="53" el="41" ec="57">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="HostMinifyCss">
+          <declaration><![CDATA[public bool HostMinifyCss]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="37" el="42" ec="41">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="42" sc="42" el="42" ec="46">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="HostMinifyJs">
+          <declaration><![CDATA[public bool HostMinifyJs]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="36" el="43" ec="40">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="41" el="43" ec="45">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ModuleCacheProvider">
+          <declaration><![CDATA[public string ModuleCacheProvider]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="45" el="29" ec="49">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="29" sc="50" el="29" ec="54">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PageCacheProvider">
+          <declaration><![CDATA[public string PageCacheProvider]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="43" el="31" ec="47">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="31" sc="48" el="31" ec="52">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PageStatePersistence">
+          <declaration><![CDATA[public string PageStatePersistence]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="46" el="27" ec="50">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="27" sc="51" el="27" ec="55">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalEnableCompositeFiles">
+          <declaration><![CDATA[public bool PortalEnableCompositeFiles]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="50" el="45" ec="54">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="45" sc="55" el="45" ec="59">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalMinifyCss">
+          <declaration><![CDATA[public bool PortalMinifyCss]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="39" el="46" ec="43">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="46" sc="44" el="46" ec="48">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalMinifyJs">
+          <declaration><![CDATA[public bool PortalMinifyJs]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="38" el="47" ec="42">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="47" sc="43" el="47" ec="47">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SslForCacheSynchronization">
+          <declaration><![CDATA[public bool SslForCacheSynchronization]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="50" el="38" ec="54">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="38" sc="55" el="38" ec="59">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UnauthCacheability">
+          <declaration><![CDATA[public string UnauthCacheability]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="44" el="37" ec="48">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="49" el="37" ec="53">Services\Dto\UpdatePerfSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateSmtpSettingsRequest">
+      <declaration><![CDATA[public class UpdateSmtpSettingsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateSmtpSettingsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="EnableSmtpSsl">
+          <declaration><![CDATA[public bool EnableSmtpSsl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="37" el="40" ec="41">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="40" sc="42" el="40" ec="46">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="MessageSchedulerBatchSize">
+          <declaration><![CDATA[public int MessageSchedulerBatchSize]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="48" el="42" ec="52">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="42" sc="53" el="42" ec="57">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SmtpAuthentication">
+          <declaration><![CDATA[public int SmtpAuthentication]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="41" el="34" ec="45">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="34" sc="46" el="34" ec="50">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SmtpConnectionLimit">
+          <declaration><![CDATA[public string SmtpConnectionLimit]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="45" el="30" ec="49">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="30" sc="50" el="30" ec="54">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SmtpMaxIdleTime">
+          <declaration><![CDATA[public string SmtpMaxIdleTime]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="41" el="32" ec="45">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="32" sc="46" el="32" ec="50">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SmtpPassword">
+          <declaration><![CDATA[public string SmtpPassword]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="38" el="38" ec="42">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="38" sc="43" el="38" ec="47">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SmtpServer">
+          <declaration><![CDATA[public string SmtpServer]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="36" el="28" ec="40">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="28" sc="41" el="28" ec="45">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SmtpServerMode">
+          <declaration><![CDATA[public string SmtpServerMode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="26" sc="40" el="26" ec="44">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="26" sc="45" el="26" ec="49">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SmtpUsername">
+          <declaration><![CDATA[public string SmtpUsername]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="38" el="36" ec="42">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="36" sc="43" el="36" ec="47">Services\Dto\UpdateSMTPSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateSSLOffloadHeaderRequest">
+      <declaration><![CDATA[public class UpdateSSLOffloadHeaderRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateSSLOffloadHeaderRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="SSLOffloadHeader">
+          <declaration><![CDATA[public string SSLOffloadHeader]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="26" sc="42" el="26" ec="46">Services\Dto\UpdateSSLOffloadHeaderRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="26" sc="47" el="26" ec="51">Services\Dto\UpdateSSLOffloadHeaderRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

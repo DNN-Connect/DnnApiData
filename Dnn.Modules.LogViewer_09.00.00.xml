@@ -1,0 +1,1723 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.Modules.LogViewer.dll" version="09.00.00" generated="2017-06-19 23:55:20Z" generationTime="2.6215437">
+  <namespace name="">
+    <class name="&lt;PrivateImplementationDetails&gt;">
+      <declaration><![CDATA[internal sealed class <PrivateImplementationDetails>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="1456763F890A84558F99AFA687C36B9037697848">
+          <declaration><![CDATA[internal static readonly <PrivateImplementationDetails>.__StaticArrayInitTypeSize=16 1456763F890A84558F99AFA687C36B9037697848;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="E63479360E61B6F9A95AC1024468063BAA5E7908">
+          <declaration><![CDATA[internal static readonly <PrivateImplementationDetails>.__StaticArrayInitTypeSize=44 E63479360E61B6F9A95AC1024468063BAA5E7908;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="E6504EB4416888183FB64295F3AD737955A446DB">
+          <declaration><![CDATA[internal static readonly <PrivateImplementationDetails>.__StaticArrayInitTypeSize=40 E6504EB4416888183FB64295F3AD737955A446DB;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="FC5E8879B367A393776AC76A3029C61586DFED7D">
+          <declaration><![CDATA[internal static readonly <PrivateImplementationDetails>.__StaticArrayInitTypeSize=60 FC5E8879B367A393776AC76A3029C61586DFED7D;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.LogViewer">
+    <class name="EditLogTypes">
+      <declaration><![CDATA[public class EditLogTypes : PortalModuleBase, IActionable]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ Project	 : DotNetNuke
+ Class	 : EditLogTypes
+
+ -----------------------------------------------------------------------------
+ <summary>
+ Manage the Log Types for the portal
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditLogTypes()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindDetailData">
+          <declaration><![CDATA[private void BindDetailData()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="80" sc="9" el="135" ec="10">EditLogTypes.ascx.cs</location>
+            <body hash="11b75a1be9b2daf987d79158997580ff"><![CDATA[{
+            cboLogTypePortalID.DataTextField = "PortalName";
+            cboLogTypePortalID.DataValueField = "PortalID";
+            cboLogTypePortalID.DataSource = PortalController.Instance.GetPortals();
+            cboLogTypePortalID.DataBind();
+
+// ReSharper disable LocalizableElement
+            var i = new DnnComboBoxItem{Text = Localization.GetString("All"), Value = "*"};
+// ReSharper restore LocalizableElement
+            cboLogTypePortalID.Items.Insert(0, i);
+
+
+            pnlEditLogTypeConfigInfo.Visible = true;
+            pnlLogTypeConfigInfo.Visible = false;
+
+            var arrLogTypeInfo = LogController.Instance.GetLogTypeInfoDictionary().Values.OrderBy(t => t.LogTypeFriendlyName);
+
+            cboLogTypeKey.DataTextField = "LogTypeFriendlyName";
+            cboLogTypeKey.DataValueField = "LogTypeKey";
+            cboLogTypeKey.DataSource = arrLogTypeInfo;
+            cboLogTypeKey.DataBind();
+
+            int[] items = {1, 2, 3, 4, 5, 10, 25, 100, 250, 500};
+            cboKeepMostRecent.Items.Clear();
+            cboKeepMostRecent.Items.Add(new DnnComboBoxItem(Localization.GetString("All"), "*"));
+            foreach (int item in items)
+            {
+                cboKeepMostRecent.Items.Add(item == 1
+                                                ? new DnnComboBoxItem(item + Localization.GetString("LogEntry", LocalResourceFile), item.ToString(CultureInfo.InvariantCulture))
+                                                : new DnnComboBoxItem(item + Localization.GetString("LogEntries", LocalResourceFile), item.ToString(CultureInfo.InvariantCulture)));
+            }
+            int[] items2 = {1, 2, 3, 4, 5, 10, 25, 100, 250, 500, 1000};
+            cboThreshold.Items.Clear();
+            foreach (int item in items2)
+            {
+                cboThreshold.Items.Add(item == 1
+                                           ? new DnnComboBoxItem(item + Localization.GetString("Occurence", LocalResourceFile), item.ToString(CultureInfo.InvariantCulture))
+                                           : new DnnComboBoxItem(item + Localization.GetString("Occurences", LocalResourceFile), item.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            cboThresholdNotificationTime.Items.Clear();
+            foreach (int item in new []{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 60, 90, 120})
+            {
+                cboThresholdNotificationTime.Items.Add(new DnnComboBoxItem(item.ToString(CultureInfo.InvariantCulture), item.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            cboThresholdNotificationTimeType.Items.Clear();
+            foreach (int item in new[] { 1, 2, 3, 4 })
+            {
+                cboThresholdNotificationTimeType.Items.Add(new DnnComboBoxItem(Localization.GetString(string.Format("TimeType_{0}", item), LocalResourceFile), item.ToString(CultureInfo.InvariantCulture)));
+            }
+// ReSharper disable LocalizableElement
+            var j = new DnnComboBoxItem{Text = Localization.GetString("All"), Value = "*"};
+// ReSharper restore LocalizableElement
+            cboLogTypeKey.Items.Insert(0, j);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BindSummaryData">
+          <declaration><![CDATA[private void BindSummaryData()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="138" sc="9" el="145" ec="10">EditLogTypes.ascx.cs</location>
+            <body hash="6d1acc846e8e3a93f8bb2a24f4c86d0f"><![CDATA[{
+            ArrayList arrLogTypeConfigInfo = LogController.Instance.GetLogTypeConfigInfo();
+
+            dgLogTypeConfigInfo.DataSource = arrLogTypeConfigInfo;
+            dgLogTypeConfigInfo.DataBind();
+            pnlEditLogTypeConfigInfo.Visible = false;
+            pnlLogTypeConfigInfo.Visible = true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ChkEmailNotificationStatusCheckedChanged">
+          <declaration><![CDATA[protected void ChkEmailNotificationStatusCheckedChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="313" sc="9" el="316" ec="10">EditLogTypes.ascx.cs</location>
+            <body hash="8e94a8822dc076613a0e60ef733aafe1"><![CDATA[{
+            // TODO: Revisit
+            DisableNotificationControls();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ChkIsActiveCheckedChanged">
+          <declaration><![CDATA[protected void ChkIsActiveCheckedChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="319" sc="9" el="322" ec="10">EditLogTypes.ascx.cs</location>
+            <body hash="bc265fd530af80efd2534dc7f7b285dc"><![CDATA[{
+            // TODO: Revisit
+            DisableLoggingControls();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DgLogTypeConfigInfoEditCommand">
+          <declaration><![CDATA[protected void DgLogTypeConfigInfoEditCommand(object source, GridCommandEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="325" sc="9" el="373" ec="10">EditLogTypes.ascx.cs</location>
+            <body hash="4c21291b944cc08bf5c6123a41a4278d"><![CDATA[{
+            var logID = Convert.ToString(((GridDataItem)e.Item).GetDataKeyValue("ID"));
+            ViewState["LogID"] = logID;
+
+            BindDetailData();
+
+            LogTypeConfigInfo objLogTypeConfigInfo = LogController.Instance.GetLogTypeConfigInfoByID(logID);
+
+            chkIsActive.Checked = objLogTypeConfigInfo.LoggingIsActive;
+            chkEmailNotificationStatus.Checked = objLogTypeConfigInfo.EmailNotificationIsActive;
+
+            if (cboLogTypeKey.FindItemByValue(objLogTypeConfigInfo.LogTypeKey) != null)
+            {
+                cboLogTypeKey.ClearSelection();
+                cboLogTypeKey.FindItemByValue(objLogTypeConfigInfo.LogTypeKey).Selected = true;
+            }
+            if (cboLogTypePortalID.FindItemByValue(objLogTypeConfigInfo.LogTypePortalID) != null)
+            {
+                cboLogTypePortalID.ClearSelection();
+                cboLogTypePortalID.FindItemByValue(objLogTypeConfigInfo.LogTypePortalID).Selected = true;
+            }
+            if (cboKeepMostRecent.FindItemByValue(objLogTypeConfigInfo.KeepMostRecent) != null)
+            {
+                cboKeepMostRecent.ClearSelection();
+                cboKeepMostRecent.FindItemByValue(objLogTypeConfigInfo.KeepMostRecent).Selected = true;
+            }
+            if (cboThreshold.FindItemByValue(objLogTypeConfigInfo.NotificationThreshold.ToString(CultureInfo.InvariantCulture)) != null)
+            {
+                cboThreshold.ClearSelection();
+                cboThreshold.FindItemByValue(objLogTypeConfigInfo.NotificationThreshold.ToString(CultureInfo.InvariantCulture)).Selected = true;
+            }
+            if (cboThresholdNotificationTime.FindItemByValue(objLogTypeConfigInfo.NotificationThresholdTime.ToString(CultureInfo.InvariantCulture)) != null)
+            {
+                cboThresholdNotificationTime.ClearSelection();
+                cboThresholdNotificationTime.FindItemByValue(objLogTypeConfigInfo.NotificationThresholdTime.ToString(CultureInfo.InvariantCulture)).Selected = true;
+            }
+            if (cboThresholdNotificationTimeType.FindItemByText(objLogTypeConfigInfo.NotificationThresholdTimeType.ToString()) != null)
+            {
+                cboThresholdNotificationTimeType.ClearSelection();
+                cboThresholdNotificationTimeType.FindItemByText(objLogTypeConfigInfo.NotificationThresholdTimeType.ToString()).Selected = true;
+            }
+            txtMailFromAddress.Text = objLogTypeConfigInfo.MailFromAddress;
+            txtMailToAddress.Text = objLogTypeConfigInfo.MailToAddress;
+
+            DisableLoggingControls();
+            DisableNotificationControls();
+
+            e.Canceled = true; //disable inline editing in grid
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DisableLoggingControls">
+          <declaration><![CDATA[private void DisableLoggingControls()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="148" sc="9" el="161" ec="10">EditLogTypes.ascx.cs</location>
+            <body hash="6dab0f91a4827fc989243b1a4fdfe971"><![CDATA[{
+            if (chkIsActive.Checked)
+            {
+                cboLogTypeKey.Enabled = true;
+                cboLogTypePortalID.Enabled = true;
+                cboKeepMostRecent.Enabled = true;
+            }
+            else
+            {
+                cboLogTypeKey.Enabled = false;
+                cboLogTypePortalID.Enabled = false;
+                cboKeepMostRecent.Enabled = false;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DisableNotificationControls">
+          <declaration><![CDATA[private void DisableNotificationControls()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="164" sc="9" el="181" ec="10">EditLogTypes.ascx.cs</location>
+            <body hash="e1469f4bc25d8cd5059372760fafcc0a"><![CDATA[{
+            if (chkEmailNotificationStatus.Checked)
+            {
+                cboThreshold.Enabled = true;
+                cboThresholdNotificationTime.Enabled = true;
+                cboThresholdNotificationTimeType.Enabled = true;
+                txtMailFromAddress.Enabled = true;
+                txtMailToAddress.Enabled = true;
+            }
+            else
+            {
+                cboThreshold.Enabled = false;
+                cboThresholdNotificationTime.Enabled = false;
+                cboThresholdNotificationTimeType.Enabled = false;
+                txtMailFromAddress.Enabled = false;
+                txtMailToAddress.Enabled = false;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnCancelClick">
+          <declaration><![CDATA[protected void OnCancelClick(object sender, EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ cmdCancel_Click runs when the cancel Button is clicked
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="237" sc="9" el="246" ec="10">EditLogTypes.ascx.cs</location>
+            <body hash="6ae77a684420f7b6ba42fe45af66e603"><![CDATA[{
+            try
+            {
+                BindSummaryData();
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDeleteClick">
+          <declaration><![CDATA[protected void OnDeleteClick(object sender, EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ cmdDelete_Click runs when the delete Button is clicked
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="256" sc="9" el="269" ec="10">EditLogTypes.ascx.cs</location>
+            <body hash="ccc62ea775604dd5ffbde141641893c0"><![CDATA[{
+            var logTypeConfigInfo = new LogTypeConfigInfo();
+            logTypeConfigInfo.ID = Convert.ToString(ViewState["LogID"]);
+            try
+            {
+                LogController.Instance.DeleteLogTypeConfigInfo(logTypeConfigInfo);
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ConfigDeleted", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+                BindSummaryData();
+            }
+            catch
+            {
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("DeleteError", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Page_Load runs when the control is loaded
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="195" sc="9" el="227" ec="10">EditLogTypes.ascx.cs</location>
+            <body hash="c46a43b361a5a7c9b7597a0158e8e9a7"><![CDATA[{
+            base.OnLoad(e);
+			JavaScript.RequestRegistration(CommonJs.DnnPlugins);
+
+            cmdDelete.Click += OnDeleteClick;
+            cmdCancel.Click += OnCancelClick;
+            cmdUpdate.Click += OnUpdateClick;
+            chkEmailNotificationStatus.CheckedChanged += ChkEmailNotificationStatusCheckedChanged;
+            chkIsActive.CheckedChanged += ChkIsActiveCheckedChanged;
+            dgLogTypeConfigInfo.EditCommand += DgLogTypeConfigInfoEditCommand;
+
+            try
+            {
+                if (!Page.IsPostBack)
+                {
+                    hlReturn.NavigateUrl = Globals.NavigateURL();
+                    hlAdd.NavigateUrl = EditUrl("action", "add");
+
+                    if (Request.QueryString["action"] == "add")
+                    {
+                        BindDetailData();
+                    }
+                    else
+                    {
+                        BindSummaryData();
+                    }
+                }
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnUpdateClick">
+          <declaration><![CDATA[protected void OnUpdateClick(object sender, EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ cmdUpdate_Click runs when the Update Button is clicked
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="279" sc="9" el="310" ec="10">EditLogTypes.ascx.cs</location>
+            <body hash="67761beda58438dbcf36177c9bf06ea4"><![CDATA[{
+            var objLogTypeConfigInfo = new LogTypeConfigInfo
+                                           {
+                                               LoggingIsActive = chkIsActive.Checked,
+                                               LogTypeKey = cboLogTypeKey.SelectedItem.Value,
+                                               LogTypePortalID = cboLogTypePortalID.SelectedItem.Value,
+                                               KeepMostRecent = cboKeepMostRecent.SelectedItem.Value,
+
+                                               EmailNotificationIsActive = chkEmailNotificationStatus.Checked,
+                                               NotificationThreshold = Convert.ToInt32(cboThreshold.SelectedItem.Value),
+                                               NotificationThresholdTime = Convert.ToInt32(cboThresholdNotificationTime.SelectedItem.Value),
+                                               NotificationThresholdTimeType =
+                                                   (LogTypeConfigInfo.NotificationThresholdTimeTypes)
+                                                   Enum.Parse(typeof(LogTypeConfigInfo.NotificationThresholdTimeTypes), cboThresholdNotificationTimeType.SelectedItem.Value),
+                                               MailFromAddress = txtMailFromAddress.Text,
+                                               MailToAddress = txtMailToAddress.Text
+                                           };
+
+            if (ViewState["LogID"] != null)
+            {
+                objLogTypeConfigInfo.ID = Convert.ToString(ViewState["LogID"]);
+                LogController.Instance.UpdateLogTypeConfigInfo(objLogTypeConfigInfo);
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ConfigUpdated", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+            }
+            else
+            {
+                objLogTypeConfigInfo.ID = Guid.NewGuid().ToString();
+                LogController.Instance.AddLogTypeConfigInfo(objLogTypeConfigInfo);
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ConfigAdded", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+            }
+            BindSummaryData();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cboKeepMostRecent">
+          <declaration><![CDATA[protected DnnComboBox cboKeepMostRecent;]]></declaration>
+          <documentation>
+            <summary>
+ cboKeepMostRecent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboLogTypeKey">
+          <declaration><![CDATA[protected DnnComboBox cboLogTypeKey;]]></declaration>
+          <documentation>
+            <summary>
+ cboLogTypeKey control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboLogTypePortalID">
+          <declaration><![CDATA[protected DnnComboBox cboLogTypePortalID;]]></declaration>
+          <documentation>
+            <summary>
+ cboLogTypePortalID control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboThreshold">
+          <declaration><![CDATA[protected DnnComboBox cboThreshold;]]></declaration>
+          <documentation>
+            <summary>
+ cboThreshold control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboThresholdNotificationTime">
+          <declaration><![CDATA[protected DnnComboBox cboThresholdNotificationTime;]]></declaration>
+          <documentation>
+            <summary>
+ cboThresholdNotificationTime control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboThresholdNotificationTimeType">
+          <declaration><![CDATA[protected DnnComboBox cboThresholdNotificationTimeType;]]></declaration>
+          <documentation>
+            <summary>
+ cboThresholdNotificationTimeType control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkEmailNotificationStatus">
+          <declaration><![CDATA[protected CheckBox chkEmailNotificationStatus;]]></declaration>
+          <documentation>
+            <summary>
+ chkEmailNotificationStatus control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkIsActive">
+          <declaration><![CDATA[protected CheckBox chkIsActive;]]></declaration>
+          <documentation>
+            <summary>
+ chkIsActive control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdCancel">
+          <declaration><![CDATA[protected LinkButton cmdCancel;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCancel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdDelete">
+          <declaration><![CDATA[protected LinkButton cmdDelete;]]></declaration>
+          <documentation>
+            <summary>
+ cmdDelete control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdUpdate">
+          <declaration><![CDATA[protected LinkButton cmdUpdate;]]></declaration>
+          <documentation>
+            <summary>
+ cmdUpdate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="dgLogTypeConfigInfo">
+          <declaration><![CDATA[protected DnnGrid dgLogTypeConfigInfo;]]></declaration>
+          <documentation>
+            <summary>
+ dgLogTypeConfigInfo control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="hlAdd">
+          <declaration><![CDATA[protected HyperLink hlAdd;]]></declaration>
+          <documentation>
+            <summary>
+ hlAdd control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="hlReturn">
+          <declaration><![CDATA[protected HyperLink hlReturn;]]></declaration>
+          <documentation>
+            <summary>
+ hlReturn control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblIn">
+          <declaration><![CDATA[protected Label lblIn;]]></declaration>
+          <documentation>
+            <summary>
+ lblIn control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plEmailNotificationStatus">
+          <declaration><![CDATA[protected UserControl plEmailNotificationStatus;]]></declaration>
+          <documentation>
+            <summary>
+ plEmailNotificationStatus control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plIsActive">
+          <declaration><![CDATA[protected UserControl plIsActive;]]></declaration>
+          <documentation>
+            <summary>
+ plIsActive control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plKeepMostRecent">
+          <declaration><![CDATA[protected UserControl plKeepMostRecent;]]></declaration>
+          <documentation>
+            <summary>
+ plKeepMostRecent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plLogTypeKey">
+          <declaration><![CDATA[protected UserControl plLogTypeKey;]]></declaration>
+          <documentation>
+            <summary>
+ plLogTypeKey control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plLogTypePortalID">
+          <declaration><![CDATA[protected UserControl plLogTypePortalID;]]></declaration>
+          <documentation>
+            <summary>
+ plLogTypePortalID control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plMailFromAddress">
+          <declaration><![CDATA[protected UserControl plMailFromAddress;]]></declaration>
+          <documentation>
+            <summary>
+ plMailFromAddress control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plMailToAddress">
+          <declaration><![CDATA[protected UserControl plMailToAddress;]]></declaration>
+          <documentation>
+            <summary>
+ plMailToAddress control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plThreshold">
+          <declaration><![CDATA[protected UserControl plThreshold;]]></declaration>
+          <documentation>
+            <summary>
+ plThreshold control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="PlThresholdNotificationTime">
+          <declaration><![CDATA[protected LabelControl PlThresholdNotificationTime;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="PlThresholdNotificationTimeType">
+          <declaration><![CDATA[protected LabelControl PlThresholdNotificationTimeType;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="pnlEditLogTypeConfigInfo">
+          <declaration><![CDATA[protected Panel pnlEditLogTypeConfigInfo;]]></declaration>
+          <documentation>
+            <summary>
+ pnlEditLogTypeConfigInfo control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="pnlLogTypeConfigInfo">
+          <declaration><![CDATA[protected Panel pnlLogTypeConfigInfo;]]></declaration>
+          <documentation>
+            <summary>
+ pnlLogTypeConfigInfo control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="scriptBlock1">
+          <declaration><![CDATA[protected DnnScriptBlock scriptBlock1;]]></declaration>
+          <documentation>
+            <summary>
+ scriptBlock1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtMailFromAddress">
+          <declaration><![CDATA[protected TextBox txtMailFromAddress;]]></declaration>
+          <documentation>
+            <summary>
+ txtMailFromAddress control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtMailToAddress">
+          <declaration><![CDATA[protected TextBox txtMailToAddress;]]></declaration>
+          <documentation>
+            <summary>
+ txtMailToAddress control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ModuleActions">
+          <declaration><![CDATA[public ModuleActionCollection ModuleActions]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="13" el="72" ec="14">EditLogTypes.ascx.cs</location>
+            <body hash="7409d6d55919619a76ff7c16577b0a06"><![CDATA[{
+                return new ModuleActionCollection();
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="LogViewer">
+      <declaration><![CDATA[public class LogViewer : PortalModuleBase, ILogViewer]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ Project	 : DotNetNuke
+ Class	 : LogViewer
+
+ -----------------------------------------------------------------------------
+ <summary>
+ Supplies the functionality for viewing the Site Logs
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private int _pageIndex = 1;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="71" ec="36">LogViewer.ascx.cs</location>
+            <body hash="d5785678299388d791620f77d26f20bc"><![CDATA[private int _pageIndex = 1;
+        private Dictionary<string, LogTypeInfo> _logTypeDictionary;
+        private int _portalId = -1;]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindData">
+          <declaration><![CDATA[public void BindData()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="437" sc="9" el="497" ec="10">LogViewer.ascx.cs</location>
+            <body hash="112d3c18664fb8d25d0ba44e81a9b487"><![CDATA[{
+            if (UserInfo.IsSuperUser)
+            {
+                if (!Page.IsPostBack && Request.QueryString["pid"] != null)
+                {
+                    ddlPortalid.FindItemByValue(Request.QueryString["pid"]).Selected = true;
+                }
+                _portalId = Int32.Parse(ddlPortalid.SelectedItem.Value);
+            }
+            else
+            {
+                _portalId = PortalId;
+            }
+
+            var totalRecords = 0;
+            var pageSize = Convert.ToInt32(ddlRecordsPerPage.SelectedValue);
+            if (!Page.IsPostBack && Request.QueryString["LogTypeKey"] != null)
+            {
+                var li = ddlLogType.FindItemByValue(Request.QueryString["LogTypeKey"]);
+                if (li != null)
+                {
+                    li.Selected = true;
+                }
+            }
+
+            _logTypeKey = ddlLogType.SelectedItem.Value;
+
+            var currentPage = _pageIndex;
+            if (currentPage > 0)
+            {
+                currentPage = currentPage - 1;
+            }
+
+            var filteredKey = _logTypeKey;
+            if (_logTypeKey == "*" && !String.IsNullOrEmpty(EventFilter))
+            {
+                filteredKey = EventFilter + "%";
+            }
+            var logs = LogController.Instance.GetLogs(_portalId, filteredKey == "*" ? String.Empty : filteredKey, pageSize, currentPage, ref totalRecords);
+
+            if (logs.Count > 0)
+            {
+                dlLog.Visible = true;
+                btnDelete.Visible = UserInfo.IsSuperUser;
+                btnClear.Visible = UserInfo.IsSuperUser;
+                dlLog.DataSource = logs;
+                dlLog.DataBind();
+                InitializePaging(ctlPagingControlBottom, totalRecords, pageSize);
+            }
+            else
+            {
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("NoEntries", LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning);
+                dlLog.Visible = false;
+                btnDelete.Visible = false;
+                btnClear.Visible = false;
+
+                ctlPagingControlBottom.Visible = false;
+            }
+
+			editSettings.Visible = UserInfo.IsSuperUser;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BindLogTypeDropDown">
+          <declaration><![CDATA[private void BindLogTypeDropDown()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="9" el="102" ec="10">LogViewer.ascx.cs</location>
+            <body hash="b6af3bc03505407faa77ea02657ca3cc"><![CDATA[{
+            //ddlLogType.Items.Add(new ListItem(Localization.GetString("All"), "*"));
+            ddlLogType.AddItem(Localization.GetString("All"), "*");
+
+            List<LogTypeConfigInfo> logTypes;
+            if (String.IsNullOrEmpty(EventFilter))
+            {
+                logTypes = LogController.Instance.GetLogTypeConfigInfo().Cast<LogTypeConfigInfo>()
+                    .Where(l => l.LoggingIsActive)
+                    .OrderBy(l => l.LogTypeFriendlyName).ToList();
+            }
+            else
+            {
+                logTypes = LogController.Instance.GetLogTypeConfigInfo().Cast<LogTypeConfigInfo>()
+                    .Where(l => l.LogTypeKey.StartsWith(EventFilter) && l.LoggingIsActive)
+                    .OrderBy(l => l.LogTypeFriendlyName).ToList();
+            }
+
+            foreach (var logType in logTypes)
+            {
+                //ddlLogType.Items.Add(new ListItem(logType.LogTypeFriendlyName, logType.LogTypeKey));
+                ddlLogType.AddItem(logType.LogTypeFriendlyName, logType.LogTypeKey);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BindPortalDropDown">
+          <declaration><![CDATA[private void BindPortalDropDown()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="105" sc="9" el="132" ec="10">LogViewer.ascx.cs</location>
+            <body hash="3f9c5ef3492298f4a2294edeb141ac3f"><![CDATA[{
+            if (UserInfo.IsSuperUser)
+            {
+                //ddlPortalid.Items.Add(new ListItem(Localization.GetString("All"), "-1"));
+                ddlPortalid.AddItem(Localization.GetString("All"), "-1");
+
+                foreach (PortalInfo portal in PortalController.Instance.GetPortals().Cast<PortalInfo>()
+                                                .OrderBy(p => p.PortalName)
+                                                .ToList())
+                {
+                    ddlPortalid.AddItem(portal.PortalName, portal.PortalID.ToString());
+                }
+				
+                //check to see if any portalname is empty, otherwise set it to portalid
+                for (var i = 0; i <= ddlPortalid.Items.Count - 1; i++)
+                {
+                    if (String.IsNullOrEmpty(ddlPortalid.Items[i].Text))
+                    {
+                        ddlPortalid.Items[i].Text = @"Portal: " + ddlPortalid.Items[i].Value;
+                    }
+                }
+            }
+            else
+            {
+                plPortalID.Visible = false;
+                ddlPortalid.Visible = false;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BtnClearClick">
+          <declaration><![CDATA[private void BtnClearClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="387" sc="9" el="402" ec="10">LogViewer.ascx.cs</location>
+            <body hash="45b1f40167baeb903e6c94e87ddf11d6"><![CDATA[{
+            LogController.Instance.ClearLog();
+            DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("LogCleared", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+			
+            //add entry to log recording it was cleared
+            EventLogController.Instance.AddLog(Localization.GetString("LogCleared", LocalResourceFile),
+                               Localization.GetString("Username", LocalResourceFile) + ":" + UserInfo.Username,
+                               PortalSettings,
+                               -1,
+                               EventLogController.EventLogType.ADMIN_ALERT);
+            BindPortalDropDown();
+            dlLog.Visible = false;
+            btnDelete.Visible = false;
+            btnClear.Visible = false;
+            ctlPagingControlBottom.Visible = false;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BtnDeleteClick">
+          <declaration><![CDATA[private void BtnDeleteClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="405" sc="9" el="407" ec="10">LogViewer.ascx.cs</location>
+            <body hash="5f5e31ca1ccb5237a69802ac4f17021a"><![CDATA[{
+            DeleteSelectedExceptions();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BtnEmailClick">
+          <declaration><![CDATA[private void BtnEmailClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="410" sc="9" el="412" ec="10">LogViewer.ascx.cs</location>
+            <body hash="3cbe7f904302a00866a089cca9e647d2"><![CDATA[{
+            SendEmail();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DdlLogTypeSelectedIndexChanged">
+          <declaration><![CDATA[private void DdlLogTypeSelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="415" sc="9" el="418" ec="10">LogViewer.ascx.cs</location>
+            <body hash="e237457d341eb500c1fc47c6b08c4e83"><![CDATA[{
+            _pageIndex = 1;
+            BindData();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DdlPortalIDSelectedIndexChanged">
+          <declaration><![CDATA[private void DdlPortalIDSelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="421" sc="9" el="424" ec="10">LogViewer.ascx.cs</location>
+            <body hash="e237457d341eb500c1fc47c6b08c4e83"><![CDATA[{
+            _pageIndex = 1;
+            BindData();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DdlRecordsPerPageSelectedIndexChanged">
+          <declaration><![CDATA[private void DdlRecordsPerPageSelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="427" sc="9" el="430" ec="10">LogViewer.ascx.cs</location>
+            <body hash="e237457d341eb500c1fc47c6b08c4e83"><![CDATA[{
+            _pageIndex = 1;
+            BindData();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteSelectedExceptions">
+          <declaration><![CDATA[private void DeleteSelectedExceptions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="135" sc="9" el="170" ec="10">LogViewer.ascx.cs</location>
+            <body hash="a5040d384c322ee855a9e816aef3362d"><![CDATA[{
+            try
+            {
+                var s = Request.Form["Exception"];
+                if (s != null)
+                {
+                    string[] positions = null;
+                    if (s.LastIndexOf(",") > 0)
+                    {
+                        positions = s.Split(Convert.ToChar(","));
+                    }
+                    else if (!String.IsNullOrEmpty(s))
+                    {
+                        positions = new[] {s};
+                    }
+                    if (positions != null)
+                    {
+                        var j = positions.Length;
+                        for (var i = 0; i < positions.Length; i++)
+                        {
+                            j -= 1;
+                            var excKey = positions[j].Split(Convert.ToChar("|"));
+                            var objLogInfo = new LogInfo {LogGUID = excKey[0], LogFileID = excKey[1]};
+                            LogController.Instance.DeleteLog(objLogInfo);
+                        }
+                    }
+                    DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("DeleteSuccess", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+                }
+                BindPortalDropDown();
+                BindData();
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetMyLogType">
+          <declaration><![CDATA[protected LogTypeInfo GetMyLogType(string logTypeKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="316" sc="9" el="327" ec="10">LogViewer.ascx.cs</location>
+            <body hash="d074c958654e9940792d4926fa7b97bb"><![CDATA[{
+            LogTypeInfo logType;
+            _logTypeDictionary.TryGetValue(logTypeKey, out logType);
+
+// ReSharper disable ConvertIfStatementToNullCoalescingExpression
+            if (logType == null)
+// ReSharper restore ConvertIfStatementToNullCoalescingExpression
+            {
+                logType = new LogTypeInfo();
+            }
+            return logType;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPropertiesText">
+          <declaration><![CDATA[public string GetPropertiesText(object obj)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="286" sc="9" el="311" ec="10">LogViewer.ascx.cs</location>
+            <body hash="fb1469d2112b59e9893bff3c98f6435a"><![CDATA[{
+            var objLogInfo = (LogInfo)obj;
+
+            var objLogProperties = objLogInfo.LogProperties;
+            var str = new StringBuilder();
+            int i;
+            for (i = 0; i <= objLogProperties.Count - 1; i++)
+            {
+				//display the values in the Panel child controls.
+                var ldi = (LogDetailInfo)objLogProperties[i];
+                if (ldi.PropertyName == "Message")
+                {
+                    str.Append("<p><strong>" + ldi.PropertyName + "</strong>:</br><pre>" + Server.HtmlEncode(ldi.PropertyValue) + "</pre></p>");
+                }
+                else
+                {
+                    str.Append("<p><strong>" + ldi.PropertyName + "</strong>:" + Server.HtmlEncode(ldi.PropertyValue) + "</p>");
+                }
+            }
+	        if (!string.IsNullOrEmpty(objLogInfo.Exception.ExceptionHash))
+	        {
+		        str.Append(objLogInfo.Exception);
+	        }
+            str.Append("<p>" + Localization.GetString("ServerName", LocalResourceFile) + Server.HtmlEncode(objLogInfo.LogServerName) + "</p>");
+            return str.ToString();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSelectedExceptions">
+          <declaration><![CDATA[private XmlDocument GetSelectedExceptions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="173" sc="9" el="212" ec="10">LogViewer.ascx.cs</location>
+            <body hash="2017ac7ee1d0cc8f7e10ea0b85290d19"><![CDATA[{
+            var objXML = new XmlDocument();
+            try
+            {
+                var s = Request.Form["Exception"];
+                if (s != null)
+                {
+                    string[] excPositions = null;
+                    if (s.LastIndexOf(",") > 0)
+                    {
+                        excPositions = s.Split(Convert.ToChar(","));
+                    }
+                    else if (!String.IsNullOrEmpty(s))
+                    {
+                        excPositions = new[] {s};
+                    }
+                    objXML.LoadXml("<LogEntries></LogEntries>");
+                    if (excPositions != null)
+                    {
+                        var j = excPositions.Length;
+                        for (var i = 0; i < excPositions.Length; i++)
+                        {
+                            j -= 1;
+                            var excKey = excPositions[j].Split(Convert.ToChar("|"));
+                            var objLogInfo = new LogInfo {LogGUID = excKey[0], LogFileID = excKey[1]};
+                            var objNode = objXML.ImportNode((XmlNode) LogController.Instance.GetSingleLog(objLogInfo, LoggingProvider.ReturnType.XML), true);
+                            if (objXML.DocumentElement != null)
+                            {
+                                objXML.DocumentElement.AppendChild(objNode);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+            return objXML;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="InitializePaging">
+          <declaration><![CDATA[private void InitializePaging(PagingControl ctlPagingControl, int totalRecords, int pageSize)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="215" sc="9" el="237" ec="10">LogViewer.ascx.cs</location>
+            <body hash="3c754360db53d2113932408da85fd72f"><![CDATA[{
+            ctlPagingControl.TotalRecords = totalRecords;
+            ctlPagingControl.PageSize = pageSize;
+            ctlPagingControl.CurrentPage = _pageIndex;
+            
+            var querystring = "";
+            if (ddlRecordsPerPage.SelectedIndex != 0)
+            {
+                querystring += "&PageRecords=" + ddlRecordsPerPage.SelectedValue;
+            }
+            if (_portalId >= 0)
+            {
+                querystring += "&pid=" + _portalId;
+            }
+            if (_logTypeKey != "*" && !String.IsNullOrEmpty(_logTypeKey))
+            {
+                querystring += "&LogTypeKey=" + _logTypeKey;
+            }
+
+            ctlPagingControl.QuerystringParams = querystring;
+            ctlPagingControl.TabID = TabId;
+            ctlPagingControl.Visible = true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="332" sc="9" el="350" ec="10">LogViewer.ascx.cs</location>
+            <body hash="07636e529b754d6e460988eda03a085f"><![CDATA[{
+            base.OnInit(e);
+
+			JavaScript.RequestRegistration(CommonJs.DnnPlugins);
+
+            btnClear.Click += BtnClearClick;
+            btnDelete.Click += BtnDeleteClick;
+            btnEmail.Click += BtnEmailClick;
+            ddlLogType.SelectedIndexChanged += DdlLogTypeSelectedIndexChanged;
+            ddlPortalid.SelectedIndexChanged += DdlPortalIDSelectedIndexChanged;
+            ddlRecordsPerPage.SelectedIndexChanged += DdlRecordsPerPageSelectedIndexChanged;
+            
+            if (Request.QueryString["CurrentPage"] != null)
+            {
+                _pageIndex = Convert.ToInt32(Request.QueryString["CurrentPage"]);
+            }
+
+            _logTypeDictionary = LogController.Instance.GetLogTypeInfoDictionary();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+ The Page_Load runs when the page loads
+ </summary>
+ <param name="e"></param>
+ <remarks>
+ </remarks></documentation>
+          <codeblock>
+            <location sl="360" sc="9" el="384" ec="10">LogViewer.ascx.cs</location>
+            <body hash="6ff8d563f90b3116028d6dd56fd45224"><![CDATA[{
+            base.OnLoad(e);
+
+            try
+            {
+				// If this is the first visit to the page, populate the site data
+                if (Page.IsPostBack == false)
+                {
+                    txtSubject.Text = Localization.GetString("LogEntryDefaultSubject", LocalResourceFile);
+                    txtMessage.Text = Localization.GetString("LogEntryDefaultMsg", LocalResourceFile);
+                    LogController.Instance.PurgeLogBuffer();
+                    if (Request.QueryString["PageRecords"] != null)
+                    {
+                        ddlRecordsPerPage.SelectedValue = Request.QueryString["PageRecords"];
+                    }
+                    BindPortalDropDown();
+                    BindLogTypeDropDown();
+                    BindData();
+                }
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SendEmail">
+          <declaration><![CDATA[private void SendEmail()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="240" sc="9" el="283" ec="10">LogViewer.ascx.cs</location>
+            <body hash="72645cda8644daf39e9438c6185b5511"><![CDATA[{
+            var strFromEmailAddress = !String.IsNullOrEmpty(UserInfo.Email) ? UserInfo.Email : PortalSettings.Email;
+
+            if (string.IsNullOrEmpty(txtSubject.Text))
+            {
+                txtSubject.Text = PortalSettings.PortalName + @" Exceptions";
+            }
+
+            string returnMsg;
+            if (Globals.EmailValidatorRegex.IsMatch(strFromEmailAddress))
+            {
+                const string tempFileName = "errorlog.xml";
+                var filePath = PortalSettings.HomeDirectoryMapPath + tempFileName;
+                var xmlDoc = GetSelectedExceptions();
+                xmlDoc.Save(filePath);
+
+                var attachments = new List<Attachment>();
+                var ct = new ContentType {MediaType = MediaTypeNames.Text.Xml, Name = tempFileName};
+
+                using(var attachment = new Attachment(filePath, ct))
+                {
+                    attachments.Add(attachment);
+
+                    returnMsg = Mail.SendEmail(strFromEmailAddress, strFromEmailAddress, txtEmailAddress.Text, txtSubject.Text, txtMessage.Text, attachments);
+                }
+
+                FileSystemUtils.DeleteFile(filePath);
+
+                if (String.IsNullOrEmpty(returnMsg))
+                {
+                    DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("EmailSuccess", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+                }
+                else
+                {
+                    DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("EmailFailure", LocalResourceFile) + " " + returnMsg, ModuleMessage.ModuleMessageType.RedError);
+                }
+            }
+            else
+            {
+                returnMsg = string.Format(Localization.GetString("InavlidEmailAddress", LocalResourceFile), strFromEmailAddress);
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("EmailFailure", LocalResourceFile) + " " + returnMsg, ModuleMessage.ModuleMessageType.RedError);
+            }
+            BindData();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_logTypeDictionary">
+          <declaration><![CDATA[private Dictionary<string, LogTypeInfo> _logTypeDictionary;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_logTypeKey">
+          <declaration><![CDATA[private string _logTypeKey;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_pageIndex">
+          <declaration><![CDATA[private int _pageIndex = 1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_portalId">
+          <declaration><![CDATA[private int _portalId = -1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="btnClear">
+          <declaration><![CDATA[protected LinkButton btnClear;]]></declaration>
+          <documentation>
+            <summary>
+ btnClear control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="btnDelete">
+          <declaration><![CDATA[protected LinkButton btnDelete;]]></declaration>
+          <documentation>
+            <summary>
+ btnDelete control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="btnEmail">
+          <declaration><![CDATA[protected LinkButton btnEmail;]]></declaration>
+          <documentation>
+            <summary>
+ btnEmail control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ctlPagingControlBottom">
+          <declaration><![CDATA[protected PagingControl ctlPagingControlBottom;]]></declaration>
+          <documentation>
+            <summary>
+ ctlPagingControlBottom control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ddlLogType">
+          <declaration><![CDATA[protected DnnComboBox ddlLogType;]]></declaration>
+          <documentation>
+            <summary>
+ ddlLogType control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ddlPortalid">
+          <declaration><![CDATA[protected DnnComboBox ddlPortalid;]]></declaration>
+          <documentation>
+            <summary>
+ ddlPortalid control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ddlRecordsPerPage">
+          <declaration><![CDATA[protected DnnComboBox ddlRecordsPerPage;]]></declaration>
+          <documentation>
+            <summary>
+ ddlRecordsPerPage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="dlLog">
+          <declaration><![CDATA[protected Repeater dlLog;]]></declaration>
+          <documentation>
+            <summary>
+ dlLog control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="editSettings">
+          <declaration><![CDATA[protected ActionLink editSettings;]]></declaration>
+          <documentation>
+            <summary>
+ editSettings control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Label1">
+          <declaration><![CDATA[protected Label Label1;]]></declaration>
+          <documentation>
+            <summary>
+ Label1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Label10">
+          <declaration><![CDATA[protected Label Label10;]]></declaration>
+          <documentation>
+            <summary>
+ Label10 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Label2">
+          <declaration><![CDATA[protected Label Label2;]]></declaration>
+          <documentation>
+            <summary>
+ Label2 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Label3">
+          <declaration><![CDATA[protected Label Label3;]]></declaration>
+          <documentation>
+            <summary>
+ Label3 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Label4">
+          <declaration><![CDATA[protected Label Label4;]]></declaration>
+          <documentation>
+            <summary>
+ Label4 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Label5">
+          <declaration><![CDATA[protected Label Label5;]]></declaration>
+          <documentation>
+            <summary>
+ Label5 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Label6">
+          <declaration><![CDATA[protected Label Label6;]]></declaration>
+          <documentation>
+            <summary>
+ Label6 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Label7">
+          <declaration><![CDATA[protected Label Label7;]]></declaration>
+          <documentation>
+            <summary>
+ Label7 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Label8">
+          <declaration><![CDATA[protected Label Label8;]]></declaration>
+          <documentation>
+            <summary>
+ Label8 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Label9">
+          <declaration><![CDATA[protected Label Label9;]]></declaration>
+          <documentation>
+            <summary>
+ Label9 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lbClickRow">
+          <declaration><![CDATA[protected Label lbClickRow;]]></declaration>
+          <documentation>
+            <summary>
+ lbClickRow control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plEmailAddress">
+          <declaration><![CDATA[protected UserControl plEmailAddress;]]></declaration>
+          <documentation>
+            <summary>
+ plEmailAddress control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plLogType">
+          <declaration><![CDATA[protected UserControl plLogType;]]></declaration>
+          <documentation>
+            <summary>
+ plLogType control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plMessage">
+          <declaration><![CDATA[protected UserControl plMessage;]]></declaration>
+          <documentation>
+            <summary>
+ plMessage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plPortalID">
+          <declaration><![CDATA[protected UserControl plPortalID;]]></declaration>
+          <documentation>
+            <summary>
+ plPortalID control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plRecordsPage">
+          <declaration><![CDATA[protected UserControl plRecordsPage;]]></declaration>
+          <documentation>
+            <summary>
+ plRecordsPage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plSubject">
+          <declaration><![CDATA[protected UserControl plSubject;]]></declaration>
+          <documentation>
+            <summary>
+ plSubject control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtEmailAddress">
+          <declaration><![CDATA[protected TextBox txtEmailAddress;]]></declaration>
+          <documentation>
+            <summary>
+ txtEmailAddress control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtMessage">
+          <declaration><![CDATA[protected TextBox txtMessage;]]></declaration>
+          <documentation>
+            <summary>
+ txtMessage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtShowing">
+          <declaration><![CDATA[protected Label txtShowing;]]></declaration>
+          <documentation>
+            <summary>
+ txtShowing control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtSubject">
+          <declaration><![CDATA[protected TextBox txtSubject;]]></declaration>
+          <documentation>
+            <summary>
+ txtSubject control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="EventFilter">
+          <declaration><![CDATA[public string EventFilter]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="499" sc="37" el="499" ec="41">LogViewer.ascx.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="499" sc="42" el="499" ec="46">LogViewer.ascx.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.LogViewer.Components">
+    <class name="LogViewerController">
+      <declaration><![CDATA[public class LogViewerController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public LogViewerController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="54" ec="10">Components\LogViewerController.cs</location>
+            <body hash="67abc96a144fec1e91cc1f2ff9dacb31"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "08.00.00":
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

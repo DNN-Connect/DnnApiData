@@ -1,0 +1,3711 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.Modules.Dashboard.dll" version="08.00.02" generated="2017-06-19 23:14:10Z" generationTime="2.7773817">
+  <namespace name="Dnn.Modules.Dashboard">
+    <class name="Dashboard">
+      <declaration><![CDATA[public class Dashboard : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Dashboard()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="9" el="63" ec="10">Dashboard.ascx.cs</location>
+            <body hash="c94712f849b618a730163d2c79efb2e7"><![CDATA[{
+            base.OnInit(e);
+			JavaScript.RequestRegistration(CommonJs.DnnPlugins);
+
+            cmdInstall.NavigateUrl = Util.InstallURL(TabId, "DashboardControl");
+            cmdManage.NavigateUrl = EditUrl("DashboardControls");
+            cmdExport.NavigateUrl = EditUrl("Export");
+
+
+            //string dashboardJs = ResolveUrl("~/resources/dashboard/jquery.dashboard.js");
+            //Page.ClientScript.RegisterClientScriptInclude("DashboardJS", dashboardJs);
+            ClientAPI.RegisterClientVariable(Page, "dashboardBaseUrl", ControlPath, false);
+            ClientAPI.RegisterClientVariable(Page, "appBaseUrl", Globals.ApplicationPath, false);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="9" el="85" ec="10">Dashboard.ascx.cs</location>
+            <body hash="2d7cc8ea12193814015d8bd84779f180"><![CDATA[{
+            base.OnLoad(e);
+            if (!UserInfo.IsSuperUser)
+            {
+                Response.Redirect(Globals.NavigateURL("Access Denied"), true);
+            }
+
+            rptControls.ItemDataBound += rptControls_ItemDataBound;
+
+            //Get enabled Dashboard Controls 
+            List<DashboardControl> controls = DashboardController.GetDashboardControls(true);
+
+            //Bind to tab list 
+            rptTabs.DataSource = controls;
+            rptTabs.DataBind();
+
+            //Bind to control list 
+            rptControls.DataSource = controls;
+            rptControls.DataBind();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="rptControls_ItemDataBound">
+          <declaration><![CDATA[protected void rptControls_ItemDataBound(object sender, RepeaterItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="88" sc="9" el="110" ec="10">Dashboard.ascx.cs</location>
+            <body hash="7000a7fb8329072df1f5b99e25480a4a"><![CDATA[{
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                var control = e.Item.DataItem as DashboardControl;
+                if (control != null)
+                {
+                    Control dashboardControl;
+                    if (control.DashboardControlSrc.ToLowerInvariant().EndsWith("ascx"))
+                    {
+						//load from a user control on the file system 
+                        dashboardControl = LoadControl("~/" + control.DashboardControlSrc);
+                    }
+                    else
+                    {
+						//load from a typename in an assembly ( ie. server control ) 
+                        dashboardControl = LoadControl(Reflection.CreateType(control.DashboardControlSrc), null);
+                    }
+                    dashboardControl.ID = Path.GetFileNameWithoutExtension(control.DashboardControlSrc);
+                    var placeHolder = (PlaceHolder) e.Item.FindControl("phControl");
+                    placeHolder.Controls.Add(dashboardControl);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cmdExport">
+          <declaration><![CDATA[protected HyperLink cmdExport;]]></declaration>
+          <documentation>
+            <summary>
+ cmdExport control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdInstall">
+          <declaration><![CDATA[protected HyperLink cmdInstall;]]></declaration>
+          <documentation>
+            <summary>
+ cmdInstall control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdManage">
+          <declaration><![CDATA[protected HyperLink cmdManage;]]></declaration>
+          <documentation>
+            <summary>
+ cmdManage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rptControls">
+          <declaration><![CDATA[protected Repeater rptControls;]]></declaration>
+          <documentation>
+            <summary>
+ rptControls control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rptTabs">
+          <declaration><![CDATA[protected Repeater rptTabs;]]></declaration>
+          <documentation>
+            <summary>
+ rptTabs control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DashboardControls">
+      <declaration><![CDATA[public class DashboardControls : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DashboardControls()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindGrid">
+          <declaration><![CDATA[private void BindGrid()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="107" sc="9" el="136" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="daee8ed6c1a2b6800cd62d1b4205ff05"><![CDATA[{
+            var allEnabled = true;
+
+            //Check whether the checkbox column headers are true or false
+            foreach (var dashboardControl in DashboardControlList)
+            {
+                if (dashboardControl.IsEnabled == false)
+                {
+                    allEnabled = false;
+                }
+                if (!allEnabled)
+                {
+                    break;
+                }
+            }
+            foreach (DataGridColumn column in grdDashboardControls.Columns)
+            {
+                if (ReferenceEquals(column.GetType(), typeof (CheckBoxColumn)))
+                {
+					//Manage CheckBox column events
+                    var cbColumn = (CheckBoxColumn) column;
+                    if (cbColumn.DataField == "IsEnabled")
+                    {
+                        cbColumn.Checked = allEnabled;
+                    }
+                }
+            }
+            grdDashboardControls.DataSource = DashboardControlList;
+            grdDashboardControls.DataBind();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteControl">
+          <declaration><![CDATA[private void DeleteControl(int index)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="77" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="d10fb0d5b3f41bfa9c912a50e99a0d3a"><![CDATA[{
+            var dashboardControl = DashboardControlList[index];
+
+            var returnUrl = Server.UrlEncode(UrlUtils.PopUpUrl(Globals.NavigateURL(TabId, "DashboardControls", "mid=" + ModuleId), this, PortalSettings, false, true));
+            Response.Redirect(Util.UnInstallURL(TabId, dashboardControl.PackageID, returnUrl), true);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadViewState">
+          <declaration><![CDATA[protected override void LoadViewState(object savedState)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="188" sc="9" el="206" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="c7235e9e8b187cc92b41e16bc9b35a44"><![CDATA[{
+            if ((savedState != null))
+            {
+				//Load State from the array of objects that was saved with SaveViewState.
+                var myState = (object[]) savedState;
+				
+				//Load Base Controls ViewState
+                if ((myState[0] != null))
+                {
+                    base.LoadViewState(myState[0]);
+                }
+				
+				//Load ModuleID
+                if ((myState[1] != null))
+                {
+                    _DashboardControls = (List<DashboardControl>) myState[1];
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MoveControl">
+          <declaration><![CDATA[private void MoveControl(int index, int destIndex)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="80" sc="9" el="94" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="36026e81691b35b6c85bfd7ef4460e4e"><![CDATA[{
+            var dashboardControl = DashboardControlList[index];
+            var nextControl = DashboardControlList[destIndex];
+
+            var currentOrder = dashboardControl.ViewOrder;
+            var nextOrder = nextControl.ViewOrder;
+
+            //Swap ViewOrders
+            dashboardControl.ViewOrder = nextOrder;
+            nextControl.ViewOrder = currentOrder;
+
+            //Refresh Grid
+            DashboardControlList.Sort();
+            BindGrid();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MoveControlDown">
+          <declaration><![CDATA[private void MoveControlDown(int index)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="97" sc="9" el="99" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="72bb7a3c80da0e60cb793c51d9867eb7"><![CDATA[{
+            MoveControl(index, index + 1);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MoveControlUp">
+          <declaration><![CDATA[private void MoveControlUp(int index)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="102" sc="9" el="104" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="79477dfbd9707e2049702679b51baff7"><![CDATA[{
+            MoveControl(index, index - 1);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDashboardControlsItemChecked">
+          <declaration><![CDATA[protected void OnDashboardControlsItemChecked(object sender, DNNDataGridCheckChangedEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="309" sc="9" el="342" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="d90d00dedebed25ee24726e074e95f64"><![CDATA[{
+            var propertyName = e.Field;
+            var propertyValue = e.Checked;
+            var isAll = e.IsAll;
+            var index = e.Item.ItemIndex;
+
+            DashboardControl dashboardControl;
+
+            if (isAll)
+            {
+				//Update All the properties
+                foreach (DashboardControl dashboard in DashboardControlList)
+                {
+                    switch (propertyName)
+                    {
+                        case "IsEnabled":
+                            dashboard.IsEnabled = propertyValue;
+                            break;
+                    }
+                }
+            }
+            else
+            {
+				//Update the indexed property
+                dashboardControl = DashboardControlList[index];
+                switch (propertyName)
+                {
+                    case "IsEnabled":
+                        dashboardControl.IsEnabled = propertyValue;
+                        break;
+                }
+            }
+            BindGrid();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDashboardControlsItemCommand">
+          <declaration><![CDATA[protected void OnDashboardControlsItemCommand(object source, DataGridCommandEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="345" sc="9" el="361" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="908c34d18a1bb8e4b68385a714d56696"><![CDATA[{
+            var commandName = e.CommandName;
+            var index = e.Item.ItemIndex;
+
+            switch (commandName)
+            {
+                case "Delete":
+                    DeleteControl(index);
+                    break;
+                case "MoveUp":
+                    MoveControlUp(index);
+                    break;
+                case "MoveDown":
+                    MoveControlDown(index);
+                    break;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDashboardControlsItemCreated">
+          <declaration><![CDATA[protected void OnDashboardControlsItemCreated(object sender, DataGridItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="364" sc="9" el="383" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="426402e55270db7f83c5fd6ec4526c98"><![CDATA[{
+            if (SupportsRichClient())
+            {
+                switch (e.Item.ItemType)
+                {
+                    case ListItemType.Header:
+                        //we combined the header label and checkbox in same place, so it is control 1 instead of 0
+                        ((WebControl) e.Item.Cells[COLUMN_ENABLED].Controls[1]).Attributes.Add("onclick", "dnn.util.checkallChecked(this," + COLUMN_ENABLED + ");");
+                        ((CheckBox) e.Item.Cells[COLUMN_ENABLED].Controls[1]).AutoPostBack = false;
+                        break;
+                    case ListItemType.AlternatingItem:
+                    case ListItemType.Item:
+                        ((CheckBox) e.Item.Cells[COLUMN_ENABLED].Controls[0]).AutoPostBack = false;
+
+                        ClientAPI.EnableClientSideReorder(e.Item.Cells[COLUMN_MOVE_DOWN].Controls[0], Page, false, grdDashboardControls.ClientID);
+                        ClientAPI.EnableClientSideReorder(e.Item.Cells[COLUMN_MOVE_UP].Controls[0], Page, true, grdDashboardControls.ClientID);
+                        break;
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDashboardControlsItemDataBound">
+          <declaration><![CDATA[protected void OnDashboardControlsItemDataBound(object sender, DataGridItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="386" sc="9" el="418" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="892529a9dfdd6201f1bfbd6edfc6e3a3"><![CDATA[{
+            var item = e.Item;
+            switch (item.ItemType)
+            {
+                case ListItemType.SelectedItem:
+                case ListItemType.AlternatingItem:
+                case ListItemType.Item:
+                    {
+                        var imgColumnControl = item.Controls[0].Controls[0];
+                        if (imgColumnControl is ImageButton)
+                        {
+                            var delImage = (ImageButton) imgColumnControl;
+                            var dashboardControl = (DashboardControl) item.DataItem;
+
+                            switch (dashboardControl.DashboardControlKey)
+                            {
+                                case "Server":
+                                case "Database":
+                                case "Host":
+                                case "Portals":
+                                case "Modules":
+                                case "Skins":
+                                    delImage.Visible = false;
+                                    break;
+                                default:
+                                    delImage.Visible = true;
+                                    break;
+                            }
+                        }
+                    }
+                    break;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="222" sc="9" el="256" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="be7786eeba4570fbc7e1772c699b9506"><![CDATA[{
+            base.OnInit(e);
+
+            JavaScript.RequestRegistration(CommonJs.DnnPlugins);
+
+            foreach (DataGridColumn column in grdDashboardControls.Columns)
+            {
+                if (ReferenceEquals(column.GetType(), typeof (CheckBoxColumn)))
+                {
+                    if (SupportsRichClient() == false)
+                    {
+                        var cbColumn = (CheckBoxColumn) column;
+                        cbColumn.CheckedChanged += OnDashboardControlsItemChecked;
+                    }
+                }
+                else if (ReferenceEquals(column.GetType(), typeof (ImageCommandColumn)))
+                {
+					//Manage Delete Confirm JS
+                    var imageColumn = (ImageCommandColumn) column;
+                    switch (imageColumn.CommandName)
+                    {
+                        case "Delete":
+                            imageColumn.OnClickJS = Localization.GetString("DeleteItem");
+                            imageColumn.Text = Localization.GetString("Delete", LocalResourceFile);
+                            break;
+                        case "MoveUp":
+                            imageColumn.Text = Localization.GetString("MoveUp", LocalResourceFile);
+                            break;
+                        case "MoveDown":
+                            imageColumn.Text = Localization.GetString("MoveDown", LocalResourceFile);
+                            break;
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="259" sc="9" el="287" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="cabc20b53e342a8129eee039d1f6e16e"><![CDATA[{
+            base.OnLoad(e);
+
+            cmdRefresh.Click += OnRefreshClick;
+            cmdUpdate.Click += OnUpdateClick;
+            grdDashboardControls.ItemCommand += OnDashboardControlsItemCommand;
+            grdDashboardControls.ItemCreated += OnDashboardControlsItemCreated;
+            grdDashboardControls.ItemDataBound += OnDashboardControlsItemDataBound;
+
+            try
+            {
+                if (!Page.IsPostBack)
+                {
+                    cmdCancel.NavigateUrl = Globals.NavigateURL();
+                    cmdInstall.NavigateUrl = Util.InstallURL(TabId, Server.UrlEncode(Globals.NavigateURL(TabId, "DashboardControls", "mid=" + ModuleId)), "DashboardControl");
+
+                    Localization.LocalizeDataGrid(ref grdDashboardControls, LocalResourceFile);
+                    BindGrid();
+                }
+                else
+                {
+                    ProcessPostBack();
+                }
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnRefreshClick">
+          <declaration><![CDATA[protected void OnRefreshClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="290" sc="9" el="292" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="4f596e0ae1641ed8afb538315ae3d912"><![CDATA[{
+            RefreshGrid();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnUpdateClick">
+          <declaration><![CDATA[protected void OnUpdateClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="295" sc="9" el="306" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="c8b0ccca4d520504e1898a0ef237db17"><![CDATA[{
+            try
+            {
+                UpdateControls();
+
+                RefreshGrid();
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ProcessPostBack">
+          <declaration><![CDATA[private void ProcessPostBack()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="156" sc="9" el="181" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="c58cd87647cdecb7e8cb827146a6a837"><![CDATA[{
+            try
+            {
+                var aryNewOrder = ClientAPI.GetClientSideReorder(grdDashboardControls.ClientID, Page);
+                DashboardControl dashboardControl;
+                DataGridItem objItem;
+                CheckBox chk;
+                for (var i = 0; i <= grdDashboardControls.Items.Count - 1; i++)
+                {
+                    objItem = grdDashboardControls.Items[i];
+                    dashboardControl = DashboardControlList[i];
+                    chk = (CheckBox) objItem.Cells[COLUMN_ENABLED].Controls[0];
+                    dashboardControl.IsEnabled = chk.Checked;
+                }
+				//assign vieworder
+                for (var i = 0; i <= aryNewOrder.Length - 1; i++)
+                {
+                    DashboardControlList[Convert.ToInt32(aryNewOrder[i])].ViewOrder = i + 1;
+                }
+                DashboardControlList.Sort();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RefreshGrid">
+          <declaration><![CDATA[private void RefreshGrid()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="139" sc="9" el="142" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="a94c1afecf929525fb9b9d24154b74f5"><![CDATA[{
+            _DashboardControls = null;
+            BindGrid();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveViewState">
+          <declaration><![CDATA[protected override object SaveViewState()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="209" sc="9" el="219" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="ad88d3d5ecdafc4e496124e8c1a6572c"><![CDATA[{
+            var allStates = new object[2];
+			
+			//Save the Base Controls ViewState
+            allStates[0] = base.SaveViewState();
+
+            //Save the Profile Properties
+            allStates[1] = DashboardControlList;
+
+            return allStates;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SupportsRichClient">
+          <declaration><![CDATA[private static bool SupportsRichClient()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="9" el="57" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="9753d8c569c0bf4f17f8b5c29c6699f1"><![CDATA[{
+            return ClientAPI.BrowserSupportsFunctionality(ClientAPI.ClientFunctionality.DHTML);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateControls">
+          <declaration><![CDATA[private void UpdateControls()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="145" sc="9" el="153" ec="10">DashboardControls.ascx.cs</location>
+            <body hash="6ecbfe51e2152ddf3e1d1639d7ceb72f"><![CDATA[{
+            foreach (var dashboardControl in DashboardControlList)
+            {
+                if (dashboardControl.IsDirty)
+                {
+                    DashboardController.UpdateDashboardControl(dashboardControl);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_DashboardControls">
+          <declaration><![CDATA[private List<DashboardControl> _DashboardControls;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="cmdCancel">
+          <declaration><![CDATA[protected HyperLink cmdCancel;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCancel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdInstall">
+          <declaration><![CDATA[protected HyperLink cmdInstall;]]></declaration>
+          <documentation>
+            <summary>
+ cmdInstall control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdRefresh">
+          <declaration><![CDATA[protected LinkButton cmdRefresh;]]></declaration>
+          <documentation>
+            <summary>
+ cmdRefresh control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdUpdate">
+          <declaration><![CDATA[protected LinkButton cmdUpdate;]]></declaration>
+          <documentation>
+            <summary>
+ cmdUpdate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="COLUMN_ENABLED">
+          <declaration><![CDATA[private const int COLUMN_ENABLED = 5;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="COLUMN_MOVE_DOWN">
+          <declaration><![CDATA[private const int COLUMN_MOVE_DOWN = 1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="COLUMN_MOVE_UP">
+          <declaration><![CDATA[private const int COLUMN_MOVE_UP = 2;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="grdDashboardControls">
+          <declaration><![CDATA[protected DataGrid grdDashboardControls;]]></declaration>
+          <documentation>
+            <summary>
+ grdDashboardControls control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="DashboardControlList">
+          <declaration><![CDATA[protected List<DashboardControl> DashboardControlList]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="13" el="66" ec="14">DashboardControls.ascx.cs</location>
+            <body hash="2be4931c170acce4367e77be7b5c17f6"><![CDATA[{
+                return _DashboardControls ?? (_DashboardControls = DashboardController.GetDashboardControls(false));
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Dashboard.Components">
+    <class name="BusinessController">
+      <declaration><![CDATA[public class BusinessController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddDashboardControlInstaller">
+          <declaration><![CDATA[private void AddDashboardControlInstaller()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="9" el="76" ec="10">Components\BusinessController.cs</location>
+            <body hash="b338bab3156ee9cd73d105cb92d7544b"><![CDATA[{
+            var listController = new ListController();
+            ListEntryInfo entry = listController.GetListEntryInfo("Installer", DashboardInstallerName);
+
+            if (entry == null)
+            {
+                listController.AddListEntry(new ListEntryInfo()
+                {
+                    ListName = "Installer",
+                    Value = DashboardInstallerName,
+                    Text = DashboardInstallerType
+                });
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="60" ec="10">Components\BusinessController.cs</location>
+            <body hash="7fed75970be4c99578a368908ce471bd"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "08.00.00":
+                        AddDashboardControlInstaller();
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="DashboardInstallerName">
+          <declaration><![CDATA[private const string DashboardInstallerName = "DashboardControl";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="DashboardInstallerType">
+          <declaration><![CDATA[private const string DashboardInstallerType = "Dnn.Modules.Dashboard.Components.Installers.DashboardInstaller, Dnn.Modules.Dashboard";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DashboardControl">
+      <declaration><![CDATA[public class DashboardControl : IComparable]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DashboardControl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CompareTo">
+          <declaration><![CDATA[public int CompareTo(object obj)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="167" sc="9" el="174" ec="10">Components\DashboardControl.cs</location>
+            <body hash="854212770fe1c28fa128b28442908cac"><![CDATA[{
+            var dashboardControl = obj as DashboardControl;
+            if (dashboardControl == null)
+            {
+                throw new ArgumentException("object is not a DashboardControl");
+            }
+            return ViewOrder.CompareTo(dashboardControl.ViewOrder);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_ControllerClass">
+          <declaration><![CDATA[private string _ControllerClass;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_DashboardControlID">
+          <declaration><![CDATA[private int _DashboardControlID;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_DashboardControlKey">
+          <declaration><![CDATA[private string _DashboardControlKey;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_DashboardControlLocalResources">
+          <declaration><![CDATA[private string _DashboardControlLocalResources;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_DashboardControlSrc">
+          <declaration><![CDATA[private string _DashboardControlSrc;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_IsDirty">
+          <declaration><![CDATA[private bool _IsDirty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_IsEnabled">
+          <declaration><![CDATA[private bool _IsEnabled;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_PackageID">
+          <declaration><![CDATA[private int _PackageID;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_ViewOrder">
+          <declaration><![CDATA[private int _ViewOrder;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ControllerClass">
+          <declaration><![CDATA[public string ControllerClass]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="13" el="49" ec="14">Components\DashboardControl.cs</location>
+            <body hash="83a1c604a369ca619e8bc20aa268da8b"><![CDATA[{
+                return _ControllerClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="51" sc="13" el="53" ec="14">Components\DashboardControl.cs</location>
+            <body hash="498c425b8950b7c4cb75de206c238cfc"><![CDATA[{
+                _ControllerClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DashboardControlID">
+          <declaration><![CDATA[public int DashboardControlID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="13" el="61" ec="14">Components\DashboardControl.cs</location>
+            <body hash="8588d69fab5e57e58e8e466ea4208013"><![CDATA[{
+                return _DashboardControlID;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="63" sc="13" el="65" ec="14">Components\DashboardControl.cs</location>
+            <body hash="b115774fec07cfc60788027c32ec4f6e"><![CDATA[{
+                _DashboardControlID = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DashboardControlKey">
+          <declaration><![CDATA[public string DashboardControlKey]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="13" el="73" ec="14">Components\DashboardControl.cs</location>
+            <body hash="2d1e2802ce3198b332e4d047472a4e37"><![CDATA[{
+                return _DashboardControlKey;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="75" sc="13" el="77" ec="14">Components\DashboardControl.cs</location>
+            <body hash="716d0311e82c234387fdede099b32237"><![CDATA[{
+                _DashboardControlKey = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DashboardControlLocalResources">
+          <declaration><![CDATA[public string DashboardControlLocalResources]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="13" el="85" ec="14">Components\DashboardControl.cs</location>
+            <body hash="366163a8564b633480fcc9e41aa7dfed"><![CDATA[{
+                return _DashboardControlLocalResources;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="87" sc="13" el="89" ec="14">Components\DashboardControl.cs</location>
+            <body hash="efb54af912a25eee04118e5be4524cc2"><![CDATA[{
+                _DashboardControlLocalResources = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DashboardControlSrc">
+          <declaration><![CDATA[public string DashboardControlSrc]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="95" sc="13" el="97" ec="14">Components\DashboardControl.cs</location>
+            <body hash="46dd8972658d6e46eaebecc35ea0cd5a"><![CDATA[{
+                return _DashboardControlSrc;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="99" sc="13" el="101" ec="14">Components\DashboardControl.cs</location>
+            <body hash="94545ebea68344faa715bfae10ace0ae"><![CDATA[{
+                _DashboardControlSrc = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IsDirty">
+          <declaration><![CDATA[public bool IsDirty]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="107" sc="13" el="109" ec="14">Components\DashboardControl.cs</location>
+            <body hash="112b72d400938ede44606cca39042163"><![CDATA[{
+                return _IsDirty;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IsEnabled">
+          <declaration><![CDATA[public bool IsEnabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="115" sc="13" el="117" ec="14">Components\DashboardControl.cs</location>
+            <body hash="2d5c2c54f48ff631bc75bbc335832136"><![CDATA[{
+                return _IsEnabled;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="119" sc="13" el="125" ec="14">Components\DashboardControl.cs</location>
+            <body hash="ac93b8aed830870b397b748a7233ff36"><![CDATA[{
+                if (_IsEnabled != value)
+                {
+                    _IsDirty = true;
+                }
+                _IsEnabled = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="LocalizedTitle">
+          <declaration><![CDATA[public string LocalizedTitle]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="131" sc="13" el="133" ec="14">Components\DashboardControl.cs</location>
+            <body hash="6cc36b379e2328d63ab8be6da3ce44f6"><![CDATA[{
+                return Localization.GetString(DashboardControlKey + ".Title", "~/" + DashboardControlLocalResources);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PackageID">
+          <declaration><![CDATA[public int PackageID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="139" sc="13" el="141" ec="14">Components\DashboardControl.cs</location>
+            <body hash="375f3c32d0c242e8d33f84d985861bc7"><![CDATA[{
+                return _PackageID;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="143" sc="13" el="145" ec="14">Components\DashboardControl.cs</location>
+            <body hash="24ac0d713395e34d31d4c57ec58ff962"><![CDATA[{
+                _PackageID = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ViewOrder">
+          <declaration><![CDATA[public int ViewOrder]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="151" sc="13" el="153" ec="14">Components\DashboardControl.cs</location>
+            <body hash="76f666c22b2c07b0a03e4937935cffff"><![CDATA[{
+                return _ViewOrder;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="155" sc="13" el="161" ec="14">Components\DashboardControl.cs</location>
+            <body hash="df0900ce6ee578515ed6a56c583b7dbf"><![CDATA[{
+                if (_ViewOrder != value)
+                {
+                    _IsDirty = true;
+                }
+                _ViewOrder = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DashboardController">
+      <declaration><![CDATA[public class DashboardController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DashboardController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddDashboardControl">
+          <declaration><![CDATA[public static int AddDashboardControl(DashboardControl dashboardControl)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="48" ec="10">Components\DashboardController.cs</location>
+            <body hash="092b24ab633af904d4b00e91b969cafb"><![CDATA[{
+            return DataService.AddDashboardControl(dashboardControl.PackageID,
+                                                   dashboardControl.DashboardControlKey,
+                                                   dashboardControl.IsEnabled,
+                                                   dashboardControl.DashboardControlSrc,
+                                                   dashboardControl.DashboardControlLocalResources,
+                                                   dashboardControl.ControllerClass,
+                                                   dashboardControl.ViewOrder);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteControl">
+          <declaration><![CDATA[public static void DeleteControl(DashboardControl dashboardControl)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="53" ec="10">Components\DashboardController.cs</location>
+            <body hash="54ce3c77110f550f25141ab818d0ae23"><![CDATA[{
+            DataService.DeleteDashboardControl(dashboardControl.DashboardControlID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Export">
+          <declaration><![CDATA[public static void Export(string filename)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="9" el="76" ec="10">Components\DashboardController.cs</location>
+            <body hash="9c53f9b0818e6cf2e97bd3e92587025b"><![CDATA[{
+            string fullName = Path.Combine(Globals.HostMapPath, filename);
+            var settings = new XmlWriterSettings();
+            using (XmlWriter writer = XmlWriter.Create(fullName, settings))
+            {
+                //Write start of Dashboard 
+                writer.WriteStartElement("dashboard");
+                foreach (DashboardControl dashboard in GetDashboardControls(true))
+                {
+                    var controller = Activator.CreateInstance(Reflection.CreateType(dashboard.ControllerClass)) as IDashboardData;
+                    if (controller != null)
+                    {
+                        controller.ExportData(writer);
+                    }
+                }
+				
+                //Write end of Host 
+                writer.WriteEndElement();
+                writer.Flush();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDashboardControlByKey">
+          <declaration><![CDATA[public static DashboardControl GetDashboardControlByKey(string dashboardControlKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="9" el="81" ec="10">Components\DashboardController.cs</location>
+            <body hash="6b477bbfaf0295c6e352e279ef698dd2"><![CDATA[{
+            return CBO.FillObject<DashboardControl>(DataService.GetDashboardControlByKey(dashboardControlKey));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDashboardControlByPackageId">
+          <declaration><![CDATA[public static DashboardControl GetDashboardControlByPackageId(int packageId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="84" sc="9" el="86" ec="10">Components\DashboardController.cs</location>
+            <body hash="5eae3de83ae6cef75c796671114a49d0"><![CDATA[{
+            return CBO.FillObject<DashboardControl>(DataService.GetDashboardControlByPackageId(packageId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDashboardControls">
+          <declaration><![CDATA[public static List<DashboardControl> GetDashboardControls(bool isEnabled)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="9" el="91" ec="10">Components\DashboardController.cs</location>
+            <body hash="d4e4c4b344dd05e0d1e4cd4dc12e1841"><![CDATA[{
+            return CBO.FillCollection<DashboardControl>(DataService.GetDashboardControls(isEnabled));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateDashboardControl">
+          <declaration><![CDATA[public static void UpdateDashboardControl(DashboardControl dashboardControl)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="94" sc="9" el="102" ec="10">Components\DashboardController.cs</location>
+            <body hash="11f70fa7bd66fd6b55e1d369966f8fab"><![CDATA[{
+            DataService.UpdateDashboardControl(dashboardControl.DashboardControlID,
+                                               dashboardControl.DashboardControlKey,
+                                               dashboardControl.IsEnabled,
+                                               dashboardControl.DashboardControlSrc,
+                                               dashboardControl.DashboardControlLocalResources,
+                                               dashboardControl.ControllerClass,
+                                               dashboardControl.ViewOrder);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="IDashboardData">
+      <declaration><![CDATA[public interface IDashboardData]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="ExportData">
+          <declaration><![CDATA[void ExportData(XmlWriter writer);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Dashboard.Components.Database">
+    <class name="BackupInfo">
+      <declaration><![CDATA[public class BackupInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BackupInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="BackupType">
+          <declaration><![CDATA[public string BackupType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="36" el="39" ec="40">Components\Database\BackupInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="39" sc="41" el="39" ec="45">Components\Database\BackupInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="FinishDate">
+          <declaration><![CDATA[public DateTime FinishDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="38" el="35" ec="42">Components\Database\BackupInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="35" sc="43" el="35" ec="47">Components\Database\BackupInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="30" el="31" ec="34">Components\Database\BackupInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="31" sc="35" el="31" ec="39">Components\Database\BackupInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Size">
+          <declaration><![CDATA[public long Size]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="28" el="37" ec="32">Components\Database\BackupInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="33" el="37" ec="37">Components\Database\BackupInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="StartDate">
+          <declaration><![CDATA[public DateTime StartDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="37" el="33" ec="41">Components\Database\BackupInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="33" sc="42" el="33" ec="46">Components\Database\BackupInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DatabaseController">
+      <declaration><![CDATA[public class DatabaseController : IDashboardData]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DatabaseController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ExportData">
+          <declaration><![CDATA[public void ExportData(XmlWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="9" el="88" ec="10">Components\Database\DatabaseController.cs</location>
+            <body hash="7fa639975f04dfdeea7d7d56bc6c5b6a"><![CDATA[{
+            DbInfo database = GetDbInfo();
+
+            //Write start of Database 
+            writer.WriteStartElement("database");
+
+            writer.WriteElementString("productVersion", database.ProductVersion);
+            writer.WriteElementString("servicePack", database.ServicePack);
+            writer.WriteElementString("productEdition", database.ProductEdition);
+            writer.WriteElementString("softwarePlatform", database.SoftwarePlatform);
+
+            //Write start of Backups 
+            writer.WriteStartElement("backups");
+
+            //Iterate through Backups 
+            foreach (BackupInfo backup in database.Backups)
+            {
+                writer.WriteStartElement("backup");
+                writer.WriteElementString("name", backup.Name);
+                writer.WriteElementString("backupType", backup.BackupType);
+                writer.WriteElementString("size", backup.Size.ToString());
+                writer.WriteElementString("startDate", backup.StartDate.ToString());
+                writer.WriteElementString("finishDate", backup.FinishDate.ToString());
+                writer.WriteEndElement();
+            }
+			
+            //Write end of Backups 
+            writer.WriteEndElement();
+
+            //Write start of Files 
+            writer.WriteStartElement("files");
+
+            //Iterate through Files 
+            foreach (DbFileInfo dbFile in database.Files)
+            {
+                writer.WriteStartElement("file");
+                writer.WriteElementString("name", dbFile.Name);
+                writer.WriteElementString("fileType", dbFile.FileType);
+                writer.WriteElementString("shortFileName", dbFile.ShortFileName);
+                writer.WriteElementString("fileName", dbFile.FileName);
+                writer.WriteElementString("size", dbFile.Size.ToString());
+                writer.WriteElementString("megabytes", dbFile.Megabytes.ToString());
+                writer.WriteEndElement();
+            }
+			
+            //Write end of Files 
+            writer.WriteEndElement();
+
+            //Write end of Database 
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDbBackups">
+          <declaration><![CDATA[public static List<BackupInfo> GetDbBackups()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="98" sc="9" el="100" ec="10">Components\Database\DatabaseController.cs</location>
+            <body hash="db6a0b0879ff39ed380747b15040cb04"><![CDATA[{
+            return CBO.FillCollection<BackupInfo>(DataService.GetDbBackups());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDbFileInfo">
+          <declaration><![CDATA[public static List<DbFileInfo> GetDbFileInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="103" sc="9" el="105" ec="10">Components\Database\DatabaseController.cs</location>
+            <body hash="7d0dde8426ed39d75afe5a7e7e12b828"><![CDATA[{
+            return CBO.FillCollection<DbFileInfo>(DataService.GetDbFileInfo());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDbInfo">
+          <declaration><![CDATA[public static DbInfo GetDbInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="93" sc="9" el="95" ec="10">Components\Database\DatabaseController.cs</location>
+            <body hash="73564f2d78f925b6df3f96b671f39f6b"><![CDATA[{
+            return CBO.FillObject<DbInfo>(DataService.GetDbInfo());
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DbFileInfo">
+      <declaration><![CDATA[public class DbFileInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DbFileInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="FileName">
+          <declaration><![CDATA[public string FileName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="34" el="45" ec="38">Components\Database\DbFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="45" sc="39" el="45" ec="43">Components\Database\DbFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="FileType">
+          <declaration><![CDATA[public string FileType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="34" el="31" ec="38">Components\Database\DbFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="31" sc="39" el="31" ec="43">Components\Database\DbFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Megabytes">
+          <declaration><![CDATA[public decimal Megabytes]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="13" el="42" ec="14">Components\Database\DbFileInfo.cs</location>
+            <body hash="99216c4d860739133d868d971ac227fc"><![CDATA[{
+                return Convert.ToDecimal((Size/1024));
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="30" el="33" ec="34">Components\Database\DbFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="33" sc="35" el="33" ec="39">Components\Database\DbFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ShortFileName">
+          <declaration><![CDATA[public string ShortFileName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="13" el="57" ec="14">Components\Database\DbFileInfo.cs</location>
+            <body hash="10db39f060cfef2620fe6fdb5f01c63c"><![CDATA[{
+                if(FileName.IndexOf('\\') == FileName.LastIndexOf('\\'))
+                {
+                    return FileName;
+                }
+
+                return string.Format("{0}...{1}", FileName.Substring(0, FileName.IndexOf('\\') + 1), FileName.Substring(FileName.LastIndexOf('\\', FileName.LastIndexOf('\\') - 1)));
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Size">
+          <declaration><![CDATA[public long Size]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="28" el="35" ec="32">Components\Database\DbFileInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="35" sc="33" el="35" ec="37">Components\Database\DbFileInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DbInfo">
+      <declaration><![CDATA[public class DbInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DbInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Backups">
+          <declaration><![CDATA[public List<BackupInfo> Backups]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="13" el="44" ec="14">Components\Database\DbInfo.cs</location>
+            <body hash="626a00354e52e168f6094eb87587fe14"><![CDATA[{
+                return DatabaseController.GetDbBackups();
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Files">
+          <declaration><![CDATA[public List<DbFileInfo> Files]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="13" el="52" ec="14">Components\Database\DbInfo.cs</location>
+            <body hash="67c4c8914842f0a68862bdcb64d55411"><![CDATA[{
+                return DatabaseController.GetDbFileInfo();
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ProductEdition">
+          <declaration><![CDATA[public string ProductEdition]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="40" el="35" ec="44">Components\Database\DbInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="35" sc="45" el="35" ec="49">Components\Database\DbInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ProductVersion">
+          <declaration><![CDATA[public string ProductVersion]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="40" el="31" ec="44">Components\Database\DbInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="31" sc="45" el="31" ec="49">Components\Database\DbInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ServicePack">
+          <declaration><![CDATA[public string ServicePack]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="37" el="33" ec="41">Components\Database\DbInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="33" sc="42" el="33" ec="46">Components\Database\DbInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SoftwarePlatform">
+          <declaration><![CDATA[public string SoftwarePlatform]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="42" el="37" ec="46">Components\Database\DbInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="47" el="37" ec="51">Components\Database\DbInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Dashboard.Components.Host">
+    <class name="HostController">
+      <declaration><![CDATA[public class HostController : IDashboardData]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public HostController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ExportData">
+          <declaration><![CDATA[public void ExportData(XmlWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="9" el="44" ec="10">Components\Host\HostController.cs</location>
+            <body hash="08ed966292c9e11555d18a25fec255e1"><![CDATA[{
+            var host = new HostInfo();
+
+            //Write start of Host 
+            writer.WriteStartElement("host");
+
+            host.WriteXml(writer);
+
+            //Write end of Host 
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="HostInfo">
+      <declaration><![CDATA[public class HostInfo : IXmlSerializable]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public HostInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSchema">
+          <declaration><![CDATA[public XmlSchema GetSchema()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="164" sc="9" el="165" ec="49">Components\Host\HostInfo.cs</location>
+            <body hash="d7b55b1d4bb2883a1c419f45d501e488"><![CDATA[{
+            throw new NotImplementedException();]]></body>
+          </codeblock>
+        </method>
+        <method name="ReadXml">
+          <declaration><![CDATA[public void ReadXml(XmlReader reader)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="169" sc="9" el="170" ec="49">Components\Host\HostInfo.cs</location>
+            <body hash="d7b55b1d4bb2883a1c419f45d501e488"><![CDATA[{
+            throw new NotImplementedException();]]></body>
+          </codeblock>
+        </method>
+        <method name="WriteXml">
+          <declaration><![CDATA[public void WriteXml(XmlWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="174" sc="9" el="190" ec="10">Components\Host\HostInfo.cs</location>
+            <body hash="c4335bf95c91233d2ec278aa396e6573"><![CDATA[{
+            writer.WriteElementString("hostGUID", HostGUID);
+            writer.WriteElementString("version", Version);
+            writer.WriteElementString("permissions", Permissions);
+            writer.WriteElementString("dataProvider", DataProvider);
+            writer.WriteElementString("cachingProvider", CachingProvider);
+            writer.WriteElementString("friendlyUrlProvider", FriendlyUrlProvider);
+            writer.WriteElementString("friendlyUrlEnabled", FriendlyUrlEnabled);
+            writer.WriteElementString("friendlyUrlType", FriendlyUrlType);
+            writer.WriteElementString("htmlEditorProvider", HtmlEditorProvider);
+            writer.WriteElementString("loggingProvider", LoggingProvider);
+            writer.WriteElementString("schedulerMode", SchedulerMode);
+            writer.WriteElementString("webFarmEnabled", WebFarmEnabled);
+
+            writer.WriteElementString("JQueryVersion", JQueryVersion);
+            writer.WriteElementString("JQueryUIVersion", JQueryUIVersion);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CachingProvider">
+          <declaration><![CDATA[public string CachingProvider]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="13" el="44" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="04b436db982b852b229fe61c13e559ce"><![CDATA[{
+                return ProviderConfiguration.GetProviderConfiguration("caching").DefaultProvider;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DataProvider">
+          <declaration><![CDATA[public string DataProvider]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="13" el="52" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="00f11d5874468a16c1723ed45630c3cb"><![CDATA[{
+                return ProviderConfiguration.GetProviderConfiguration("data").DefaultProvider;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="FriendlyUrlEnabled">
+          <declaration><![CDATA[public string FriendlyUrlEnabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="13" el="68" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="67f57491c08d14eabe635e558e92a1a7"><![CDATA[{
+                return DotNetNuke.Entities.Host.Host.UseFriendlyUrls.ToString();
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="FriendlyUrlProvider">
+          <declaration><![CDATA[public string FriendlyUrlProvider]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="13" el="60" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="3ffe5fc21ac2d8f1728203ca97ea3db2"><![CDATA[{
+                return ProviderConfiguration.GetProviderConfiguration("friendlyUrl").DefaultProvider;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="FriendlyUrlType">
+          <declaration><![CDATA[public string FriendlyUrlType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="13" el="78" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="ce02fe8b5b9648378128e45b7daa7453"><![CDATA[{
+                var urlProvider = (Provider) ProviderConfiguration.GetProviderConfiguration("friendlyUrl").Providers[FriendlyUrlProvider];
+                var urlFormat = urlProvider.Attributes["urlformat"];
+                return string.IsNullOrWhiteSpace(urlFormat) ? "SearchFriendly" : urlFormat;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="HostGUID">
+          <declaration><![CDATA[public string HostGUID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="84" sc="13" el="86" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="0149ecc7549274992d0d6bef40d3d488"><![CDATA[{
+                return DotNetNuke.Entities.Host.Host.GUID;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="HtmlEditorProvider">
+          <declaration><![CDATA[public string HtmlEditorProvider]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="13" el="94" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="e287e26825f663c44b5e52ef42142afc"><![CDATA[{
+                return ProviderConfiguration.GetProviderConfiguration("htmlEditor").DefaultProvider;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="JQueryUIVersion">
+          <declaration><![CDATA[public string JQueryUIVersion]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="156" sc="13" el="158" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="5de64d27a1b1b226071cb4b932f84273"><![CDATA[{
+                return jQuery.UIVersion;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="JQueryVersion">
+          <declaration><![CDATA[public string JQueryVersion]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="148" sc="13" el="150" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="b7f188826cec85d59bae92d546aeb071"><![CDATA[{
+                return jQuery.Version;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="LoggingProvider">
+          <declaration><![CDATA[public string LoggingProvider]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="100" sc="13" el="102" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="41d08915794d8bfbc532aea552fe1f45"><![CDATA[{
+                return ProviderConfiguration.GetProviderConfiguration("logging").DefaultProvider;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Permissions">
+          <declaration><![CDATA[public string Permissions]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="108" sc="13" el="110" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="6ea46cf7af8f4c7fd80a05503e2499d5"><![CDATA[{
+                return SecurityPolicy.Permissions;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Product">
+          <declaration><![CDATA[public string Product]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="116" sc="13" el="118" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="1ba834475dfb1a640595666a1b62a55f"><![CDATA[{
+                return DotNetNukeContext.Current.Application.Description;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SchedulerMode">
+          <declaration><![CDATA[public string SchedulerMode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="124" sc="13" el="126" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="92a1d51e4c72b02a2a365da4c35ff14b"><![CDATA[{
+                return DotNetNuke.Entities.Host.Host.SchedulerMode.ToString();
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Version">
+          <declaration><![CDATA[public string Version]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="132" sc="13" el="134" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="c84b2f549fe79dc8bfa15adbbbfc0628"><![CDATA[{
+                return DotNetNukeContext.Current.Application.Version.ToString(3);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="WebFarmEnabled">
+          <declaration><![CDATA[public string WebFarmEnabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="140" sc="13" el="142" ec="14">Components\Host\HostInfo.cs</location>
+            <body hash="d0076cdad89d639b3a39756406bac566"><![CDATA[{
+                return DotNetNuke.Services.Cache.CachingProvider.Instance().IsWebFarm().ToString();
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Dashboard.Components.Installers">
+    <class name="DashboardInstaller">
+      <declaration><![CDATA[public class DashboardInstaller : ComponentInstallerBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DashboardInstaller()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Commit">
+          <declaration><![CDATA[public override void Commit()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="9" el="87" ec="10">Components\Installers\DashboardInstaller.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteDashboard">
+          <declaration><![CDATA[private void DeleteDashboard()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="9" el="83" ec="10">Components\Installers\DashboardInstaller.cs</location>
+            <body hash="2d25bcb4fc8208c4556eb3ab78fc1c75"><![CDATA[{
+            try
+            {
+				//Attempt to get the Dashboard
+                DashboardControl dashboardControl = DashboardController.GetDashboardControlByPackageId(Package.PackageID);
+                if (dashboardControl != null)
+                {
+                    DashboardController.DeleteControl(dashboardControl);
+                }
+                Log.AddInfo(dashboardControl.DashboardControlKey + " " + Util.AUTHENTICATION_UnRegistered);
+            }
+            catch (Exception ex)
+            {
+                Log.AddFailure(ex);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Install">
+          <declaration><![CDATA[public override void Install()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="90" sc="9" el="131" ec="10">Components\Installers\DashboardInstaller.cs</location>
+            <body hash="ea45e8bc83108e3d7b09cc83de557c54"><![CDATA[{
+            bool bAdd = Null.NullBoolean;
+            try
+            {
+                //Attempt to get the Dashboard
+                TempDashboardControl = DashboardController.GetDashboardControlByKey(Key);
+                var dashboardControl = new DashboardControl();
+
+                if (TempDashboardControl == null)
+                {
+                    dashboardControl.IsEnabled = true;
+                    bAdd = true;
+                }
+                else
+                {
+                    dashboardControl.DashboardControlID = TempDashboardControl.DashboardControlID;
+                    dashboardControl.IsEnabled = TempDashboardControl.IsEnabled;
+                }
+                dashboardControl.DashboardControlKey = Key;
+                dashboardControl.PackageID = Package.PackageID;
+                dashboardControl.DashboardControlSrc = Src;
+                dashboardControl.DashboardControlLocalResources = LocalResources;
+                dashboardControl.ControllerClass = ControllerClass;
+                dashboardControl.ViewOrder = ViewOrder;
+                if (bAdd)
+                {
+                    //Add new Dashboard
+                    DashboardController.AddDashboardControl(dashboardControl);
+                }
+                else
+                {
+					//Update Dashboard
+                    DashboardController.UpdateDashboardControl(dashboardControl);
+                }
+                Completed = true;
+                Log.AddInfo(dashboardControl.DashboardControlKey + " " + Util.DASHBOARD_Registered);
+            }
+            catch (Exception ex)
+            {
+                Log.AddFailure(ex);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ReadManifest">
+          <declaration><![CDATA[public override void ReadManifest(XPathNavigator manifestNav)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ The ReadManifest method reads the manifest file for the Authentication compoent.
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="139" sc="9" el="162" ec="10">Components\Installers\DashboardInstaller.cs</location>
+            <body hash="272d5c9b4df9b8eb8d29ef0059956317"><![CDATA[{
+			//Get the Key
+            Key = Util.ReadElement(manifestNav, "dashboardControl/key", Log, Util.DASHBOARD_KeyMissing);
+
+            //Get the Src
+            Src = Util.ReadElement(manifestNav, "dashboardControl/src", Log, Util.DASHBOARD_SrcMissing);
+
+            //Get the LocalResources
+            LocalResources = Util.ReadElement(manifestNav, "dashboardControl/localResources", Log, Util.DASHBOARD_LocalResourcesMissing);
+
+            //Get the ControllerClass
+            ControllerClass = Util.ReadElement(manifestNav, "dashboardControl/controllerClass");
+
+            //Get the IsEnabled Flag
+            IsEnabled = bool.Parse(Util.ReadElement(manifestNav, "dashboardControl/isEnabled", "true"));
+
+            //Get the ViewOrder
+            ViewOrder = int.Parse(Util.ReadElement(manifestNav, "dashboardControl/viewOrder", "-1"));
+
+            if (Log.Valid)
+            {
+                Log.AddInfo(Util.DASHBOARD_ReadSuccess);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Rollback">
+          <declaration><![CDATA[public override void Rollback()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="165" sc="9" el="177" ec="10">Components\Installers\DashboardInstaller.cs</location>
+            <body hash="b037f790ea2ca62ece35a831baba8e5c"><![CDATA[{
+			//If Temp Dashboard exists then we need to update the DataStore with this 
+            if (TempDashboardControl == null)
+            {
+				//No Temp Dashboard - Delete newly added system
+                DeleteDashboard();
+            }
+            else
+            {
+				//Temp Dashboard - Rollback to Temp
+                DashboardController.UpdateDashboardControl(TempDashboardControl);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UnInstall">
+          <declaration><![CDATA[public override void UnInstall()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="180" sc="9" el="195" ec="10">Components\Installers\DashboardInstaller.cs</location>
+            <body hash="d0fe20d81e4349547ccdc623d69b98c4"><![CDATA[{
+            try
+            {
+				//Attempt to get the DashboardControl
+                DashboardControl dashboardControl = DashboardController.GetDashboardControlByPackageId(Package.PackageID);
+                if (dashboardControl != null)
+                {
+                    DashboardController.DeleteControl(dashboardControl);
+                }
+                Log.AddInfo(dashboardControl.DashboardControlKey + " " + Util.DASHBOARD_UnRegistered);
+            }
+            catch (Exception ex)
+            {
+                Log.AddFailure(ex);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="ControllerClass">
+          <declaration><![CDATA[private string ControllerClass;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="IsEnabled">
+          <declaration><![CDATA[private bool IsEnabled;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Key">
+          <declaration><![CDATA[private string Key;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LocalResources">
+          <declaration><![CDATA[private string LocalResources;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Src">
+          <declaration><![CDATA[private string Src;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="TempDashboardControl">
+          <declaration><![CDATA[private DashboardControl TempDashboardControl;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ViewOrder">
+          <declaration><![CDATA[private int ViewOrder;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="AllowableFiles">
+          <declaration><![CDATA[public override string AllowableFiles]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Gets a list of allowable file extensions (in addition to the Host's List)
+ </summary>
+ <value>A String</value>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="58" sc="13" el="60" ec="14">Components\Installers\DashboardInstaller.cs</location>
+            <body hash="d3901d8b2908c62ec3b11e37f2924b7a"><![CDATA[{
+                return "ashx, aspx, ascx, vb, cs, resx, css, js, resources, config, vbproj, csproj, sln, htm, html";
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Dashboard.Components.Modules">
+    <class name="ModulesController">
+      <declaration><![CDATA[public class ModulesController : IDashboardData]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ModulesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ExportData">
+          <declaration><![CDATA[public void ExportData(XmlWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="51" ec="10">Components\Modules\ModulesController.cs</location>
+            <body hash="6d0afa21c75676ad0f42bfb923656d59"><![CDATA[{
+            //Write start of Installed Modules 
+            writer.WriteStartElement("installedModules");
+
+            //Iterate through Installed Modules 
+            foreach (InstalledModuleInfo module in InstalledModulesController.GetInstalledModules())
+            {
+                module.WriteXml(writer);
+            }
+			
+            //Write end of Installed Modules 
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Dashboard.Components.Portals">
+    <class name="PortalInfo">
+      <declaration><![CDATA[public class PortalInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private int _Pages = Null.NullInteger;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="41" ec="47">Components\Portals\PortalInfo.cs</location>
+            <body hash="0cde6d46eb4856dfbf92ab5885b6ccaf"><![CDATA[private int _Pages = Null.NullInteger;
+        private int _Roles = Null.NullInteger;
+        private int _Users = Null.NullInteger;]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="WriteXml">
+          <declaration><![CDATA[public void WriteXml(XmlWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="9" el="97" ec="10">Components\Portals\PortalInfo.cs</location>
+            <body hash="9520116dca6d57d2e0f7f323e4c10c76"><![CDATA[{
+            //Write start of main elemenst 
+            writer.WriteStartElement("portal");
+            writer.WriteElementString("portalName", PortalName);
+            writer.WriteElementString("GUID", GUID.ToString());
+            writer.WriteElementString("pages", Pages.ToString());
+            writer.WriteElementString("users", Users.ToString());
+            writer.WriteElementString("roles", Roles.ToString());
+
+            //Write end of Host Info 
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_Pages">
+          <declaration><![CDATA[private int _Pages = Null.NullInteger;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_Roles">
+          <declaration><![CDATA[private int _Roles = Null.NullInteger;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_Users">
+          <declaration><![CDATA[private int _Users = Null.NullInteger;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="GUID">
+          <declaration><![CDATA[public Guid GUID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="28" el="43" ec="32">Components\Portals\PortalInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="33" el="43" ec="37">Components\Portals\PortalInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Pages">
+          <declaration><![CDATA[public int Pages]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="13" el="54" ec="14">Components\Portals\PortalInfo.cs</location>
+            <body hash="399c75c4c7206650a6e53baea83964c1"><![CDATA[{
+                if (_Pages < 0)
+                {
+                    _Pages = TabController.Instance.GetTabsByPortal(PortalID).Count;
+                }
+                return _Pages;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalID">
+          <declaration><![CDATA[public int PortalID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="31" el="57" ec="35">Components\Portals\PortalInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="57" sc="36" el="57" ec="40">Components\Portals\PortalInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalName">
+          <declaration><![CDATA[public string PortalName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="36" el="59" ec="40">Components\Portals\PortalInfo.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="59" sc="41" el="59" ec="45">Components\Portals\PortalInfo.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Roles">
+          <declaration><![CDATA[public int Roles]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="13" el="70" ec="14">Components\Portals\PortalInfo.cs</location>
+            <body hash="4c13f0d40f932a9b356ecba556bfd688"><![CDATA[{
+                if (_Roles < 0)
+                {
+                    _Roles = RoleController.Instance.GetRoles(PortalID, r => r.SecurityMode != SecurityMode.SocialGroup && r.Status == RoleStatus.Approved).Count;
+                }
+                return _Roles;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Users">
+          <declaration><![CDATA[public int Users]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="13" el="82" ec="14">Components\Portals\PortalInfo.cs</location>
+            <body hash="4c8bfaae0e47ce86cf26987727e148e9"><![CDATA[{
+                if (_Users < 0)
+                {
+                    _Users = UserController.GetUserCountByPortal(PortalID);
+                }
+                return _Users;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="PortalsController">
+      <declaration><![CDATA[public class PortalsController : IDashboardData]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PortalsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ExportData">
+          <declaration><![CDATA[public void ExportData(XmlWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="9" el="50" ec="10">Components\Portals\PortalsController.cs</location>
+            <body hash="5e08657bd3d8d8ebf8b14f7d0e8919c7"><![CDATA[{
+			//Write start of Portals 
+            writer.WriteStartElement("portals");
+			
+			//Iterate through Portals 
+            foreach (PortalInfo portal in GetPortals())
+            {
+                portal.WriteXml(writer);
+            }
+			
+            //Write end of Portals 
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortals">
+          <declaration><![CDATA[public static List<PortalInfo> GetPortals()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="9" el="57" ec="10">Components\Portals\PortalsController.cs</location>
+            <body hash="c6236e1ac035e91287a003ec6621779c"><![CDATA[{
+            return CBO.FillCollection<PortalInfo>(DataService.GetPortals());
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Dashboard.Components.Server">
+    <class name="ServerController">
+      <declaration><![CDATA[public class ServerController : IDashboardData]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServerController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ExportData">
+          <declaration><![CDATA[public void ExportData(XmlWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="9" el="44" ec="10">Components\Server\ServerController.cs</location>
+            <body hash="d6b21a7b26d84c96992e112ebe43885c"><![CDATA[{
+            var host = new ServerInfo();
+
+            //Write start of Host 
+            writer.WriteStartElement("server");
+
+            host.WriteXml(writer);
+
+            //Write end of Host 
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ServerInfo">
+      <declaration><![CDATA[public class ServerInfo : IXmlSerializable]]></declaration>
+      <documentation>
+        <summary>
+ This class manages the Server Information for the site
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServerInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSchema">
+          <declaration><![CDATA[public XmlSchema GetSchema()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="127" sc="9" el="128" ec="49">Components\Server\ServerInfo.cs</location>
+            <body hash="d7b55b1d4bb2883a1c419f45d501e488"><![CDATA[{
+            throw new NotImplementedException();]]></body>
+          </codeblock>
+        </method>
+        <method name="ReadXml">
+          <declaration><![CDATA[public void ReadXml(XmlReader reader)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="132" sc="9" el="133" ec="49">Components\Server\ServerInfo.cs</location>
+            <body hash="d7b55b1d4bb2883a1c419f45d501e488"><![CDATA[{
+            throw new NotImplementedException();]]></body>
+          </codeblock>
+        </method>
+        <method name="WriteXml">
+          <declaration><![CDATA[public void WriteXml(XmlWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="137" sc="9" el="146" ec="10">Components\Server\ServerInfo.cs</location>
+            <body hash="bdcb3e780a7b7f9e84da06c2ebde10cd"><![CDATA[{
+            writer.WriteElementString("osVersion", OSVersion);
+            writer.WriteElementString("iisVersion", IISVersion);
+            writer.WriteElementString("framework", Framework);
+            writer.WriteElementString("identity", Identity);
+            writer.WriteElementString("hostName", HostName);
+            writer.WriteElementString("physicalPath", PhysicalPath);
+            writer.WriteElementString("url", Url);
+            writer.WriteElementString("relativePath", RelativePath);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Framework">
+          <declaration><![CDATA[public string Framework]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="13" el="48" ec="14">Components\Server\ServerInfo.cs</location>
+            <body hash="d00d8f9e6e880f3795a1343a882c2eb0"><![CDATA[{
+                return Environment.Version.ToString();
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="HostName">
+          <declaration><![CDATA[public string HostName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="13" el="56" ec="14">Components\Server\ServerInfo.cs</location>
+            <body hash="eeac97b22f31e50494c5d676c54a6c59"><![CDATA[{
+                return Dns.GetHostName();
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Identity">
+          <declaration><![CDATA[public string Identity]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="62" sc="13" el="64" ec="14">Components\Server\ServerInfo.cs</location>
+            <body hash="8d352e1c754e0d97713feb8ebcc10cec"><![CDATA[{
+                return WindowsIdentity.GetCurrent().Name;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IISVersion">
+          <declaration><![CDATA[public string IISVersion]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="13" el="72" ec="14">Components\Server\ServerInfo.cs</location>
+            <body hash="21cb8f1ddd257a5b2a0a7f6626f46c16"><![CDATA[{
+                return HttpContext.Current.Request.ServerVariables["SERVER_SOFTWARE"];
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="OSVersion">
+          <declaration><![CDATA[public string OSVersion]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="13" el="80" ec="14">Components\Server\ServerInfo.cs</location>
+            <body hash="06259233ffafc10b5df87c839da632bd"><![CDATA[{
+                return Environment.OSVersion.ToString();
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PhysicalPath">
+          <declaration><![CDATA[public string PhysicalPath]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="13" el="88" ec="14">Components\Server\ServerInfo.cs</location>
+            <body hash="244e61b73e2287971cad82b5d5702a3c"><![CDATA[{
+                return Globals.ApplicationMapPath;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="RelativePath">
+          <declaration><![CDATA[public string RelativePath]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="102" sc="13" el="113" ec="14">Components\Server\ServerInfo.cs</location>
+            <body hash="1c5f916ec0df4195721c0e7f07c74667"><![CDATA[{
+                string path;
+                if (string.IsNullOrEmpty(Globals.ApplicationPath))
+                {
+                    path = "/";
+                }
+                else
+                {
+                    path = Globals.ApplicationPath;
+                }
+                return path;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ServerTime">
+          <declaration><![CDATA[public string ServerTime]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="119" sc="13" el="121" ec="14">Components\Server\ServerInfo.cs</location>
+            <body hash="d4aad01f549cbcb2e125be7fb0a43656"><![CDATA[{
+                return DateTime.Now.ToString();
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Url">
+          <declaration><![CDATA[public string Url]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="94" sc="13" el="96" ec="14">Components\Server\ServerInfo.cs</location>
+            <body hash="7da44ce0975d068bd6b9c1b538c0f1b0"><![CDATA[{
+                return Globals.GetDomainName(HttpContext.Current.Request);
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Dashboard.Components.Skins">
+    <class name="SkinsController">
+      <declaration><![CDATA[public class SkinsController : IDashboardData]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SkinsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ExportData">
+          <declaration><![CDATA[public void ExportData(XmlWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="52" ec="10">Components\Skins\SkinsController.cs</location>
+            <body hash="494d0662f07469693670d23cd3e08fbe"><![CDATA[{
+			//Write start of Installed Skins 
+            writer.WriteStartElement("installedSkins");
+			
+			//Iterate through Installed Skins 
+            foreach (InstalledSkinInfo skin in Skin.GetInstalledSkins())
+            {
+                skin.WriteXml(writer);
+            }
+			
+			//Write end of Installed Skins 
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Dashboard.Controls">
+    <class name="Database">
+      <declaration><![CDATA[public class Database : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Database()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static Database()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="6" el="37" ec="95">Controls\Database.ascx.cs</location>
+            <body hash="a373077af87e1196a68d36f4ec0a954d"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (Database))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="9" el="68" ec="10">Controls\Database.ascx.cs</location>
+            <body hash="0c575e3fa85d2bdaaa0b866803648ad4"><![CDATA[{
+            base.OnLoad(e);
+            DbInfo database = DatabaseController.GetDbInfo();
+            ctlDbInfo.DataSource = database;
+            ctlDbInfo.DataBind();
+            //Localization.LocalizeGridView(ref grdBackups, LocalResourceFile);
+            try
+            {
+                grdBackups.DataSource = database.Backups;
+                grdBackups.DataBind();
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+
+                grdBackups.Visible = false;
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(Parent, Localization.GetString("Backup.Error.Text", LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning);
+            }
+            //Localization.LocalizeGridView(ref grdFiles, LocalResourceFile);
+            grdFiles.DataSource = database.Files;
+            grdFiles.DataBind();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="ctlDbInfo">
+          <declaration><![CDATA[protected PropertyEditorControl ctlDbInfo;]]></declaration>
+          <documentation>
+            <summary>
+ ctlDbInfo control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldProductEdition">
+          <declaration><![CDATA[protected FieldEditorControl fldProductEdition;]]></declaration>
+          <documentation>
+            <summary>
+ fldProductEdition control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldProductVersion">
+          <declaration><![CDATA[protected FieldEditorControl fldProductVersion;]]></declaration>
+          <documentation>
+            <summary>
+ fldProductVersion control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldServicePack">
+          <declaration><![CDATA[protected FieldEditorControl fldServicePack;]]></declaration>
+          <documentation>
+            <summary>
+ fldServicePack control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldSoftwarePlatform">
+          <declaration><![CDATA[protected FieldEditorControl fldSoftwarePlatform;]]></declaration>
+          <documentation>
+            <summary>
+ fldSoftwarePlatform control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="grdBackups">
+          <declaration><![CDATA[protected DnnGrid grdBackups;]]></declaration>
+          <documentation>
+            <summary>
+ grdBackups control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="grdFiles">
+          <declaration><![CDATA[protected DnnGrid grdFiles;]]></declaration>
+          <documentation>
+            <summary>
+ grdFiles control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(Database));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="plBackups">
+          <declaration><![CDATA[protected Label plBackups;]]></declaration>
+          <documentation>
+            <summary>
+ plBackups control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plFiles">
+          <declaration><![CDATA[protected Label plFiles;]]></declaration>
+          <documentation>
+            <summary>
+ plFiles control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="NoBackups">
+          <declaration><![CDATA[protected string NoBackups]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="13" el="43" ec="14">Controls\Database.ascx.cs</location>
+            <body hash="57d851379a0d18c02973fb4defe87e91"><![CDATA[{
+                return Localization.GetString("NoBackups", LocalResourceFile);
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Host">
+      <declaration><![CDATA[public class Host : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Host()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="40" ec="10">Controls\Host.ascx.cs</location>
+            <body hash="9f16bc024aa8256519e343a22f4956c3"><![CDATA[{
+            base.OnLoad(e);
+            var hostInfo = new HostInfo();
+            ctlHost.DataSource = hostInfo;
+            ctlHost.DataBind();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="ctlHost">
+          <declaration><![CDATA[protected PropertyEditorControl ctlHost;]]></declaration>
+          <documentation>
+            <summary>
+ ctlHost control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldCachingProvider">
+          <declaration><![CDATA[protected FieldEditorControl fldCachingProvider;]]></declaration>
+          <documentation>
+            <summary>
+ fldCachingProvider control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldDataProvider">
+          <declaration><![CDATA[protected FieldEditorControl fldDataProvider;]]></declaration>
+          <documentation>
+            <summary>
+ fldDataProvider control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldFriendlyUrlEnabled">
+          <declaration><![CDATA[protected FieldEditorControl fldFriendlyUrlEnabled;]]></declaration>
+          <documentation>
+            <summary>
+ fldFriendlyUrlEnabled control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldFriendlyUrlProvider">
+          <declaration><![CDATA[protected FieldEditorControl fldFriendlyUrlProvider;]]></declaration>
+          <documentation>
+            <summary>
+ fldFriendlyUrlProvider control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldFriendlyUrlType">
+          <declaration><![CDATA[protected FieldEditorControl fldFriendlyUrlType;]]></declaration>
+          <documentation>
+            <summary>
+ fldFriendlyUrlType control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldHostGUID">
+          <declaration><![CDATA[protected FieldEditorControl fldHostGUID;]]></declaration>
+          <documentation>
+            <summary>
+ fldHostGUID control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldHtmlEditorProvider">
+          <declaration><![CDATA[protected FieldEditorControl fldHtmlEditorProvider;]]></declaration>
+          <documentation>
+            <summary>
+ fldHtmlEditorProvider control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldjQueryUIVersion">
+          <declaration><![CDATA[protected FieldEditorControl fldjQueryUIVersion;]]></declaration>
+          <documentation>
+            <summary>
+ fldjQueryUIVersion control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldjQueryVersion">
+          <declaration><![CDATA[protected FieldEditorControl fldjQueryVersion;]]></declaration>
+          <documentation>
+            <summary>
+ fldjQueryVersion control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldLoggingProvider">
+          <declaration><![CDATA[protected FieldEditorControl fldLoggingProvider;]]></declaration>
+          <documentation>
+            <summary>
+ fldLoggingProvider control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldPermissions">
+          <declaration><![CDATA[protected FieldEditorControl fldPermissions;]]></declaration>
+          <documentation>
+            <summary>
+ fldPermissions control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldProduct">
+          <declaration><![CDATA[protected FieldEditorControl fldProduct;]]></declaration>
+          <documentation>
+            <summary>
+ fldProduct control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldSchedulerMode">
+          <declaration><![CDATA[protected FieldEditorControl fldSchedulerMode;]]></declaration>
+          <documentation>
+            <summary>
+ fldSchedulerMode control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldVersion">
+          <declaration><![CDATA[protected FieldEditorControl fldVersion;]]></declaration>
+          <documentation>
+            <summary>
+ fldVersion control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldWebFarmEnabled">
+          <declaration><![CDATA[protected FieldEditorControl fldWebFarmEnabled;]]></declaration>
+          <documentation>
+            <summary>
+ fldWebFarmEnabled control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Modules">
+      <declaration><![CDATA[public class Modules : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Modules()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="9" el="39" ec="10">Controls\Modules.ascx.cs</location>
+            <body hash="71cda24016c76d8cd3aeb46731b70340"><![CDATA[{
+            base.OnLoad(e);
+            //Localization.LocalizeDataGrid(ref grdModules, LocalResourceFile);
+            grdModules.DataSource = InstalledModulesController.GetInstalledModules();
+            grdModules.DataBind();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="grdModules">
+          <declaration><![CDATA[protected DnnGrid grdModules;]]></declaration>
+          <documentation>
+            <summary>
+ grdModules control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Portals">
+      <declaration><![CDATA[public class Portals : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Portals()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="9" el="41" ec="10">Controls\Portals.ascx.cs</location>
+            <body hash="886d834eb6a7236c4a4962fbd423ac3b"><![CDATA[{
+            base.OnLoad(e);
+            //Localization.LocalizeDataGrid(ref grdPortals, LocalResourceFile);
+            grdPortals.DataSource = PortalsController.GetPortals();
+            grdPortals.DataBind();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="grdPortals">
+          <declaration><![CDATA[protected DnnGrid grdPortals;]]></declaration>
+          <documentation>
+            <summary>
+ grdPortals control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Server">
+      <declaration><![CDATA[public class Server : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Server()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="40" ec="10">Controls\Server.ascx.cs</location>
+            <body hash="48ca5475b35e925833fe5faa1687da8d"><![CDATA[{
+            base.OnLoad(e);
+            var server_Info = new ServerInfo();
+            ctlServer.DataSource = server_Info;
+            ctlServer.DataBind();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="ctlServer">
+          <declaration><![CDATA[protected PropertyEditorControl ctlServer;]]></declaration>
+          <documentation>
+            <summary>
+ ctlServer control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldFramework">
+          <declaration><![CDATA[protected FieldEditorControl fldFramework;]]></declaration>
+          <documentation>
+            <summary>
+ fldFramework control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldHostName">
+          <declaration><![CDATA[protected FieldEditorControl fldHostName;]]></declaration>
+          <documentation>
+            <summary>
+ fldHostName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldIdentity">
+          <declaration><![CDATA[protected FieldEditorControl fldIdentity;]]></declaration>
+          <documentation>
+            <summary>
+ fldIdentity control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldIISVersion">
+          <declaration><![CDATA[protected FieldEditorControl fldIISVersion;]]></declaration>
+          <documentation>
+            <summary>
+ fldIISVersion control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldOsVersion">
+          <declaration><![CDATA[protected FieldEditorControl fldOsVersion;]]></declaration>
+          <documentation>
+            <summary>
+ fldOsVersion control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldPhysicalPath">
+          <declaration><![CDATA[protected FieldEditorControl fldPhysicalPath;]]></declaration>
+          <documentation>
+            <summary>
+ fldPhysicalPath control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldRelativePath">
+          <declaration><![CDATA[protected FieldEditorControl fldRelativePath;]]></declaration>
+          <documentation>
+            <summary>
+ fldRelativePath control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldServerTime">
+          <declaration><![CDATA[protected FieldEditorControl fldServerTime;]]></declaration>
+          <documentation>
+            <summary>
+ fldServerTime control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fldUrl">
+          <declaration><![CDATA[protected FieldEditorControl fldUrl;]]></declaration>
+          <documentation>
+            <summary>
+ fldUrl control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Skins">
+      <declaration><![CDATA[public class Skins : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Skins()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="9" el="41" ec="10">Controls\Skins.ascx.cs</location>
+            <body hash="94a6c37db630d7b9eaf361697f9c4863"><![CDATA[{
+            base.OnLoad(e);
+            //Localization.LocalizeDataGrid(ref grdSkins, LocalResourceFile);
+            grdSkins.DataSource = Skin.GetInstalledSkins();
+            grdSkins.DataBind();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="grdSkins">
+          <declaration><![CDATA[protected DnnGrid grdSkins;]]></declaration>
+          <documentation>
+            <summary>
+ grdSkins control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Dashboard.Data">
+    <class name="DataService">
+      <declaration><![CDATA[public class DataService]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DataService()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static DataService()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="36" ec="62">Components\DataService.cs</location>
+            <body hash="e4b19e8d13ee5a84da404fc66efb3adb"><![CDATA[private static readonly DataProvider provider = DataProvider.Instance();
+        private static string moduleQualifier = "Dashboard_";]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddDashboardControl">
+          <declaration><![CDATA[public static int AddDashboardControl(int packageId, string dashboardControlKey, bool isEnabled, string dashboardControlSrc, string dashboardControlLocalResources, string controllerClass, int viewOrder)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="54" ec="10">Components\DataService.cs</location>
+            <body hash="2e91014235ee389ad693231bc4eb91da"><![CDATA[{
+            return provider.ExecuteScalar<int>(GetFullyQualifiedName("AddControl"),
+                                               packageId,
+                                               dashboardControlKey,
+                                               isEnabled,
+                                               dashboardControlSrc,
+                                               dashboardControlLocalResources,
+                                               controllerClass,
+                                               viewOrder);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteDashboardControl">
+          <declaration><![CDATA[public static void DeleteDashboardControl(int dashboardControlId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="9" el="59" ec="10">Components\DataService.cs</location>
+            <body hash="2952ab88c32e50771052951f2dbb8d8f"><![CDATA[{
+            provider.ExecuteNonQuery(GetFullyQualifiedName("DeleteControl"), dashboardControlId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDashboardControlByKey">
+          <declaration><![CDATA[public static IDataReader GetDashboardControlByKey(string dashboardControlKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="62" sc="9" el="64" ec="10">Components\DataService.cs</location>
+            <body hash="7bb9a9cfda98d485b821df482cc05560"><![CDATA[{
+            return provider.ExecuteReader(GetFullyQualifiedName("GetDashboardControlByKey"), dashboardControlKey);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDashboardControlByPackageId">
+          <declaration><![CDATA[public static IDataReader GetDashboardControlByPackageId(int packageId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="69" ec="10">Components\DataService.cs</location>
+            <body hash="52ca57b951e4d061b6b885cdeb749f20"><![CDATA[{
+            return provider.ExecuteReader(GetFullyQualifiedName("GetDashboardControlByPackageId"), packageId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDashboardControls">
+          <declaration><![CDATA[public static IDataReader GetDashboardControls(bool isEnabled)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="74" ec="10">Components\DataService.cs</location>
+            <body hash="3fcfcac03324fba8b39a0561287861c9"><![CDATA[{
+            return provider.ExecuteReader(GetFullyQualifiedName("GetControls"), isEnabled);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDbBackups">
+          <declaration><![CDATA[public static IDataReader GetDbBackups()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="87" sc="9" el="89" ec="10">Components\DataService.cs</location>
+            <body hash="bfc986896a63939807f91f3245f93963"><![CDATA[{
+            return provider.ExecuteReader(GetFullyQualifiedName("GetDbBackups"));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDbFileInfo">
+          <declaration><![CDATA[public static IDataReader GetDbFileInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="82" sc="9" el="84" ec="10">Components\DataService.cs</location>
+            <body hash="a9b3dc42f712ff620485d58d7aa6dca9"><![CDATA[{
+            return provider.ExecuteReader(GetFullyQualifiedName("GetDbFileInfo"));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDbInfo">
+          <declaration><![CDATA[public static IDataReader GetDbInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="77" sc="9" el="79" ec="10">Components\DataService.cs</location>
+            <body hash="13420d1e5a7b3d99b04967177c3df6ee"><![CDATA[{
+            return provider.ExecuteReader(GetFullyQualifiedName("GetDbInfo"));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFullyQualifiedName">
+          <declaration><![CDATA[private static string GetFullyQualifiedName(string name)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="41" ec="10">Components\DataService.cs</location>
+            <body hash="2e6459954c4794843e8e0a25f5f242d0"><![CDATA[{
+            return String.Concat(moduleQualifier, name);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortals">
+          <declaration><![CDATA[public static IDataReader GetPortals()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="95" ec="10">Components\DataService.cs</location>
+            <body hash="322dd3d805ef9a3ba8c328e066ce93f6"><![CDATA[{
+            string cultureCode = Localization.SystemLocale;
+            return provider.GetPortals(cultureCode);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetServerErrors">
+          <declaration><![CDATA[public static IDataReader GetServerErrors()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="98" sc="9" el="100" ec="10">Components\DataService.cs</location>
+            <body hash="0fcb20fa37c45d89ba66adf5f2339f3d"><![CDATA[{
+            return provider.ExecuteReader(GetFullyQualifiedName("GetServerErrors"));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateDashboardControl">
+          <declaration><![CDATA[public static void UpdateDashboardControl(int dashboardControlId, string dashboardControlKey, bool isEnabled, string dashboardControlSrc, string dashboardControlLocalResources, string controllerClass, int viewOrder)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="104" sc="9" el="113" ec="10">Components\DataService.cs</location>
+            <body hash="3bfd15abb8cf94ba015b4d611da2231a"><![CDATA[{
+            provider.ExecuteNonQuery(GetFullyQualifiedName("UpdateControl"),
+                                     dashboardControlId,
+                                     dashboardControlKey,
+                                     isEnabled,
+                                     dashboardControlSrc,
+                                     dashboardControlLocalResources,
+                                     controllerClass,
+                                     viewOrder);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="moduleQualifier">
+          <declaration><![CDATA[private static string moduleQualifier = "Dashboard_";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="provider">
+          <declaration><![CDATA[private static readonly DataProvider provider = DataProvider.Instance();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Admin.Dashboard">
+    <class name="Export">
+      <declaration><![CDATA[public class Export : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Export()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="53" ec="10">Export.ascx.cs</location>
+            <body hash="1a9f9fa62ca79885e7e9ffd208522de7"><![CDATA[{
+            base.OnLoad(e);
+
+            cmdCancel.NavigateUrl = Globals.NavigateURL();
+            cmdSave.Click += OnSaveClick;
+
+            if (!UserInfo.IsSuperUser)
+            {
+                Response.Redirect(Globals.NavigateURL("Access Denied"), true);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSaveClick">
+          <declaration><![CDATA[protected void OnSaveClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="9" el="72" ec="10">Export.ascx.cs</location>
+            <body hash="8f8df32c0f985a2898b4a5b9da32ec38"><![CDATA[{
+            try
+            {
+                string fileName = txtFileName.Text;
+                if (!fileName.EndsWith(".xml"))
+                {
+                    fileName += ".xml";
+                }
+                DashboardController.Export(fileName);
+
+                UI.Skins.Skin.AddModuleMessage(this, string.Format(Localization.GetString("Success", LocalResourceFile), fileName), ModuleMessage.ModuleMessageType.GreenSuccess);
+            }
+            catch (Exception ex)
+            {
+                Exceptions.ProcessModuleLoadException(this, ex);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cmdCancel">
+          <declaration><![CDATA[protected HyperLink cmdCancel;]]></declaration>
+          <documentation>
+            <summary>
+ cmdCancel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdSave">
+          <declaration><![CDATA[protected LinkButton cmdSave;]]></declaration>
+          <documentation>
+            <summary>
+ cmdSave control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plFileName">
+          <declaration><![CDATA[protected LabelControl plFileName;]]></declaration>
+          <documentation>
+            <summary>
+ plFileName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtFileName">
+          <declaration><![CDATA[protected TextBox txtFileName;]]></declaration>
+          <documentation>
+            <summary>
+ txtFileName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="valFileName">
+          <declaration><![CDATA[protected RequiredFieldValidator valFileName;]]></declaration>
+          <documentation>
+            <summary>
+ valFileName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

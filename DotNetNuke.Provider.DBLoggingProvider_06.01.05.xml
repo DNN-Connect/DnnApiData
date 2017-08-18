@@ -1,0 +1,1414 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Provider.DBLoggingProvider.dll" version="06.01.05" generated="2017-06-18 21:46:15Z" generationTime="1.785591">
+  <namespace name="DotNetNuke.Services.Log.EventLog.DBLoggingProvider">
+    <class name="DataProvider">
+      <declaration><![CDATA[public abstract class DataProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[protected DataProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddLog">
+          <declaration><![CDATA[public abstract void AddLog(string logGUID, string logTypeKey, int logUserID, string logUserName, int logPortalID, string logPortalName, DateTime logCreateDate, string logServerName, string logProperties, int logConfigID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="AddLogType">
+          <declaration><![CDATA[public abstract void AddLogType(string logTypeKey, string logTypeFriendlyName, string logTypeDescription, string logTypeCSSClass, string logTypeOwner);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="AddLogTypeConfigInfo">
+          <declaration><![CDATA[public abstract void AddLogTypeConfigInfo(bool loggingIsActive, string logTypeKey, string logTypePortalID, int keepMostRecent, bool emailNotificationIsActive, int threshold, int notificationThresholdTime, int notificationThresholdTimeType, string mailFromAddress, string mailToAddress);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ClearLog">
+          <declaration><![CDATA[public abstract void ClearLog();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLog">
+          <declaration><![CDATA[public abstract void DeleteLog(string logGUID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogType">
+          <declaration><![CDATA[public abstract void DeleteLogType(string logTypeKey);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogTypeConfigInfo">
+          <declaration><![CDATA[public abstract void DeleteLogTypeConfigInfo(string id);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEventLogPendingNotif">
+          <declaration><![CDATA[public abstract IDataReader GetEventLogPendingNotif(int logConfigID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEventLogPendingNotifConfig">
+          <declaration><![CDATA[public abstract IDataReader GetEventLogPendingNotifConfig();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogs">
+          <declaration><![CDATA[public abstract IDataReader GetLogs(int portalID, string logType, int pageSize, int pageIndex);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeConfigInfo">
+          <declaration><![CDATA[public abstract IDataReader GetLogTypeConfigInfo();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeConfigInfoByID">
+          <declaration><![CDATA[public abstract IDataReader GetLogTypeConfigInfoByID(int id);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeInfo">
+          <declaration><![CDATA[public abstract IDataReader GetLogTypeInfo();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSingleLog">
+          <declaration><![CDATA[public abstract IDataReader GetSingleLog(string logGUID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="Instance">
+          <declaration><![CDATA[public static DataProvider Instance()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="41" ec="10">DataProvider.cs</location>
+            <body hash="701f2fc6864bad5aedc27bc491a46cbf"><![CDATA[{
+            return ComponentFactory.GetComponent<DataProvider>();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeLog">
+          <declaration><![CDATA[public abstract void PurgeLog();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateEventLogPendingNotif">
+          <declaration><![CDATA[public abstract void UpdateEventLogPendingNotif(int logConfigID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateLogType">
+          <declaration><![CDATA[public abstract void UpdateLogType(string logTypeKey, string logTypeFriendlyName, string logTypeDescription, string logTypeCSSClass, string logTypeOwner);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateLogTypeConfigInfo">
+          <declaration><![CDATA[public abstract void UpdateLogTypeConfigInfo(string id, bool loggingIsActive, string logTypeKey, string logTypePortalID, int keepMostRecent, bool emailNotificationIsActive, int threshold, int notificationThresholdTime, int notificationThresholdTimeType, string mailFromAddress, string mailToAddress);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DBLoggingProvider">
+      <declaration><![CDATA[public class DBLoggingProvider : LoggingProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DBLoggingProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="9" el="75" ec="10">DBLoggingProvider.cs</location>
+            <body hash="2f1f54c2b78c2bfb43456f8082d9a135"><![CDATA[public DBLoggingProvider()
+        {
+            if (DataProvider.Instance() == null)
+            {
+				//get the provider configuration based on the type
+                DataProvider dataProvider;
+                string defaultprovider = Data.DataProvider.Instance().DefaultProviderName;
+                const string dataProviderNamespace = "DotNetNuke.Services.Log.EventLog.DBLoggingProvider.Data";
+                if (defaultprovider == "SqlDataProvider")
+                {
+                    dataProvider = new SqlDataProvider();
+                }
+                else
+                {
+                    string providerType = dataProviderNamespace + "." + defaultprovider;
+                    dataProvider = (DataProvider) Reflection.CreateObject(providerType, providerType, true);
+                }
+                ComponentFactory.RegisterComponentInstance<DataProvider>(dataProvider);
+            }
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static DBLoggingProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="9" el="54" ec="88">DBLoggingProvider.cs</location>
+            <body hash="6e96db0720650b64f8863096cf70fd1e"><![CDATA[private static readonly IList<LogQueueItem> LogQueue = new List<LogQueueItem>();
+        private static readonly ReaderWriterLock LockNotif = new ReaderWriterLock();
+        private static readonly ReaderWriterLock LockQueueLog = new ReaderWriterLock();]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddLog">
+          <declaration><![CDATA[public override void AddLog(LogInfo logInfo)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="270" sc="9" el="291" ec="10">DBLoggingProvider.cs</location>
+            <body hash="6e5db38948b4df24114534c4b55d6195"><![CDATA[{
+            string configPortalID = logInfo.LogPortalID != Null.NullInteger 
+                                        ? logInfo.LogPortalID.ToString() 
+                                        : "*";
+            var logTypeConfigInfo = GetLogTypeConfigInfoByKey(logInfo.LogTypeKey, configPortalID);
+            if (logTypeConfigInfo == null || logTypeConfigInfo.LoggingIsActive == false)
+            {
+                return;
+            }
+            logInfo.LogConfigID = logTypeConfigInfo.ID;
+            var logQueueItem = new LogQueueItem {LogInfo = logInfo, LogTypeConfigInfo = logTypeConfigInfo};
+            SchedulingProvider scheduler = SchedulingProvider.Instance();
+            if (scheduler == null || logInfo.BypassBuffering || SchedulingProvider.Enabled == false 
+                || scheduler.GetScheduleStatus() == ScheduleStatus.STOPPED || !Host.EventLogBuffer)
+            {
+                WriteLog(logQueueItem);
+            }
+            else
+            {
+                LogQueue.Add(logQueueItem);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddLogType">
+          <declaration><![CDATA[public override void AddLogType(string logTypeKey, string logTypeFriendlyName, string logTypeDescription, string logTypeCSSClass, string logTypeOwner)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="294" sc="9" el="296" ec="10">DBLoggingProvider.cs</location>
+            <body hash="939d73b31eb43b9dc9eaf4cff686129b"><![CDATA[{
+            DataProvider.Instance().AddLogType(logTypeKey, logTypeFriendlyName, logTypeDescription, logTypeCSSClass, logTypeOwner);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddLogTypeConfigInfo">
+          <declaration><![CDATA[public override void AddLogTypeConfigInfo(string id, bool loggingIsActive, string logTypeKey, string logTypePortalID, string keepMostRecent, string logFileName, bool emailNotificationIsActive, string threshold, string thresholdTime, string thresholdTimeType, string mailFromAddress, string mailToAddress)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="300" sc="9" el="333" ec="10">DBLoggingProvider.cs</location>
+            <body hash="b48446fbfab42d19143bd3dc14eb13f7"><![CDATA[{
+            int intThreshold = -1;
+            int intThresholdTime = -1;
+            int intThresholdTimeType = -1;
+            int intKeepMostRecent = -1;
+            if (Regex.IsMatch(threshold, "^\\d+$"))
+            {
+                intThreshold = Convert.ToInt32(threshold);
+            }
+            if (Regex.IsMatch(thresholdTime, "^\\d+$"))
+            {
+                intThresholdTime = Convert.ToInt32(thresholdTime);
+            }
+            if (Regex.IsMatch(thresholdTimeType, "^\\d+$"))
+            {
+                intThresholdTimeType = Convert.ToInt32(thresholdTimeType);
+            }
+            if (Regex.IsMatch(keepMostRecent, "^\\d+$"))
+            {
+                intKeepMostRecent = Convert.ToInt32(keepMostRecent);
+            }
+            DataProvider.Instance().AddLogTypeConfigInfo(loggingIsActive,
+                                                         logTypeKey,
+                                                         logTypePortalID,
+                                                         intKeepMostRecent,
+                                                         emailNotificationIsActive,
+                                                         intThreshold,
+                                                         intThresholdTime,
+                                                         intThresholdTimeType,
+                                                         mailFromAddress,
+                                                         mailToAddress);
+            DataCache.RemoveCache("GetLogTypeConfigInfo");
+            DataCache.RemoveCache("GetLogTypeConfigInfoByKey");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ClearLog">
+          <declaration><![CDATA[public override void ClearLog()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="336" sc="9" el="338" ec="10">DBLoggingProvider.cs</location>
+            <body hash="0f37d3b25f678e8b83d6ef8320489a20"><![CDATA[{
+            DataProvider.Instance().ClearLog();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLog">
+          <declaration><![CDATA[public override void DeleteLog(LogInfo logInfo)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="341" sc="9" el="343" ec="10">DBLoggingProvider.cs</location>
+            <body hash="a1028d243e096e8eb8a7a10859514ea9"><![CDATA[{
+            DataProvider.Instance().DeleteLog(logInfo.LogGUID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogType">
+          <declaration><![CDATA[public override void DeleteLogType(string logTypeKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="346" sc="9" el="348" ec="10">DBLoggingProvider.cs</location>
+            <body hash="51676515168ed460bed619ecee2b0e2b"><![CDATA[{
+            DataProvider.Instance().DeleteLogType(logTypeKey);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogTypeConfigInfo">
+          <declaration><![CDATA[public override void DeleteLogTypeConfigInfo(string id)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="351" sc="9" el="355" ec="10">DBLoggingProvider.cs</location>
+            <body hash="1ae1cdcc8b2ac1ad8068e2a666e10fc1"><![CDATA[{
+            DataProvider.Instance().DeleteLogTypeConfigInfo(id);
+            DataCache.RemoveCache("GetLogTypeConfigInfo");
+            DataCache.RemoveCache("GetLogTypeConfigInfoByKey");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FillLogInfo">
+          <declaration><![CDATA[private static LogInfo FillLogInfo(IDataReader dr)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="130" sc="9" el="162" ec="10">DBLoggingProvider.cs</location>
+            <body hash="aab214b45f4bfaf0704aa726976a499a"><![CDATA[{
+            var obj = new LogInfo();
+            try
+            {
+                obj.LogCreateDate = Convert.ToDateTime(dr["LogCreateDate"]);
+                obj.LogGUID = Convert.ToString(dr["LogGUID"]);
+                if (dr["LogPortalID"] != DBNull.Value)
+                {
+                    obj.LogPortalID = Convert.ToInt32(dr["LogPortalID"]);
+                }
+                if (dr["LogPortalName"] != DBNull.Value)
+                {
+                    obj.LogPortalName = Convert.ToString(dr["LogPortalName"]);
+                }
+                if (dr["LogServerName"] != DBNull.Value)
+                {
+                    obj.LogServerName = Convert.ToString(dr["LogServerName"]);
+                }
+                if (dr["LogUserID"] != DBNull.Value)
+                {
+                    obj.LogUserID = Convert.ToInt32(dr["LogUserID"]);
+                }
+                obj.LogTypeKey = Convert.ToString(dr["LogTypeKey"]);
+                obj.LogUserName = Convert.ToString(dr["LogUserName"]);
+                obj.LogConfigID = Convert.ToString(dr["LogConfigID"]);
+                obj.LogProperties.Deserialize(Convert.ToString(dr["LogProperties"]));
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+            }
+            return obj;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FillLogs">
+          <declaration><![CDATA[private static void FillLogs(IDataReader dr, IList logs, ref int totalRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="165" sc="9" el="183" ec="10">DBLoggingProvider.cs</location>
+            <body hash="519d5691d368c26ca3a693e79060e26e"><![CDATA[{
+            try
+            {
+                while (dr.Read())
+                {
+                    LogInfo logInfo = FillLogInfo(dr);
+                    logs.Add(logInfo);
+                }
+                dr.NextResult();
+                while (dr.Read())
+                {
+                    totalRecords = Convert.ToInt32(dr["TotalRecords"]);
+                }
+            }
+            finally
+            {
+                CBO.CloseDataReader(dr, true);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FillLogTypeConfigInfoByKey">
+          <declaration><![CDATA[private static Hashtable FillLogTypeConfigInfoByKey(ArrayList arr)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="96" ec="10">DBLoggingProvider.cs</location>
+            <body hash="e89e706dcac7ccbd4bc4a837f37c5d54"><![CDATA[{
+            var ht = new Hashtable();
+            int i;
+            for (i = 0; i <= arr.Count - 1; i++)
+            {
+                var logTypeConfigInfo = (LogTypeConfigInfo) arr[i];
+                if (String.IsNullOrEmpty(logTypeConfigInfo.LogTypeKey))
+                {
+                    logTypeConfigInfo.LogTypeKey = "*";
+                }
+                if (String.IsNullOrEmpty(logTypeConfigInfo.LogTypePortalID))
+                {
+                    logTypeConfigInfo.LogTypePortalID = "*";
+                }
+                ht.Add(logTypeConfigInfo.LogTypeKey + "|" + logTypeConfigInfo.LogTypePortalID, logTypeConfigInfo);
+            }
+            DataCache.SetCache("GetLogTypeConfigInfoByKey", ht);
+            return ht;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLog">
+          <deprecation>Deprecated in 6.0. Replaced by GetLogs().</deprecation>
+          <declaration><![CDATA[public override LogInfoArray GetLog()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="558" sc="9" el="563" ec="10">DBLoggingProvider.cs</location>
+            <body hash="1c387ab183d6906ea54cf9fe2305e8b9"><![CDATA[{
+            var logs = new LogInfoArray();
+            int totalRecords = 0; 
+            FillLogs(DataProvider.Instance().GetLogs(Null.NullInteger, Null.NullString, 10, 0), logs, ref totalRecords);
+            return logs;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLog">
+          <deprecation>Deprecated in 6.0. Replaced by GetLogs().</deprecation>
+          <declaration><![CDATA[public override LogInfoArray GetLog(string logType)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="567" sc="9" el="572" ec="10">DBLoggingProvider.cs</location>
+            <body hash="87f8649807cb012a083f50fa61ca1426"><![CDATA[{
+            var logs = new LogInfoArray();
+            int totalRecords = 0;
+            FillLogs(DataProvider.Instance().GetLogs(Null.NullInteger, logType, 10, 0), logs, ref totalRecords);
+            return logs;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLog">
+          <deprecation>Deprecated in 6.0. Replaced by GetLogs().</deprecation>
+          <declaration><![CDATA[public override LogInfoArray GetLog(int portalID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="576" sc="9" el="581" ec="10">DBLoggingProvider.cs</location>
+            <body hash="2ddc935d8eae7b9c654a91d5be9afb7b"><![CDATA[{
+            var logs = new LogInfoArray();
+            int totalRecords = 0;
+            FillLogs(DataProvider.Instance().GetLogs(portalID, Null.NullString, 10, 0), logs, ref totalRecords);
+            return logs;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLog">
+          <deprecation>Deprecated in 6.0. Replaced by GetLogs().</deprecation>
+          <declaration><![CDATA[public override LogInfoArray GetLog(int portalID, string logType)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="585" sc="9" el="590" ec="10">DBLoggingProvider.cs</location>
+            <body hash="d9efd4b6652a3ae434cacfe37754ad85"><![CDATA[{
+            var logs = new LogInfoArray();
+            int totalRecords = 0;
+            FillLogs(DataProvider.Instance().GetLogs(portalID, logType, 10, 0), logs, ref totalRecords);
+            return logs;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLog">
+          <deprecation>Deprecated in 6.0. Replaced by GetLogs().</deprecation>
+          <declaration><![CDATA[public override LogInfoArray GetLog(int pageSize, int pageIndex, ref int totalRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="594" sc="9" el="598" ec="10">DBLoggingProvider.cs</location>
+            <body hash="1d38a06f097649880a4487ad2b5aa671"><![CDATA[{
+            var logs = new LogInfoArray();
+            FillLogs(DataProvider.Instance().GetLogs(Null.NullInteger, Null.NullString, pageSize, pageIndex), logs, ref totalRecords);
+            return logs;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLog">
+          <deprecation>Deprecated in 6.0. Replaced by GetLogs().</deprecation>
+          <declaration><![CDATA[public override LogInfoArray GetLog(string logType, int pageSize, int pageIndex, ref int totalRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="602" sc="9" el="606" ec="10">DBLoggingProvider.cs</location>
+            <body hash="fc8fc6f91ce600f6c8694bbf1c3bcfe4"><![CDATA[{
+            var logs = new LogInfoArray();
+            FillLogs(DataProvider.Instance().GetLogs(Null.NullInteger, logType, pageSize, pageIndex), logs, ref totalRecords);
+            return logs;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLog">
+          <deprecation>Deprecated in 6.0. Replaced by GetLogs().</deprecation>
+          <declaration><![CDATA[public override LogInfoArray GetLog(int portalID, int pageSize, int pageIndex, ref int totalRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="610" sc="9" el="614" ec="10">DBLoggingProvider.cs</location>
+            <body hash="92a8030e13142e199e492719d6312adc"><![CDATA[{
+            var logs = new LogInfoArray();
+            FillLogs(DataProvider.Instance().GetLogs(portalID, Null.NullString, pageSize, pageIndex), logs, ref totalRecords);
+            return logs;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLog">
+          <deprecation>Deprecated in 6.0. Replaced by GetLogs().</deprecation>
+          <declaration><![CDATA[public override LogInfoArray GetLog(int portalID, string logType, int pageSize, int pageIndex, ref int totalRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="618" sc="9" el="622" ec="10">DBLoggingProvider.cs</location>
+            <body hash="1bcb18ac5bf70d4dfce0f25cc60900a1"><![CDATA[{
+            var logs = new LogInfoArray();
+            FillLogs(DataProvider.Instance().GetLogs(portalID, logType, pageSize, pageIndex), logs, ref totalRecords);
+            return logs;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogs">
+          <declaration><![CDATA[public override List<LogInfo> GetLogs(int portalID, string logType, int pageSize, int pageIndex, ref int totalRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="358" sc="9" el="362" ec="10">DBLoggingProvider.cs</location>
+            <body hash="987088fbee96725933799fe1aa375cf7"><![CDATA[{
+            var logs = new List<LogInfo>();
+            FillLogs(DataProvider.Instance().GetLogs(portalID, logType, pageSize, pageIndex), logs, ref totalRecords);
+            return logs;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeConfigInfo">
+          <declaration><![CDATA[public override ArrayList GetLogTypeConfigInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="365" sc="9" el="390" ec="10">DBLoggingProvider.cs</location>
+            <body hash="05c368054591c4aa28406bc10136b204"><![CDATA[{
+            var list = (ArrayList) DataCache.GetCache("GetLogTypeConfigInfo");
+            if (list == null)
+            {
+                IDataReader dr = null;
+                try
+                {
+                    dr = DataProvider.Instance().GetLogTypeConfigInfo();
+                    list = CBO.FillCollection(dr, typeof (LogTypeConfigInfo));
+                    DataCache.SetCache("GetLogTypeConfigInfo", list);
+                    FillLogTypeConfigInfoByKey(list);
+                }
+                finally
+                {
+                    if (dr == null)
+                    {
+                        list = new ArrayList();
+                    }
+                    else
+                    {
+                        CBO.CloseDataReader(dr, true);
+                    }
+                }
+            }
+            return list;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeConfigInfoByID">
+          <declaration><![CDATA[public override LogTypeConfigInfo GetLogTypeConfigInfoByID(string id)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="393" sc="9" el="395" ec="10">DBLoggingProvider.cs</location>
+            <body hash="102afeecc9965d56d32c002557251803"><![CDATA[{
+            return (LogTypeConfigInfo) CBO.FillObject(DataProvider.Instance().GetLogTypeConfigInfoByID(Convert.ToInt32(id)), typeof (LogTypeConfigInfo));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeConfigInfoByKey">
+          <declaration><![CDATA[private LogTypeConfigInfo GetLogTypeConfigInfoByKey(string logTypeKey, string logTypePortalID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="99" sc="9" el="127" ec="10">DBLoggingProvider.cs</location>
+            <body hash="586740bad6211ba5ba053e982eebbcc2"><![CDATA[{
+            var configInfoByKey = (Hashtable) DataCache.GetCache("GetLogTypeConfigInfoByKey") ?? FillLogTypeConfigInfoByKey(GetLogTypeConfigInfo());
+            var logTypeConfigInfo = (LogTypeConfigInfo) configInfoByKey[logTypeKey + "|" + logTypePortalID];
+            if (logTypeConfigInfo == null)
+            {
+                logTypeConfigInfo = (LogTypeConfigInfo) configInfoByKey["*|" + logTypePortalID];
+                if (logTypeConfigInfo == null)
+                {
+                    logTypeConfigInfo = (LogTypeConfigInfo) configInfoByKey[logTypeKey + "|*"];
+                    if (logTypeConfigInfo == null)
+                    {
+                        logTypeConfigInfo = (LogTypeConfigInfo) configInfoByKey["*|*"];
+                    }
+                    else
+                    {
+                        return logTypeConfigInfo;
+                    }
+                }
+                else
+                {
+                    return logTypeConfigInfo;
+                }
+            }
+            else
+            {
+                return logTypeConfigInfo;
+            }
+            return logTypeConfigInfo;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeInfo">
+          <declaration><![CDATA[public override ArrayList GetLogTypeInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="398" sc="9" el="400" ec="10">DBLoggingProvider.cs</location>
+            <body hash="85b7be51775a5ebe6e21fcb2342bfc76"><![CDATA[{
+            return CBO.FillCollection(DataProvider.Instance().GetLogTypeInfo(), typeof (LogTypeInfo));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSingleLog">
+          <declaration><![CDATA[public override object GetSingleLog(LogInfo logInfo, LoggingProvider.ReturnType returnType)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="403" sc="9" el="428" ec="10">DBLoggingProvider.cs</location>
+            <body hash="5975d89c861d454849c76e0d68333b91"><![CDATA[{
+            IDataReader dr = DataProvider.Instance().GetSingleLog(logInfo.LogGUID);
+            LogInfo log = null;
+            try
+            {
+                if (dr != null)
+                {
+                    dr.Read();
+                    log = FillLogInfo(dr);
+                }
+            }
+            finally
+            {
+                CBO.CloseDataReader(dr, true);
+            }
+            if (returnType == ReturnType.LogInfoObjects)
+            {
+                return log;
+            }
+            var xmlDoc = new XmlDocument();
+            if (log != null)
+            {
+                xmlDoc.LoadXml(log.Serialize());
+            }
+            return xmlDoc.DocumentElement;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoggingIsEnabled">
+          <declaration><![CDATA[public override bool LoggingIsEnabled(string logType, int portalID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="431" sc="9" el="443" ec="10">DBLoggingProvider.cs</location>
+            <body hash="7e28859c12903f22e954f07221762069"><![CDATA[{
+            string configPortalID = portalID.ToString();
+            if (portalID == -1)
+            {
+                configPortalID = "*";
+            }
+            LogTypeConfigInfo configInfo = GetLogTypeConfigInfoByKey(logType, configPortalID);
+            if (configInfo == null)
+            {
+                return false;
+            }
+            return configInfo.LoggingIsActive;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeLogBuffer">
+          <declaration><![CDATA[public override void PurgeLogBuffer()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="446" sc="9" el="467" ec="10">DBLoggingProvider.cs</location>
+            <body hash="fcab38bba023fa82afc5d44e80442900"><![CDATA[{
+            LockQueueLog.AcquireWriterLock(WriterLockTimeout);
+            try
+            {
+                for (int i = LogQueue.Count - 1; i >= 0; i += -1)
+                {
+                    LogQueueItem logQueueItem = LogQueue[i];
+                    //in case the log was removed
+                    //by another thread simultaneously
+                    if (logQueueItem != null)
+                    {
+                        WriteLog(logQueueItem);
+                        LogQueue.Remove(logQueueItem);
+                    }
+                }
+            }
+            finally
+            {
+                LockQueueLog.ReleaseWriterLock();
+            }
+            DataProvider.Instance().PurgeLog();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SendLogNotifications">
+          <declaration><![CDATA[public override void SendLogNotifications()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="470" sc="9" el="491" ec="10">DBLoggingProvider.cs</location>
+            <body hash="5a1af8ec30e129d8e3951dd91fdd13de"><![CDATA[{
+            List<LogTypeConfigInfo> configInfos = CBO.FillCollection<LogTypeConfigInfo>(DataProvider.Instance().GetEventLogPendingNotifConfig());
+            foreach (LogTypeConfigInfo typeConfigInfo in configInfos)
+            {
+                IDataReader dr = DataProvider.Instance().GetEventLogPendingNotif(Convert.ToInt32(typeConfigInfo.ID));
+                string log = "";
+                try
+                {
+                    while (dr.Read())
+                    {
+                        LogInfo logInfo = FillLogInfo(dr);
+                        log += logInfo.Serialize() + Environment.NewLine + Environment.NewLine;
+                    }
+                }
+                finally
+                {
+                    CBO.CloseDataReader(dr, true);
+                }
+                Mail.Mail.SendEmail(typeConfigInfo.MailFromAddress, typeConfigInfo.MailToAddress, "Event Notification", log);
+                DataProvider.Instance().UpdateEventLogPendingNotif(Convert.ToInt32(typeConfigInfo.ID));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SupportsEmailNotification">
+          <declaration><![CDATA[public override bool SupportsEmailNotification()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="494" sc="9" el="496" ec="10">DBLoggingProvider.cs</location>
+            <body hash="f882ca7e6e289653f91b0768029d8a89"><![CDATA[{
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SupportsInternalViewer">
+          <declaration><![CDATA[public override bool SupportsInternalViewer()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="499" sc="9" el="501" ec="10">DBLoggingProvider.cs</location>
+            <body hash="f882ca7e6e289653f91b0768029d8a89"><![CDATA[{
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SupportsSendToCoreTeam">
+          <declaration><![CDATA[public override bool SupportsSendToCoreTeam()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="504" sc="9" el="506" ec="10">DBLoggingProvider.cs</location>
+            <body hash="a2b947a21611f14a9299bee8133a69fe"><![CDATA[{
+            return false;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SupportsSendViaEmail">
+          <declaration><![CDATA[public override bool SupportsSendViaEmail()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="509" sc="9" el="511" ec="10">DBLoggingProvider.cs</location>
+            <body hash="f882ca7e6e289653f91b0768029d8a89"><![CDATA[{
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateLogType">
+          <declaration><![CDATA[public override void UpdateLogType(string logTypeKey, string logTypeFriendlyName, string logTypeDescription, string logTypeCSSClass, string logTypeOwner)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="514" sc="9" el="516" ec="10">DBLoggingProvider.cs</location>
+            <body hash="41b022099e02d6e7561b1ed02f0447e8"><![CDATA[{
+            DataProvider.Instance().UpdateLogType(logTypeKey, logTypeFriendlyName, logTypeDescription, logTypeCSSClass, logTypeOwner);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateLogTypeConfigInfo">
+          <declaration><![CDATA[public override void UpdateLogTypeConfigInfo(string id, bool loggingIsActive, string logTypeKey, string logTypePortalID, string keepMostRecent, string logFileName, bool emailNotificationIsActive, string threshold, string thresholdTime, string thresholdTimeType, string mailFromAddress, string mailToAddress)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="519" sc="9" el="553" ec="10">DBLoggingProvider.cs</location>
+            <body hash="f9155ca028ee83dbcc1c15bcc76f8320"><![CDATA[{
+            int intThreshold = -1;
+            int intThresholdTime = -1;
+            int intThresholdTimeType = -1;
+            int intKeepMostRecent = -1;
+            if (Regex.IsMatch(threshold, "^\\d+$"))
+            {
+                intThreshold = Convert.ToInt32(threshold);
+            }
+            if (Regex.IsMatch(thresholdTime, "^\\d+$"))
+            {
+                intThresholdTime = Convert.ToInt32(thresholdTime);
+            }
+            if (Regex.IsMatch(thresholdTimeType, "^\\d+$"))
+            {
+                intThresholdTimeType = Convert.ToInt32(thresholdTimeType);
+            }
+            if (Regex.IsMatch(keepMostRecent, "^\\d+$"))
+            {
+                intKeepMostRecent = Convert.ToInt32(keepMostRecent);
+            }
+            DataProvider.Instance().UpdateLogTypeConfigInfo(id,
+                                                            loggingIsActive,
+                                                            logTypeKey,
+                                                            logTypePortalID,
+                                                            intKeepMostRecent,
+                                                            emailNotificationIsActive,
+                                                            intThreshold,
+                                                            intThresholdTime,
+                                                            intThresholdTimeType,
+                                                            mailFromAddress,
+                                                            mailToAddress);
+            DataCache.RemoveCache("GetLogTypeConfigInfo");
+            DataCache.RemoveCache("GetLogTypeConfigInfoByKey");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="WriteLog">
+          <declaration><![CDATA[private static void WriteLog(LogQueueItem logQueueItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="186" sc="9" el="267" ec="10">DBLoggingProvider.cs</location>
+            <body hash="f34738f71df82adeab5f719b492d712b"><![CDATA[{
+            LogTypeConfigInfo logTypeConfigInfo = null;
+            try
+            {
+                logTypeConfigInfo = logQueueItem.LogTypeConfigInfo;
+                if (logTypeConfigInfo != null)
+                {
+                    LogInfo objLogInfo = logQueueItem.LogInfo;
+                    string logProperties = objLogInfo.LogProperties.Serialize();
+                    DataProvider.Instance().AddLog(objLogInfo.LogGUID,
+                                                   objLogInfo.LogTypeKey,
+                                                   objLogInfo.LogUserID,
+                                                   objLogInfo.LogUserName,
+                                                   objLogInfo.LogPortalID,
+                                                   objLogInfo.LogPortalName,
+                                                   objLogInfo.LogCreateDate,
+                                                   objLogInfo.LogServerName,
+                                                   logProperties,
+                                                   Convert.ToInt32(objLogInfo.LogConfigID));
+                    if (logTypeConfigInfo.EmailNotificationIsActive)
+                    {
+                        LockNotif.AcquireWriterLock(ReaderLockTimeout);
+                        try
+                        {
+                            if (logTypeConfigInfo.NotificationThreshold == 0)
+                            {
+                                string str = logQueueItem.LogInfo.Serialize();
+    
+                                Mail.Mail.SendEmail(logTypeConfigInfo.MailFromAddress, logTypeConfigInfo.MailToAddress, "Event Notification", str);
+                            }
+                        }
+                        finally
+                        {
+                            LockNotif.ReleaseWriterLock();
+                        }
+                    }
+                }
+            }
+            catch (SqlException exc)
+            {
+                DnnLog.Error(exc);
+                if ((HttpContext.Current != null))
+                {
+                    if (HttpContext.Current.IsCustomErrorEnabled)
+                    {
+                        HttpContext.Current.AddError(exc);
+                    }
+                    else
+                    {
+                        HttpResponse response = HttpContext.Current.Response;
+                        response.StatusCode = 500;
+                        HtmlUtils.WriteHeader(response, "SQL Exception");
+
+                        string strMessage = SqlUtils.TranslateSQLException(exc);
+                        if (logTypeConfigInfo != null)
+                        {
+                            HtmlUtils.WriteError(response, logTypeConfigInfo.LogFileNameWithPath, strMessage);
+                        }
+
+                        HtmlUtils.WriteFooter(response);
+                        response.End();
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+
+                if (HttpContext.Current != null)
+                {
+                    HttpResponse response = HttpContext.Current.Response;
+                    HtmlUtils.WriteHeader(response, "Unhandled Error");
+                    string strMessage = exc.Message;
+                    if (logTypeConfigInfo != null)
+                    {
+                        HtmlUtils.WriteError(response, logTypeConfigInfo.LogFileNameWithPath, strMessage);
+                    }
+                    HtmlUtils.WriteFooter(response);
+                    response.End();
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="LockNotif">
+          <declaration><![CDATA[private static readonly ReaderWriterLock LockNotif = new ReaderWriterLock();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LockQueueLog">
+          <declaration><![CDATA[private static readonly ReaderWriterLock LockQueueLog = new ReaderWriterLock();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LogQueue">
+          <declaration><![CDATA[private static readonly IList<LogQueueItem> LogQueue = new List<LogQueueItem>();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ReaderLockTimeout">
+          <declaration><![CDATA[private const int ReaderLockTimeout = 10000;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="WriterLockTimeout">
+          <declaration><![CDATA[private const int WriterLockTimeout = 10000;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="LogQueueItem">
+      <declaration><![CDATA[public class LogQueueItem]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public LogQueueItem()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="LogInfo">
+          <declaration><![CDATA[public LogInfo LogInfo]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LogTypeConfigInfo">
+          <declaration><![CDATA[public LogTypeConfigInfo LogTypeConfigInfo]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SqlDataProvider">
+      <declaration><![CDATA[public class SqlDataProvider : DataProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SqlDataProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddLog">
+          <declaration><![CDATA[public override void AddLog(string logGUID, string logTypeKey, int logUserID, string logUserName, int logPortalID, string logPortalName, DateTime logCreateDate, string logServerName, string logProperties, int logConfigID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="83" ec="10">SqlDataProvider.cs</location>
+            <body hash="50af5be45dd6e063322539d5ebbe3493"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                                      DatabaseOwner + ObjectQualifier + "AddEventLog",
+                                      logGUID,
+                                      logTypeKey,
+                                      GetNull(logUserID),
+                                      GetNull(logUserName),
+                                      GetNull(logPortalID),
+                                      GetNull(logPortalName),
+                                      logCreateDate,
+                                      logServerName,
+                                      logProperties,
+                                      logConfigID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddLogType">
+          <declaration><![CDATA[public override void AddLogType(string logTypeKey, string logTypeFriendlyName, string logTypeDescription, string logTypeCSSClass, string logTypeOwner)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="9" el="88" ec="10">SqlDataProvider.cs</location>
+            <body hash="af4544868ab5732fd0e95fae0c4a59f4"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "AddEventLogType", logTypeKey, logTypeFriendlyName, logTypeDescription, logTypeOwner, logTypeCSSClass);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddLogTypeConfigInfo">
+          <declaration><![CDATA[public override void AddLogTypeConfigInfo(bool loggingIsActive, string logTypeKey, string logTypePortalID, int keepMostRecent, bool emailNotificationIsActive, int threshold, int notificationThresholdTime, int notificationThresholdTimeType, string mailFromAddress, string mailToAddress)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="118" ec="10">SqlDataProvider.cs</location>
+            <body hash="dd97db9782ce2bb7feb7aebbd53322ac"><![CDATA[{
+            int portalID;
+            if (logTypeKey == "*")
+            {
+                logTypeKey = "";
+            }
+            if (logTypePortalID == "*")
+            {
+                portalID = -1;
+            }
+            else
+            {
+                portalID = Convert.ToInt32(logTypePortalID);
+            }
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                                      DatabaseOwner + ObjectQualifier + "AddEventLogConfig",
+                                      GetNull(logTypeKey),
+                                      GetNull(portalID),
+                                      loggingIsActive,
+                                      keepMostRecent,
+                                      emailNotificationIsActive,
+                                      GetNull(threshold),
+                                      GetNull(notificationThresholdTime),
+                                      GetNull(notificationThresholdTimeType),
+                                      mailFromAddress,
+                                      mailToAddress);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ClearLog">
+          <declaration><![CDATA[public override void ClearLog()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="121" sc="9" el="123" ec="10">SqlDataProvider.cs</location>
+            <body hash="8f19ccbd343f5a7b2a4518ee3afae22e"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "DeleteEventLog", DBNull.Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLog">
+          <declaration><![CDATA[public override void DeleteLog(string logGUID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="126" sc="9" el="128" ec="10">SqlDataProvider.cs</location>
+            <body hash="988f6e3f2f2894077f2e2a2ca7691e17"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "DeleteEventLog", logGUID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogType">
+          <declaration><![CDATA[public override void DeleteLogType(string logTypeKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="131" sc="9" el="133" ec="10">SqlDataProvider.cs</location>
+            <body hash="09b1d779fea6a38f07979f3e2af4a2a5"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "DeleteEventLogType", logTypeKey);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogTypeConfigInfo">
+          <declaration><![CDATA[public override void DeleteLogTypeConfigInfo(string id)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="136" sc="9" el="138" ec="10">SqlDataProvider.cs</location>
+            <body hash="644e75d0853f58bedb7802db0555154a"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "DeleteEventLogConfig", id);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEventLogPendingNotif">
+          <declaration><![CDATA[public override IDataReader GetEventLogPendingNotif(int logConfigID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="141" sc="9" el="143" ec="10">SqlDataProvider.cs</location>
+            <body hash="c41887e22f9520ba1cb61636a75dfbf8"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLogPendingNotif", logConfigID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEventLogPendingNotifConfig">
+          <declaration><![CDATA[public override IDataReader GetEventLogPendingNotifConfig()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="146" sc="9" el="148" ec="10">SqlDataProvider.cs</location>
+            <body hash="47ee9a6c4149f52bf6398640eaf76356"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLogPendingNotifConfig");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogs">
+          <declaration><![CDATA[public override IDataReader GetLogs(int portalID, string logType, int pageSize, int pageIndex)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="151" sc="9" el="153" ec="10">SqlDataProvider.cs</location>
+            <body hash="8bb2d4776c56d4285050a2b9c05f13ca"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLog", GetNull(portalID), GetNull(logType), pageSize, pageIndex);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeConfigInfo">
+          <declaration><![CDATA[public override IDataReader GetLogTypeConfigInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="156" sc="9" el="158" ec="10">SqlDataProvider.cs</location>
+            <body hash="66a1388a69da85375e02fa1fe9f8fed1"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLogConfig", DBNull.Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeConfigInfoByID">
+          <declaration><![CDATA[public override IDataReader GetLogTypeConfigInfoByID(int id)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="161" sc="9" el="163" ec="10">SqlDataProvider.cs</location>
+            <body hash="39b94fdb90b434fa5db1282adfefa751"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLogConfig", id);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeInfo">
+          <declaration><![CDATA[public override IDataReader GetLogTypeInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="166" sc="9" el="168" ec="10">SqlDataProvider.cs</location>
+            <body hash="91f90fcd7ab155cebddb05f054f90d73"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLogType");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNull">
+          <declaration><![CDATA[private static object GetNull(object field)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="9" el="66" ec="10">SqlDataProvider.cs</location>
+            <body hash="aedf2ca2939af3fa7ccc8e98db1b9f98"><![CDATA[{
+            return Null.GetNull(field, DBNull.Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSingleLog">
+          <declaration><![CDATA[public override IDataReader GetSingleLog(string logGUID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="171" sc="9" el="173" ec="10">SqlDataProvider.cs</location>
+            <body hash="b634f0b282adcfdcd77c6f023a0101d7"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLogByLogGUID", logGUID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeLog">
+          <declaration><![CDATA[public override void PurgeLog()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="176" sc="9" el="181" ec="10">SqlDataProvider.cs</location>
+            <body hash="370f174be0a400088ed8cb050650e30e"><![CDATA[{
+			//Because event log is run on application end, app may not be fully installed, so check for the sproc first
+            string sql = "IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'" + DatabaseOwner + ObjectQualifier + "PurgeEventLog') AND OBJECTPROPERTY(id, N'IsProcedure') = 1) " + " BEGIN " +
+                         "    EXEC " + DatabaseOwner + ObjectQualifier + "PurgeEventLog" + " END ";
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, sql);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateEventLogPendingNotif">
+          <declaration><![CDATA[public override void UpdateEventLogPendingNotif(int logConfigID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="184" sc="9" el="186" ec="10">SqlDataProvider.cs</location>
+            <body hash="eabe4f246f93ae39a25fa4e5d667561d"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "UpdateEventLogPendingNotif", logConfigID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateLogType">
+          <declaration><![CDATA[public override void UpdateLogType(string logTypeKey, string logTypeFriendlyName, string logTypeDescription, string logTypeCSSClass, string logTypeOwner)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="189" sc="9" el="191" ec="10">SqlDataProvider.cs</location>
+            <body hash="a55e3f7731c7db9f77fba1ea1529d5ed"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "UpdateEventLogType", logTypeKey, logTypeFriendlyName, logTypeDescription, logTypeOwner, logTypeCSSClass);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateLogTypeConfigInfo">
+          <declaration><![CDATA[public override void UpdateLogTypeConfigInfo(string id, bool loggingIsActive, string logTypeKey, string logTypePortalID, int keepMostRecent, bool emailNotificationIsActive, int threshold, int notificationThresholdTime, int notificationThresholdTimeType, string mailFromAddress, string mailToAddress)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="195" sc="9" el="222" ec="10">SqlDataProvider.cs</location>
+            <body hash="1ae0427a3f3ba5b01b06f661e4137241"><![CDATA[{
+            int portalID;
+            if (logTypeKey == "*")
+            {
+                logTypeKey = "";
+            }
+            if (logTypePortalID == "*")
+            {
+                portalID = -1;
+            }
+            else
+            {
+                portalID = Convert.ToInt32(logTypePortalID);
+            }
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                                      DatabaseOwner + ObjectQualifier + "UpdateEventLogConfig",
+                                      id,
+                                      GetNull(logTypeKey),
+                                      GetNull(portalID),
+                                      loggingIsActive,
+                                      keepMostRecent,
+                                      emailNotificationIsActive,
+                                      GetNull(threshold),
+                                      GetNull(notificationThresholdTime),
+                                      GetNull(notificationThresholdTimeType),
+                                      mailFromAddress,
+                                      mailToAddress);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ConnectionString">
+          <declaration><![CDATA[public string ConnectionString]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="13" el="44" ec="14">SqlDataProvider.cs</location>
+            <body hash="61151ce45d4793ebf981479d49e758f7"><![CDATA[{
+                return Data.DataProvider.Instance().ConnectionString;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DatabaseOwner">
+          <declaration><![CDATA[public string DatabaseOwner]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="13" el="52" ec="14">SqlDataProvider.cs</location>
+            <body hash="bd934314ce26dbfaf12e2df8b461cfb5"><![CDATA[{
+                return Data.DataProvider.Instance().DatabaseOwner;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ObjectQualifier">
+          <declaration><![CDATA[public string ObjectQualifier]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="13" el="60" ec="14">SqlDataProvider.cs</location>
+            <body hash="ac915bd13f657a9577e9d532c24a42b4"><![CDATA[{
+                return Data.DataProvider.Instance().ObjectQualifier;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

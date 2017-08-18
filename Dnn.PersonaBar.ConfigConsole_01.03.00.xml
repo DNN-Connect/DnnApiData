@@ -1,0 +1,380 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.ConfigConsole.dll" version="01.03.00" generated="2017-08-10 13:09:01Z" generationTime="1.7565172">
+  <namespace name="Dnn.PersonaBar.ConfigConsole.Components">
+    <class name="ConfigConsoleController">
+      <declaration><![CDATA[public class ConfigConsoleController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ConfigConsoleController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetConfigFile">
+          <declaration><![CDATA[public string GetConfigFile(string configFile)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="9" el="57" ec="10">Components\ConfigConsoleController.cs</location>
+            <body hash="d515183a07ff662fb43a344407988661"><![CDATA[{
+            var configDoc = Config.Load(configFile);
+            using (var txtWriter = new StringWriter())
+            {
+                using (var writer = new XmlTextWriter(txtWriter))
+                {
+                    writer.Formatting = Formatting.Indented;
+                    configDoc.WriteTo(writer);
+                }
+                return txtWriter.ToString();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetConfigFilesList">
+          <declaration><![CDATA[public IEnumerable<string> GetConfigFilesList()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="43" ec="10">Components\ConfigConsoleController.cs</location>
+            <body hash="8070221cfcaea4a19eb9830ac43e870a"><![CDATA[{
+            var files = Directory.GetFiles(Globals.ApplicationMapPath, "*.config");
+            IEnumerable<string> fileList = (from file in files select Path.GetFileName(file));
+            return fileList;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsValidXmlMergDocument">
+          <declaration><![CDATA[private bool IsValidXmlMergDocument(string mergeDocText)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="81" sc="9" el="88" ec="10">Components\ConfigConsoleController.cs</location>
+            <body hash="2dd5c7e9107756412664a070963d662a"><![CDATA[{
+            if (string.IsNullOrEmpty(mergeDocText.Trim()))
+            {
+                return false;
+            }
+            //TODO: Add more checks here
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MergeConfigFile">
+          <declaration><![CDATA[public void MergeConfigFile(string fileContent)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="76" ec="10">Components\ConfigConsoleController.cs</location>
+            <body hash="0b4802c22373cf20663b29df59581c5a"><![CDATA[{
+            if (IsValidXmlMergDocument(fileContent))
+            {
+                var doc = new XmlDocument();
+                doc.LoadXml(fileContent);
+                var app = DotNetNukeContext.Current.Application;
+                var merge = new DotNetNuke.Services.Installer.XmlMerge(doc, Globals.FormatVersion(app.Version), app.Description);
+                merge.UpdateConfigs();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateConfigFile">
+          <declaration><![CDATA[public void UpdateConfigFile(string fileName, string fileContent)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="64" ec="10">Components\ConfigConsoleController.cs</location>
+            <body hash="e575bd17547ae3476551bcea38028068"><![CDATA[{
+            var configDoc = new XmlDocument();
+            configDoc.LoadXml(fileContent);
+            Config.Save(configDoc, fileName);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.ConfigConsole.MenuControllers">
+    <class name="HostMenuController">
+      <declaration><![CDATA[public class HostMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public HostMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="9" el="29" ec="10">MenuControllers\HostMenuController.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="9" el="18" ec="10">MenuControllers\HostMenuController.cs</location>
+            <body hash="4a8f06184b6087940b8e4519251d0924"><![CDATA[{
+            
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="9" el="24" ec="10">MenuControllers\HostMenuController.cs</location>
+            <body hash="c393c42544f107d48bfa9b85d7b12404"><![CDATA[{
+            var user = UserController.Instance.GetCurrentUserInfo();
+            return user.IsSuperUser;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.ConfigConsole.Services">
+    <class name="ConfigConsoleController">
+      <declaration><![CDATA[public class ConfigConsoleController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private ConfigConsoleController _controller = new ConfigConsoleController();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="25" sc="9" el="25" ec="107">Services\ConfigConsoleController.cs</location>
+            <body hash="d209cf98ef4f88ccd1920d5b04d7be46"><![CDATA[private Components.ConfigConsoleController _controller = new Components.ConfigConsoleController()]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ConfigConsoleController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="9" el="24" ec="112">Services\ConfigConsoleController.cs</location>
+            <body hash="5c0bf0355ee4d6fa6708275fae5f88ba"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ConfigConsoleController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetConfigFile">
+          <declaration><![CDATA[public HttpResponseMessage GetConfigFile(string fileName)]]></declaration>
+          <documentation>GET: api/ConfigConsole/GetConfigFile
+ <summary>
+ Gets content of a specific config file
+ </summary>
+ <param name="fileName">Name of a config file</param>
+ <returns>Content of a config file</returns></documentation>
+          <codeblock>
+            <location sl="64" sc="9" el="82" ec="10">Services\ConfigConsoleController.cs</location>
+            <body hash="05b50748076a7396e903fa8b2effb58e"><![CDATA[{
+            try
+            {
+                var fileContent= _controller.GetConfigFile(fileName);
+
+                var response = new
+                {
+                    FileName = fileName,
+                    FileContent = fileContent
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetConfigFilesList">
+          <declaration><![CDATA[public HttpResponseMessage GetConfigFilesList()]]></declaration>
+          <documentation>GET: api/ConfigConsole/GetConfigFilesList
+ <summary>
+ Gets list of config files
+ </summary>
+ <param></param>
+ <returns>List of config files</returns></documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="54" ec="10">Services\ConfigConsoleController.cs</location>
+            <body hash="935bcfe50dcc750bbc62d034bde26b66"><![CDATA[{
+            try
+            {
+                var configFileList = _controller.GetConfigFilesList().ToList();
+
+                var response = new
+                {
+                    Success = true,
+                    Results = configFileList,
+                    TotalResults = configFileList.Count()
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MergeConfigFile">
+          <declaration><![CDATA[public HttpResponseMessage MergeConfigFile(ConfigFileDto configFileDto)]]></declaration>
+          <documentation>POST: api/ConfigConsole/MergeConfigFile
+ <summary>
+ Merges config files
+ </summary>
+ <param name="configFileDto">Content of config file</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="115" sc="9" el="126" ec="10">Services\ConfigConsoleController.cs</location>
+            <body hash="67ac0e1f84bd8bad72a5957da9b031dc"><![CDATA[{
+            try
+            {
+                _controller.MergeConfigFile(configFileDto.FileContent);
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateConfigFile">
+          <declaration><![CDATA[public HttpResponseMessage UpdateConfigFile(ConfigFileDto configFileDto)]]></declaration>
+          <documentation>POST: api/ConfigConsole/UpdateConfigFile
+ <summary>
+ Updates a config file
+ </summary>
+ <param name="configFileDto">Content of config file</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="93" sc="9" el="104" ec="10">Services\ConfigConsoleController.cs</location>
+            <body hash="c04b044f8db80ea14299805cd0c84786"><![CDATA[{
+            try
+            {
+                _controller.UpdateConfigFile(configFileDto.FileName, configFileDto.FileContent);
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_controller">
+          <declaration><![CDATA[private ConfigConsoleController _controller = new ConfigConsoleController();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ConfigConsoleController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.ConfigConsole.Services.Dto">
+    <class name="ConfigFileDto">
+      <declaration><![CDATA[public class ConfigFileDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ConfigFileDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="FileContent">
+          <declaration><![CDATA[public string FileContent]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="37" el="36" ec="41">Services\Dto\ConfigFileDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="36" sc="42" el="36" ec="46">Services\Dto\ConfigFileDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="FileName">
+          <declaration><![CDATA[public string FileName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="34" el="33" ec="38">Services\Dto\ConfigFileDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="33" sc="39" el="33" ec="43">Services\Dto\ConfigFileDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

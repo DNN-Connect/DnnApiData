@@ -1,0 +1,2054 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Modules.CoreMessaging.dll" version="07.03.04" generated="2017-06-19 14:14:16Z" generationTime="2.1613513">
+  <namespace name="DotNetNuke.Modules.CoreMessaging">
+    <class name="Subscriptions">
+      <declaration><![CDATA[public class Subscriptions : UserControl]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Subscriptions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetHistoryNavigationKey">
+          <declaration><![CDATA[private static string GetHistoryNavigationKey(string moduleName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="221" sc="9" el="223" ec="10">Subscriptions.ascx.cs</location>
+            <body hash="4879e9c522b69cb8f52e90b4e806f7f0"><![CDATA[{
+            return HttpContext.Current.Server.HtmlEncode(moduleName.ToLowerInvariant().Replace(" ", string.Empty));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLoginUrl">
+          <declaration><![CDATA[private static string GetLoginUrl(PortalSettings portalSettings)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="257" sc="9" el="272" ec="10">Subscriptions.ascx.cs</location>
+            <body hash="267e6cc65ab71790df01589cd5de628a"><![CDATA[{
+            var returnUrl = HttpContext.Current.Request.RawUrl;
+
+            if (portalSettings.UserId < 1)
+            {
+                var indexOf = returnUrl.IndexOf("?returnurl=", StringComparison.InvariantCultureIgnoreCase);
+                if (indexOf >= 0)
+                {
+                    returnUrl = returnUrl.Substring(0, indexOf);
+                }
+
+                returnUrl = Common.Globals.LoginURL(HttpUtility.UrlEncode(returnUrl), true);
+            }
+
+            return returnUrl;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetModuleSettings">
+          <declaration><![CDATA[private static Hashtable GetModuleSettings(PortalSettings portalSettings, ModuleInfo moduleInfo, int uniqueId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="148" sc="9" el="205" ec="10">Subscriptions.ascx.cs</location>
+            <body hash="64fc858916c9ca721b3a2f0e9b398df0"><![CDATA[{
+            var usePopup =
+                portalSettings.EnablePopUps &&
+                portalSettings.LoginTabId == Null.NullInteger &&
+                !HasSocialAuthenticationEnabled();
+
+            var navigationKey =
+                moduleInfo != null &&
+                moduleInfo.DesktopModule != null
+                    ? GetHistoryNavigationKey(moduleInfo.DesktopModule.FriendlyName)
+                    : null;
+
+            var moduleRoot =
+                moduleInfo != null &&
+                moduleInfo.DesktopModule != null
+                    ? moduleInfo.DesktopModule.FolderName
+                    : null;
+
+            var moduleTitle = moduleInfo != null
+                ? moduleInfo.ModuleTitle
+                : null;
+
+            var moduleId = moduleInfo != null ? moduleInfo.ModuleID : Null.NullInteger;
+
+            var moduleSettings = moduleInfo != null ? moduleInfo.ModuleSettings : new Hashtable();
+
+            var debug = false;
+
+#if DEBUG
+            debug = true;
+#else
+            if (HttpContext.Current != null)
+            {
+                debug = HttpContext.Current.IsDebuggingEnabled;
+            }
+#endif
+
+            return new Hashtable
+                   {
+                       { "anonymous", PortalSettings.Current.UserId < 0 },
+                       { "currentUserId", PortalSettings.Current.UserId },
+                       { "debug", debug },
+                       { "culture", CultureInfo.CurrentUICulture.Name },
+                       { "showMissingKeys", Localization.ShowMissingKeys },
+                       { "portalId", portalSettings.PortalId },
+                       { "moduleId", moduleId },
+                       { "moduleSettings", moduleSettings },
+                       { "moduleTitle", moduleTitle },
+                       { "moduleRoot", moduleRoot },
+                       { "navigationKey", navigationKey },
+                       { "sessionTimeout", Convert.ToInt32(GetSessionTimeout().TotalMinutes) },
+                       { "sharedResources", GetSharedResources() },
+                       { "authorizationUrl", GetLoginUrl(portalSettings) },
+                       { "usePopup", usePopup },
+                       { "returnUrl", HttpContext.Current.Request.UrlReferrer },
+                       { "uniqueId", uniqueId },
+                    };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSessionTimeout">
+          <declaration><![CDATA[private static TimeSpan GetSessionTimeout()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="226" sc="9" el="245" ec="10">Subscriptions.ascx.cs</location>
+            <body hash="6c0b3d366cdcc43c61a0cfb0f547cb5d"><![CDATA[{
+            try
+            {
+                var sessionSection =
+                    WebConfigurationManager.GetSection("system.web/sessionState") as SessionStateSection;
+
+                if (sessionSection != null)
+                {
+                    return sessionSection.Timeout;
+                }
+            }
+            catch
+            {
+                // FIXME(cbond): The default configuration doesn't actually let us see this data
+                // FIXME(cbond): It's too annoying seeing this fill the Event Log, we need to add the permission to web.config
+                // Exceptions.LogException(ex);
+            }
+
+            return TimeSpan.FromMinutes(25);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSettingsAsJson">
+          <declaration><![CDATA[public string GetSettingsAsJson()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="75" sc="9" el="90" ec="10">Subscriptions.ascx.cs</location>
+            <body hash="ead0f04a3490706290c8dc5aaee579d1"><![CDATA[{
+            var settings = GetModuleSettings(PortalSettings.Current, ModuleConfiguration, Null.NullInteger);
+            foreach (DictionaryEntry entry in GetViewSettings())
+            {
+                if (settings.ContainsKey(entry.Key))
+                {
+                    settings[entry.Key] = entry.Value;
+                }
+                else
+                {
+                    settings.Add(entry.Key, entry.Value);
+                }
+            }
+
+            return settings.ToJson();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSharedResources">
+          <declaration><![CDATA[private static IDictionary<string, string> GetSharedResources()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="248" sc="9" el="254" ec="10">Subscriptions.ascx.cs</location>
+            <body hash="3868c2889ba57fd0dc7047477a7c050f"><![CDATA[{
+            return new Dictionary<string, string>
+                {
+                    { "ExceptionTitle", Localization.GetString("ExceptionTitle", SharedResources) },
+                    { "ExceptionMessage", Localization.GetString("ExceptionMessage", SharedResources) }
+                };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetViewSettings">
+          <declaration><![CDATA[private Hashtable GetViewSettings()]]></declaration>
+          <documentation>
+            <summary>
+ These values are passed in as the 'settings' parameter of the JavaScript initialization function, together with
+ values that are automatically retrieved by Social Library such as portalId and moduleId.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="124" sc="9" el="145" ec="10">Subscriptions.ascx.cs</location>
+            <body hash="6b7f26e156f231cb4c73c9a5b286dd1c"><![CDATA[{
+            var portalSettings = PortalSettings.Current;
+            var userPreferenceController = UserPreferencesController.Instance;
+            var user = UserController.GetUserById(portalSettings.PortalId, portalSettings.UserId);
+            UserPreference userPreference=null;
+            if (user != null)
+            {
+                userPreference = userPreferenceController.GetUserPreference(user);
+            }
+           
+
+            const int notifyFrequency = 2;
+            const int messageFrequency = 0;
+            
+            return new Hashtable
+                   {
+                       { "moduleScope", string.Format("#{0}", ScopeWrapper.ClientID) },
+                       { "pageSize", 25 },
+                       { "notifyFrequency", userPreference != null ? (int)userPreference.NotificationsEmailFrequency : notifyFrequency },
+                       { "msgFrequency", userPreference != null ? (int)userPreference.MessagesEmailFrequency : messageFrequency }                
+                   };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="HasSocialAuthenticationEnabled">
+          <declaration><![CDATA[private static bool HasSocialAuthenticationEnabled()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="208" sc="9" el="218" ec="10">Subscriptions.ascx.cs</location>
+            <body hash="7e1d75d86ab80e8aeffeb25e4c1be44e"><![CDATA[{
+            return (from a in DotNetNuke.Services.Authentication.AuthenticationController.GetEnabledAuthenticationServices()
+                    let enabled = (a.AuthenticationType == "Facebook"
+                                     || a.AuthenticationType == "Google"
+                                     || a.AuthenticationType == "Live"
+                                     || a.AuthenticationType == "Twitter")
+                                  ? PortalController.GetPortalSettingAsBoolean(a.AuthenticationType + "_Enabled", PortalSettings.Current.PortalId, false)
+                                  : !string.IsNullOrEmpty(a.LoginControlSrc)
+                    where a.AuthenticationType != "DNN" && enabled
+                    select a).Any();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LocalizeString">
+          <declaration><![CDATA[protected string LocalizeString(string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="9" el="68" ec="10">Subscriptions.ascx.cs</location>
+            <body hash="fdb9cfd70aff46a9da06e018de02d9c8"><![CDATA[{
+            return Localization.GetString(key, LocalResourceFile);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="97" sc="9" el="113" ec="10">Subscriptions.ascx.cs</location>
+            <body hash="8b5a3239e242ed6b491e54aeea33f885"><![CDATA[{
+            base.OnLoad(e);
+
+            ServicesFramework.Instance.RequestAjaxAntiForgerySupport();
+
+            if (Request.IsAuthenticated)
+            {
+                ClientResourceManager.RegisterScript(Page, "~/DesktopModules/CoreMessaging/Scripts/LocalizationController.js");
+                ClientResourceManager.RegisterScript(Page, "~/DesktopModules/CoreMessaging/Scripts/SubscriptionsViewModel.js");
+                ClientResourceManager.RegisterScript(Page, "~/DesktopModules/CoreMessaging/Scripts/Subscription.js");
+                ClientResourceManager.RegisterStyleSheet(Page, "~/DesktopModules/CoreMessaging/subscriptions.css");
+            }
+            else
+            {
+                Response.Redirect(Globals.AccessDeniedURL(), false);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="lblMessageFreq">
+          <declaration><![CDATA[protected UserControl lblMessageFreq;]]></declaration>
+          <documentation>
+            <summary>
+ lblMessageFreq control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblNotificationFreq">
+          <declaration><![CDATA[protected UserControl lblNotificationFreq;]]></declaration>
+          <documentation>
+            <summary>
+ lblNotificationFreq control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblSubscriptions">
+          <declaration><![CDATA[protected UserControl lblSubscriptions;]]></declaration>
+          <documentation>
+            <summary>
+ lblSubscriptions control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ScopeWrapper">
+          <declaration><![CDATA[protected Panel ScopeWrapper;]]></declaration>
+          <documentation>
+            <summary>
+ ScopeWrapper control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="SharedResources">
+          <declaration><![CDATA[private const string SharedResources = "~/DesktopModules/CoreMessaging/App_LocalResources/SharedResources.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="LocalResourceFile">
+          <declaration><![CDATA[public string LocalResourceFile]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ModuleConfiguration">
+          <declaration><![CDATA[public ModuleInfo ModuleConfiguration]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="13" el="56" ec="14">Subscriptions.ascx.cs</location>
+            <body hash="432358f226b0e4d22afea7f4f5ddcedb"><![CDATA[{
+                ModuleContext.Configuration = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ModuleContext">
+          <declaration><![CDATA[public ModuleInstanceContext ModuleContext]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="View">
+      <declaration><![CDATA[public class View : PortalModuleBase]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+ The View class displays the content
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public View()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddIe7StyleSheet">
+          <declaration><![CDATA[private void AddIe7StyleSheet()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="124" sc="9" el="131" ec="10">View.ascx.cs</location>
+            <body hash="c30c4061e5e913e8822c126dad54b385"><![CDATA[{
+            var browser = Request.Browser;
+            if (browser.Type == "IE" || browser.MajorVersion < 8)
+            {
+                const string cssLink = "<link href=\"/ie-messages.css\" rel=\"stylesheet\" type=\"text/css\" />";
+                Page.Header.Controls.Add(new LiteralControl(cssLink));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="9" el="117" ec="10">View.ascx.cs</location>
+            <body hash="ebda2b71c46c0337a596118800b662da"><![CDATA[{
+            if (!Request.IsAuthenticated)
+            {
+                // Do not redirect but hide the content of the module and display a message.
+                CoreMessagingContainer.Visible = false;
+                UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ContentNotAvailable", LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning);
+                return;
+            }
+            if (UserId != ProfileUserId && (PortalSettings.ActiveTab.ParentId == PortalSettings.UserTabId || TabId == PortalSettings.UserTabId))
+            {
+				// Do not redirect but hide the content of the module.
+				CoreMessagingContainer.Visible = false;
+				return;
+            }
+            
+            if (IsEditable && PermissionsNotProperlySet())
+            {
+                UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("PermissionsNotProperlySet", LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning);
+            }
+
+            ServicesFramework.Instance.RequestAjaxScriptSupport();
+            ServicesFramework.Instance.RequestAjaxAntiForgerySupport();
+            JavaScript.RequestRegistration(CommonJs.DnnPlugins); ;
+            ClientResourceManager.RegisterScript(Page, "~/DesktopModules/CoreMessaging/Scripts/CoreMessaging.js");
+			jQuery.RegisterFileUpload(Page);
+            AddIe7StyleSheet();
+
+            base.OnInit(e);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PermissionPredicate">
+          <declaration><![CDATA[private static bool PermissionPredicate(PermissionInfoBase p)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="151" sc="9" el="153" ec="10">View.ascx.cs</location>
+            <body hash="bcc5123f2e95cd9dc4453be8693fb844"><![CDATA[{
+            return p.PermissionKey == "VIEW" && p.AllowAccess && (p.RoleName == Globals.glbRoleAllUsersName || p.RoleName == Globals.glbRoleUnauthUserName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PermissionsNotProperlySet">
+          <declaration><![CDATA[private bool PermissionsNotProperlySet()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="134" sc="9" el="148" ec="10">View.ascx.cs</location>
+            <body hash="811a83c483f13a23f8301f3549d04e48"><![CDATA[{
+            List<PermissionInfoBase> permissions;
+
+            if (ModuleConfiguration.InheritViewPermissions)
+            {
+                var tabPermissionCollection = TabPermissionController.GetTabPermissions(TabId, PortalId);
+                permissions = tabPermissionCollection.ToList();
+            }
+            else
+            {
+                permissions = ModuleConfiguration.ModulePermissions.ToList();
+            }
+
+            return permissions.Find(PermissionPredicate) != null;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="coreMessaging">
+          <declaration><![CDATA[protected HtmlGenericControl coreMessaging;]]></declaration>
+          <documentation>
+            <summary>
+ coreMessaging control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="CoreMessagingContainer">
+          <declaration><![CDATA[protected Panel CoreMessagingContainer;]]></declaration>
+          <documentation>
+            <summary>
+ CoreMessagingContainer control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnCssInclude1">
+          <declaration><![CDATA[protected DnnCssInclude DnnCssInclude1;]]></declaration>
+          <documentation>
+            <summary>
+ DnnCssInclude1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnCssInclude2">
+          <declaration><![CDATA[protected DnnCssInclude DnnCssInclude2;]]></declaration>
+          <documentation>
+            <summary>
+ DnnCssInclude2 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnCssInclude3">
+          <declaration><![CDATA[protected DnnCssInclude DnnCssInclude3;]]></declaration>
+          <documentation>
+            <summary>
+ DnnCssInclude3 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude1">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude1;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude2">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude2;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude2 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude3">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude3;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude3 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude4">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude4;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude4 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude5">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude5;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude5 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude6">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude6;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude6 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ProfileUserId">
+          <declaration><![CDATA[public int ProfileUserId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="13" el="63" ec="14">View.ascx.cs</location>
+            <body hash="b54f995526c72617c67516af9667b32c"><![CDATA[{
+                var userId = Null.NullInteger;
+                if (!string.IsNullOrEmpty(Request.Params["UserId"]))
+                {
+                    userId = Int32.Parse(Request.Params["UserId"]);
+                }
+                return userId;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ShowAttachments">
+          <declaration><![CDATA[public string ShowAttachments]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="13" el="72" ec="14">View.ascx.cs</location>
+            <body hash="a7d4ca3223aa4bdc8b710bf4688f7263"><![CDATA[{
+                var allowAttachments = PortalController.GetPortalSetting("MessagingAllowAttachments", PortalId, "NO");
+                return allowAttachments == "NO" ? "false" : "true";
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ShowSubscriptionTab">
+          <declaration><![CDATA[public bool ShowSubscriptionTab]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="7" el="81" ec="8">View.ascx.cs</location>
+            <body hash="816dd0bec184fb94e8a72981b02ac583"><![CDATA[{
+			    return !Settings.ContainsKey("ShowSubscriptionTab") ||
+			           Settings["ShowSubscriptionTab"].ToString().Equals("true", StringComparison.InvariantCultureIgnoreCase);
+		    }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.CoreMessaging.Components">
+    <class name="CoreMessagingBusinessController">
+      <declaration><![CDATA[public class CoreMessagingBusinessController : IUpgradeable]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CoreMessagingBusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static CoreMessagingBusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="6" el="39" ec="118">Components\CoreMessagingBusinessController.cs</location>
+            <body hash="df0a3accb70c27711dd15f5fa1126749"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (CoreMessagingBusinessController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string Version)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="88" ec="10">Components\CoreMessagingBusinessController.cs</location>
+            <body hash="a125b558683bdc4f4de86d563e53591a"><![CDATA[{
+            try
+            {
+                switch (Version)
+                {
+                    case "06.02.00":
+                        var moduleDefinition = ModuleDefinitionController.GetModuleDefinitionByFriendlyName("Message Center");
+                        if (moduleDefinition != null)
+                        {
+                            var portals = PortalController.Instance.GetPortals();
+                            foreach (PortalInfo portal in portals)
+                            {
+                                if (portal.UserTabId > Null.NullInteger)
+                                {
+                                    //Find TabInfo
+                                    var tab = TabController.Instance.GetTab(portal.UserTabId, portal.PortalID, true);
+                                    if (tab != null)
+                                    {
+                                        foreach (var module in ModuleController.Instance.GetTabModules(portal.UserTabId).Values)
+                                        {
+                                            if (module.DesktopModule.FriendlyName == "Messaging")
+                                            {
+                                                //Delete the Module from the Modules list
+                                                ModuleController.Instance.DeleteTabModule(module.TabID, module.ModuleID, false);
+
+                                                //Add new module to the page
+                                                Upgrade.AddModuleToPage(tab, moduleDefinition.ModuleDefID, "Message Center", "", true);
+
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(CoreMessagingBusinessController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.CoreMessaging.Services">
+    <class name="CoreMessagingRouteMapper">
+      <declaration><![CDATA[public sealed class CoreMessagingRouteMapper : IServiceRouteMapper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CoreMessagingRouteMapper()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="RegisterRoutes">
+          <declaration><![CDATA[public void RegisterRoutes(IMapRoute mapRouteManager)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="9" el="31" ec="10">Services\CoreMessagingRouteMapper.cs</location>
+            <body hash="efdfb7dc18f471cbd115a004c599482e"><![CDATA[{
+            mapRouteManager.MapHttpRoute("CoreMessaging", "default", "{controller}/{action}", new[] { "DotNetNuke.Modules.CoreMessaging.Services" });
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="FilesStatus">
+      <declaration><![CDATA[public class FilesStatus]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FilesStatus()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="18" sc="3" el="20" ec="4">Services\FilesStatus.cs</location>
+            <body hash="0161c46de6c5ac3081f76634fcda532f"><![CDATA[public FilesStatus ()
+		{
+		}]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="extension">
+          <declaration><![CDATA[public string extension]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="id">
+          <declaration><![CDATA[public int id]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="message">
+          <declaration><![CDATA[public string message]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="name">
+          <declaration><![CDATA[public string name]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="progress">
+          <declaration><![CDATA[public string progress]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="size">
+          <declaration><![CDATA[public int size]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="success">
+          <declaration><![CDATA[public bool success]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="thumbnail_url">
+          <declaration><![CDATA[public string thumbnail_url]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="type">
+          <declaration><![CDATA[public string type]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="url">
+          <declaration><![CDATA[public string url]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="FileUploadController">
+      <declaration><![CDATA[public class FileUploadController : DnnApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly IFileManager _fileManager = ComponentBase<IFileManager, FileManager>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="9" el="45" ec="81">Services\FileUploadController.cs</location>
+            <body hash="e4c09cf2bf297cb4d069e31b95171523"><![CDATA[private readonly IFileManager _fileManager = FileManager.Instance;
+        private readonly IFolderManager _folderManager = FolderManager.Instance;]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static FileUploadController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="6" el="43" ec="107">Services\FileUploadController.cs</location>
+            <body hash="2d75a63969b56745521ff57ad08e3fa4"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (FileUploadController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="IframeSafeJson">
+          <declaration><![CDATA[private HttpResponseMessage IframeSafeJson(List<FilesStatus> statuses)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="73" ec="10">Services\FileUploadController.cs</location>
+            <body hash="c46a28e4e32e4facdc07ee14df479061"><![CDATA[{
+            //return json but label it as plain text
+            return new HttpResponseMessage
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(statuses))
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsAllowedExtension">
+          <declaration><![CDATA[private static bool IsAllowedExtension(string fileName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="9" el="85" ec="10">Services\FileUploadController.cs</location>
+            <body hash="52cd33d0f5448d4cc29a95cb94e5c3df"><![CDATA[{
+            var extension = Path.GetExtension(fileName);
+
+            //regex matches a dot followed by 1 or more chars followed by a semi-colon
+            //regex is meant to block files like "foo.asp;.png" which can take advantage
+            //of a vulnerability in IIS6 which treasts such files as .asp, not .png
+            return !string.IsNullOrEmpty(extension)
+                   && Host.AllowedExtensionWhitelist.IsAllowedExtension(extension)
+                   && !Regex.IsMatch(fileName, @"\..+;");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UploadFile">
+          <declaration><![CDATA[public HttpResponseMessage UploadFile()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="64" ec="10">Services\FileUploadController.cs</location>
+            <body hash="d4d45820afee36bc15dc5e3645d26049"><![CDATA[{
+            var statuses = new List<FilesStatus>();
+            try
+            {
+                //todo can we eliminate the HttpContext here
+                UploadWholeFile(HttpContextSource.Current, statuses);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+            }
+
+            return IframeSafeJson(statuses);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UploadWholeFile">
+          <declaration><![CDATA[private void UploadWholeFile(HttpContextBase context, ICollection<FilesStatus> statuses)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="9" el="132" ec="10">Services\FileUploadController.cs</location>
+            <body hash="b0c03f8f972365a4a2c311b0a6f744ac"><![CDATA[{
+            for (var i = 0; i < context.Request.Files.Count; i++)
+            {
+                var file = context.Request.Files[i];
+                if (file == null) continue;
+
+                var fileName = Path.GetFileName(file.FileName);
+
+                if (IsAllowedExtension(fileName))
+                {
+                    var userFolder = _folderManager.GetUserFolder(UserInfo);
+
+                    //todo: deal with the case where the exact file name already exists.
+                    var fileInfo = _fileManager.AddFile(userFolder, fileName, file.InputStream, true);
+                    var fileIcon = Entities.Icons.IconController.IconURL("Ext" + fileInfo.Extension, "32x32");
+                    if (!File.Exists(context.Server.MapPath(fileIcon)))
+                    {
+                        fileIcon = Entities.Icons.IconController.IconURL("File", "32x32");
+                    }
+                    statuses.Add(new FilesStatus
+                    {
+                        success = true,
+                        name = fileName,
+                        extension = fileInfo.Extension,
+                        type = fileInfo.ContentType,
+                        size = file.ContentLength,
+                        progress = "1.0",
+                        url = FileManager.Instance.GetUrl(fileInfo),
+                        thumbnail_url = fileIcon,
+                        message = "success",
+                        id = fileInfo.FileId,
+                    });
+                }
+                else
+                {
+                    statuses.Add(new FilesStatus
+                    {
+                        success = false,
+                        name = fileName,
+                        message = "File type not allowed."
+                    });
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_fileManager">
+          <declaration><![CDATA[private readonly IFileManager _fileManager = ComponentBase<IFileManager, FileManager>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_folderManager">
+          <declaration><![CDATA[private readonly IFolderManager _folderManager = ComponentBase<IFolderManager, FolderManager>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(FileUploadController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="MessagingServiceController">
+      <declaration><![CDATA[public class MessagingServiceController : DnnApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MessagingServiceController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static MessagingServiceController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="6" el="49" ec="113">Services\MessagingServiceController.cs</location>
+            <body hash="ed4c90e446dd297894db67b2ea5a9643"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (MessagingServiceController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Archived">
+          <declaration><![CDATA[public HttpResponseMessage Archived(int afterMessageId, int numberOfRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="93" sc="9" el="108" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="2b7a48a8043b63768589685e7ad4ce3f"><![CDATA[{
+            try
+            {
+                var messageBoxView = InternalMessagingController.Instance.GetArchivedMessages(UserInfo.UserID, afterMessageId, numberOfRecords);
+                var portalId = PortalController.GetEffectivePortalId(UserController.Instance.GetCurrentUserInfo().PortalID);
+                messageBoxView.TotalNewThreads = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId);
+                messageBoxView.TotalConversations = InternalMessagingController.Instance.CountArchivedConversations(UserInfo.UserID, portalId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, messageBoxView);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CheckReplyHasRecipients">
+          <declaration><![CDATA[public HttpResponseMessage CheckReplyHasRecipients(int conversationId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="304" sc="9" el="315" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="95dea19b71dd44f33597db297e94360e"><![CDATA[{
+            try
+            {
+                var recipientCount = InternalMessagingController.Instance.CheckReplyHasRecipients(conversationId, UserController.Instance.GetCurrentUserInfo().UserID);
+                return Request.CreateResponse(HttpStatusCode.OK, recipientCount);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CountNotifications">
+          <declaration><![CDATA[public HttpResponseMessage CountNotifications()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="319" sc="9" el="331" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="f3efd2646f3e4fa4e8c6cbd562c78aca"><![CDATA[{
+            try
+            {
+                var portalId = PortalController.GetEffectivePortalId(UserController.Instance.GetCurrentUserInfo().PortalID);
+                int notifications = NotificationsController.Instance.CountNotifications(UserInfo.UserID, portalId);
+                return Request.CreateResponse(HttpStatusCode.OK, notifications);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CountUnreadMessages">
+          <declaration><![CDATA[public HttpResponseMessage CountUnreadMessages()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="335" sc="9" el="347" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="d0c6e16537e896555c1cc9c4d7063275"><![CDATA[{
+            try
+            {
+                var portalId = PortalController.GetEffectivePortalId(UserController.Instance.GetCurrentUserInfo().PortalID);
+                var unreadMessages = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId);
+                return Request.CreateResponse(HttpStatusCode.OK, unreadMessages);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUserFromConversation">
+          <declaration><![CDATA[public HttpResponseMessage DeleteUserFromConversation(MessagingServiceController.ConversationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="222" sc="9" el="233" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="d2e6dfea58640c8e3cfff394036d5ad1"><![CDATA[{
+            try
+            {
+                InternalMessagingController.Instance.DeleteUserFromConversation(postData.ConversationId, UserInfo.UserID);
+                return Request.CreateResponse(HttpStatusCode.OK, new { Result = "success" });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTotals">
+          <declaration><![CDATA[public HttpResponseMessage GetTotals()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="351" sc="9" el="368" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="08d28f3c89667b0b35272c29c3f8de5a"><![CDATA[{
+            try
+            {
+                var portalId = PortalController.GetEffectivePortalId(UserController.Instance.GetCurrentUserInfo().PortalID);
+                var totalsViewModel = new TotalsViewModel
+                {
+                    TotalUnreadMessages = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId),
+                    TotalNotifications = NotificationsController.Instance.CountNotifications(UserInfo.UserID, portalId)
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, totalsViewModel);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Inbox">
+          <declaration><![CDATA[public HttpResponseMessage Inbox(int afterMessageId, int numberOfRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="9" el="70" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="b66f38828e5f84e5e17d85aeb6af22d4"><![CDATA[{
+            try
+            {
+                var messageBoxView = InternalMessagingController.Instance.GetRecentInbox(UserInfo.UserID, afterMessageId, numberOfRecords);
+                var portalId = PortalController.GetEffectivePortalId(UserController.Instance.GetCurrentUserInfo().PortalID);
+
+                messageBoxView.TotalNewThreads = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId);
+                messageBoxView.TotalConversations = InternalMessagingController.Instance.CountConversations(UserInfo.UserID, portalId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, messageBoxView);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LocalizeActionString">
+          <declaration><![CDATA[private string LocalizeActionString(string key, int desktopModuleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="390" sc="9" el="412" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="8494e791d8c31bd5cbe655f4f6259639"><![CDATA[{
+            if (string.IsNullOrEmpty(key)) return "";
+
+            string actionString;
+
+            if (desktopModuleId > 0)
+            {
+                var desktopModule = DesktopModuleController.GetDesktopModule(desktopModuleId, PortalSettings.PortalId);
+
+                var resourceFile = string.Format("~/DesktopModules/{0}/{1}/{2}",
+                    desktopModule.FolderName.Replace("\\", "/"),
+                    Localization.LocalResourceDirectory,
+                    Localization.LocalSharedResourceFile);
+
+                actionString = Localization.GetString(key, resourceFile);
+            }
+            else
+            {
+                actionString = Localization.GetString(key);
+            }
+
+            return string.IsNullOrEmpty(actionString) ? key : actionString;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MarkArchived">
+          <declaration><![CDATA[public HttpResponseMessage MarkArchived(MessagingServiceController.ConversationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="158" sc="9" el="169" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="e52af28694da79f40db4c9af584f707f"><![CDATA[{
+            try
+            {
+                InternalMessagingController.Instance.MarkArchived(postData.ConversationId, UserInfo.UserID);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MarkRead">
+          <declaration><![CDATA[public HttpResponseMessage MarkRead(MessagingServiceController.ConversationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="190" sc="9" el="201" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="cbee45f45934ae75420d22c26fe7fe41"><![CDATA[{
+            try
+            {
+                InternalMessagingController.Instance.MarkRead(postData.ConversationId, UserInfo.UserID);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MarkUnArchived">
+          <declaration><![CDATA[public HttpResponseMessage MarkUnArchived(MessagingServiceController.ConversationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="174" sc="9" el="185" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="1de282267cc306d7eac89cdd08d1e0f8"><![CDATA[{
+            try
+            {
+                InternalMessagingController.Instance.MarkUnArchived(postData.ConversationId, UserInfo.UserID);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MarkUnRead">
+          <declaration><![CDATA[public HttpResponseMessage MarkUnRead(MessagingServiceController.ConversationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="206" sc="9" el="217" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="c51a5e7c20f3aa1a4aa837e9653b45a6"><![CDATA[{
+            try
+            {
+                InternalMessagingController.Instance.MarkUnRead(postData.ConversationId, UserInfo.UserID);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Notifications">
+          <declaration><![CDATA[public HttpResponseMessage Notifications(int afterNotificationId, int numberOfRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="237" sc="9" el="300" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="6eb0bb2c5e81b7a80e827d0f242748cb"><![CDATA[{
+            try
+            {
+                var portalId = PortalController.GetEffectivePortalId(UserController.Instance.GetCurrentUserInfo().PortalID);
+                var notificationsDomainModel = NotificationsController.Instance.GetNotifications(UserInfo.UserID, portalId, afterNotificationId, numberOfRecords);
+
+                var notificationsViewModel = new NotificationsViewModel
+                {
+                    TotalNotifications = NotificationsController.Instance.CountNotifications(UserInfo.UserID, portalId),
+                    Notifications = new List<NotificationViewModel>(notificationsDomainModel.Count)
+                };
+
+                foreach (var notification in notificationsDomainModel)
+                {
+                    var notificationViewModel = new NotificationViewModel
+                    {
+                        NotificationId = notification.NotificationID,
+                        Subject = notification.Subject,
+                        From = notification.From,
+                        Body = notification.Body,
+                        DisplayDate = Common.Utilities.DateUtils.CalculateDateForDisplay(notification.CreatedOnDate),
+                        SenderAvatar = string.Format(Globals.UserProfilePicRelativeUrl(), notification.SenderUserID, 64, 64),
+                        SenderProfileUrl = Globals.UserProfileURL(notification.SenderUserID),
+                        Actions = new List<NotificationActionViewModel>()
+                    };
+
+                    var notificationType = NotificationsController.Instance.GetNotificationType(notification.NotificationTypeID);
+                    var notificationTypeActions = NotificationsController.Instance.GetNotificationTypeActions(notification.NotificationTypeID);
+
+                    foreach (var notificationTypeAction in notificationTypeActions)
+                    {
+                        var notificationActionViewModel = new NotificationActionViewModel
+                        {
+                            Name = LocalizeActionString(notificationTypeAction.NameResourceKey, notificationType.DesktopModuleId),
+                            Description = LocalizeActionString(notificationTypeAction.DescriptionResourceKey, notificationType.DesktopModuleId),
+                            Confirm = LocalizeActionString(notificationTypeAction.ConfirmResourceKey, notificationType.DesktopModuleId),
+                            APICall = notificationTypeAction.APICall
+                        };
+
+                        notificationViewModel.Actions.Add(notificationActionViewModel);
+                    }
+
+                    if (notification.IncludeDismissAction)
+                    {
+                        notificationViewModel.Actions.Add(new NotificationActionViewModel
+                        {
+                            Name = Localization.GetString("Dismiss.Text"),
+                            Description = Localization.GetString("DismissNotification.Text"),
+                            Confirm = "",
+                            APICall = "DesktopModules/InternalServices/API/NotificationsService/Dismiss"
+                        });
+                    }
+
+                    notificationsViewModel.Notifications.Add(notificationViewModel);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, notificationsViewModel);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Reply">
+          <declaration><![CDATA[public HttpResponseMessage Reply(MessagingServiceController.ReplyDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="134" sc="9" el="153" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="123805d8db90a07445d93a57b221d86a"><![CDATA[{
+            try
+            {
+                postData.Body = HttpUtility.UrlDecode(postData.Body);
+                var messageId = InternalMessagingController.Instance.ReplyMessage(postData.ConversationId, postData.Body, postData.FileIds);
+				var message = ToExpandoObject(InternalMessagingController.Instance.GetMessage(messageId));
+                var portalId = PortalController.GetEffectivePortalId(UserController.Instance.GetCurrentUserInfo().PortalID);
+
+                var totalNewThreads = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId);
+                var totalThreads = InternalMessagingController.Instance.CountMessagesByConversation(postData.ConversationId);
+                var totalArchivedThreads = InternalMessagingController.Instance.CountArchivedMessagesByConversation(postData.ConversationId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { Conversation = message, TotalNewThreads = totalNewThreads, TotalThreads = totalThreads, TotalArchivedThreads = totalArchivedThreads });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Sentbox">
+          <declaration><![CDATA[public HttpResponseMessage Sentbox(int afterMessageId, int numberOfRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="9" el="89" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="a76c8653bd3f2f58da339bb55ec6fdf1"><![CDATA[{
+            try
+            {
+                var messageBoxView = InternalMessagingController.Instance.GetRecentSentbox(UserInfo.UserID, afterMessageId, numberOfRecords);
+                var portalId = PortalController.GetEffectivePortalId(UserController.Instance.GetCurrentUserInfo().PortalID);
+                messageBoxView.TotalNewThreads = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId);
+                messageBoxView.TotalConversations = InternalMessagingController.Instance.CountSentConversations(UserInfo.UserID, portalId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, messageBoxView);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Thread">
+          <declaration><![CDATA[public HttpResponseMessage Thread(int conversationId, int afterMessageId, int numberOfRecords)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="112" sc="9" el="129" ec="10">Services\MessagingServiceController.cs</location>
+            <body hash="bb6a61896b24e6adae5e429245bbe765"><![CDATA[{
+            try
+            {
+                var totalRecords = 0;
+                var messageThreadsView = InternalMessagingController.Instance.GetMessageThread(conversationId, UserInfo.UserID, afterMessageId, numberOfRecords, ref totalRecords);
+                var portalId = PortalController.GetEffectivePortalId(UserController.Instance.GetCurrentUserInfo().PortalID);
+                messageThreadsView.TotalNewThreads = InternalMessagingController.Instance.CountUnreadMessages(UserInfo.UserID, portalId);
+                messageThreadsView.TotalThreads = InternalMessagingController.Instance.CountMessagesByConversation(conversationId);
+                messageThreadsView.TotalArchivedThreads = InternalMessagingController.Instance.CountArchivedMessagesByConversation(conversationId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, messageThreadsView);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ToExpandoObject">
+          <declaration><![CDATA[private dynamic ToExpandoObject(Message message)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="415" sc="3" el="435" ec="4">Services\MessagingServiceController.cs</location>
+            <body hash="18e2d52d5ab4029ec44475bb90d5f1af"><![CDATA[{
+			dynamic messageObj = new ExpandoObject();
+			messageObj.PortalID = message.PortalID;
+			messageObj.KeyID = message.KeyID;
+			messageObj.MessageID = message.MessageID;
+			messageObj.ConversationId = message.ConversationId;
+			messageObj.SenderUserID = message.SenderUserID;
+			messageObj.From = message.From;
+			messageObj.To = message.To;
+			messageObj.Subject = message.Subject;
+			messageObj.Body = message.Body;
+			messageObj.DisplayDate = message.DisplayDate;
+			messageObj.ReplyAllAllowed = message.ReplyAllAllowed;
+			//base entity properties
+			messageObj.CreatedByUserID = message.CreatedByUserID;
+			messageObj.CreatedOnDate = message.CreatedOnDate;
+			messageObj.LastModifiedByUserID = message.LastModifiedByUserID;
+			messageObj.LastModifiedOnDate = message.LastModifiedOnDate;
+			
+			return messageObj;
+		}]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(MessagingServiceController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SubscriptionsController">
+      <declaration><![CDATA[public class SubscriptionsController : DnnApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SubscriptionsController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AssertHeaderValue">
+          <declaration><![CDATA[private static void AssertHeaderValue(IEnumerable<XmlNode> headers, string key, string value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="279" sc="3" el="292" ec="4">Services\SubscriptionsController.cs</location>
+            <body hash="c2d287928cf66171b696c371ad066ea5"><![CDATA[{
+			var header = headers.FirstOrDefault(x => GetNameAttribute(x).Equals(key, StringComparison.InvariantCultureIgnoreCase));
+			if (header != null)
+			{
+				if (!header.InnerText.Equals(value, StringComparison.InvariantCultureIgnoreCase))
+				{
+					throw new ApplicationException(string.Format("Resource header '{0}' != '{1}'", key, value));
+				}
+			}
+			else
+			{
+				throw new ApplicationException(string.Format("Resource header '{0}' is missing", key));
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteContentSubscription">
+          <declaration><![CDATA[public HttpResponseMessage DeleteContentSubscription(Subscription subscription)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="147" sc="9" el="164" ec="10">Services\SubscriptionsController.cs</location>
+            <body hash="6eab472622dfb3d611ec210bb31b3fc8"><![CDATA[{
+            try
+            {
+                var sub = SubscriptionController.Instance.GetUserSubscriptions(UserInfo, PortalSettings.PortalId)
+                                          .SingleOrDefault(s => s.SubscriptionId == subscription.SubscriptionId);
+                if (sub != null)
+                {
+                    SubscriptionController.Instance.DeleteSubscription(sub);                    
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, "unsubscribed");
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLocalizationTable">
+          <declaration><![CDATA[public HttpResponseMessage GetLocalizationTable(string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="169" sc="3" el="201" ec="4">Services\SubscriptionsController.cs</location>
+            <body hash="45c527a25f713f2f52da450c7110168f"><![CDATA[{
+			try
+			{
+				if (!string.IsNullOrEmpty(culture))
+				{
+					Localization.SetThreadCultures(new CultureInfo(culture), PortalSettings);
+				}
+
+				var dictionary = new Dictionary<string, string>();
+                				
+			    var resourcesPath = LocalizationFolder;
+				var files =
+					Directory.GetFiles(System.Web.HttpContext.Current.Server.MapPath(resourcesPath)).Select(x => new FileInfo(x).Name).Where(f => !IsLanguageSpecific(f)).ToList();
+
+				foreach (var kvp in files.SelectMany(f => GetLocalizationValues(resourcesPath, f, culture)).Where(kvp => !dictionary.ContainsKey(kvp.Key)))
+				{
+					dictionary.Add(kvp.Key, kvp.Value);
+				}
+
+				foreach (var kvp in GetLocalizationValues(SharedResources, culture).Where(kvp => !dictionary.ContainsKey(kvp.Key)))
+				{
+					dictionary.Add(kvp.Key, kvp.Value);
+				}
+
+				return Request.CreateResponse(HttpStatusCode.OK, new { Table = dictionary });
+			}
+			catch (Exception ex)
+			{
+				Exceptions.LogException(ex);
+
+				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLocalizationValues">
+          <declaration><![CDATA[private static IEnumerable<KeyValuePair<string, string>> GetLocalizationValues(string path, string file, string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="243" sc="3" el="245" ec="4">Services\SubscriptionsController.cs</location>
+            <body hash="d5d69a88572423577b68f1ab4df69564"><![CDATA[{
+			return GetLocalizationValues(string.Format("{0}/{1}", path, file), culture);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLocalizationValues">
+          <declaration><![CDATA[private static IEnumerable<KeyValuePair<string, string>> GetLocalizationValues(string fullPath, string culture)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNameAttribute">
+          <declaration><![CDATA[private static string GetNameAttribute(XmlNode node)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="295" sc="3" el="306" ec="4">Services\SubscriptionsController.cs</location>
+            <body hash="e50d491d93a0fcb518fa9824aa79c9ce"><![CDATA[{
+			if (node.Attributes != null)
+			{
+				var attribute = node.Attributes.GetNamedItem("name");
+				if (attribute != null)
+				{
+					return attribute.Value;
+				}
+			}
+
+			return null;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSubscriptions">
+          <declaration><![CDATA[public HttpResponseMessage GetSubscriptions(int pageIndex, int pageSize, string sortExpression)]]></declaration>
+          <documentation>
+            <summary>
+ Perform a search on Scoring Activities registered in the system.
+ </summary>
+ <param name="pageIndex">Page index to begin from (0, 1, 2)</param>
+ <param name="pageSize">Number of records to return per page</param>
+ <param name="sortExpression">The sort expression in the form [Description|SubscriptionType] [Asc|Desc]</param>
+ <returns>The sorted and paged list of subscriptions</returns></documentation>
+          <codeblock>
+            <location sl="68" sc="9" el="117" ec="10">Services\SubscriptionsController.cs</location>
+            <body hash="1db1478b9610b6eb45733b7afb5c0b10"><![CDATA[{
+            try
+            {
+                var subscriptions = from s in SubscriptionController.Instance.GetUserSubscriptions(UserInfo, PortalSettings.PortalId)
+                                    select GetSubscriptionViewModel(s);
+
+                List<SubscriptionViewModel> sortedList;
+                if (string.IsNullOrEmpty(sortExpression))
+                {
+                    sortedList = subscriptions.ToList();
+                }
+                else
+                {
+                    var sort = sortExpression.Split(' ');
+                    var desc = sort.Length == 2 && sort[1] == "desc";
+                    switch (sort[0])
+                    {
+                        case "Description":
+                            sortedList = desc
+                                ? subscriptions.OrderByDescending(s => s.Description).ToList()
+                                : subscriptions.OrderBy(s => s.Description).ToList();
+                            break;
+
+                        case "SubscriptionType":
+                            sortedList = desc
+                                ? subscriptions.OrderByDescending(s => s.SubscriptionType).ToList()
+                                : subscriptions.OrderBy(s => s.SubscriptionType).ToList();
+                            break;
+
+                        default:
+                            sortedList = subscriptions.ToList();
+                            break;
+                    }
+                }
+
+                var response = new
+                    {
+                        Success = true,
+                        Results = sortedList.Skip(pageIndex * pageSize).Take(pageSize).ToList(),
+                        TotalResults = sortedList.Count()
+                    };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSubscriptionViewModel">
+          <declaration><![CDATA[private static SubscriptionViewModel GetSubscriptionViewModel(Subscription subscription)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="206" sc="9" el="215" ec="10">Services\SubscriptionsController.cs</location>
+            <body hash="ba9caf9b413c63356feb849762238c27"><![CDATA[{
+            return new SubscriptionViewModel
+            {
+                SubscriptionId = subscription.SubscriptionId,
+                Description = subscription.Description,
+                SubscriptionType =
+                    SubscriptionTypeController.Instance.GetSubscriptionType(
+                        t => t.SubscriptionTypeId == subscription.SubscriptionTypeId).FriendlyName
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsLanguageSpecific">
+          <declaration><![CDATA[private static bool IsLanguageSpecific(string fileName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="218" sc="3" el="240" ec="4">Services\SubscriptionsController.cs</location>
+            <body hash="8fc803b3571a79c687a12f9536ca0464"><![CDATA[{
+			var components = fileName.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+			if (components.Length > 1)
+			{
+				var language = components[components.Length - 2];
+
+				if (!string.IsNullOrEmpty(language))
+				{
+					try
+					{
+						CultureInfo.GetCultureInfo(language);
+
+						return true;
+					}
+					catch (CultureNotFoundException)
+					{
+						return false;
+					}
+				}
+			}
+
+			return false;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSystemSubscription">
+          <declaration><![CDATA[public HttpResponseMessage UpdateSystemSubscription(InboxSubscriptionViewModel post)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="122" sc="9" el="142" ec="10">Services\SubscriptionsController.cs</location>
+            <body hash="f0e17bf86a67e271e3db9cee4ade882d"><![CDATA[{
+            try
+            {               
+                var userPreferencesController = UserPreferencesController.Instance;
+                var userPreference = new UserPreference
+                    {
+                        PortalId = UserInfo.PortalID,
+                        UserId = UserInfo.UserID,
+                        MessagesEmailFrequency = (Frequency) post.MsgFreq,
+                        NotificationsEmailFrequency = (Frequency) post.NotifyFreq
+                    };
+                userPreferencesController.SetUserPreference(userPreference);
+                
+                return Request.CreateResponse(HttpStatusCode.OK, userPreferencesController.GetUserPreference(UserInfo));
+            }
+            catch (Exception ex)
+            {
+                Exceptions.LogException(ex);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="SharedResources">
+          <declaration><![CDATA[private const string SharedResources = "~/DesktopModules/CoreMessaging/App_LocalResources/SharedResources.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="LocalizationFolder">
+          <declaration><![CDATA[private string LocalizationFolder]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="4" el="53" ec="5">Services\SubscriptionsController.cs</location>
+            <body hash="171c8a7e557e677a98fcfcc0c0bb84ce"><![CDATA[{
+                return string.Format("~/DesktopModules/{0}/App_LocalResources/", DesktopModuleController.GetDesktopModuleByModuleName("DotNetNuke.Modules.CoreMessaging", PortalSettings.PortalId).FolderName);
+			}]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.CoreMessaging.ViewModels">
+    <class name="InboxSubscriptionViewModel">
+      <declaration><![CDATA[public class InboxSubscriptionViewModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public InboxSubscriptionViewModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="MsgFreq">
+          <declaration><![CDATA[public int MsgFreq]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="NotifyFreq">
+          <declaration><![CDATA[public int NotifyFreq]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="NotificationActionViewModel">
+      <declaration><![CDATA[public class NotificationActionViewModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public NotificationActionViewModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="APICall">
+          <declaration><![CDATA[public string APICall]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Confirm">
+          <declaration><![CDATA[public string Confirm]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Description">
+          <declaration><![CDATA[public string Description]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="NotificationsViewModel">
+      <declaration><![CDATA[public class NotificationsViewModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public NotificationsViewModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Notifications">
+          <declaration><![CDATA[public IList<NotificationViewModel> Notifications]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="TotalNotifications">
+          <declaration><![CDATA[public int TotalNotifications]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="NotificationViewModel">
+      <declaration><![CDATA[public class NotificationViewModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public NotificationViewModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Actions">
+          <declaration><![CDATA[public IList<NotificationActionViewModel> Actions]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Body">
+          <declaration><![CDATA[public string Body]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="DisplayDate">
+          <declaration><![CDATA[public string DisplayDate]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="From">
+          <declaration><![CDATA[public string From]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="NotificationId">
+          <declaration><![CDATA[public int NotificationId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SenderAvatar">
+          <declaration><![CDATA[public string SenderAvatar]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SenderProfileUrl">
+          <declaration><![CDATA[public string SenderProfileUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Subject">
+          <declaration><![CDATA[public string Subject]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SubscriptionViewModel">
+      <declaration><![CDATA[public class SubscriptionViewModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SubscriptionViewModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Description">
+          <declaration><![CDATA[public string Description]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SubscriptionId">
+          <declaration><![CDATA[public int SubscriptionId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SubscriptionType">
+          <declaration><![CDATA[public string SubscriptionType]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="TotalsViewModel">
+      <declaration><![CDATA[public class TotalsViewModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public TotalsViewModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="TotalNotifications">
+          <declaration><![CDATA[public int TotalNotifications]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="TotalUnreadMessages">
+          <declaration><![CDATA[public int TotalUnreadMessages]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

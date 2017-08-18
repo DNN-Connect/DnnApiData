@@ -1,0 +1,3948 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.HttpModules.dll" version="08.00.02" generated="2017-06-19 23:16:30Z" generationTime="5.1407191">
+  <namespace name="DotNetNuke.HttpModules">
+    <class name="MobileRedirectModule">
+      <declaration><![CDATA[public class MobileRedirectModule : IHttpModule]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly IList<string> _specialPages = new List<string>]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="42" ec="106">MobileRedirect\MobileRedirectModule.cs</location>
+            <body hash="c01a63057dc64cb8b733aac0223b8547"><![CDATA[private readonly IList<string> _specialPages = new List<string> { "/login.aspx", "/register.aspx", "/terms.aspx", "/privacy.aspx", "/login", "/register", "/terms", "/privacy" };
+        private readonly Regex MvcServicePath = new Regex(@"DesktopModules/MVC/", RegexOptions.Compiled);]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="9" el="55" ec="10">MobileRedirect\MobileRedirectModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication application)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="51" ec="10">MobileRedirect\MobileRedirectModule.cs</location>
+            <body hash="fbdcbb4c2bcc97bb71b5cce980aa745c"><![CDATA[{
+            _redirectionController = new RedirectionController();
+            application.BeginRequest += OnBeginRequest;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsRedirectAllowed">
+          <declaration><![CDATA[private static bool IsRedirectAllowed(string url, HttpApplication app, PortalSettings portalSettings)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="99" sc="9" el="103" ec="10">MobileRedirect\MobileRedirectModule.cs</location>
+            <body hash="471d842e627bb65680e62269819ffad0"><![CDATA[{
+            var urlAction = new UrlAction(app.Request);
+            urlAction.SetRedirectAllowed(url, new FriendlyUrlSettings(portalSettings.PortalId));
+            return urlAction.RedirectAllowed;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsSpecialPage">
+          <declaration><![CDATA[private bool IsSpecialPage(string url)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="106" sc="9" el="127" ec="10">MobileRedirect\MobileRedirectModule.cs</location>
+            <body hash="64301fe560c444ddb2ff63760673a9aa"><![CDATA[{
+            var tabPath = url.ToLowerInvariant();
+            var idx = tabPath.IndexOf("?", StringComparison.Ordinal);
+            if (idx >= 0)
+            {
+                tabPath = tabPath.Substring(0, idx);
+            }
+
+            var portalSettings = PortalController.Instance.GetCurrentPortalSettings();
+            if (portalSettings == null)
+            {
+                return true;
+            }
+
+            var alias = PortalController.Instance.GetCurrentPortalSettings().PortalAlias.HTTPAlias.ToLowerInvariant();
+            idx = alias.IndexOf("/", StringComparison.Ordinal);
+            if (idx >= 0)
+            {
+                tabPath = tabPath.Replace(alias.Substring(idx), string.Empty);
+            }
+            return _specialPages.Contains(tabPath);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnBeginRequest">
+          <declaration><![CDATA[public void OnBeginRequest(object s, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="96" ec="10">MobileRedirect\MobileRedirectModule.cs</location>
+            <body hash="5b4898c3b575a22b276bf5285316bdfe"><![CDATA[{
+            var app = (HttpApplication)s;
+            var portalSettings = PortalController.Instance.GetCurrentPortalSettings();
+            
+            //First check if we are upgrading/installing
+            var rawUrl = app.Request.RawUrl;
+            if (!Initialize.ProcessHttpModule(app.Request, false, false)
+                    || app.Request.HttpMethod == "POST"
+                    || ServicesModule.ServiceApi.IsMatch(rawUrl) 
+                    || MvcServicePath.IsMatch(rawUrl)
+                    || IsSpecialPage(rawUrl)
+                    || (portalSettings != null && !IsRedirectAllowed(rawUrl, app, portalSettings)))
+            {
+                return;
+            }
+
+            //Check if redirection has been disabled for the session
+            //This method inspects cookie and query string. It can also setup / clear cookies.
+            if (_redirectionController != null &&
+                portalSettings?.ActiveTab != null &&
+                !string.IsNullOrEmpty(app.Request.UserAgent) &&
+                _redirectionController.IsRedirectAllowedForTheSession(app))
+            {
+                var redirectUrl = _redirectionController.GetRedirectUrl(app.Request.UserAgent);
+                if (!string.IsNullOrEmpty(redirectUrl))
+                {
+                    //append the query string from original url
+                    var idx = rawUrl.IndexOf("?", StringComparison.Ordinal);
+                    var queryString = idx >= 0 ? rawUrl.Substring(idx + 1) : string.Empty;
+                    if (!string.IsNullOrEmpty(queryString))
+                    {
+                        redirectUrl = string.Concat(redirectUrl, redirectUrl.Contains("?") ? "&" : "?", queryString);
+                    }
+                    app.Response.Redirect(redirectUrl);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_redirectionController">
+          <declaration><![CDATA[private IRedirectionController _redirectionController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_specialPages">
+          <declaration><![CDATA[private readonly IList<string> _specialPages = new List<string>]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MvcServicePath">
+          <declaration><![CDATA[private readonly Regex MvcServicePath = new Regex("DesktopModules/MVC/", RegexOptions.Compiled);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ModuleName">
+          <declaration><![CDATA[public string ModuleName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="37" el="43" ec="59">MobileRedirect\MobileRedirectModule.cs</location>
+            <body hash="48cb751b5e46e1c6cff1b1fdd588cd05"><![CDATA["MobileRedirectModule]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UrlRewriteModule">
+      <declaration><![CDATA[public class UrlRewriteModule : IHttpModule]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UrlRewriteModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="9" el="74" ec="10">UrlRewrite\UrlRewriteModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication application)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="70" ec="10">UrlRewrite\UrlRewriteModule.cs</location>
+            <body hash="ac8604cab0dfd644dadb2baa0606a21d"><![CDATA[{
+            _providerToUse = DotNetNuke.Common.Utilities.Config.GetFriendlyUrlProvider();
+
+            //bind events depending on currently configured friendly url provider
+            //note that the current configured friendly url provider determines what type 
+            //of url rewriting is required.
+
+            switch (_providerToUse)
+            {
+                case "advanced":
+                    var advancedRewriter = new AdvancedUrlRewriter();
+                    _urlRewriter = advancedRewriter;
+                    //bind the rewrite event to the begin request event
+                    application.BeginRequest += _urlRewriter.RewriteUrl;
+                    break;
+                default:
+                    var basicRewriter = new BasicUrlRewriter();
+                    _urlRewriter = basicRewriter;
+                    application.BeginRequest += _urlRewriter.RewriteUrl;
+                    break;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_providerToUse">
+          <declaration><![CDATA[private string _providerToUse;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_urlRewriter">
+          <declaration><![CDATA[private UrlRewriterBase _urlRewriter;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ModuleName">
+          <declaration><![CDATA[public string ModuleName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.HttpModules.Analytics">
+    <class name="AnalyticsModule">
+      <declaration><![CDATA[public class AnalyticsModule : IHttpModule]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+ This module contains functionality for injecting web analytics scripts into the page
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AnalyticsModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static AnalyticsModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="6" el="46" ec="102">Analytics\AnalyticsModule.cs</location>
+            <body hash="0a1e337601a4e9b0c7ad808a75537c39"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (AnalyticsModule))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="9" el="65" ec="10">Analytics\AnalyticsModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication application)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="9" el="61" ec="10">Analytics\AnalyticsModule.cs</location>
+            <body hash="c55683cbbdb12a9308836d02b24b3be0"><![CDATA[{
+            application.PreRequestHandlerExecute += OnPreRequestHandlerExecute;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnPageInit">
+          <declaration><![CDATA[private static void OnPageInit(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="101" sc="9" el="158" ec="10">Analytics\AnalyticsModule.cs</location>
+            <body hash="06c4853161ca5d8f128edd334353252e"><![CDATA[{
+            try
+            {
+                var  analyticsEngines = AnalyticsEngineConfiguration.GetConfig().AnalyticsEngines;
+                if (analyticsEngines == null || analyticsEngines.Count == 0) return;
+                
+                var page = (Page) sender;
+                if (page == null) return;
+                
+                foreach (AnalyticsEngine engine in analyticsEngines)
+                {
+                    if ((string.IsNullOrEmpty(engine.ElementId))) continue;
+                    
+                    AnalyticsEngineBase objEngine;
+                    if ((!string.IsNullOrEmpty(engine.EngineType)))
+                    {
+                        var engineType = Type.GetType(engine.EngineType);
+                        if (engineType == null) 
+                            objEngine = new GenericAnalyticsEngine();
+                        else
+                            objEngine = (AnalyticsEngineBase) Activator.CreateInstance(engineType);
+                    }
+                    else
+                    {
+                        objEngine = new GenericAnalyticsEngine();
+                    }
+                    if (objEngine == null) continue;
+                        
+                    var script = engine.ScriptTemplate;
+                    if ((string.IsNullOrEmpty(script))) continue;
+                            
+                    script = objEngine.RenderScript(script);
+                    if ((string.IsNullOrEmpty(script))) continue;
+
+                    var element = (HtmlContainerControl) page.FindControl(engine.ElementId);
+                    if (element == null) continue;
+
+                    var scriptControl = new LiteralControl {Text = script};
+                    if (engine.InjectTop)
+                    {
+                        element.Controls.AddAt(0, scriptControl);
+                    }
+                    else
+                    {
+                        element.Controls.Add(scriptControl);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var log = new LogInfo {LogTypeKey = EventLogController.EventLogType.HOST_ALERT.ToString()};
+				log.AddProperty("Analytics.AnalyticsModule", "OnPageInit");
+                log.AddProperty("ExceptionMessage", ex.Message);
+                LogController.Instance.AddLog(log);
+                Logger.Error(ex);
+
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnPreRequestHandlerExecute">
+          <declaration><![CDATA[private static void OnPreRequestHandlerExecute(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="98" ec="10">Analytics\AnalyticsModule.cs</location>
+            <body hash="7c42a7d75956fa2ed11f17ea7e4d771c"><![CDATA[{
+            try
+            {
+                //First check if we are upgrading/installing or if it is a non-page request
+                var app = (HttpApplication) sender;
+                var request = app.Request;
+
+                if (!Initialize.ProcessHttpModule(request, false, false)) return;
+
+                if (HttpContext.Current == null) return;
+                var context = HttpContext.Current;
+                
+                if (context == null) return;
+                
+                var page = context.Handler as CDefault;
+                if (page == null) return;
+
+				page.Init += OnPageInit;
+            }
+            catch (Exception ex)
+            {
+                var log = new LogInfo {LogTypeKey = EventLogController.EventLogType.HOST_ALERT.ToString()};
+                log.AddProperty("Analytics.AnalyticsModule", "OnPreRequestHandlerExecute");
+                log.AddProperty("ExceptionMessage", ex.Message);
+                LogController.Instance.AddLog(log);
+                Logger.Error(log);
+
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(AnalyticsModule));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ModuleName">
+          <declaration><![CDATA[public string ModuleName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="13" el="53" ec="14">Analytics\AnalyticsModule.cs</location>
+            <body hash="2a19baf50b0f0eaee471ef99a094ad4e"><![CDATA[{
+                return "AnalyticsModule";
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.HttpModules.Compression">
+    <class name="Algorithms">
+      <declaration><![CDATA[public enum Algorithms]]></declaration>
+      <documentation>
+        <summary>
+ The available compression algorithms to use with the HttpCompressionModule
+ </summary>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="Default">
+          <declaration><![CDATA[public const Algorithms Default = -1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Deflate">
+          <declaration><![CDATA[public const Algorithms Deflate = 2;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GZip">
+          <declaration><![CDATA[public const Algorithms GZip = 1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="None">
+          <declaration><![CDATA[public const Algorithms None = 0;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CompressingFilter">
+      <declaration><![CDATA[public abstract class CompressingFilter : HttpOutputFilter]]></declaration>
+      <documentation>
+        <summary>
+ Base for any HttpFilter that performing compression
+ </summary>
+ <remarks>
+ When implementing this class, you need to implement a <see cref="T:DotNetNuke.HttpModules.Compression.HttpOutputFilter" />
+ along with a <see cref="P:DotNetNuke.HttpModules.Compression.CompressingFilter.ContentEncoding" />.  The latter corresponds to a
+ content coding (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.5)
+ that your implementation will support.
+ </remarks></documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[protected CompressingFilter(Stream baseStream) : base(baseStream)]]></declaration>
+          <documentation>
+            <summary>
+ Protected constructor that sets up the underlying stream we're compressing into
+ </summary>
+ <param name="baseStream">The stream we're wrapping up</param></documentation>
+          <codeblock>
+            <location sl="47" sc="58" el="49" ec="10">Compression\Filters\CompressingFilter.cs</location>
+            <body hash="a94d4a15f883db4a199b313811e75864"><![CDATA[base(baseStream)
+        {
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="WriteHeaders">
+          <declaration><![CDATA[internal void WriteHeaders()]]></declaration>
+          <documentation>
+            <summary>
+ Writes out the compression-related headers.  Subclasses should call this once before writing to the output stream.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="75" sc="9" el="82" ec="10">Compression\Filters\CompressingFilter.cs</location>
+            <body hash="fa4826455e73cb5998ca0462346dd02b"><![CDATA[{
+            //this is dangerous.  if Response.End is called before the filter is used, directly or indirectly,
+            //the content will not pass through the filter.  However, this header will still be appended.  
+            //Look for handling cases in PreRequestSendHeaders and Pre
+            HttpContext.Current.Response.AppendHeader("Content-Encoding", ContentEncoding);
+            HttpContext.Current.Response.AppendHeader("X-Compressed-By", "DotNetNuke-Compression");
+            _HasWrittenHeaders = true;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_HasWrittenHeaders">
+          <declaration><![CDATA[private bool _HasWrittenHeaders;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ContentEncoding">
+          <declaration><![CDATA[public abstract string ContentEncoding]]></declaration>
+          <documentation>
+            <summary>
+ The name of the content-encoding that's being implemented
+ </summary>
+ <remarks>
+ See http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.5 for more
+ details on content codings.
+ </remarks></documentation>
+        </property>
+        <property name="HasWrittenHeaders">
+          <declaration><![CDATA[protected bool HasWrittenHeaders]]></declaration>
+          <documentation>
+            <summary>
+ Keeps track of whether or not we're written the compression headers
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="13" el="68" ec="14">Compression\Filters\CompressingFilter.cs</location>
+            <body hash="6f80652e646855f06343cfa809692d3c"><![CDATA[{
+                return _HasWrittenHeaders;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CompressionModule">
+      <deprecation>Removed in version 6.2 - class still exists but does nothing.</deprecation>
+      <declaration><![CDATA[public class CompressionModule : IHttpModule]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CompressionModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+            <summary>
+ Implementation of <see cref="T:System.Web.IHttpModule" />
+ </summary>
+ <remarks>
+ Currently empty.  Nothing to really do, as I have no member variables.
+ </remarks></documentation>
+          <codeblock>
+            <location sl="61" sc="9" el="62" ec="10">Compression\CompressionModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication context)]]></declaration>
+          <documentation>
+            <summary>
+ Init the handler and fulfill <see cref="T:System.Web.IHttpModule" />
+ </summary>
+ <remarks>
+ This implementation hooks the ReleaseRequestState and PreSendRequestHeaders events to
+ figure out as late as possible if we should install the filter.  Previous versions did
+ not do this as well.
+ </remarks>
+ <param name="context">The <see cref="T:System.Web.HttpApplication" /> this handler is working for.</param></documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="52" ec="10">Compression\CompressionModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DeflateFilter">
+      <declaration><![CDATA[public class DeflateFilter : CompressingFilter]]></declaration>
+      <documentation>
+        <summary>
+ Summary description for DeflateFilter.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DeflateFilter(Stream baseStream) : base(baseStream)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="51" el="40" ec="10">Compression\Filters\DeflateFilter.cs</location>
+            <body hash="aec26f508e1903a11476c4342f9b8077"><![CDATA[base(baseStream)
+        {
+            m_stream = new DeflateStream(baseStream, CompressionMode.Compress);
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Close">
+          <declaration><![CDATA[public override void Close()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="62" ec="10">Compression\Filters\DeflateFilter.cs</location>
+            <body hash="ebe18ef24bb71bd23c22216ad7c6ffa1"><![CDATA[{
+            m_stream.Close();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Flush">
+          <declaration><![CDATA[public override void Flush()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="67" ec="10">Compression\Filters\DeflateFilter.cs</location>
+            <body hash="9f894aa2c455c88e2a0d5a18d3d76938"><![CDATA[{
+            m_stream.Flush();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Write">
+          <declaration><![CDATA[public override void Write(byte[] buffer, int offset, int count)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="57" ec="10">Compression\Filters\DeflateFilter.cs</location>
+            <body hash="cac142ae8b91f1d3b636cb149b8f79ec"><![CDATA[{
+            if (!HasWrittenHeaders)
+            {
+                WriteHeaders();
+            }
+            m_stream.Write(buffer, offset, count);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="m_stream">
+          <declaration><![CDATA[private readonly DeflateStream m_stream;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ContentEncoding">
+          <declaration><![CDATA[public override string ContentEncoding]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="13" el="47" ec="14">Compression\Filters\DeflateFilter.cs</location>
+            <body hash="15071365118039be53fdfe85729d993a"><![CDATA[{
+                return "deflate";
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GZipFilter">
+      <declaration><![CDATA[public class GZipFilter : CompressingFilter]]></declaration>
+      <documentation>
+        <summary>
+ This is a little filter to support HTTP compression using GZip
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GZipFilter(Stream baseStream) : base(baseStream)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="48" el="40" ec="10">Compression\Filters\GZipFilter.cs</location>
+            <body hash="726993c5d1d4b115327686d8d15bafac"><![CDATA[base(baseStream)
+        {
+            m_stream = new GZipStream(baseStream, CompressionMode.Compress);
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Close">
+          <declaration><![CDATA[public override void Close()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="62" ec="10">Compression\Filters\GZipFilter.cs</location>
+            <body hash="ebe18ef24bb71bd23c22216ad7c6ffa1"><![CDATA[{
+            m_stream.Close();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Flush">
+          <declaration><![CDATA[public override void Flush()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="67" ec="10">Compression\Filters\GZipFilter.cs</location>
+            <body hash="9f894aa2c455c88e2a0d5a18d3d76938"><![CDATA[{
+            m_stream.Flush();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Write">
+          <declaration><![CDATA[public override void Write(byte[] buffer, int offset, int count)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="57" ec="10">Compression\Filters\GZipFilter.cs</location>
+            <body hash="cac142ae8b91f1d3b636cb149b8f79ec"><![CDATA[{
+            if (!HasWrittenHeaders)
+            {
+                WriteHeaders();
+            }
+            m_stream.Write(buffer, offset, count);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="m_stream">
+          <declaration><![CDATA[private readonly GZipStream m_stream;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ContentEncoding">
+          <declaration><![CDATA[public override string ContentEncoding]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="13" el="47" ec="14">Compression\Filters\GZipFilter.cs</location>
+            <body hash="3a52e1f1267fd40fbd766ff4c3484e9f"><![CDATA[{
+                return "gzip";
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="HttpOutputFilter">
+      <declaration><![CDATA[public abstract class HttpOutputFilter : Stream]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[protected HttpOutputFilter(Stream baseStream)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="9" el="37" ec="10">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="5692fb058221524f415ba4b5b49ccea8"><![CDATA[protected HttpOutputFilter(Stream baseStream)
+        {
+            _sink = baseStream;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Close">
+          <declaration><![CDATA[public override void Close()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="102" sc="9" el="104" ec="10">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="d62ff56828aaa8646a53ab1e34b9d447"><![CDATA[{
+            _sink.Close();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Flush">
+          <declaration><![CDATA[public override void Flush()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="107" sc="9" el="109" ec="10">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="9f564f3583ca2978a7ce3bc561ca6984"><![CDATA[{
+            _sink.Flush();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Read">
+          <declaration><![CDATA[public override int Read(byte[] buffer, int offset, int count)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="112" sc="9" el="113" ec="47">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="9faf41053db4bece63a3cbc0207a9b58"><![CDATA[{
+            throw new NotSupportedException();]]></body>
+          </codeblock>
+        </method>
+        <method name="Seek">
+          <declaration><![CDATA[public override long Seek(long offset, SeekOrigin direction)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="93" ec="47">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="9faf41053db4bece63a3cbc0207a9b58"><![CDATA[{
+            throw new NotSupportedException();]]></body>
+          </codeblock>
+        </method>
+        <method name="SetLength">
+          <declaration><![CDATA[public override void SetLength(long length)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="97" sc="9" el="98" ec="47">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="9faf41053db4bece63a3cbc0207a9b58"><![CDATA[{
+            throw new NotSupportedException();]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_sink">
+          <declaration><![CDATA[private readonly Stream _sink;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="BaseStream">
+          <declaration><![CDATA[protected Stream BaseStream]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="13" el="44" ec="14">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="6b2327d0d07281800ed6fa3dea9ccd53"><![CDATA[{
+                return _sink;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CanRead">
+          <declaration><![CDATA[public override bool CanRead]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="13" el="52" ec="14">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="479cced518a49e9e626d5350fca9bbad"><![CDATA[{
+                return false;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CanSeek">
+          <declaration><![CDATA[public override bool CanSeek]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="13" el="60" ec="14">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="479cced518a49e9e626d5350fca9bbad"><![CDATA[{
+                return false;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CanWrite">
+          <declaration><![CDATA[public override bool CanWrite]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="13" el="68" ec="14">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="7975853b2960d3430f00a6691886a4e6"><![CDATA[{
+                return _sink.CanWrite;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Length">
+          <declaration><![CDATA[public override long Length]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="13" el="75" ec="51">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="5b1f5c92cce58e5e0bd868b091127db6"><![CDATA[{
+                throw new NotSupportedException();]]></body>
+          </codeblock>
+        </property>
+        <property name="Position">
+          <declaration><![CDATA[public override long Position]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="82" sc="13" el="83" ec="51">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="5b1f5c92cce58e5e0bd868b091127db6"><![CDATA[{
+                throw new NotSupportedException();]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="86" sc="13" el="87" ec="51">Compression\Filters\HttpOutputFilter.cs</location>
+            <body hash="5b1f5c92cce58e5e0bd868b091127db6"><![CDATA[{
+                throw new NotSupportedException();]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Settings">
+      <declaration><![CDATA[public class Settings]]></declaration>
+      <documentation>
+        <summary>
+ This class encapsulates the settings for an HttpCompressionModule
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private Settings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="9" el="50" ec="10">Compression\Config\Settings.cs</location>
+            <body hash="f29bc2a6ef1a1a93d466a0cabda1c584"><![CDATA[private Settings()
+        {
+            _preferredAlgorithm = Algorithms.None;
+            _excludedPaths = new StringCollection();
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public static Settings GetSettings()]]></declaration>
+          <documentation>
+            <summary>
+ Get the current settings from the xml config file
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="109" ec="10">Compression\Config\Settings.cs</location>
+            <body hash="d5b73bd65ec25b38db21b0deaa844d91"><![CDATA[{
+            var settings = (Settings) DataCache.GetCache("CompressionConfig");
+            if (settings == null)
+            {
+                settings = Default;
+                //Place this in a try/catch as during install the host settings will not exist
+                try
+                {
+                    settings._preferredAlgorithm = (Algorithms) Host.HttpCompressionAlgorithm;
+                }
+                catch (Exception e)
+                {
+                    DotNetNuke.Services.Exceptions.Exceptions.LogException(e);
+                }
+
+                string filePath = Common.Utilities.Config.GetPathToFile(Common.Utilities.Config.ConfigFileType.Compression);
+
+                //Create a FileStream for the Config file
+                var fileReader = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var doc = new XPathDocument(fileReader);
+                foreach (XPathNavigator nav in doc.CreateNavigator().Select("compression/excludedPaths/path"))
+                {
+                    settings._excludedPaths.Add(nav.Value.ToLower());
+                }
+                if ((File.Exists(filePath)))
+                {
+                    //Set back into Cache
+                    DataCache.SetCache("CompressionConfig", settings, new DNNCacheDependency(filePath));
+                }
+            }
+            return settings;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsExcludedPath">
+          <declaration><![CDATA[public bool IsExcludedPath(string relUrl)]]></declaration>
+          <documentation>
+            <summary>
+ Looks for a given path in the list of paths excluded from compression
+ </summary>
+ <param name="relUrl">the relative url to check</param>
+ <returns>true if excluded, false if not</returns></documentation>
+          <codeblock>
+            <location sl="117" sc="9" el="128" ec="10">Compression\Config\Settings.cs</location>
+            <body hash="65d797d3dcdee161ea1411f1af8d8ef6"><![CDATA[{
+            bool match = false;
+            foreach (string path in _excludedPaths)
+            {
+                if (relUrl.ToLower().Contains(path))
+                {
+                    match = true;
+                    break;
+                }
+            }
+            return match;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_excludedPaths">
+          <declaration><![CDATA[private readonly StringCollection _excludedPaths;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_preferredAlgorithm">
+          <declaration><![CDATA[private Algorithms _preferredAlgorithm;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Default">
+          <declaration><![CDATA[public static Settings Default]]></declaration>
+          <documentation>
+            <summary>
+ The default settings.  Deflate + normal.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="13" el="60" ec="14">Compression\Config\Settings.cs</location>
+            <body hash="74adebf1f8fdbb6358cd67686c40e9b5"><![CDATA[{
+                return new Settings();
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PreferredAlgorithm">
+          <declaration><![CDATA[public Algorithms PreferredAlgorithm]]></declaration>
+          <documentation>
+            <summary>
+ The preferred algorithm to use for compression
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="13" el="71" ec="14">Compression\Config\Settings.cs</location>
+            <body hash="9ce72a4141284d4d090f3e2946e410e0"><![CDATA[{
+                return _preferredAlgorithm;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.HttpModules.Config">
+    <class name="AnalyticsEngine">
+      <declaration><![CDATA[public class AnalyticsEngine]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AnalyticsEngine()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="_elementId">
+          <declaration><![CDATA[private string _elementId;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_engineType">
+          <declaration><![CDATA[private string _engineType;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_injectTop">
+          <declaration><![CDATA[private bool _injectTop;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_scriptTemplate">
+          <declaration><![CDATA[private string _scriptTemplate;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ElementId">
+          <declaration><![CDATA[public string ElementId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="13" el="66" ec="14">Analytics\Config\AnalyticsEngine.cs</location>
+            <body hash="eb7a94da3a927cf833d74a79da1bb6ff"><![CDATA[{
+                return _elementId;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="68" sc="13" el="70" ec="14">Analytics\Config\AnalyticsEngine.cs</location>
+            <body hash="b19fbfc1b369c0b32edbe487790e3f11"><![CDATA[{
+                _elementId = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="EngineType">
+          <declaration><![CDATA[public string EngineType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="13" el="42" ec="14">Analytics\Config\AnalyticsEngine.cs</location>
+            <body hash="e7772b1a238a7ef253c5d5b269a3dfee"><![CDATA[{
+                return _engineType;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="44" sc="13" el="46" ec="14">Analytics\Config\AnalyticsEngine.cs</location>
+            <body hash="cc47adc3368fe0a2d2c52d49009ef5ce"><![CDATA[{
+                _engineType = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="InjectTop">
+          <declaration><![CDATA[public bool InjectTop]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="13" el="78" ec="14">Analytics\Config\AnalyticsEngine.cs</location>
+            <body hash="af49c314d25448a999670ca7c2c21a5e"><![CDATA[{
+                return _injectTop;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="80" sc="13" el="82" ec="14">Analytics\Config\AnalyticsEngine.cs</location>
+            <body hash="31120cb149b785fe1cdebedb567f353f"><![CDATA[{
+                _injectTop = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ScriptTemplate">
+          <declaration><![CDATA[public string ScriptTemplate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="13" el="54" ec="14">Analytics\Config\AnalyticsEngine.cs</location>
+            <body hash="85838e4b8d697e6afc3a354f4b11e9cf"><![CDATA[{
+                return _scriptTemplate;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="56" sc="13" el="58" ec="14">Analytics\Config\AnalyticsEngine.cs</location>
+            <body hash="b2a04eb48b3f0fac52eea5127f0f3bfb"><![CDATA[{
+                _scriptTemplate = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="AnalyticsEngineCollection">
+      <declaration><![CDATA[public class AnalyticsEngineCollection : CollectionBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AnalyticsEngineCollection()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Add">
+          <declaration><![CDATA[public void Add(AnalyticsEngine a)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="9" el="48" ec="10">Analytics\Config\AnalyticsEngineCollection.cs</location>
+            <body hash="4285ae86c99ea54cd8bbda17246e706d"><![CDATA[{
+            InnerList.Add(a);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Item">
+          <declaration><![CDATA[public virtual AnalyticsEngine this[int index]]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="13" el="38" ec="14">Analytics\Config\AnalyticsEngineCollection.cs</location>
+            <body hash="3673e2c259a1d9f31e958ddd7e9e33e1"><![CDATA[{
+                return (AnalyticsEngine) base.List[index];
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="40" sc="13" el="42" ec="14">Analytics\Config\AnalyticsEngineCollection.cs</location>
+            <body hash="4e4c46bd6e9c6132bade7b26b0493aec"><![CDATA[{
+                base.List[index] = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="AnalyticsEngineConfiguration">
+      <declaration><![CDATA[public class AnalyticsEngineConfiguration]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ Namespace:  DotNetNuke.HttpModules.Analytics
+ Project:    HttpModules
+ Module:     AnalyticsEngineConfiguration
+ -----------------------------------------------------------------------------
+ <summary>
+ Class definition for AnalyticsEngineConfiguration which is used to create
+ an AnalyticsEngineCollection
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AnalyticsEngineConfiguration()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static AnalyticsEngineConfiguration()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="6" el="52" ec="115">Analytics\Config\AnalyticsEngineConfiguration.cs</location>
+            <body hash="6ed375bb297b715bba9cbb1bd48cf4a2"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (AnalyticsEngineConfiguration))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetConfig">
+          <declaration><![CDATA[public static AnalyticsEngineConfiguration GetConfig()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="9" el="123" ec="10">Analytics\Config\AnalyticsEngineConfiguration.cs</location>
+            <body hash="28c2cc91350e9a3150191081a219dbd2"><![CDATA[{
+            var config = new AnalyticsEngineConfiguration {AnalyticsEngines = new AnalyticsEngineCollection()};
+            FileStream fileReader = null;
+            string filePath = null;
+            try
+            {
+                config = (AnalyticsEngineConfiguration) DataCache.GetCache("AnalyticsEngineConfig");
+                if ((config == null))
+                {
+                    filePath = Common.Utilities.Config.GetPathToFile(Common.Utilities.Config.ConfigFileType.SiteAnalytics);
+
+                    //Create a FileStream for the Config file
+                    fileReader = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    var doc = new XPathDocument(fileReader);
+                    config = new AnalyticsEngineConfiguration {AnalyticsEngines = new AnalyticsEngineCollection()};
+                    foreach (XPathNavigator nav in
+                        doc.CreateNavigator().Select("AnalyticsEngineConfig/Engines/AnalyticsEngine"))
+                    {
+                        var analyticsEngine = new AnalyticsEngine
+                                                  {
+                                                      EngineType = nav.SelectSingleNode("EngineType").Value,
+                                                      ElementId = nav.SelectSingleNode("ElementId").Value,
+                                                      InjectTop = Convert.ToBoolean(nav.SelectSingleNode("InjectTop").Value),
+                                                      ScriptTemplate = nav.SelectSingleNode("ScriptTemplate").Value
+                                                  };
+                        config.AnalyticsEngines.Add(analyticsEngine);
+                    }
+                    if (File.Exists(filePath))
+                    {
+                        //Set back into Cache
+                        DataCache.SetCache("AnalyticsEngineConfig", config, new DNNCacheDependency(filePath));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //log it
+                var log = new LogInfo {LogTypeKey = EventLogController.EventLogType.HOST_ALERT.ToString()};
+                log.AddProperty("Analytics.AnalyticsEngineConfiguration", "GetConfig Failed");
+                if (!string.IsNullOrEmpty(filePath))
+                    log.AddProperty("FilePath", filePath);
+                log.AddProperty("ExceptionMessage", ex.Message);
+                LogController.Instance.AddLog(log);
+                Logger.Error(log);
+
+            }
+            finally
+            {
+                if (fileReader != null)
+                {
+                    //Close the Reader
+                    fileReader.Close();
+                }
+            }
+            return config;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_analyticsEngines">
+          <declaration><![CDATA[private AnalyticsEngineCollection _analyticsEngines;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(AnalyticsEngineConfiguration));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="AnalyticsEngines">
+          <declaration><![CDATA[public AnalyticsEngineCollection AnalyticsEngines]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="13" el="60" ec="14">Analytics\Config\AnalyticsEngineConfiguration.cs</location>
+            <body hash="658cc417e0f24a3f628b192f29932421"><![CDATA[{
+                return _analyticsEngines;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="62" sc="13" el="64" ec="14">Analytics\Config\AnalyticsEngineConfiguration.cs</location>
+            <body hash="adf80b1d2392d8506a886e4d79bedb45"><![CDATA[{
+                _analyticsEngines = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.HttpModules.Exceptions">
+    <class name="ExceptionModule">
+      <declaration><![CDATA[public class ExceptionModule : IHttpModule]]></declaration>
+      <documentation>
+        <summary>
+ Handles the exception that occur with http modules
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ExceptionModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ExceptionModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="6" el="38" ec="102">Exception\ExceptionModule.cs</location>
+            <body hash="3f450aef0d1440178cccd711dbfda926"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (ExceptionModule))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="66" ec="10">Exception\ExceptionModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication application)]]></declaration>
+          <documentation>
+            <summary>
+ Initializes the error handling for the specified application.
+ </summary>
+ <param name="application">The application.</param></documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="62" ec="10">Exception\ExceptionModule.cs</location>
+            <body hash="170f562fd4d1793cb9c4a9837d0a3e51"><![CDATA[{
+            application.Error += OnErrorRequest;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnErrorRequest">
+          <declaration><![CDATA[public void OnErrorRequest(object s, EventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+ Called when error handling is requested.
+ </summary>
+ <param name="s">The object with the error</param>
+ <param name="e">The <see cref="T:System.EventArgs" /> instance containing the event data.</param></documentation>
+          <codeblock>
+            <location sl="76" sc="9" el="116" ec="10">Exception\ExceptionModule.cs</location>
+            <body hash="26d9d923a0eff69ff577684bb5ce1d5f"><![CDATA[{
+            try
+            {
+				if(HttpContext.Current == null)
+				{
+					return;
+				}
+
+                HttpContext contxt = HttpContext.Current;
+                HttpServerUtility srver = contxt.Server;
+                HttpRequest request = contxt.Request;
+
+                if (!Initialize.ProcessHttpModule(request, false, false))
+                {
+                    return;
+                }
+
+                Exception lastException = srver.GetLastError();
+
+                //HttpExceptions are logged elsewhere
+                if (!(lastException is HttpException))
+                {
+                    var lex = new Exception("Unhandled Error: ", srver.GetLastError());
+                    var objExceptionLog = new ExceptionLogController();
+                    try
+                    {
+                        objExceptionLog.AddLog(lex);
+                    }
+					catch (Exception ex)
+					{
+						Logger.Error(ex);
+					}
+                }
+            }
+            catch (Exception exc)
+            {
+                //it is possible when terminating the request for the context not to exist
+                //in this case we just want to exit since there is nothing else we can do
+				Logger.Error(exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ExceptionModule));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ModuleName">
+          <declaration><![CDATA[public string ModuleName]]></declaration>
+          <documentation>
+            <summary>
+ Gets the name of the module.
+ </summary>
+ <value>
+ The name of the module: "ExceptionModule"
+ </value></documentation>
+          <codeblock>
+            <location sl="48" sc="13" el="50" ec="14">Exception\ExceptionModule.cs</location>
+            <body hash="0b65279e72efd92bb567aa2d26f662dc"><![CDATA[{
+                return "ExceptionModule";
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.HttpModules.Membership">
+    <class name="MembershipModule">
+      <declaration><![CDATA[public class MembershipModule : IHttpModule]]></declaration>
+      <documentation>
+        <summary>
+ Information about membership
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MembershipModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static MembershipModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="9" el="54" ec="101">Membership\MembershipModule.cs</location>
+            <body hash="77f861fa052d2b1941a392d5f1993f94"><![CDATA[private static readonly Regex NameRegex = new Regex(@"\w+[\\]+(?=)", RegexOptions.Compiled)]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AuthenticateRequest">
+          <declaration><![CDATA[public static void AuthenticateRequest(HttpContextBase context, bool allowUnknownExtensions)]]></declaration>
+          <documentation>
+            <summary>
+ Authenticates the request.
+ </summary>
+ <param name="context">The context.</param>
+ <param name="allowUnknownExtensions">if set to <c>true</c> to allow unknown extensinons.</param></documentation>
+          <codeblock>
+            <location sl="153" sc="9" el="257" ec="10">Membership\MembershipModule.cs</location>
+            <body hash="ffcbd372471b60e624126621ea65c25c"><![CDATA[{
+            HttpRequestBase request = context.Request;
+            HttpResponseBase response = context.Response;
+
+            //First check if we are upgrading/installing
+            if (!Initialize.ProcessHttpModule(context.ApplicationInstance.Request, allowUnknownExtensions, false))
+            {
+                return;
+            }
+
+            //Obtain PortalSettings from Current Context
+            PortalSettings portalSettings = PortalController.Instance.GetCurrentPortalSettings();
+
+            bool isActiveDirectoryAuthHeaderPresent = false;
+            var auth = request.Headers.Get("Authorization");
+            if (!string.IsNullOrEmpty(auth))
+            {
+                if (auth.StartsWith("Negotiate"))
+                {
+                    isActiveDirectoryAuthHeaderPresent = true;
+                }
+            }
+
+            if (request.IsAuthenticated && !isActiveDirectoryAuthHeaderPresent && portalSettings != null)  
+            {
+                var user = UserController.GetCachedUser(portalSettings.PortalId, context.User.Identity.Name);
+                //if current login is from windows authentication, the ignore the process
+                if (user == null && context.User is WindowsPrincipal)
+                {
+                    return;
+                }
+
+                //authenticate user and set last login ( this is necessary for users who have a permanent Auth cookie set ) 
+                if (user == null || user.IsDeleted || user.Membership.LockedOut
+                    || (!user.Membership.Approved && !user.IsInRole("Unverified Users"))
+                    || user.Username.ToLower() != context.User.Identity.Name.ToLower())
+                {
+                    var portalSecurity = new PortalSecurity();
+                    portalSecurity.SignOut();
+
+                    //Remove user from cache
+                    if (user != null)
+                    {
+                        DataCache.ClearUserCache(portalSettings.PortalId, context.User.Identity.Name);
+                    }
+
+                    //Redirect browser back to home page
+                    response.Redirect(request.RawUrl, true);
+                    return;
+                }
+
+                if (!user.IsSuperUser && user.IsInRole("Unverified Users") && !HttpContext.Current.Items.Contains(DotNetNuke.UI.Skins.Skin.OnInitMessage))
+                {
+                    HttpContext.Current.Items.Add(DotNetNuke.UI.Skins.Skin.OnInitMessage, Localization.GetString("UnverifiedUser", Localization.SharedResourceFile, CurrentCulture));
+                }
+
+                if (!user.IsSuperUser && HttpContext.Current.Request.QueryString.AllKeys.Contains("VerificationSuccess") && !HttpContext.Current.Items.Contains(DotNetNuke.UI.Skins.Skin.OnInitMessage))
+                {
+                    HttpContext.Current.Items.Add(DotNetNuke.UI.Skins.Skin.OnInitMessage, Localization.GetString("VerificationSuccess", Localization.SharedResourceFile, CurrentCulture));
+                    HttpContext.Current.Items.Add(DotNetNuke.UI.Skins.Skin.OnInitMessageType, ModuleMessage.ModuleMessageType.GreenSuccess);
+                }
+
+                //if users LastActivityDate is outside of the UsersOnlineTimeWindow then record user activity
+                if (DateTime.Compare(user.Membership.LastActivityDate.AddMinutes(Host.UsersOnlineTimeWindow), DateTime.Now) < 0)
+                {
+                    //update LastActivityDate and IP Address for user
+                    user.Membership.LastActivityDate = DateTime.Now;
+                    user.LastIPAddress = request.UserHostAddress;
+                    UserController.UpdateUser(portalSettings.PortalId, user, false, false);
+                }
+
+                //check for RSVP code
+                if (request.QueryString["rsvp"] != null && !string.IsNullOrEmpty(request.QueryString["rsvp"]))
+                {
+                    foreach (var role in RoleController.Instance.GetRoles(portalSettings.PortalId, r => (r.SecurityMode != SecurityMode.SocialGroup || r.IsPublic) && r.Status == RoleStatus.Approved))
+                    {
+                        if (role.RSVPCode == request.QueryString["rsvp"])
+                        {
+                            RoleController.Instance.UpdateUserRole(portalSettings.PortalId, user.UserID, role.RoleID, RoleStatus.Approved, false, false);
+                        }
+                    }
+                }
+
+                //save userinfo object in context
+                if (context.Items["UserInfo"] != null)
+                {
+                    context.Items["UserInfo"] = user;
+                }
+                else
+                {
+                    context.Items.Add("UserInfo", user);
+                }
+
+                //Localization.SetLanguage also updates the user profile, so this needs to go after the profile is loaded
+                if (!ServicesModule.ServiceApi.IsMatch(request.RawUrl))
+                {
+                    Localization.SetLanguage(user.Profile.PreferredLocale);
+                }
+            }
+
+            if (context.Items["UserInfo"] == null)
+            {
+                context.Items.Add("UserInfo", new UserInfo());
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+            <summary>
+ Disposes of the resources (other than memory) used by the module that implements <see cref="T:System.Web.IHttpModule" />.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="100" sc="9" el="101" ec="10">Membership\MembershipModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication application)]]></declaration>
+          <documentation>
+            <summary>
+ Initializes the specified application.
+ </summary>
+ <param name="application">The application.</param></documentation>
+          <codeblock>
+            <location sl="91" sc="9" el="94" ec="10">Membership\MembershipModule.cs</location>
+            <body hash="53df7e75d026d9e8ce90fdb348c55a76"><![CDATA[{
+            application.AuthenticateRequest += OnAuthenticateRequest;
+            application.PreSendRequestHeaders += OnPreSendRequestHeaders;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnAuthenticateRequest">
+          <declaration><![CDATA[private void OnAuthenticateRequest(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="106" sc="9" el="109" ec="10">Membership\MembershipModule.cs</location>
+            <body hash="c622058d08aec32123d35f0423c4dec6"><![CDATA[{
+            var application = (HttpApplication) sender;
+            AuthenticateRequest(new HttpContextWrapper(application.Context), false);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnPreSendRequestHeaders">
+          <declaration><![CDATA[private void OnPreSendRequestHeaders(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="114" sc="9" el="133" ec="10">Membership\MembershipModule.cs</location>
+            <body hash="a65112e5d26b64a9734811faba0a3adf"><![CDATA[{
+            var application = (HttpApplication)sender;
+
+            var portalSettings = PortalController.Instance.GetCurrentPortalSettings();
+            var hasAuthCookie = application.Response.Headers["Set-Cookie"] != null
+                                    && application.Response.Headers["Set-Cookie"].Contains(FormsAuthentication.FormsCookieName);
+            if (portalSettings != null && hasAuthCookie && !application.Context.Items.Contains("DNN_UserSignIn"))
+            {
+                var isInPortalGroup = PortalController.IsMemberOfPortalGroup(portalSettings.PortalId);
+                if (isInPortalGroup)
+                {
+                    var authCookie = application.Response.Cookies[FormsAuthentication.FormsCookieName];
+                    if (authCookie != null && !string.IsNullOrEmpty(authCookie.Value) && string.IsNullOrEmpty(authCookie.Domain))
+                    {
+                        application.Response.Cookies.Remove(FormsAuthentication.FormsCookieName);
+                        new PortalSecurity().SignIn(UserController.Instance.GetCurrentUserInfo(), false);
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnUnverifiedUserSkinInit">
+          <declaration><![CDATA[public static void OnUnverifiedUserSkinInit(object sender, SkinEventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+ Called when unverified user skin initialize.
+ </summary>
+ <param name="sender">The sender.</param>
+ <param name="e">The <see cref="T:DotNetNuke.UI.Skins.EventListeners.SkinEventArgs" /> instance containing the event data.</param></documentation>
+          <codeblock>
+            <location sl="142" sc="9" el="145" ec="10">Membership\MembershipModule.cs</location>
+            <body hash="a96c5595e707eb469eb76671cd82df51"><![CDATA[{
+            var strMessage = Localization.GetString("UnverifiedUser", Localization.SharedResourceFile, CurrentCulture);
+            UI.Skins.Skin.AddPageMessage(e.Skin, "", strMessage, ModuleMessage.ModuleMessageType.YellowWarning);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_cultureCode">
+          <declaration><![CDATA[private static string _cultureCode;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="NameRegex">
+          <declaration><![CDATA[private static readonly Regex NameRegex = new Regex("\\w+[\\\\]+(?=)", RegexOptions.Compiled);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="CurrentCulture">
+          <declaration><![CDATA[private static string CurrentCulture]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="13" el="81" ec="14">Membership\MembershipModule.cs</location>
+            <body hash="d9a4ce66ee8f13581efb27a5f98b8e3e"><![CDATA[{
+                if (string.IsNullOrEmpty(_cultureCode))
+                {
+                    _cultureCode = Localization.GetPageLocale(PortalSettings.Current).Name; 
+                }
+
+                return _cultureCode;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ModuleName">
+          <declaration><![CDATA[public string ModuleName]]></declaration>
+          <documentation>
+            <summary>
+ Gets the name of the module.
+ </summary>
+ <value>
+ The name of the module: "DNNMembershipModule"
+ </value></documentation>
+          <codeblock>
+            <location sl="66" sc="13" el="68" ec="14">Membership\MembershipModule.cs</location>
+            <body hash="715a99241216b902ac4cec9e8bdf802b"><![CDATA[{
+                return "DNNMembershipModule";
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.HttpModules.OutputCaching">
+    <class name="OutputCacheModule">
+      <declaration><![CDATA[public class OutputCacheModule : IHttpModule]]></declaration>
+      <documentation>
+        <summary>
+ Manages the output cache for a request
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public OutputCacheModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="9" el="59" ec="10">OutputCaching\OutputCacheModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication httpApp)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="54" ec="10">OutputCaching\OutputCacheModule.cs</location>
+            <body hash="140089c24831d826dc397d30ccee6194"><![CDATA[{
+            _app = httpApp;
+
+            httpApp.ResolveRequestCache += OnResolveRequestCache;
+            httpApp.UpdateRequestCache += OnUpdateRequestCache;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsInstallInProgress">
+          <declaration><![CDATA[private bool IsInstallInProgress(HttpApplication app)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="67" ec="10">OutputCaching\OutputCacheModule.cs</location>
+            <body hash="52d2a10a0a584896e5076888fb89582d"><![CDATA[{
+            return InstallBlocker.Instance.IsInstallInProgress();            
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnResolveRequestCache">
+          <declaration><![CDATA[private void OnResolveRequestCache(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="254" ec="10">OutputCaching\OutputCacheModule.cs</location>
+            <body hash="200c53388056314f739036506a7c03aa"><![CDATA[{
+            bool cached = false;
+            if (_app == null || _app.Context == null || _app.Response.ContentType.ToLower() != "text/html" || _app.Context.Request.IsAuthenticated || _app.Context.Request.Browser.Crawler)
+            {
+                return;
+            }
+            
+            if (IsInstallInProgress(_app))
+            {
+                return;
+            }
+
+            if (_app.Context.Request.RequestType == "POST" || ! (_app.Context.Request.Url.LocalPath.ToLower().EndsWith(Globals.glbDefaultPage.ToLower())))
+            {
+                return;
+            }
+            var portalSettings = (PortalSettings) (HttpContext.Current.Items["PortalSettings"]);
+            int tabId = portalSettings.ActiveTab.TabID;
+
+            Hashtable tabSettings = TabController.Instance.GetTabSettings(tabId);
+
+            if (tabSettings["CacheProvider"] == null || string.IsNullOrEmpty(tabSettings["CacheProvider"].ToString()))
+            {
+                return;
+            }
+
+            int portalId = portalSettings.PortalId;
+            string locale = Localization.GetPageLocale(portalSettings).Name;
+
+            IncludeExcludeType includeExclude = IncludeExcludeType.ExcludeByDefault;
+            if (tabSettings["CacheIncludeExclude"] != null && ! string.IsNullOrEmpty(tabSettings["CacheIncludeExclude"].ToString()))
+            {
+                if (tabSettings["CacheIncludeExclude"].ToString() == "0")
+                {
+                    includeExclude = IncludeExcludeType.ExcludeByDefault;
+                }
+                else
+                {
+                    includeExclude = IncludeExcludeType.IncludeByDefault;
+                }
+            }
+
+
+            string tabOutputCacheProvider = tabSettings["CacheProvider"].ToString();
+            _app.Context.Items[ContextKeyTabOutputCacheProvider] = tabOutputCacheProvider;
+            int maxCachedVariationsForTab = 250; //by default, prevent DOS attacks
+            if (tabSettings["MaxVaryByCount"] != null && ! string.IsNullOrEmpty(tabSettings["MaxVaryByCount"].ToString()))
+            {
+                maxCachedVariationsForTab = Convert.ToInt32(tabSettings["MaxVaryByCount"].ToString());
+            }
+
+            var includeVaryByKeys = new StringCollection();
+            includeVaryByKeys.Add("ctl");
+            includeVaryByKeys.Add("returnurl");
+            includeVaryByKeys.Add("tabid");
+            includeVaryByKeys.Add("portalid");
+            includeVaryByKeys.Add("locale");
+			includeVaryByKeys.Add("alias");
+            //make sure to always add keys in lowercase only
+
+            if (includeExclude == IncludeExcludeType.ExcludeByDefault)
+            {
+                string includeVaryByKeysSettings = string.Empty;
+                if (tabSettings["IncludeVaryBy"] != null)
+                {
+                    includeVaryByKeysSettings = tabSettings["IncludeVaryBy"].ToString();
+                }
+
+                if (! string.IsNullOrEmpty(includeVaryByKeysSettings))
+                {
+                    if (includeVaryByKeysSettings.Contains(","))
+                    {
+                        string[] keys = includeVaryByKeysSettings.Split(',');
+                        foreach (string key in keys)
+                        {
+                            includeVaryByKeys.Add(key.Trim().ToLowerInvariant());
+                        }
+                    }
+                    else
+                    {
+                        includeVaryByKeys.Add(includeVaryByKeysSettings.Trim().ToLowerInvariant());
+                    }
+                }
+            }
+            var excludeVaryByKeys = new StringCollection();
+            if (includeExclude == IncludeExcludeType.IncludeByDefault)
+            {
+                string excludeVaryByKeysSettings = string.Empty;
+                if (tabSettings["ExcludeVaryBy"] != null)
+                {
+                    excludeVaryByKeysSettings = tabSettings["ExcludeVaryBy"].ToString();
+                }
+
+                if (! string.IsNullOrEmpty(excludeVaryByKeysSettings))
+                {
+                    if (excludeVaryByKeysSettings.Contains(","))
+                    {
+                        string[] keys = excludeVaryByKeysSettings.Split(',');
+                        foreach (string key in keys)
+                        {
+                            excludeVaryByKeys.Add(key.Trim().ToLowerInvariant());
+                        }
+                    }
+                    else
+                    {
+                        excludeVaryByKeys.Add(excludeVaryByKeysSettings.Trim().ToLowerInvariant());
+                    }
+                }
+            }
+
+            var varyBy = new SortedDictionary<string, string>();
+
+            foreach (string key in _app.Context.Request.QueryString)
+            {
+                if (key != null && _app.Context.Request.QueryString[key] != null)
+                {
+                    var varyKey = key.ToLowerInvariant();
+                    varyBy.Add(varyKey, _app.Context.Request.QueryString[key]);
+
+                    if (includeExclude == IncludeExcludeType.IncludeByDefault && !includeVaryByKeys.Contains(varyKey))
+                    {
+                        includeVaryByKeys.Add(varyKey);
+                    }
+                }
+                
+            }
+            if (! (varyBy.ContainsKey("portalid")))
+            {
+                varyBy.Add("portalid", portalId.ToString());
+            }
+            if (! (varyBy.ContainsKey("tabid")))
+            {
+                varyBy.Add("tabid", tabId.ToString());
+            }
+            if (! (varyBy.ContainsKey("locale")))
+            {
+                varyBy.Add("locale", locale);
+            }
+			if (!(varyBy.ContainsKey("alias")))
+			{
+				varyBy.Add("alias", portalSettings.PortalAlias.HTTPAlias);
+			}
+
+
+            string cacheKey = OutputCachingProvider.Instance(tabOutputCacheProvider).GenerateCacheKey(tabId, includeVaryByKeys, excludeVaryByKeys, varyBy);
+
+            bool returnedFromCache = OutputCachingProvider.Instance(tabOutputCacheProvider).StreamOutput(tabId, cacheKey, _app.Context);
+
+            if (returnedFromCache)
+            {
+				//output the content type heade when read content from cache.
+				_app.Context.Response.AddHeader("Content-Type", string.Format("{0}; charset={1}", _app.Response.ContentType, _app.Response.Charset));
+                //This is to give a site owner the ability
+                //to visually verify that a page was rendered via
+                //the output cache.  Use FireFox FireBug or another
+                //tool to view the response headers easily.
+                _app.Context.Response.AddHeader("DNNOutputCache", "true");
+
+                //Also add it ti the Context - the Headers are readonly unless using IIS in Integrated Pipleine mode
+                //and we need to know if OutPut Caching is active in the compression module
+                _app.Context.Items.Add("DNNOutputCache", "true");
+
+                _app.Context.Response.End();
+                cached = true;
+            }
+
+            _app.Context.Items[ContextKeyTabId] = tabId;
+
+            if (cached != true)
+            {
+                if (tabSettings["CacheDuration"] != null && ! string.IsNullOrEmpty(tabSettings["CacheDuration"].ToString()) && Convert.ToInt32(tabSettings["CacheDuration"].ToString()) > 0)
+                {
+                    int seconds = Convert.ToInt32(tabSettings["CacheDuration"].ToString());
+                    var duration = new TimeSpan(0, 0, seconds);
+
+                    OutputCacheResponseFilter responseFilter = OutputCachingProvider.Instance(_app.Context.Items[ContextKeyTabOutputCacheProvider].ToString()).GetResponseFilter(Convert.ToInt32(_app.Context.Items[ContextKeyTabId]),
+                                                                                                                                                                                 maxCachedVariationsForTab,
+                                                                                                                                                                                 _app.Response.Filter,
+                                                                                                                                                                                 cacheKey,
+                                                                                                                                                                                 duration);
+                    _app.Context.Items[ContextKeyResponseFilter] = responseFilter;
+                    _app.Context.Response.Filter = responseFilter;
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnUpdateRequestCache">
+          <declaration><![CDATA[private void OnUpdateRequestCache(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="257" sc="9" el="266" ec="10">OutputCaching\OutputCacheModule.cs</location>
+            <body hash="e5ff4b117597474bc17bda51c053dc2f"><![CDATA[{
+            if (! HttpContext.Current.Request.Browser.Crawler)
+            {
+                var responseFilter = _app.Context.Items[ContextKeyResponseFilter] as OutputCacheResponseFilter;
+                if (responseFilter != null)
+                {
+                    responseFilter.StopFiltering(Convert.ToInt32(_app.Context.Items[ContextKeyTabId]), false);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_app">
+          <declaration><![CDATA[private HttpApplication _app;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ContextKeyResponseFilter">
+          <declaration><![CDATA[private const string ContextKeyResponseFilter = "OutputCache:ResponseFilter";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ContextKeyTabId">
+          <declaration><![CDATA[private const string ContextKeyTabId = "OutputCache:TabId";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ContextKeyTabOutputCacheProvider">
+          <declaration><![CDATA[private const string ContextKeyTabOutputCacheProvider = "OutputCache:TabOutputCacheProvider";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.HttpModules.Personalization">
+    <class name="PersonalizationModule">
+      <declaration><![CDATA[public class PersonalizationModule : IHttpModule]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PersonalizationModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="9" el="53" ec="10">Personalization\PersonalizationModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication application)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="9" el="49" ec="10">Personalization\PersonalizationModule.cs</location>
+            <body hash="49de716f10f9729f3c90028a846615e7"><![CDATA[{
+            application.EndRequest += OnEndRequest;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnEndRequest">
+          <declaration><![CDATA[public void OnEndRequest(object s, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="9" el="76" ec="10">Personalization\PersonalizationModule.cs</location>
+            <body hash="6894efb3638fa42e0f3df6a2d4e985a5"><![CDATA[{
+            HttpContext context = ((HttpApplication) s).Context;
+            HttpRequest request = context.Request;
+
+            if (!Initialize.ProcessHttpModule(request, false, false))
+            {
+                return;
+            }
+			
+            //Obtain PortalSettings from Current Context
+            var _portalSettings = (PortalSettings)context.Items["PortalSettings"];
+            if (_portalSettings != null)
+            {
+                //load the user info object
+                UserInfo UserInfo = UserController.Instance.GetCurrentUserInfo();
+                var personalization = new PersonalizationController();
+                personalization.SaveProfile(context, UserInfo.UserID, _portalSettings.PortalId);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ModuleName">
+          <declaration><![CDATA[public string ModuleName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="13" el="41" ec="14">Personalization\PersonalizationModule.cs</location>
+            <body hash="03293a776a1ae7bc2e7cb616b422f4eb"><![CDATA[{
+                return "PersonalizationModule";
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.HttpModules.RequestFilter">
+    <class name="RequestFilterModule">
+      <declaration><![CDATA[public class RequestFilterModule : IHttpModule]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RequestFilterModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+            <summary>
+ Implementation of <see cref="T:System.Web.IHttpModule" />
+ </summary>
+ <remarks>
+ Currently empty.  Nothing to really do, as I have no member variables.
+ </remarks></documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="49" ec="10">RequestFilter\RequestFilterModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FilterRequest">
+          <declaration><![CDATA[private static void FilterRequest(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="9" el="119" ec="10">RequestFilter\RequestFilterModule.cs</location>
+            <body hash="3dd6ba6c94eacff8af63690554138223"><![CDATA[{
+            var app = (HttpApplication) sender;
+            if ((app == null) || (app.Context == null) || (app.Context.Items == null))
+            {
+                return;
+            }
+            var request = app.Context.Request;
+
+            if (!Initialize.ProcessHttpModule(request, true, true))
+            {
+                return;
+            }
+
+            //Carry out first time initialization tasks
+            Initialize.Init(app);
+			
+            //only do this if we havn't already attempted an install.  This prevents PreSendRequestHeaders from
+            //trying to add this item way to late.  We only want the first run through to do anything.
+            //also, we use the context to store whether or not we've attempted an add, as it's thread-safe and
+            //scoped to the request.  An instance of this module can service multiple requests at the same time,
+            //so we cannot use a member variable.
+            if (!app.Context.Items.Contains(InstalledKey))
+            {
+                //log the install attempt in the HttpContext
+                //must do this first as several IF statements
+                //below skip full processing of this method
+                app.Context.Items.Add(InstalledKey, true);
+                var settings = RequestFilterSettings.GetSettings();
+                if ((settings == null || settings.Rules.Count == 0 || !settings.Enabled))
+                {
+                    return;
+                }
+                foreach (var rule in settings.Rules)
+                {
+                    //Added ability to determine the specific value types for addresses
+                    //this check was necessary so that your rule could deal with IPv4 or IPv6
+                    //To use this mode, add ":IPv4" or ":IPv6" to your servervariable name.
+                    var varArray = rule.ServerVariable.Split(':');
+                    var varVal = request.ServerVariables[varArray[0]];
+                    if (varArray[0].EndsWith("_ADDR", StringComparison.InvariantCultureIgnoreCase) && varArray.Length > 1)
+                    {
+                        switch (varArray[1])
+                        {
+                            case "IPv4":
+                                varVal = NetworkUtils.GetAddress(varVal, AddressType.IPv4);
+                                break;
+                            case "IPv6":
+                                varVal = NetworkUtils.GetAddress(varVal, AddressType.IPv4);
+                                break;
+                        }
+                    }
+                    if ((!string.IsNullOrEmpty(varVal)))
+                    {
+                        if ((rule.Matches(varVal)))
+                        {
+                            rule.Execute();
+                        }
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication context)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="9" el="54" ec="10">RequestFilter\RequestFilterModule.cs</location>
+            <body hash="626f58efb7dc320d65caf7572f8c9043"><![CDATA[{
+            context.BeginRequest += FilterRequest;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="InstalledKey">
+          <declaration><![CDATA[private const string InstalledKey = "httprequestfilter.attemptedinstall";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RequestFilterOperatorType">
+      <declaration><![CDATA[public enum RequestFilterOperatorType]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="Equal">
+          <declaration><![CDATA[public const RequestFilterOperatorType Equal = 0;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="NotEqual">
+          <declaration><![CDATA[public const RequestFilterOperatorType NotEqual = 1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Regex">
+          <declaration><![CDATA[public const RequestFilterOperatorType Regex = 2;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RequestFilterRule">
+      <declaration><![CDATA[public class RequestFilterRule]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private List<string> _Values = new List<string>();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="56" ec="10">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="ab41a7857fc895e598f6cdd54fbf1b4c"><![CDATA[private List<string> _Values = new List<string>();
+
+        /// <summary>
+        /// Initializes a new instance of the RequestFilterRule class.
+        /// </summary>
+        /// <param name="serverVariable"></param>
+        /// <param name="values"></param>
+        /// <param name="op"></param>
+        /// <param name="action"></param>
+        /// <param name="location"></param>
+        public RequestFilterRule(string serverVariable, string values, RequestFilterOperatorType op, RequestFilterRuleType action, string location)
+        {
+            _ServerVariable = serverVariable;
+            SetValues(values, op);
+            _Operator = op;
+            _Action = action;
+            _Location = location;
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private List<string> _Values = new List<string>();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="63" ec="10">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="8ddfd3203a96d92096965e5b7a302187"><![CDATA[private List<string> _Values = new List<string>();
+
+        /// <summary>
+        /// Initializes a new instance of the RequestFilterRule class.
+        /// </summary>
+        /// <param name="serverVariable"></param>
+        /// <param name="values"></param>
+        /// <param name="op"></param>
+        /// <param name="action"></param>
+        /// <param name="location"></param>
+        public RequestFilterRule(string serverVariable, string values, RequestFilterOperatorType op, RequestFilterRuleType action, string location)
+        {
+            _ServerVariable = serverVariable;
+            SetValues(values, op);
+            _Operator = op;
+            _Action = action;
+            _Location = location;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the RequestFilterRule class.
+        /// </summary>
+        public RequestFilterRule()
+        {
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public void Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="165" sc="9" el="184" ec="10">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="204efee9d1080caff545b9bcd0bb0907"><![CDATA[{
+            HttpResponse response = HttpContext.Current.Response;
+            switch (Action)
+            {
+                case RequestFilterRuleType.Redirect:
+                    response.Redirect(Location, true);
+                    break;
+                case RequestFilterRuleType.PermanentRedirect:
+                    response.StatusCode = 301;
+                    response.Status = "301 Moved Permanently";
+                    response.RedirectLocation = Location;
+                    response.End();
+                    break;
+                case RequestFilterRuleType.NotFound:
+                    response.StatusCode = 404;
+                    response.SuppressContent = true;
+                    response.End();
+                    break;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Matches">
+          <declaration><![CDATA[public bool Matches(string ServerVariableValue)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="151" sc="9" el="162" ec="10">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="f458ed7ad1fdd4a443aebc276dc6e9e3"><![CDATA[{
+            switch (Operator)
+            {
+                case RequestFilterOperatorType.Equal:
+                    return Values.Contains(ServerVariableValue.ToUpperInvariant());
+                case RequestFilterOperatorType.NotEqual:
+                    return !Values.Contains(ServerVariableValue.ToUpperInvariant());
+                case RequestFilterOperatorType.Regex:
+                    return Regex.IsMatch(ServerVariableValue, Values[0], RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            }
+            return false;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetValues">
+          <declaration><![CDATA[public void SetValues(string values, RequestFilterOperatorType op)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="134" sc="9" el="148" ec="10">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="e86161ab261c1fcd721f3228a2f20cef"><![CDATA[{
+            _Values.Clear();
+            if ((op != RequestFilterOperatorType.Regex))
+            {
+                string[] vals = values.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string value in vals)
+                {
+                    _Values.Add(value.ToUpperInvariant());
+                }
+            }
+            else
+            {
+                _Values.Add(values);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_Action">
+          <declaration><![CDATA[private RequestFilterRuleType _Action;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_Location">
+          <declaration><![CDATA[private string _Location;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_Operator">
+          <declaration><![CDATA[private RequestFilterOperatorType _Operator;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_ServerVariable">
+          <declaration><![CDATA[private string _ServerVariable;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_Values">
+          <declaration><![CDATA[private List<string> _Values = new List<string>();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Action">
+          <declaration><![CDATA[public RequestFilterRuleType Action]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="100" sc="13" el="102" ec="14">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="238011072bda9bd5ea0baac067e0c383"><![CDATA[{
+                return _Action;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="104" sc="13" el="106" ec="14">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="c4ab3954b642ebbdc012dca4132b0255"><![CDATA[{
+                _Action = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Location">
+          <declaration><![CDATA[public string Location]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="124" sc="13" el="126" ec="14">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="85061e39c2f139da03b03e9b662f5b2d"><![CDATA[{
+                return _Location;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="128" sc="13" el="130" ec="14">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="e3a740f708d538a72ca0ce86e2192969"><![CDATA[{
+                _Location = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Operator">
+          <declaration><![CDATA[public RequestFilterOperatorType Operator]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="112" sc="13" el="114" ec="14">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="b813be8eb2bf9a60815659f2e0fcb689"><![CDATA[{
+                return _Operator;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="116" sc="13" el="118" ec="14">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="82754035a46802fd3f579d760e2d8594"><![CDATA[{
+                _Operator = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="RawValue">
+          <declaration><![CDATA[public string RawValue]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="13" el="94" ec="14">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="312f443b2e4ff875f52dabcabdbdf0f0"><![CDATA[{
+                return string.Join(" ", _Values.ToArray());
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ServerVariable">
+          <declaration><![CDATA[public string ServerVariable]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="13" el="70" ec="14">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="3c07308f6cc36748d83bb00c7d565a1b"><![CDATA[{
+                return _ServerVariable;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="72" sc="13" el="74" ec="14">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="921992db045e06a55c41f57db0078d48"><![CDATA[{
+                _ServerVariable = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Values">
+          <declaration><![CDATA[public List<string> Values]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="80" sc="13" el="82" ec="14">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="e688e819fdbfc5b34c2460040f7eaa06"><![CDATA[{
+                return _Values;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="84" sc="13" el="86" ec="14">RequestFilter\RequestFilterRule.cs</location>
+            <body hash="80cc9d67920c589ccdaef6ee779872c9"><![CDATA[{
+                _Values = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RequestFilterRuleType">
+      <declaration><![CDATA[public enum RequestFilterRuleType]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="NotFound">
+          <declaration><![CDATA[public const RequestFilterRuleType NotFound = 2;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="PermanentRedirect">
+          <declaration><![CDATA[public const RequestFilterRuleType PermanentRedirect = 1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Redirect">
+          <declaration><![CDATA[public const RequestFilterRuleType Redirect = 0;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RequestFilterSettings">
+      <declaration><![CDATA[public class RequestFilterSettings]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private List<RequestFilterRule> _rules = new List<RequestFilterRule>();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="9" el="44" ec="80">RequestFilter\Config\RequestFilterSettings.cs</location>
+            <body hash="c614b45b04d23ede8c0948604d09f3d0"><![CDATA[private List<RequestFilterRule> _rules = new List<RequestFilterRule>()]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public static RequestFilterSettings GetSettings()]]></declaration>
+          <documentation>
+            <summary>
+ Get the current settings from the xml config file
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="105" ec="10">RequestFilter\Config\RequestFilterSettings.cs</location>
+            <body hash="bd0a9941f909d26697d5effe82db6aef"><![CDATA[{
+            var settings = (RequestFilterSettings) DataCache.GetCache(RequestFilterConfig);
+            if (settings == null)
+            {
+                settings = new RequestFilterSettings();
+                string filePath = Common.Utilities.Config.GetPathToFile(Common.Utilities.Config.ConfigFileType.DotNetNuke);
+
+                //Create a FileStream for the Config file
+                var fileReader = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var doc = new XPathDocument(fileReader);
+                XPathNodeIterator ruleList = doc.CreateNavigator().Select("/configuration/blockrequests/rule");
+                while (ruleList.MoveNext())
+                {
+                    try
+                    {
+                        string serverVar = ruleList.Current.GetAttribute("servervar", string.Empty);
+                        string values = ruleList.Current.GetAttribute("values", string.Empty);
+                        var ac = (RequestFilterRuleType) Enum.Parse(typeof (RequestFilterRuleType), ruleList.Current.GetAttribute("action", string.Empty));
+                        var op = (RequestFilterOperatorType) Enum.Parse(typeof (RequestFilterOperatorType), ruleList.Current.GetAttribute("operator", string.Empty));
+                        string location = ruleList.Current.GetAttribute("location", string.Empty);
+                        var rule = new RequestFilterRule(serverVar, values, op, ac, location);
+                        settings.Rules.Add(rule);
+                    }
+                    catch (Exception ex)
+                    {
+                        DotNetNuke.Services.Exceptions.Exceptions.LogException(new Exception(string.Format("Unable to read RequestFilter Rule: {0}:", ruleList.Current.OuterXml), ex));
+                    }
+                }
+                if ((File.Exists(filePath)))
+                {
+                    //Set back into Cache
+                    DataCache.SetCache(RequestFilterConfig, settings, new DNNCacheDependency(filePath));
+                }
+            }
+            return settings;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Save">
+          <declaration><![CDATA[public static void Save(List<RequestFilterRule> rules)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="108" sc="9" el="148" ec="10">RequestFilter\Config\RequestFilterSettings.cs</location>
+            <body hash="9e90b9a5e271342b5fa2023f64ffb651"><![CDATA[{
+            string filePath = Common.Utilities.Config.GetPathToFile(Common.Utilities.Config.ConfigFileType.DotNetNuke);
+            if (!File.Exists(filePath))
+            {
+                string defaultConfigFile = Globals.ApplicationMapPath + Globals.glbConfigFolder + Globals.glbDotNetNukeConfig;
+                if ((File.Exists(defaultConfigFile)))
+                {
+                    File.Copy(defaultConfigFile, filePath, true);
+                }
+            }
+            var doc = new XmlDocument();
+            doc.Load(filePath);
+            XmlNode ruleRoot = doc.SelectSingleNode("/configuration/blockrequests");
+            ruleRoot.RemoveAll();
+            foreach (RequestFilterRule rule in rules)
+            {
+                XmlElement xmlRule = doc.CreateElement("rule");
+                XmlAttribute var = doc.CreateAttribute("servervar");
+                var.Value = rule.ServerVariable;
+                xmlRule.Attributes.Append(var);
+                XmlAttribute val = doc.CreateAttribute("values");
+                val.Value = rule.RawValue;
+                xmlRule.Attributes.Append(val);
+                XmlAttribute op = doc.CreateAttribute("operator");
+                op.Value = rule.Operator.ToString();
+                xmlRule.Attributes.Append(op);
+                XmlAttribute action = doc.CreateAttribute("action");
+                action.Value = rule.Action.ToString();
+                xmlRule.Attributes.Append(action);
+                XmlAttribute location = doc.CreateAttribute("location");
+                location.Value = rule.Location;
+                xmlRule.Attributes.Append(location);
+                ruleRoot.AppendChild(xmlRule);
+            }
+            var settings = new XmlWriterSettings();
+            settings.Indent = true;
+            using (XmlWriter writer = XmlWriter.Create(filePath, settings))
+            {
+                doc.WriteContentTo(writer);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_rules">
+          <declaration><![CDATA[private List<RequestFilterRule> _rules = new List<RequestFilterRule>();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="RequestFilterConfig">
+          <declaration><![CDATA[private const string RequestFilterConfig = "RequestFilter.Config";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Enabled">
+          <declaration><![CDATA[public bool Enabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="13" el="51" ec="14">RequestFilter\Config\RequestFilterSettings.cs</location>
+            <body hash="11d5b2b49b27ff00c7ca34db91893488"><![CDATA[{
+                return Host.EnableRequestFilters;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Rules">
+          <declaration><![CDATA[public List<RequestFilterRule> Rules]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="13" el="59" ec="14">RequestFilter\Config\RequestFilterSettings.cs</location>
+            <body hash="a342ce7129488be1ade0ba858821a6af"><![CDATA[{
+                return _rules;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="61" sc="13" el="63" ec="14">RequestFilter\Config\RequestFilterSettings.cs</location>
+            <body hash="3f3790ac39c97e843934f5ba1e9ab746"><![CDATA[{
+                _rules = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.HttpModules.Services">
+    <class name="ServicesModule">
+      <declaration><![CDATA[public class ServicesModule : IHttpModule]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServicesModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ServicesModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="30" ec="113">Services\ServicesModule.cs</location>
+            <body hash="43cb1368a0d88e95d761dfbd874538e1"><![CDATA[public static readonly Regex ServiceApi = DotNetNuke.Entities.Urls.RewriterUtils.ServicesFrameworkRegex]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="9" el="67" ec="10">Services\ServicesModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication context)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="9" el="37" ec="10">Services\ServicesModule.cs</location>
+            <body hash="201cae6a38be9ddbe0105da35b486022"><![CDATA[{
+            context.BeginRequest += InitDnn; 
+
+            context.PreSendRequestHeaders += OnPreSendRequestHeaders;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="InitDnn">
+          <declaration><![CDATA[private static void InitDnn(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="9" el="63" ec="10">Services\ServicesModule.cs</location>
+            <body hash="d676503520ec49996cfe7e9eea6f6a95"><![CDATA[{
+            var app = sender as HttpApplication;
+            if (app != null && ServiceApi.IsMatch(app.Context.Request.RawUrl.ToLowerInvariant()))
+            {
+                Initialize.Init(app);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnPreSendRequestHeaders">
+          <declaration><![CDATA[private void OnPreSendRequestHeaders(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="54" ec="10">Services\ServicesModule.cs</location>
+            <body hash="e1f6ac3e09a0f1cc2c59f17943909330"><![CDATA[{
+            var app = sender as HttpApplication;
+            if (app != null)
+            {
+                // WEB API should not send cookies and other specific headers in repsone;
+                // they reveal too much info and are security risk
+                var headers = app.Response.Headers;
+                headers.Remove("Server");
+                //DNN-8325
+                //if (ServiceApi.IsMatch(app.Context.Request.RawUrl.ToLowerInvariant()))
+                //{
+                //    headers.Remove("Set-Cookie");
+                //}
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="ServiceApi">
+          <declaration><![CDATA[public static readonly Regex ServiceApi = RewriterUtils.ServicesFrameworkRegex;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.HttpModules.UrlRewrite">
+    <class name="BasicUrlRewriter">
+      <declaration><![CDATA[internal class BasicUrlRewriter : UrlRewriterBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BasicUrlRewriter()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static BasicUrlRewriter()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="54" ec="132">UrlRewrite\BasicUrlRewriter.cs</location>
+            <body hash="bb98995ad4fa7d7190be54d5e2e7a2db"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(BasicUrlRewriter));
+
+        public static readonly Regex TabIdRegex = new Regex("&?tabid=\\d+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        public static readonly Regex PortalIdRegex = new Regex("&?portalid=\\d+", RegexOptions.IgnoreCase | RegexOptions.Compiled);]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="FormatDomain">
+          <declaration><![CDATA[private string FormatDomain(string url, string replaceDomain, string withDomain)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="397" sc="9" el="406" ec="10">UrlRewrite\BasicUrlRewriter.cs</location>
+            <body hash="fc1aa7937aec25d54c7ecdb5701343eb"><![CDATA[{
+            if (!String.IsNullOrEmpty(replaceDomain) && !String.IsNullOrEmpty(withDomain))
+            {
+                if (url.IndexOf(replaceDomain, StringComparison.Ordinal) != -1)
+                {
+                    url = url.Replace(replaceDomain, withDomain);
+                }
+            }
+            return url;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsSSLOffloadEnabled">
+          <declaration><![CDATA[private bool IsSSLOffloadEnabled(HttpRequest request)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="798" sc="9" el="811" ec="10">UrlRewrite\BasicUrlRewriter.cs</location>
+            <body hash="dbd91ee6383ccfcafc26e320ec140d08"><![CDATA[{
+            string ssloffloadheader = HostController.Instance.GetString("SSLOffloadHeader", "");
+            //if the ssloffloadheader variable has been set check to see if a request header with that type exists
+            if (!string.IsNullOrEmpty(ssloffloadheader))
+            {
+                string ssloffload = request.Headers[ssloffloadheader];
+                if (!string.IsNullOrEmpty(ssloffload))
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RewriteUrl">
+          <declaration><![CDATA[internal override void RewriteUrl(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="9" el="389" ec="10">UrlRewrite\BasicUrlRewriter.cs</location>
+            <body hash="4089b8c81bffe230b1ac74e9d1805dc0"><![CDATA[{
+            var app = (HttpApplication) sender;
+            HttpServerUtility server = app.Server;
+            HttpRequest request = app.Request;
+            HttpResponse response = app.Response;
+            HttpContext context = app.Context;
+            string requestedPath = app.Request.Url.AbsoluteUri;
+
+            if (RewriterUtils.OmitFromRewriteProcessing(request.Url.LocalPath))
+            {
+                return;
+            }
+
+            //'Carry out first time initialization tasks
+            Initialize.Init(app);
+            if (!Initialize.ProcessHttpModule(request, false, false))
+            {
+                return;
+            }
+
+            //URL validation 
+            //check for ".." escape characters commonly used by hackers to traverse the folder tree on the server
+            //the application should always use the exact relative location of the resource it is requesting
+            var strURL = request.Url.AbsolutePath;
+            var strDoubleDecodeURL = server.UrlDecode(server.UrlDecode(request.RawUrl)) ?? "";
+            if (Globals.FileEscapingRegex.Match(strURL).Success || Globals.FileEscapingRegex.Match(strDoubleDecodeURL).Success)
+            {
+                DotNetNuke.Services.Exceptions.Exceptions.ProcessHttpException(request);
+            }
+            try
+            {
+                //fix for ASP.NET canonicalization issues http://support.microsoft.com/?kbid=887459
+                if ((request.Path.IndexOf("\\", StringComparison.Ordinal) >= 0 || Path.GetFullPath(request.PhysicalPath) != request.PhysicalPath))
+                {
+                    DotNetNuke.Services.Exceptions.Exceptions.ProcessHttpException(request);
+                }
+            }
+            catch (Exception exc)
+            {
+                //DNN 5479
+                //request.physicalPath throws an exception when the path of the request exceeds 248 chars.
+                //example to test: http://localhost/dotnetnuke_2/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/default.aspx
+                Logger.Error(exc);
+            }
+
+
+            String domainName;
+            RewriteUrl(app, out domainName);
+
+            //blank DomainName indicates RewriteUrl couldn't locate a current portal
+            //reprocess url for portal alias if auto add is an option
+            if (domainName == "" && CanAutoAddPortalAlias())
+            {
+                domainName = Globals.GetDomainName(app.Request, true);
+            }
+
+            //from this point on we are dealing with a "standard" querystring ( ie. http://www.domain.com/default.aspx?tabid=## )
+            //if the portal/url was succesfully identified
+
+            int tabId = Null.NullInteger;
+            int portalId = Null.NullInteger;
+            string portalAlias = null;
+            PortalAliasInfo portalAliasInfo = null;
+            bool parsingError = false;
+
+            // get TabId from querystring ( this is mandatory for maintaining portal context for child portals )
+            if (!string.IsNullOrEmpty(request.QueryString["tabid"]))
+            {
+                if (!Int32.TryParse(request.QueryString["tabid"], out tabId))
+                {
+                    tabId = Null.NullInteger;
+                    parsingError = true;
+                }
+            }
+
+            // get PortalId from querystring ( this is used for host menu options as well as child portal navigation )
+            if (!string.IsNullOrEmpty(request.QueryString["portalid"]))
+            {
+                if (!Int32.TryParse(request.QueryString["portalid"], out portalId))
+                {
+                    portalId = Null.NullInteger;
+                    parsingError = true;
+                }
+            }
+
+            if (parsingError)
+            {
+                //The tabId or PortalId are incorrectly formatted (potential DOS)
+                DotNetNuke.Services.Exceptions.Exceptions.ProcessHttpException(request);
+            }
+
+
+            try
+            {
+                //alias parameter can be used to switch portals
+                if (request.QueryString["alias"] != null)
+                {
+                    // check if the alias is valid
+                    string childAlias = request.QueryString["alias"];
+                    if (!Globals.UsePortNumber())
+                    {
+                        childAlias = childAlias.Replace(":" + request.Url.Port, "");
+                    }
+
+                    if (PortalAliasController.Instance.GetPortalAlias(childAlias) != null)
+                    {
+                        //check if the domain name contains the alias
+                        if (childAlias.IndexOf(domainName, StringComparison.OrdinalIgnoreCase) == -1)
+                        {
+                            //redirect to the url defined in the alias
+                            response.Redirect(Globals.GetPortalDomainName(childAlias, request, true), true);
+                        }
+                        else //the alias is the same as the current domain
+                        {
+                            portalAlias = childAlias;
+                        }
+                    }
+                }
+
+                //PortalId identifies a portal when set
+                if (portalAlias == null)
+                {
+                    if (portalId != Null.NullInteger)
+                    {
+                        portalAlias = PortalAliasController.GetPortalAliasByPortal(portalId, domainName);
+                    }
+                }
+
+                //TabId uniquely identifies a Portal
+                if (portalAlias == null)
+                {
+                    if (tabId != Null.NullInteger)
+                    {
+                        //get the alias from the tabid, but only if it is for a tab in that domain
+                        portalAlias = PortalAliasController.GetPortalAliasByTab(tabId, domainName);
+                        if (String.IsNullOrEmpty(portalAlias))
+                        {
+                            //if the TabId is not for the correct domain
+                            //see if the correct domain can be found and redirect it 
+                            portalAliasInfo = PortalAliasController.Instance.GetPortalAlias(domainName);
+                            if (portalAliasInfo != null && !request.Url.LocalPath.ToLower().EndsWith("/linkclick.aspx"))
+                            {
+                                if (app.Request.Url.AbsoluteUri.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    strURL = "https://" + portalAliasInfo.HTTPAlias.Replace("*.", "");
+                                }
+                                else
+                                {
+                                    strURL = "http://" + portalAliasInfo.HTTPAlias.Replace("*.", "");
+                                }
+                                if (strURL.IndexOf(domainName, StringComparison.InvariantCultureIgnoreCase) == -1)
+                                {
+                                    strURL += app.Request.Url.PathAndQuery;
+                                }
+                                response.Redirect(strURL, true);
+                            }
+                        }
+                    }
+                }
+
+                //else use the domain name
+                if (String.IsNullOrEmpty(portalAlias))
+                {
+                    portalAlias = domainName;
+                }
+                //using the DomainName above will find that alias that is the domainname portion of the Url
+                //ie. dotnetnuke.com will be found even if zzz.dotnetnuke.com was entered on the Url
+                portalAliasInfo = PortalAliasController.Instance.GetPortalAlias(portalAlias);
+                if (portalAliasInfo != null)
+                {
+                    portalId = portalAliasInfo.PortalID;
+                }
+
+                //if the portalid is not known
+                if (portalId == Null.NullInteger)
+                {
+                    bool autoAddPortalAlias = CanAutoAddPortalAlias();
+
+                    if (!autoAddPortalAlias && !request.Url.LocalPath.EndsWith(Globals.glbDefaultPage, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        // allows requests for aspx pages in custom folder locations to be processed
+                        return;
+                    }
+
+                    if (autoAddPortalAlias)
+                    {
+                        AutoAddAlias(context);
+                    }
+                }
+            }
+            catch (ThreadAbortException exc)
+            {
+                //Do nothing if Thread is being aborted - there are two response.redirect calls in the Try block
+                Logger.Debug(exc);
+            }
+            catch (Exception ex)
+            {
+                //500 Error - Redirect to ErrorPage
+                Logger.Error(ex);
+
+                strURL = "~/ErrorPage.aspx?status=500&error=" + server.UrlEncode(ex.Message);
+                HttpContext.Current.Response.Clear();
+                HttpContext.Current.Server.Transfer(strURL);
+            }
+            if (portalId != -1)
+            {
+                //load the PortalSettings into current context
+                var portalSettings = new PortalSettings(tabId, portalAliasInfo);
+                app.Context.Items.Add("PortalSettings", portalSettings);
+
+                // load PortalSettings and HostSettings dictionaries into current context
+                // specifically for use in DotNetNuke.Web.Client, which can't reference DotNetNuke.dll to get settings the normal way
+                app.Context.Items.Add("PortalSettingsDictionary", PortalController.Instance.GetPortalSettings(portalId));
+                app.Context.Items.Add("HostSettingsDictionary", HostController.Instance.GetSettingsDictionary());
+
+
+                if (portalSettings.PortalAliasMappingMode == PortalSettings.PortalAliasMapping.Redirect 
+                    && portalAliasInfo != null && !portalAliasInfo.IsPrimary
+                    && !string.IsNullOrWhiteSpace(portalSettings.DefaultPortalAlias) // don't redirect if no primary alias is defined
+                ) 
+                {
+                    //Permanently Redirect
+                    response.StatusCode = 301;
+
+                    var redirectAlias = Globals.AddHTTP(portalSettings.DefaultPortalAlias);
+                    var checkAlias = Globals.AddHTTP(portalAliasInfo.HTTPAlias);
+                    var redirectUrl = string.Concat(redirectAlias, request.RawUrl);
+                    if (redirectUrl.StartsWith(checkAlias, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        redirectUrl = string.Concat(redirectAlias, redirectUrl.Substring(checkAlias.Length));
+                    }
+
+                    response.AppendHeader("Location", redirectUrl);
+                }
+
+                //manage page URL redirects - that reach here because they bypass the built-in navigation
+                //ie Spiders, saved favorites, hand-crafted urls etc
+                if (!String.IsNullOrEmpty(portalSettings.ActiveTab.Url) && request.QueryString["ctl"] == null &&
+                    request.QueryString["fileticket"] == null)
+                {
+                    //Target Url
+                    string redirectUrl = portalSettings.ActiveTab.FullUrl;
+                    if (portalSettings.ActiveTab.PermanentRedirect)
+                    {
+                        //Permanently Redirect
+                        response.StatusCode = 301;
+                        response.AppendHeader("Location", redirectUrl);
+                    }
+                    else
+                    {
+                        //Normal Redirect
+                        response.Redirect(redirectUrl, true);
+                    }
+                }
+
+                //manage secure connections
+                if (request.Url.AbsolutePath.EndsWith(".aspx", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    //request is for a standard page
+                    strURL = "";
+                    //if SSL is enabled
+                    if (portalSettings.SSLEnabled)
+                    {
+                        //if page is secure and connection is not secure orelse ssloffload is enabled and server value exists
+                        if ((portalSettings.ActiveTab.IsSecure && !request.IsSecureConnection) &&
+                            (IsSSLOffloadEnabled(request) == false))
+                        {
+                            //switch to secure connection
+                            strURL = requestedPath.Replace("http://", "https://");
+                            strURL = FormatDomain(strURL, portalSettings.STDURL, portalSettings.SSLURL);
+                        }
+                    }
+                    //if SSL is enforced
+                    if (portalSettings.SSLEnforced)
+                    {
+                        //if page is not secure and connection is secure 
+                        if ((!portalSettings.ActiveTab.IsSecure && request.IsSecureConnection))
+                        {
+                            //check if connection has already been forced to secure orelse ssloffload is disabled
+                            if (request.QueryString["ssl"] == null)
+                            {
+                                strURL = requestedPath.Replace("https://", "http://");
+                                strURL = FormatDomain(strURL, portalSettings.SSLURL, portalSettings.STDURL);
+                            }
+                        }
+                    }
+
+                    //if a protocol switch is necessary
+                    if (!String.IsNullOrEmpty(strURL))
+                    {
+                        if (strURL.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            //redirect to secure connection
+                            response.RedirectPermanent(strURL);
+                        }
+                        else
+                            //when switching to an unsecure page, use a clientside redirector to avoid the browser security warning
+                        {
+                            response.Clear();
+                            //add a refresh header to the response 
+                            response.AddHeader("Refresh", "0;URL=" + strURL);
+                            //add the clientside javascript redirection script
+                            response.Write("<html><head><title></title>");
+                            response.Write("<!-- <script language=\"javascript\">window.location.replace(\"" + strURL +
+                                           "\")</script> -->");
+                            response.Write("</head><body></body></html>");
+                            //send the response
+                            response.End();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //alias does not exist in database
+                //and all attempts to find another have failed
+                //this should only happen if the HostPortal does not have any aliases
+                //404 Error - Redirect to ErrorPage
+                strURL = "~/ErrorPage.aspx?status=404&error=" + domainName;
+                HttpContext.Current.Response.Clear();
+                HttpContext.Current.Server.Transfer(strURL);
+            }
+
+            if (app.Context.Items["FirstRequest"] != null)
+            {
+                app.Context.Items.Remove("FirstRequest");
+
+                //Process any messages in the EventQueue for the Application_Start_FirstRequest event
+                EventQueueController.ProcessMessages("Application_Start_FirstRequest");
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RewriteUrl">
+          <declaration><![CDATA[private void RewriteUrl(HttpApplication app, out string portalAlias)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="409" sc="9" el="794" ec="10">UrlRewrite\BasicUrlRewriter.cs</location>
+            <body hash="b31a37aafeb95c46682d80c958229f92"><![CDATA[{
+            HttpRequest request = app.Request;
+            HttpResponse response = app.Response;
+            string requestedPath = app.Request.Url.AbsoluteUri;
+
+
+            portalAlias = "";
+
+            //determine portal alias looking for longest possible match
+            String myAlias = Globals.GetDomainName(app.Request, true);
+            PortalAliasInfo objPortalAlias;
+            do
+            {
+                objPortalAlias = PortalAliasController.Instance.GetPortalAlias(myAlias);
+
+                if (objPortalAlias != null)
+                {
+                    portalAlias = myAlias;
+                    break;
+                }
+
+                int slashIndex = myAlias.LastIndexOf('/');
+                myAlias = slashIndex > 1 ? myAlias.Substring(0, slashIndex) : "";
+            } while (myAlias.Length > 0);
+
+
+            app.Context.Items.Add("UrlRewrite:OriginalUrl", app.Request.Url.AbsoluteUri);
+
+            //Friendly URLs are exposed externally using the following format
+            //http://www.domain.com/tabid/###/mid/###/ctl/xxx/default.aspx
+            //and processed internally using the following format
+            //http://www.domain.com/default.aspx?tabid=###&mid=###&ctl=xxx
+            //The system for accomplishing this is based on an extensible Regex rules definition stored in /SiteUrls.config
+            string sendTo = "";
+
+            //save and remove the querystring as it gets added back on later
+            //path parameter specifications will take precedence over querystring parameters
+            string strQueryString = "";
+            if ((!String.IsNullOrEmpty(app.Request.Url.Query)))
+            {
+                strQueryString = request.QueryString.ToString();
+                requestedPath = requestedPath.Replace(app.Request.Url.Query, "");
+            }
+
+            //get url rewriting rules 
+            RewriterRuleCollection rules = RewriterConfiguration.GetConfig().Rules;
+
+            //iterate through list of rules
+            int matchIndex = -1;
+            for (int ruleIndex = 0; ruleIndex <= rules.Count - 1; ruleIndex++)
+            {
+                //check for the existence of the LookFor value 
+                string pattern = "^" +
+                                 RewriterUtils.ResolveUrl(app.Context.Request.ApplicationPath, rules[ruleIndex].LookFor) +
+                                 "$";
+                Match objMatch = Regex.Match(requestedPath, pattern, RegexOptions.IgnoreCase);
+
+                //if there is a match
+                if ((objMatch.Success))
+                {
+                    //create a new URL using the SendTo regex value
+                    sendTo = RewriterUtils.ResolveUrl(app.Context.Request.ApplicationPath,
+                                                      Regex.Replace(requestedPath, pattern, rules[ruleIndex].SendTo,
+                                                                    RegexOptions.IgnoreCase));
+
+                    string parameters = objMatch.Groups[2].Value;
+                    //process the parameters
+                    if ((parameters.Trim().Length > 0))
+                    {
+                        //split the value into an array based on "/" ( ie. /tabid/##/ )
+                        parameters = parameters.Replace("\\", "/");
+                        string[] splitParameters = parameters.Split('/');
+                        //icreate a well formed querystring based on the array of parameters
+                        for (int parameterIndex = 0; parameterIndex < splitParameters.Length; parameterIndex++)
+                        {
+                            //ignore the page name 
+                            if (
+                                splitParameters[parameterIndex].IndexOf(".aspx",
+                                                                        StringComparison.InvariantCultureIgnoreCase) ==
+                                -1)
+                            {
+                                //get parameter name
+                                string parameterName = splitParameters[parameterIndex].Trim();
+                                if (parameterName.Length > 0)
+                                {
+                                    //add parameter to SendTo if it does not exist already  
+                                    if (
+                                        sendTo.IndexOf("?" + parameterName + "=",
+                                                       StringComparison.InvariantCultureIgnoreCase) == -1 &&
+                                        sendTo.IndexOf("&" + parameterName + "=",
+                                                       StringComparison.InvariantCultureIgnoreCase) == -1)
+                                    {
+                                        //get parameter delimiter
+                                        string parameterDelimiter = sendTo.IndexOf("?", StringComparison.Ordinal) != -1 ? "&" : "?";
+                                        sendTo = sendTo + parameterDelimiter + parameterName;
+                                        //get parameter value
+                                        string parameterValue = "";
+                                        if (parameterIndex < splitParameters.Length - 1)
+                                        {
+                                            parameterIndex += 1;
+                                            if (!String.IsNullOrEmpty(splitParameters[parameterIndex].Trim()))
+                                            {
+                                                parameterValue = splitParameters[parameterIndex].Trim();
+                                            }
+                                        }
+                                        //add the parameter value
+                                        if (parameterValue.Length > 0)
+                                        {
+                                            sendTo = sendTo + "=" + parameterValue;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    matchIndex = ruleIndex;
+                    break; //exit as soon as it processes the first match
+                }
+            }
+            if (!String.IsNullOrEmpty(strQueryString))
+            {
+                //add querystring parameters back to SendTo
+                string[] parameters = strQueryString.Split('&');
+                //iterate through the array of parameters
+                for (int parameterIndex = 0; parameterIndex <= parameters.Length - 1; parameterIndex++)
+                {
+                    //get parameter name
+                    string parameterName = parameters[parameterIndex];
+                    if (parameterName.IndexOf("=", StringComparison.Ordinal) != -1)
+                    {
+                        parameterName = parameterName.Substring(0, parameterName.IndexOf("=", StringComparison.Ordinal));
+                    }
+                    //check if parameter already exists
+                    if (sendTo.IndexOf("?" + parameterName + "=", StringComparison.InvariantCultureIgnoreCase) == -1 &&
+                        sendTo.IndexOf("&" + parameterName + "=", StringComparison.InvariantCultureIgnoreCase) == -1)
+                    {
+                        //add parameter to SendTo value
+                        sendTo = sendTo.IndexOf("?", StringComparison.Ordinal) != -1
+                                     ? sendTo + "&" + parameters[parameterIndex]
+                                     : sendTo + "?" + parameters[parameterIndex];
+                    }
+                }
+            }
+
+            //if a match was found to the urlrewrite rules
+            if (matchIndex != -1)
+            {
+                if (rules[matchIndex].SendTo.StartsWith("~"))
+                {
+                    //rewrite the URL for internal processing
+                    RewriterUtils.RewriteUrl(app.Context, sendTo);
+                }
+                else
+                {
+                    //it is not possible to rewrite the domain portion of the URL so redirect to the new URL
+                    response.Redirect(sendTo, true);
+                }
+            }
+            else
+            {
+                //Try to rewrite by TabPath
+                string url;
+                if (Globals.UsePortNumber() &&
+                    ((app.Request.Url.Port != 80 && !app.Request.IsSecureConnection) ||
+                     (app.Request.Url.Port != 443 && app.Request.IsSecureConnection)))
+                {
+                    url = app.Request.Url.Host + ":" + app.Request.Url.Port + app.Request.Url.LocalPath;
+                }
+                else
+                {
+                    url = app.Request.Url.Host + app.Request.Url.LocalPath;
+                }
+
+                if (!String.IsNullOrEmpty(myAlias))
+                {
+                    if (objPortalAlias != null)
+                    {
+                        int portalID = objPortalAlias.PortalID;
+                        //Identify Tab Name 
+                        string tabPath = url;
+                        if (tabPath.StartsWith(myAlias))
+                        {
+                            tabPath = url.Remove(0, myAlias.Length);
+                        }
+                        //Default Page has been Requested
+                        if ((tabPath == "/" + Globals.glbDefaultPage.ToLower()))
+                        {
+                            return;
+                        }
+
+                        //Start of patch
+                        string cultureCode = string.Empty;
+
+                        Dictionary<string, Locale> dicLocales = LocaleController.Instance.GetLocales(portalID);
+                        if (dicLocales.Count > 1)
+                        {
+                            String[] splitUrl = app.Request.Url.ToString().Split('/');
+
+                            foreach (string culturePart in splitUrl)
+                            {
+                                if (culturePart.IndexOf("-", StringComparison.Ordinal) > -1)
+                                {
+                                    foreach (KeyValuePair<string, Locale> key in dicLocales)
+                                    {
+                                        if (key.Key.ToLower().Equals(culturePart.ToLower()))
+                                        {
+                                            cultureCode = key.Value.Code;
+                                            tabPath = tabPath.Replace("/" + culturePart, "");
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Check to see if the tab exists (if localization is enable, check for the specified culture)
+                        int tabID = TabController.GetTabByTabPath(portalID,
+                                                                  tabPath.Replace("/", "//").Replace(".aspx", ""),
+                                                                  cultureCode);
+
+                        // Check to see if neutral culture tab exists
+                        if ((tabID == Null.NullInteger && cultureCode.Length > 0))
+                        {
+                            tabID = TabController.GetTabByTabPath(portalID,
+                                                                  tabPath.Replace("/", "//").Replace(".aspx", ""), "");
+                        }
+                        //End of patch
+
+                        if ((tabID != Null.NullInteger))
+                        {
+                            string sendToUrl = "~/" + Globals.glbDefaultPage + "?TabID=" + tabID;
+                            if (!cultureCode.Equals(string.Empty))
+                            {
+                                sendToUrl = sendToUrl + "&language=" + cultureCode;
+                            }
+                            if ((!String.IsNullOrEmpty(app.Request.Url.Query)))
+                            {
+                                sendToUrl = sendToUrl + "&" + app.Request.Url.Query.TrimStart('?');
+                            }
+                            RewriterUtils.RewriteUrl(app.Context, sendToUrl);
+                            return;
+                        }
+                        tabPath = tabPath.ToLower();
+                        if ((tabPath.IndexOf('?') != -1))
+                        {
+                            tabPath = tabPath.Substring(0, tabPath.IndexOf('?'));
+                        }
+
+                        //Get the Portal
+                        PortalInfo portal = PortalController.Instance.GetPortal(portalID);
+                        string requestQuery = app.Request.Url.Query;
+                        if (!string.IsNullOrEmpty(requestQuery))
+                        {
+                            requestQuery = TabIdRegex.Replace(requestQuery, string.Empty);
+                            requestQuery = PortalIdRegex.Replace(requestQuery, string.Empty);
+                            requestQuery = requestQuery.TrimStart('?', '&');
+                        }
+                        if (tabPath == "/login.aspx")
+                        {
+                            if (portal.LoginTabId > Null.NullInteger && Globals.ValidateLoginTabID(portal.LoginTabId))
+                            {
+                                if (!string.IsNullOrEmpty(requestQuery))
+                                {
+                                    RewriterUtils.RewriteUrl(app.Context,
+                                                             "~/" + Globals.glbDefaultPage + "?TabID=" +
+                                                             portal.LoginTabId + "&" + requestQuery);
+                                }
+                                else
+                                {
+                                    RewriterUtils.RewriteUrl(app.Context,
+                                                             "~/" + Globals.glbDefaultPage + "?TabID=" +
+                                                             portal.LoginTabId);
+                                }
+                            }
+                            else
+                            {
+                                if (!string.IsNullOrEmpty(requestQuery))
+                                {
+                                    RewriterUtils.RewriteUrl(app.Context,
+                                                             "~/" + Globals.glbDefaultPage + "?TabID=" +
+                                                             portal.HomeTabId + "&portalid=" + portalID + "&ctl=login&" +
+                                                             requestQuery);
+                                }
+                                else
+                                {
+                                    RewriterUtils.RewriteUrl(app.Context,
+                                                             "~/" + Globals.glbDefaultPage + "?TabID=" +
+                                                             portal.HomeTabId + "&portalid=" + portalID + "&ctl=login");
+                                }
+                            }
+                            return;
+                        }
+                        if (tabPath == "/register.aspx")
+                        {
+                            if (portal.RegisterTabId > Null.NullInteger)
+                            {
+                                if (!string.IsNullOrEmpty(requestQuery))
+                                {
+                                    RewriterUtils.RewriteUrl(app.Context,
+                                                             "~/" + Globals.glbDefaultPage + "?TabID=" +
+                                                             portal.RegisterTabId + "&portalid=" + portalID + "&" +
+                                                             requestQuery);
+                                }
+                                else
+                                {
+                                    RewriterUtils.RewriteUrl(app.Context,
+                                                             "~/" + Globals.glbDefaultPage + "?TabID=" +
+                                                             portal.RegisterTabId + "&portalid=" + portalID);
+                                }
+                            }
+                            else
+                            {
+                                if (!string.IsNullOrEmpty(requestQuery))
+                                {
+                                    RewriterUtils.RewriteUrl(app.Context,
+                                                             "~/" + Globals.glbDefaultPage + "?TabID=" +
+                                                             portal.HomeTabId + "&portalid=" + portalID +
+                                                             "&ctl=Register&" + requestQuery);
+                                }
+                                else
+                                {
+                                    RewriterUtils.RewriteUrl(app.Context,
+                                                             "~/" + Globals.glbDefaultPage + "?TabID=" +
+                                                             portal.HomeTabId + "&portalid=" + portalID +
+                                                             "&ctl=Register");
+                                }
+                            }
+                            return;
+                        }
+                        if (tabPath == "/terms.aspx")
+                        {
+                            if (!string.IsNullOrEmpty(requestQuery))
+                            {
+                                RewriterUtils.RewriteUrl(app.Context,
+                                                         "~/" + Globals.glbDefaultPage + "?TabID=" + portal.HomeTabId +
+                                                         "&portalid=" + portalID + "&ctl=Terms&" + requestQuery);
+                            }
+                            else
+                            {
+                                RewriterUtils.RewriteUrl(app.Context,
+                                                         "~/" + Globals.glbDefaultPage + "?TabID=" + portal.HomeTabId +
+                                                         "&portalid=" + portalID + "&ctl=Terms");
+                            }
+                            return;
+                        }
+                        if (tabPath == "/privacy.aspx")
+                        {
+                            if (!string.IsNullOrEmpty(requestQuery))
+                            {
+                                RewriterUtils.RewriteUrl(app.Context,
+                                                         "~/" + Globals.glbDefaultPage + "?TabID=" + portal.HomeTabId +
+                                                         "&portalid=" + portalID + "&ctl=Privacy&" + requestQuery);
+                            }
+                            else
+                            {
+                                RewriterUtils.RewriteUrl(app.Context,
+                                                         "~/" + Globals.glbDefaultPage + "?TabID=" + portal.HomeTabId +
+                                                         "&portalid=" + portalID + "&ctl=Privacy");
+                            }
+                            return;
+                        }
+                        tabPath = tabPath.Replace("/", "//");
+                        tabPath = tabPath.Replace(".aspx", "");
+                        TabCollection objTabs = TabController.Instance.GetTabsByPortal(tabPath.StartsWith("//host") ? Null.NullInteger : portalID);
+                        foreach (KeyValuePair<int, TabInfo> kvp in objTabs)
+                        {
+                            if ((kvp.Value.IsDeleted == false && kvp.Value.TabPath.ToLower() == tabPath))
+                            {
+                                if ((!String.IsNullOrEmpty(app.Request.Url.Query)))
+                                {
+                                    RewriterUtils.RewriteUrl(app.Context,
+                                                             "~/" + Globals.glbDefaultPage + "?TabID=" + kvp.Value.TabID +
+                                                             "&" + app.Request.Url.Query.TrimStart('?'));
+                                }
+                                else
+                                {
+                                    RewriterUtils.RewriteUrl(app.Context,
+                                                             "~/" + Globals.glbDefaultPage + "?TabID=" + kvp.Value.TabID);
+                                }
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(BasicUrlRewriter));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="PortalIdRegex">
+          <declaration><![CDATA[public static readonly Regex PortalIdRegex = new Regex("&?portalid=\\d+", RegexOptions.IgnoreCase | RegexOptions.Compiled);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="TabIdRegex">
+          <declaration><![CDATA[public static readonly Regex TabIdRegex = new Regex("&?tabid=\\d+", RegexOptions.IgnoreCase | RegexOptions.Compiled);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.HttpModules.UsersOnline">
+    <class name="UsersOnlineModule">
+      <declaration><![CDATA[public class UsersOnlineModule : IHttpModule]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UsersOnlineModule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Dispose">
+          <declaration><![CDATA[public void Dispose()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="9" el="51" ec="10">Users Online\UsersOnlineModule.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Init">
+          <declaration><![CDATA[public void Init(HttpApplication application)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="47" ec="10">Users Online\UsersOnlineModule.cs</location>
+            <body hash="d5aff6cc069dea79b8326b51c3119107"><![CDATA[{
+            application.AuthorizeRequest += OnAuthorizeRequest;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnAuthorizeRequest">
+          <declaration><![CDATA[public void OnAuthorizeRequest(object s, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="9" el="75" ec="10">Users Online\UsersOnlineModule.cs</location>
+            <body hash="891c74f309bdb9e0537d78c16cd1f986"><![CDATA[{
+            //First check if we are upgrading/installing
+            var app = (HttpApplication) s;
+            HttpRequest request = app.Request;
+
+            //check if we are upgrading/installing or if this is a captcha request
+            if (!Initialize.ProcessHttpModule(request, false, false))
+            {
+                return;
+            }
+
+            //Create a Users Online Controller
+            var objUserOnlineController = new UserOnlineController();
+
+            //Is Users Online Enabled?
+            if ((objUserOnlineController.IsEnabled()))
+            {
+                objUserOnlineController.TrackUsers();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ModuleName">
+          <declaration><![CDATA[public string ModuleName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="13" el="39" ec="14">Users Online\UsersOnlineModule.cs</location>
+            <body hash="a37e034b04eb72cb2e74d6fe0cc42aaa"><![CDATA[{
+                return "UsersOnlineModule";
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Services.Url.FriendlyUrl">
+    <class name="DNNFriendlyUrlProvider">
+      <declaration><![CDATA[public class DNNFriendlyUrlProvider : FriendlyUrlProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly ProviderConfiguration _providerConfiguration = ProviderConfiguration.GetProviderConfiguration("friendlyUrl");]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="89" ec="10">UrlRewrite\FriendlyUrlProvider.cs</location>
+            <body hash="976dabcc773a6a607cafed78a556f2cb"><![CDATA[private readonly ProviderConfiguration _providerConfiguration = ProviderConfiguration.GetProviderConfiguration(ProviderType);
+
+        private readonly FriendlyUrlProviderBase _providerInstance;
+        private readonly UrlFormatType _urlFormat = UrlFormatType.SearchFriendly;
+        private readonly string[] _validExtensions;
+
+        public DNNFriendlyUrlProvider()
+        {
+            //Read the configuration specific information for this provider
+            var objProvider = (Provider)_providerConfiguration.Providers[ProviderName];
+
+            if (!String.IsNullOrEmpty(objProvider.Attributes["urlFormat"]))
+            {
+                switch (objProvider.Attributes["urlFormat"].ToLower())
+                {
+                    case "searchfriendly":
+                        _urlFormat = UrlFormatType.SearchFriendly;
+                        break;
+                    case "humanfriendly":
+                        _urlFormat = UrlFormatType.HumanFriendly;
+                        break;
+                    case "advanced":
+                    case "customonly":
+                        _urlFormat = UrlFormatType.Advanced;
+                        break;
+                    default:
+                        _urlFormat = UrlFormatType.SearchFriendly;
+                        break;
+                }
+            }
+            //instance the correct provider implementation
+            switch (_urlFormat)
+            {
+                case UrlFormatType.Advanced:
+                    _providerInstance = new AdvancedFriendlyUrlProvider(objProvider.Attributes);
+                    break;
+                case UrlFormatType.HumanFriendly:
+                case UrlFormatType.SearchFriendly:
+                    _providerInstance = new BasicFriendlyUrlProvider(objProvider.Attributes);
+                    break;
+            }
+
+            string extensions = !String.IsNullOrEmpty(objProvider.Attributes["validExtensions"]) ? objProvider.Attributes["validExtensions"] : ".aspx";
+            _validExtensions = extensions.Split(',');
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="FriendlyUrl">
+          <declaration><![CDATA[public override string FriendlyUrl(TabInfo tab, string path)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="102" sc="9" el="104" ec="10">UrlRewrite\FriendlyUrlProvider.cs</location>
+            <body hash="6d7370d1faa854761ac3a33100723a9e"><![CDATA[{
+            return _providerInstance.FriendlyUrl(tab, path);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FriendlyUrl">
+          <declaration><![CDATA[public override string FriendlyUrl(TabInfo tab, string path, string pageName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="107" sc="9" el="109" ec="10">UrlRewrite\FriendlyUrlProvider.cs</location>
+            <body hash="cd6946dee5174f0760c4b5a116629dd1"><![CDATA[{
+            return _providerInstance.FriendlyUrl(tab, path, pageName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FriendlyUrl">
+          <declaration><![CDATA[public override string FriendlyUrl(TabInfo tab, string path, string pageName, PortalSettings settings)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="112" sc="9" el="114" ec="10">UrlRewrite\FriendlyUrlProvider.cs</location>
+            <body hash="68ba8fd28d7f5f5dd0352d091f72bfde"><![CDATA[{
+            return _providerInstance.FriendlyUrl(tab, path, pageName, settings);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FriendlyUrl">
+          <declaration><![CDATA[public override string FriendlyUrl(TabInfo tab, string path, string pageName, string portalAlias)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="117" sc="9" el="119" ec="10">UrlRewrite\FriendlyUrlProvider.cs</location>
+            <body hash="ed614f1ac1f29ec2c828d89db13bff0c"><![CDATA[{
+            return _providerInstance.FriendlyUrl(tab, path, pageName, portalAlias);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_providerConfiguration">
+          <declaration><![CDATA[private readonly ProviderConfiguration _providerConfiguration = ProviderConfiguration.GetProviderConfiguration("friendlyUrl");]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_providerInstance">
+          <declaration><![CDATA[private readonly FriendlyUrlProviderBase _providerInstance;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_urlFormat">
+          <declaration><![CDATA[private readonly UrlFormatType _urlFormat = UrlFormatType.SearchFriendly;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_validExtensions">
+          <declaration><![CDATA[private readonly string[] _validExtensions;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ProviderName">
+          <declaration><![CDATA[internal const string ProviderName = "DNNFriendlyUrl";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ProviderType">
+          <declaration><![CDATA[internal const string ProviderType = "friendlyUrl";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="UrlFormat">
+          <declaration><![CDATA[public UrlFormatType UrlFormat]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ValidExtensions">
+          <declaration><![CDATA[public string[] ValidExtensions]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

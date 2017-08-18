@@ -1,0 +1,787 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.Modules.Sitemap.dll" version="08.00.03" generated="2017-06-19 23:25:11Z" generationTime="1.5235406">
+  <namespace name="Dnn.Modules.Sitemap">
+    <class name="SitemapSettings">
+      <declaration><![CDATA[public class SitemapSettings : PortalModuleBase]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SitemapSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindProviders">
+          <declaration><![CDATA[private void BindProviders()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="122" sc="9" el="126" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="b4e066c039d6489479338c5a8bacbab1"><![CDATA[{
+            var builder = new SitemapBuilder(PortalSettings);
+
+            grdProviders.DataSource = builder.Providers;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GrdProvidersNeedDataSorce">
+          <declaration><![CDATA[private void GrdProvidersNeedDataSorce()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="129" sc="9" el="131" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="8b4dc7912b1638346bcd2fd9f6bf0ac3"><![CDATA[{
+            BindProviders();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsChildPortal">
+          <declaration><![CDATA[private bool IsChildPortal(PortalSettings ps, HttpContext context)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="100" sc="9" el="119" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="453856979bb848acd9336b6307cd9bc1"><![CDATA[{
+            var isChild = false;
+            var arr = PortalAliasController.Instance.GetPortalAliasesByPortalId(ps.PortalId).ToList();
+            var serverPath = Globals.GetAbsoluteServerPath(context.Request);
+
+            if (arr.Count > 0)
+            {
+                var portalAlias = (PortalAliasInfo)arr[0];
+                var portalName = Globals.GetPortalDomainName(ps.PortalAlias.HTTPAlias, Request, true);
+                if (portalAlias.HTTPAlias.IndexOf("/") > -1)
+                {
+                    portalName = PortalController.GetPortalFolder(portalAlias.HTTPAlias);
+                }
+                if (!string.IsNullOrEmpty(portalName) && Directory.Exists(serverPath + portalName))
+                {
+                    isChild = true;
+                }
+            }
+            return isChild;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadConfiguration">
+          <declaration><![CDATA[private void LoadConfiguration()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="9" el="68" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="1cd88ce8190496d18e266018795044a2"><![CDATA[{     
+			//core settings
+			chkLevelPriority.Checked = bool.Parse(PortalController.GetPortalSetting("SitemapLevelMode", PortalId, "False"));
+            var minPriority = float.Parse(PortalController.GetPortalSetting("SitemapMinPriority", PortalId, "0.1"), NumberFormatInfo.InvariantInfo);
+            txtMinPagePriority.Text = minPriority.ToString(CultureInfo.InvariantCulture);
+
+            chkIncludeHidden.Checked = bool.Parse(PortalController.GetPortalSetting("SitemapIncludeHidden", PortalId, "False"));
+
+            //General settings
+            var excludePriority = float.Parse(PortalController.GetPortalSetting("SitemapExcludePriority", PortalId, "0.1"), NumberFormatInfo.InvariantInfo);
+            txtExcludePriority.Text = excludePriority.ToString(CultureInfo.InvariantCulture);
+
+            cmbDaysToCache.SelectedIndex = Int32.Parse(PortalController.GetPortalSetting("SitemapCacheDays", PortalId, "1"));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnGridNeedDataSource">
+          <declaration><![CDATA[protected void OnGridNeedDataSource(object sender, GridNeedDataSourceEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="250" sc="9" el="252" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="ca55792b8e4b17c31aefb639f4aa5469"><![CDATA[{
+            GrdProvidersNeedDataSorce();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="183" sc="9" el="220" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="9c9dd97af7dbddd3eff5b410f5768974"><![CDATA[{
+            base.OnLoad(e);
+
+			JavaScript.RequestRegistration(CommonJs.jQuery);
+            AJAX.RegisterScriptManager();
+
+            cboSearchEngine.SelectedIndexChanged += OnSearchEngineIndexChanged;
+            grdProviders.UpdateCommand += ProvidersUpdateCommand;
+            grdProviders.ItemCommand += ProvidersItemCommand;
+            lnkResetCache.Click += OnResetCacheClick;
+            lnkSaveAll.Click += OnSaveAllClick;
+            cmdVerification.Click += OnVerifyClick;
+            try
+            {
+                if (Page.IsPostBack == false)
+                {
+                    LoadConfiguration();
+
+                    string portalAlias = !String.IsNullOrEmpty(PortalSettings.DefaultPortalAlias)
+                                        ? PortalSettings.DefaultPortalAlias
+                                        : PortalSettings.PortalAlias.HTTPAlias;
+                    lnkSiteMapUrl.Text = Globals.AddHTTP(portalAlias) + @"/SiteMap.aspx";
+
+                    lnkSiteMapUrl.NavigateUrl = lnkSiteMapUrl.Text;
+
+                    BindProviders();
+                    SetSearchEngineSubmissionURL();
+                }
+
+                GrdProvidersNeedDataSorce();
+
+                grdProviders.NeedDataSource += OnGridNeedDataSource;
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnResetCacheClick">
+          <declaration><![CDATA[protected void OnResetCacheClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="245" sc="9" el="247" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="0a64912903d48843a56400d2d8bdd3f7"><![CDATA[{
+            ResetCache();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSaveAllClick">
+          <declaration><![CDATA[protected void OnSaveAllClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="223" sc="9" el="242" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="102b4d214d71c05645513de713ba928d"><![CDATA[{
+            SavePrioritySettings();
+
+            PortalController.UpdatePortalSetting(PortalId, "SitemapIncludeHidden", chkIncludeHidden.Checked.ToString());
+
+            float excludePriority = float.Parse(txtExcludePriority.Text, NumberFormatInfo.InvariantInfo);
+            PortalController.UpdatePortalSetting(PortalId, "SitemapExcludePriority", excludePriority.ToString(NumberFormatInfo.InvariantInfo));
+
+            if ((cmbDaysToCache.SelectedIndex == 0))
+            {
+                ResetCache();
+            }
+
+            PortalController.UpdatePortalSetting(PortalId, "SitemapCacheDays", cmbDaysToCache.SelectedIndex.ToString());
+
+            DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("MessageUpdated", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+
+
+            LoadConfiguration();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSearchEngineIndexChanged">
+          <declaration><![CDATA[protected void OnSearchEngineIndexChanged(object o, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="348" sc="9" el="350" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="7869de17dd5601a4532845840f520f07"><![CDATA[{
+            SetSearchEngineSubmissionURL();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnVerifyClick">
+          <declaration><![CDATA[protected void OnVerifyClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="353" sc="9" el="366" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="5eaf7c492625591bc4d649e21aebe2fd"><![CDATA[{
+            if (!string.IsNullOrEmpty(txtVerification.Text) && txtVerification.Text.EndsWith(".html"))
+            {
+                if (!File.Exists(Globals.ApplicationMapPath + "\\" + txtVerification.Text))
+                {
+					//write SiteMap verification file
+                    var objStream = File.CreateText(Globals.ApplicationMapPath + "\\" + txtVerification.Text);
+                    objStream.WriteLine("Google SiteMap Verification File");
+                    objStream.WriteLine(" - " + lnkSiteMapUrl.Text);
+                    objStream.WriteLine(" - " + UserInfo.DisplayName);
+                    objStream.Close();
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ProvidersItemCommand">
+          <declaration><![CDATA[protected void ProvidersItemCommand(object source, GridCommandEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="255" sc="9" el="263" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="24887824ee508089edde4ed0715991e0"><![CDATA[{
+            if (e.CommandName == RadGrid.UpdateCommandName)
+            {
+                if (!Page.IsValid)
+                {
+                    e.Canceled = true;
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ProvidersUpdateCommand">
+          <declaration><![CDATA[protected void ProvidersUpdateCommand(object source, GridCommandEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="266" sc="9" el="345" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="53a827cce12f3b66ed3270eba38fe78f"><![CDATA[{
+            //grdProviders.Rebind()
+
+            var editedItem = (GridEditableItem)e.Item;
+            var editMan = editedItem.EditManager;
+            //var editedSiteMap = (SitemapProvider) e.Item.DataItem;
+            var nameCol = ((DnnGrid)source).Columns.FindByUniqueName("Name");
+            var nameEditor = editMan.GetColumnEditor((IGridEditableColumn)nameCol);
+            var key = ((GridTextColumnEditor)nameEditor).Text;
+
+            var providers = (List<SitemapProvider>)grdProviders.DataSource;
+            SitemapProvider editedProvider = null;
+
+            foreach (var p in providers)
+            {
+                if ((string.Equals(key, p.Name, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    editedProvider = p;
+                }
+            }
+
+            var providerEnabled = false;
+            var providerPriorityString = string.Empty;
+            var providerOverride = false;
+
+            foreach (GridColumn column in e.Item.OwnerTableView.Columns)
+            {
+                if (column is IGridEditableColumn)
+                {
+                    var editableCol = (IGridEditableColumn)column;
+
+
+                    if ((editableCol.IsEditable))
+                    {
+                        var editor = editMan.GetColumnEditor(editableCol);
+
+                        //var editorType = (editor).ToString();
+                        object editorValue = null;
+
+                        if ((editor is GridTextColumnEditor))
+                        {
+                            //editorText = ((GridTextColumnEditor) editor).Text;
+                            editorValue = ((GridTextColumnEditor)editor).Text;
+                        }
+
+                        if ((editor is GridBoolColumnEditor))
+                        {
+                            //editorText = ((GridBoolColumnEditor) editor).Value.ToString();
+                            editorValue = ((GridBoolColumnEditor)editor).Value;
+                        }
+
+                        if ((column.UniqueName == "Enabled"))
+                        {
+                            providerEnabled = Convert.ToBoolean(editorValue);
+                        }
+                        else if ((column.UniqueName == "Priority"))
+                        {
+                            providerPriorityString = editorValue.ToString();
+                        }
+                        else if ((column.UniqueName == "OverridePriority"))
+                        {
+                            providerOverride = Convert.ToBoolean(editorValue);
+                        }
+                    }
+                }
+            }
+
+            float providerPriority;
+
+            if ((float.TryParse(providerPriorityString, out providerPriority)))
+            {
+                editedProvider.Enabled = providerEnabled;
+                editedProvider.OverridePriority = providerOverride;
+                editedProvider.Priority = providerPriority;
+            }
+            else
+            {
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("valPriority.Text", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ResetCache">
+          <declaration><![CDATA[private void ResetCache()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="85" sc="9" el="97" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="692c2a4c9a8ab9852830ca94fe714803"><![CDATA[{
+            var cacheFolder = new DirectoryInfo(PortalSettings.HomeDirectoryMapPath + "sitemap\\");
+
+            if (cacheFolder.Exists)
+            {
+                foreach (FileInfo file in cacheFolder.GetFiles("sitemap*.xml"))
+                {
+                    file.Delete();
+                }
+
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("ResetOK", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SavePrioritySettings">
+          <declaration><![CDATA[private void SavePrioritySettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="9" el="82" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="824ba8e76436692d0efccc7ef87faf0d"><![CDATA[{
+            PortalController.UpdatePortalSetting(PortalId, "SitemapLevelMode", chkLevelPriority.Checked.ToString());
+
+            if (float.Parse(txtMinPagePriority.Text, NumberFormatInfo.InvariantInfo) < 0)
+            {
+                txtMinPagePriority.Text = "0";
+            }
+
+            var minPriority = float.Parse(txtMinPagePriority.Text, NumberFormatInfo.InvariantInfo);
+
+            PortalController.UpdatePortalSetting(PortalId, "SitemapMinPriority", minPriority.ToString(NumberFormatInfo.InvariantInfo));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetSearchEngineSubmissionURL">
+          <declaration><![CDATA[private void SetSearchEngineSubmissionURL()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="134" sc="9" el="176" ec="10">SitemapSettings.ascx.cs</location>
+            <body hash="7be14fbf5381f288941d1f713f1907ea"><![CDATA[{
+            try
+            {
+                if ((cboSearchEngine.SelectedItem != null))
+                {
+                    var strURL = "";
+                    switch (cboSearchEngine.SelectedItem.Text.ToLower().Trim())
+                    {
+                        case "google":
+                            strURL += "http://www.google.com/addurl?q=" + Globals.HTTPPOSTEncode(Globals.AddHTTP(Globals.GetDomainName(Request)));
+                            strURL += "&dq=";
+                            if (!string.IsNullOrEmpty(PortalSettings.PortalName))
+                            {
+                                strURL += Globals.HTTPPOSTEncode(PortalSettings.PortalName);
+                            }
+                            if (!string.IsNullOrEmpty(PortalSettings.Description))
+                            {
+                                strURL += Globals.HTTPPOSTEncode(PortalSettings.Description);
+                            }
+                            if (!string.IsNullOrEmpty(PortalSettings.KeyWords))
+                            {
+                                strURL += Globals.HTTPPOSTEncode(PortalSettings.KeyWords);
+                            }
+                            strURL += "&submit=Add+URL";
+                            break;
+                        case "yahoo!":
+                            strURL = "http://siteexplorer.search.yahoo.com/submit";
+                            break;
+                        case "bing":
+                            strURL = "http://www.bing.com/webmaster";
+                            break;
+                    }
+
+                    cmdSubmitSitemap.NavigateUrl = strURL;
+
+                    cmdSubmitSitemap.Target = "_blank";
+                }
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cboSearchEngine">
+          <declaration><![CDATA[protected DnnComboBox cboSearchEngine;]]></declaration>
+          <documentation>
+            <summary>
+ cboSearchEngine control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkIncludeHidden">
+          <declaration><![CDATA[protected CheckBox chkIncludeHidden;]]></declaration>
+          <documentation>
+            <summary>
+ chkIncludeHidden control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkLevelPriority">
+          <declaration><![CDATA[protected CheckBox chkLevelPriority;]]></declaration>
+          <documentation>
+            <summary>
+ chkLevelPriority control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmbDaysToCache">
+          <declaration><![CDATA[protected DnnComboBox cmbDaysToCache;]]></declaration>
+          <documentation>
+            <summary>
+ cmbDaysToCache control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdSubmitSitemap">
+          <declaration><![CDATA[protected HyperLink cmdSubmitSitemap;]]></declaration>
+          <documentation>
+            <summary>
+ cmdSubmitSitemap control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdVerification">
+          <declaration><![CDATA[protected LinkButton cmdVerification;]]></declaration>
+          <documentation>
+            <summary>
+ cmdVerification control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="grdProviders">
+          <declaration><![CDATA[protected DnnGrid grdProviders;]]></declaration>
+          <documentation>
+            <summary>
+ grdProviders control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblCache">
+          <declaration><![CDATA[protected UserControl lblCache;]]></declaration>
+          <documentation>
+            <summary>
+ lblCache control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblExcludePriority">
+          <declaration><![CDATA[protected UserControl lblExcludePriority;]]></declaration>
+          <documentation>
+            <summary>
+ lblExcludePriority control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblIncludeHidden">
+          <declaration><![CDATA[protected UserControl lblIncludeHidden;]]></declaration>
+          <documentation>
+            <summary>
+ lblIncludeHidden control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblLevelPriority">
+          <declaration><![CDATA[protected UserControl lblLevelPriority;]]></declaration>
+          <documentation>
+            <summary>
+ lblLevelPriority control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblMinPagePriority">
+          <declaration><![CDATA[protected UserControl lblMinPagePriority;]]></declaration>
+          <documentation>
+            <summary>
+ lblMinPagePriority control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblSearchEngine">
+          <declaration><![CDATA[protected UserControl lblSearchEngine;]]></declaration>
+          <documentation>
+            <summary>
+ lblSearchEngine control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblSectionCoreSettingsHelp">
+          <declaration><![CDATA[protected Label lblSectionCoreSettingsHelp;]]></declaration>
+          <documentation>
+            <summary>
+ lblSectionCoreSettingsHelp control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblSectionGeneralSettingsHelp">
+          <declaration><![CDATA[protected Label lblSectionGeneralSettingsHelp;]]></declaration>
+          <documentation>
+            <summary>
+ lblSectionGeneralSettingsHelp control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblSectionSubmissionSettings">
+          <declaration><![CDATA[protected Label lblSectionSubmissionSettings;]]></declaration>
+          <documentation>
+            <summary>
+ lblSectionSubmissionSettings control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblSiteMap">
+          <declaration><![CDATA[protected UserControl lblSiteMap;]]></declaration>
+          <documentation>
+            <summary>
+ lblSiteMap control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblVerification">
+          <declaration><![CDATA[protected UserControl lblVerification;]]></declaration>
+          <documentation>
+            <summary>
+ lblVerification control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lnkRefresh">
+          <declaration><![CDATA[protected LinkButton lnkRefresh;]]></declaration>
+          <documentation>
+            <summary>
+ lnkRefresh control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lnkResetCache">
+          <declaration><![CDATA[protected LinkButton lnkResetCache;]]></declaration>
+          <documentation>
+            <summary>
+ lnkResetCache control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lnkSaveAll">
+          <declaration><![CDATA[protected LinkButton lnkSaveAll;]]></declaration>
+          <documentation>
+            <summary>
+ lnkSaveAll control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lnkSiteMapUrl">
+          <declaration><![CDATA[protected HyperLink lnkSiteMapUrl;]]></declaration>
+          <documentation>
+            <summary>
+ lnkSiteMapUrl control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="RequiredFieldValidator1">
+          <declaration><![CDATA[protected RequiredFieldValidator RequiredFieldValidator1;]]></declaration>
+          <documentation>
+            <summary>
+ RequiredFieldValidator1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtExcludePriority">
+          <declaration><![CDATA[protected TextBox txtExcludePriority;]]></declaration>
+          <documentation>
+            <summary>
+ txtExcludePriority control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtMinPagePriority">
+          <declaration><![CDATA[protected TextBox txtMinPagePriority;]]></declaration>
+          <documentation>
+            <summary>
+ txtMinPagePriority control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtVerification">
+          <declaration><![CDATA[protected TextBox txtVerification;]]></declaration>
+          <documentation>
+            <summary>
+ txtVerification control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="val2">
+          <declaration><![CDATA[protected RequiredFieldValidator val2;]]></declaration>
+          <documentation>
+            <summary>
+ val2 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Sitemap.Components">
+    <class name="SitemapController">
+      <declaration><![CDATA[public class SitemapController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SitemapController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="54" ec="10">Components\SitemapController.cs</location>
+            <body hash="67abc96a144fec1e91cc1f2ff9dacb31"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "08.00.00":
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

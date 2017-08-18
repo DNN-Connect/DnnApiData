@@ -1,0 +1,1479 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.AuthServices.Jwt.dll" version="01.00.00" generated="2017-08-10 13:31:06Z" generationTime="2.5590643">
+  <namespace name="Dnn.AuthServices.Jwt.Auth">
+    <class name="JwtAuthMessageHandler">
+      <declaration><![CDATA[public class JwtAuthMessageHandler : AuthMessageHandlerBase]]></declaration>
+      <documentation>
+        <summary>
+ This class implements Json Web Token (JWT) authentication scheme.
+ For detailed description of JWT refer to:
+ <para>- JTW standard https://tools.ietf.org/html/rfc7519 </para>
+ <para>- Introduction to JSON Web Tokens http://jwt.io/introduction/ </para>
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly IJwtController _jwtController = ServiceLocator<IJwtController, JwtController>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="62" ec="10">Auth\JwtAuthMessageHandler.cs</location>
+            <body hash="d59bf2382c7ebc391ef04a79c47f9728"><![CDATA[private readonly IJwtController _jwtController = JwtController.Instance;
+
+        #endregion
+
+        #region constructor
+
+        public JwtAuthMessageHandler(bool includeByDefault, bool forceSsl)
+            : base(includeByDefault, forceSsl)
+        {
+            // Once an instance is enabled and gets registered in
+            // ServicesRoutingManager.RegisterAuthenticationHandlers()
+            // this scheme gets marked as enabled.
+            IsEnabled = true;
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static JwtAuthMessageHandler()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="43" ec="110">Auth\JwtAuthMessageHandler.cs</location>
+            <body hash="a7a149dd185bc519ff86da4d2a9cdf4c"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(JwtAuthMessageHandler))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnInboundRequest">
+          <declaration><![CDATA[public override HttpResponseMessage OnInboundRequest(HttpRequestMessage request, CancellationToken cancellationToken)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="76" ec="10">Auth\JwtAuthMessageHandler.cs</location>
+            <body hash="c20018388946f2dd22902af23cf99e67"><![CDATA[{
+            if (NeedsAuthentication(request))
+            {
+                TryToAuthenticate(request);
+            }
+
+            return base.OnInboundRequest(request, cancellationToken);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TryToAuthenticate">
+          <declaration><![CDATA[private void TryToAuthenticate(HttpRequestMessage request)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="9" el="93" ec="10">Auth\JwtAuthMessageHandler.cs</location>
+            <body hash="1e1757c98a5cec87c367241f33af7f96"><![CDATA[{
+            try
+            {
+                var username = _jwtController.ValidateToken(request);
+                if (!string.IsNullOrEmpty(username))
+                {
+                    if (Logger.IsTraceEnabled) Logger.Trace($"Authenticated user '{username}'");
+                    SetCurrentPrincipal(new GenericPrincipal(new GenericIdentity(username, AuthScheme), null), request);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Unexpected error in authenticating the user. " + ex);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_jwtController">
+          <declaration><![CDATA[private readonly IJwtController _jwtController = ServiceLocator<IJwtController, JwtController>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(JwtAuthMessageHandler));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="AuthScheme">
+          <declaration><![CDATA[public override string AuthScheme]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="46" el="45" ec="71">Auth\JwtAuthMessageHandler.cs</location>
+            <body hash="3d6bd80cc6bfb149bf86782bf63a1f63"><![CDATA[_jwtController.SchemeTyp]]></body>
+          </codeblock>
+        </property>
+        <property name="BypassAntiForgeryToken">
+          <declaration><![CDATA[public override bool BypassAntiForgeryToken]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="56" el="46" ec="60">Auth\JwtAuthMessageHandler.cs</location>
+            <body hash="f8354de67d79a99e880000c5f3cae57d"><![CDATA[tru]]></body>
+          </codeblock>
+        </property>
+        <property name="IsEnabled">
+          <declaration><![CDATA[internal static bool IsEnabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="42" el="48" ec="46">Auth\JwtAuthMessageHandler.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="48" sc="47" el="48" ec="51">Auth\JwtAuthMessageHandler.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.AuthServices.Jwt.Components.Common.Controllers">
+    <class name="IJwtController">
+      <declaration><![CDATA[public interface IJwtController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="LoginUser">
+          <declaration><![CDATA[LoginResultData LoginUser(HttpRequestMessage request, LoginData loginData);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="LogoutUser">
+          <declaration><![CDATA[bool LogoutUser(HttpRequestMessage request);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="RenewToken">
+          <declaration><![CDATA[LoginResultData RenewToken(HttpRequestMessage request, string renewalToken);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ValidateToken">
+          <declaration><![CDATA[string ValidateToken(HttpRequestMessage request);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="SchemeType">
+          <declaration><![CDATA[string SchemeType]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="JwtController">
+      <declaration><![CDATA[internal class JwtController : ServiceLocator<IJwtController, JwtController>, IJwtController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public readonly IDataService DataProvider = ComponentBase<IDataService, DataService>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="69" ec="74">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="75c9f5d254e2ae06effd4fba09573fdc"><![CDATA[public readonly IDataService DataProvider = DataService.Instance]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static JwtController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="55" ec="70">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="42898b5571daf0380a670ddfeda44a44"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(JwtController));
+        private static readonly HashAlgorithm Hasher = SHA384.Create();
+
+        private const int ClockSkew = 5; // in minutes; default for clock skew
+        private const int SessionTokenTtl = 60; // in minutes = 1 hour
+        private const int RenewalTokenTtl = 14; // in days = 2 weeks
+        private const string SessionClaimType = "sid";
+        private static readonly Encoding TextEncoder = Encoding.UTF8;]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CreateJwtToken">
+          <declaration><![CDATA[private static JwtSecurityToken CreateJwtToken(byte[] symmetricKey, string issuer, PersistedToken ptoken, IEnumerable<string> roles)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="283" sc="9" el="299" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="8ee12bcace347b78d56d56f02d82a8a4"><![CDATA[{
+            //var key = Convert.FromBase64String(symmetricKey);
+            var credentials = new SigningCredentials(
+                new InMemorySymmetricSecurityKey(symmetricKey),
+                "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256",
+                "http://www.w3.org/2001/04/xmlenc#sha256");
+
+            var claimsIdentity = new ClaimsIdentity();
+            claimsIdentity.AddClaim(new Claim(SessionClaimType, ptoken.TokenId));
+            claimsIdentity.AddClaims(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+
+            var notBefore = DateTime.UtcNow.AddMinutes(-ClockSkew);
+            var notAfter = ptoken.TokenExpiry;
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(issuer, null, claimsIdentity, notBefore, notAfter, credentials);
+            return token;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DecodeBase64">
+          <declaration><![CDATA[private static string DecodeBase64(string b64Str)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="472" sc="9" el="477" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="b7403666c9d9f4755fa1dce133489d4b"><![CDATA[{
+            // fix Base64 string padding
+            var mod = b64Str.Length % 4;
+            if (mod != 0) b64Str += new string('=', 4 - mod);
+            return TextEncoder.GetString(Convert.FromBase64String(b64Str));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="EmptyWithError">
+          <declaration><![CDATA[private static LoginResultData EmptyWithError(string error)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="278" sc="9" el="280" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="a3e6e225d4f5134ea53cc558817cef04"><![CDATA[{
+            return new LoginResultData { Error = error };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="EncodeBase64">
+          <declaration><![CDATA[private static string EncodeBase64(byte[] data)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="480" sc="9" el="482" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="911c14c5923edb0ad828d0f28c27f2da"><![CDATA[{
+            return Convert.ToBase64String(data).TrimEnd('=');
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAndValidateJwt">
+          <declaration><![CDATA[private static JwtSecurityToken GetAndValidateJwt(string rawToken, bool checkExpiry)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="370" sc="9" el="400" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="3b42fdde32d61bc433c3f71f0ed065ae"><![CDATA[{
+            JwtSecurityToken jwt;
+            try
+            {
+                jwt = new JwtSecurityToken(rawToken);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Unable to construct JWT object from authorization value. " + ex.Message);
+                return null;
+            }
+
+            if (checkExpiry)
+            {
+                var now = DateTime.UtcNow;
+                if (now < jwt.ValidFrom || now > jwt.ValidTo)
+                {
+                    if (Logger.IsTraceEnabled) Logger.Trace("Token is expired");
+                    return null;
+                }
+            }
+
+            var sessionId = GetJwtSessionValue(jwt);
+            if (string.IsNullOrEmpty(sessionId))
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Invaid session ID claim");
+                return null;
+            }
+
+            return jwt;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFactory">
+          <declaration><![CDATA[protected override Func<IJwtController> GetFactory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="67" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="ae0eef57e1d6e0bab6d7c30ca12891d8"><![CDATA[{
+            return () => new JwtController();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetHashedStr">
+          <declaration><![CDATA[private static string GetHashedStr(string data)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="485" sc="9" el="487" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="643aed960278487867a069a2fca15da7"><![CDATA[{
+            return EncodeBase64(Hasher.ComputeHash(TextEncoder.GetBytes(data)));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetJwtSessionValue">
+          <declaration><![CDATA[private static string GetJwtSessionValue(JwtSecurityToken jwt)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="459" sc="9" el="462" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="6b35d07fed159a9c36496b7250580c53"><![CDATA[{
+            var sessionClaim = jwt?.Claims?.FirstOrDefault(claim => SessionClaimType.Equals(claim.Type));
+            return sessionClaim?.Value;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsValidSchemeType">
+          <declaration><![CDATA[private bool IsValidSchemeType(JwtHeader header)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="359" sc="9" el="367" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="eda3dc55ddd1e68f1162f87f314c7cbe"><![CDATA[{
+            if (!SchemeType.Equals(header["typ"] as string, StringComparison.OrdinalIgnoreCase))
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Unsupported authentication scheme type " + header.Typ);
+                return false;
+            }
+
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoginUser">
+          <declaration><![CDATA[public LoginResultData LoginUser(HttpRequestMessage request, LoginData loginData)]]></declaration>
+          <documentation>
+            <summary>
+ Validates user login credentials and returns result when successful
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="120" sc="9" el="185" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="4e49e08f08018381076a30732813a9a1"><![CDATA[{
+            if (!JwtAuthMessageHandler.IsEnabled)
+            {
+                Logger.Trace(SchemeType + " is not registered/enabled in web.config file");
+                return EmptyWithError("disabled");
+            }
+
+            var portalSettings = PortalController.Instance.GetCurrentPortalSettings();
+            if (portalSettings == null)
+            {
+                Logger.Trace("portalSettings = null");
+                return EmptyWithError("no-portal");
+            }
+
+            var status = UserLoginStatus.LOGIN_FAILURE;
+            var ipAddress = request.GetIPAddress() ?? "";
+            var userInfo = UserController.ValidateUser(portalSettings.PortalId,
+                loginData.Username, loginData.Password, "DNN", "", AuthScheme, ipAddress, ref status);
+
+            if (userInfo == null)
+            {
+                Logger.Trace("user = null");
+                return EmptyWithError("bad-credentials");
+            }
+
+            var valid =
+                status == UserLoginStatus.LOGIN_SUCCESS ||
+                status == UserLoginStatus.LOGIN_SUPERUSER ||
+                status == UserLoginStatus.LOGIN_INSECUREADMINPASSWORD ||
+                status == UserLoginStatus.LOGIN_INSECUREHOSTPASSWORD;
+
+            if (!valid)
+            {
+                Logger.Trace("login status = " + status);
+                return EmptyWithError("bad-credentials");
+            }
+
+            // save hash values in DB so no one with access can create JWT header from existing data
+            var sessionId = NewSessionId;
+            var now = DateTime.UtcNow;
+            var renewalToken = EncodeBase64(Hasher.ComputeHash(Guid.NewGuid().ToByteArray()));
+            var ptoken = new PersistedToken
+            {
+                TokenId = sessionId,
+                UserId = userInfo.UserID,
+                TokenExpiry = now.AddMinutes(SessionTokenTtl),
+                RenewalExpiry = now.AddDays(RenewalTokenTtl),
+                //TokenHash = GetHashedStr(accessToken), -- not computed yet
+                RenewalHash = GetHashedStr(renewalToken),
+            };
+
+            var secret = ObtainSecret(sessionId, portalSettings.GUID, userInfo.Membership.LastPasswordChangeDate);
+            var jwt = CreateJwtToken(secret, portalSettings.PortalAlias.HTTPAlias, ptoken, userInfo.Roles);
+            var accessToken = jwt.RawData;
+
+            ptoken.TokenHash = GetHashedStr(accessToken);
+            DataProvider.AddToken(ptoken);
+
+            return new LoginResultData
+            {
+                UserId = userInfo.UserID,
+                DisplayName = userInfo.DisplayName,
+                AccessToken = accessToken,
+                RenewalToken = renewalToken
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LogoutUser">
+          <declaration><![CDATA[public bool LogoutUser(HttpRequestMessage request)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="91" sc="9" el="114" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="b2f928ccffc70d69330295aa6f3317d6"><![CDATA[{
+            if (!JwtAuthMessageHandler.IsEnabled)
+            {
+                Logger.Trace(SchemeType + " is not registered/enabled in web.config file");
+                return false;
+            }
+
+            var rawToken = ValidateAuthHeader(request.Headers.Authorization);
+            if (string.IsNullOrEmpty(rawToken))
+            {
+                return false;
+            }
+
+            var jwt = new JwtSecurityToken(rawToken);
+            var sessionId = GetJwtSessionValue(jwt);
+            if (string.IsNullOrEmpty(sessionId))
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Session ID not found in the claim");
+                return false;
+            }
+
+            DataProvider.DeleteToken(sessionId);
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ObtainSecret">
+          <declaration><![CDATA[private static byte[] ObtainSecret(string sessionId, Guid portalGuid, DateTime userCreationDate)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="465" sc="9" el="469" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="51242dd8bcc3273c12f42f89f4da9f0d"><![CDATA[{
+            // The secret should contain unpredictable components that can't be inferred from the JWT string.
+            var stext = string.Join(".", sessionId, portalGuid.ToString("N"), userCreationDate.ToUniversalTime().ToString("O"));
+            return TextEncoder.GetBytes(stext);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenewToken">
+          <declaration><![CDATA[public LoginResultData RenewToken(HttpRequestMessage request, string renewalToken)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="188" sc="9" el="241" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="e59b850322bae4a6a84a5bc7ed0eb3e4"><![CDATA[{
+            if (!JwtAuthMessageHandler.IsEnabled)
+            {
+                Logger.Trace(SchemeType + " is not registered/enabled in web.config file");
+                return EmptyWithError("disabled");
+            }
+
+            var rawToken = ValidateAuthHeader(request.Headers.Authorization);
+            if (string.IsNullOrEmpty(rawToken))
+            {
+                return EmptyWithError("bad-credentials");
+            }
+
+            var jwt = GetAndValidateJwt(rawToken, false);
+            if (jwt == null)
+            {
+                return EmptyWithError("bad-jwt");
+            }
+
+            var sessionId = GetJwtSessionValue(jwt);
+            if (string.IsNullOrEmpty(sessionId))
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Session ID not found in the claim");
+                return EmptyWithError("bad-claims");
+            }
+
+            var ptoken = DataProvider.GetTokenById(sessionId);
+            if (ptoken == null)
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Token not found in DB");
+                return EmptyWithError("not-found");
+            }
+
+            if (ptoken.RenewalExpiry <= DateTime.UtcNow)
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Token can't bwe renewed anymore");
+                return EmptyWithError("not-more-renewal");
+            }
+
+            var userInfo = TryGetUser(jwt, false);
+            if (userInfo == null)
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Token not found in DB");
+                return EmptyWithError("not-found");
+            }
+
+            if ((ptoken.TokenHash != GetHashedStr(rawToken)) || (ptoken.UserId != userInfo.UserID))
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Mismatch in received token");
+                return EmptyWithError("bad-token");
+            }
+
+            return UpdateToken(renewalToken, ptoken, userInfo);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TryGetUser">
+          <declaration><![CDATA[private UserInfo TryGetUser(JwtSecurityToken jwt, bool checkExpiry)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="403" sc="9" el="456" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="03142f9562a3fe2b8218cc1e6d380f77"><![CDATA[{
+            // validate against DB saved data
+            var sessionId = GetJwtSessionValue(jwt);
+            var ptoken = DataProvider.GetTokenById(sessionId);
+            if (ptoken == null)
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Token not found in DB");
+                return null;
+            }
+
+            if (checkExpiry)
+            {
+                var now = DateTime.UtcNow;
+                if (now > ptoken.TokenExpiry || now > ptoken.RenewalExpiry)
+                {
+                    if (Logger.IsTraceEnabled) Logger.Trace("DB Token is expired");
+                    return null;
+                }
+            }
+
+            if (ptoken.TokenHash != GetHashedStr(jwt.RawData))
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Mismatch data in received token");
+                return null;
+            }
+
+            var portalSettings = PortalController.Instance.GetCurrentPortalSettings();
+            if (portalSettings == null)
+            {
+                Logger.Trace("Unable to retrieve portal settings");
+                return null;
+            }
+
+            var userInfo = UserController.GetUserById(portalSettings.PortalId, ptoken.UserId);
+            if (userInfo == null)
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Invalid user");
+                return null;
+            }
+
+            var status = UserController.ValidateUser(userInfo, portalSettings.PortalId, false);
+            var valid =
+                status == UserValidStatus.VALID ||
+                status == UserValidStatus.UPDATEPROFILE ||
+                status == UserValidStatus.UPDATEPASSWORD;
+
+            if (!valid && Logger.IsTraceEnabled)
+            {
+                Logger.Trace("Inactive user status: " + status);
+                return null;
+            }
+
+            return userInfo;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateToken">
+          <declaration><![CDATA[private LoginResultData UpdateToken(string renewalToken, PersistedToken ptoken, UserInfo userInfo)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="244" sc="9" el="269" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="999a7d1520151a64077154730bd20b22"><![CDATA[{
+            var expiry = DateTime.UtcNow.AddMinutes(SessionTokenTtl);
+            if (expiry > ptoken.RenewalExpiry)
+            {
+                // don't extend beyond renewal expiry and make sure it is marked in UTC
+                expiry = new DateTime(ptoken.RenewalExpiry.Ticks, DateTimeKind.Utc);
+            }
+            ptoken.TokenExpiry = expiry;
+
+            var portalSettings = PortalController.Instance.GetCurrentPortalSettings();
+            var secret = ObtainSecret(ptoken.TokenId, portalSettings.GUID, userInfo.Membership.LastPasswordChangeDate);
+            var jwt = CreateJwtToken(secret, portalSettings.PortalAlias.HTTPAlias, ptoken, userInfo.Roles);
+            var accessToken = jwt.RawData;
+            
+            // save hash values in DB so no one with access can create JWT header from existing data
+            ptoken.TokenHash = GetHashedStr(accessToken);
+            DataProvider.UpdateToken(ptoken);
+
+            return new LoginResultData
+            {
+                UserId = userInfo.UserID,
+                DisplayName = userInfo.DisplayName,
+                AccessToken = accessToken,
+                RenewalToken = renewalToken
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ValidateAuthHeader">
+          <declaration><![CDATA[private string ValidateAuthHeader(AuthenticationHeaderValue authHdr)]]></declaration>
+          <documentation>
+            <summary>
+ Checks for Authorization header and validates it is JWT scheme. If successful, it returns the token string.
+ </summary>
+ <param name="authHdr">The request auhorization header.</param>
+ <returns>The JWT passed in the request; otherwise, it returns null.</returns></documentation>
+          <codeblock>
+            <location sl="307" sc="9" el="328" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="5b19c4bf055c4bee0d7ffd1afd96c8a2"><![CDATA[{
+            if (authHdr == null)
+            {
+                //if (Logger.IsTraceEnabled) Logger.Trace("Authorization header not present in the request"); // too verbose; shows in all web requests
+                return null;
+            }
+
+            if (!string.Equals(authHdr.Scheme, AuthScheme, StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Authorization header scheme in the request is not equal to " + SchemeType);
+                return null;
+            }
+
+            var authorization = authHdr.Parameter;
+            if (string.IsNullOrEmpty(authorization))
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Missing authorization header value in the request");
+                return null;
+            }
+
+            return authorization;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ValidateAuthorizationValue">
+          <declaration><![CDATA[private string ValidateAuthorizationValue(string authorization)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="331" sc="9" el="356" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="ac967f1e0ee3a9b066f3df277c30bc2a"><![CDATA[{
+            var parts = authorization.Split('.');
+            if (parts.Length < 3)
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace("Token must have [header:claims:signature] parts at least");
+                return null;
+            }
+
+            var decoded = DecodeBase64(parts[0]);
+            if (decoded.IndexOf("\"" + SchemeType + "\"", StringComparison.InvariantCultureIgnoreCase) < 0)
+            {
+                if (Logger.IsTraceEnabled) Logger.Trace($"This is not a {SchemeType} autentication scheme.");
+                return null;
+            }
+
+            var header = JsonConvert.DeserializeObject<JwtHeader>(decoded);
+            if (!IsValidSchemeType(header))
+                return null;
+
+            var jwt = GetAndValidateJwt(authorization, true);
+            if (jwt == null)
+                return null;
+
+            var userInfo = TryGetUser(jwt, true);
+            return userInfo?.Username;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ValidateToken">
+          <declaration><![CDATA[public string ValidateToken(HttpRequestMessage request)]]></declaration>
+          <documentation>
+            <summary>
+ Validates the received JWT against the databas eand returns username when successful.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="9" el="88" ec="10">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="1b3315ed8b4b1206cee70ce96fc7412a"><![CDATA[{
+            if (!JwtAuthMessageHandler.IsEnabled)
+            {
+                Logger.Trace(SchemeType + " is not registered/enabled in web.config file");
+                return null;
+            }
+
+            var authorization = ValidateAuthHeader(request.Headers.Authorization);
+            return string.IsNullOrEmpty(authorization) ? null : ValidateAuthorizationValue(authorization);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="AuthScheme">
+          <declaration><![CDATA[public const string AuthScheme = "Bearer";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ClockSkew">
+          <declaration><![CDATA[private const int ClockSkew = 5;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="DataProvider">
+          <declaration><![CDATA[public readonly IDataService DataProvider = ComponentBase<IDataService, DataService>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Hasher">
+          <declaration><![CDATA[private static readonly HashAlgorithm Hasher = SHA384.Create();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(JwtController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="RenewalTokenTtl">
+          <declaration><![CDATA[private const int RenewalTokenTtl = 14;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="SessionClaimType">
+          <declaration><![CDATA[private const string SessionClaimType = "sid";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="SessionTokenTtl">
+          <declaration><![CDATA[private const int SessionTokenTtl = 60;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="TextEncoder">
+          <declaration><![CDATA[private static readonly Encoding TextEncoder = Encoding.UTF8;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="NewSessionId">
+          <declaration><![CDATA[private static string NewSessionId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="275" sc="47" el="275" ec="129">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="e401b6eae00f5553b35d1343e5807beb"><![CDATA[DateTime.UtcNow.Ticks.ToString("x16") + Guid.NewGuid().ToString("N").Substring(16]]></body>
+          </codeblock>
+        </property>
+        <property name="SchemeType">
+          <declaration><![CDATA[public string SchemeType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="37" el="58" ec="42">Components\Common\Controllers\JwtController.cs</location>
+            <body hash="cfe600598c119f294952871b1968a474"><![CDATA["JWT]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.AuthServices.Jwt.Components.Entity">
+    <class name="LoginData">
+      <declaration><![CDATA[public struct LoginData]]></declaration>
+      <documentation>
+        <summary>
+ Structure used for the Login to obtain a Json Web Token (JWT).
+ </summary>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="Password">
+          <declaration><![CDATA[public string Password;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Username">
+          <declaration><![CDATA[public string Username;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="LoginResultData">
+      <declaration><![CDATA[public class LoginResultData]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public LoginResultData()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AccessToken">
+          <declaration><![CDATA[public string AccessToken]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="37" el="34" ec="41">Components\Entity\LoginResultData.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="34" sc="42" el="34" ec="46">Components\Entity\LoginResultData.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="DisplayName">
+          <declaration><![CDATA[public string DisplayName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="37" el="32" ec="41">Components\Entity\LoginResultData.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="32" sc="42" el="32" ec="46">Components\Entity\LoginResultData.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Error">
+          <declaration><![CDATA[public string Error]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="31" el="38" ec="35">Components\Entity\LoginResultData.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="38" sc="36" el="38" ec="40">Components\Entity\LoginResultData.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RenewalToken">
+          <declaration><![CDATA[public string RenewalToken]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="38" el="36" ec="42">Components\Entity\LoginResultData.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="36" sc="43" el="36" ec="47">Components\Entity\LoginResultData.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UserId">
+          <declaration><![CDATA[public int UserId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="29" el="30" ec="33">Components\Entity\LoginResultData.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="30" sc="34" el="30" ec="38">Components\Entity\LoginResultData.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="PersistedToken">
+      <declaration><![CDATA[public class PersistedToken]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PersistedToken()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="RenewalExpiry">
+          <declaration><![CDATA[public DateTime RenewalExpiry]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="12" sc="41" el="12" ec="45">Components\Entity\PersistedToken.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="12" sc="46" el="12" ec="50">Components\Entity\PersistedToken.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RenewalHash">
+          <declaration><![CDATA[public string RenewalHash]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="14" sc="37" el="14" ec="41">Components\Entity\PersistedToken.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="14" sc="42" el="14" ec="46">Components\Entity\PersistedToken.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RenewCount">
+          <declaration><![CDATA[public int RenewCount]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="10" sc="33" el="10" ec="37">Components\Entity\PersistedToken.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="10" sc="38" el="10" ec="42">Components\Entity\PersistedToken.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TokenExpiry">
+          <declaration><![CDATA[public DateTime TokenExpiry]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="11" sc="39" el="11" ec="43">Components\Entity\PersistedToken.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="11" sc="44" el="11" ec="48">Components\Entity\PersistedToken.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TokenHash">
+          <declaration><![CDATA[public string TokenHash]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="35" el="13" ec="39">Components\Entity\PersistedToken.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="13" sc="40" el="13" ec="44">Components\Entity\PersistedToken.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TokenId">
+          <declaration><![CDATA[public string TokenId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="8" sc="33" el="8" ec="37">Components\Entity\PersistedToken.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="8" sc="38" el="8" ec="42">Components\Entity\PersistedToken.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UserId">
+          <declaration><![CDATA[public int UserId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="9" sc="29" el="9" ec="33">Components\Entity\PersistedToken.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="9" sc="34" el="9" ec="38">Components\Entity\PersistedToken.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RenewalDto">
+      <declaration><![CDATA[public class RenewalDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RenewalDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="RenewalToken">
+          <declaration><![CDATA[public string RenewalToken;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.AuthServices.Jwt.Data">
+    <class name="DataService">
+      <declaration><![CDATA[public class DataService : ComponentBase<IDataService, DataService>, IDataService]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+  This class provides the Data Access Layer for the JWT Authentication library
+ </summary></documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly DataProvider _dataProvider = DataProvider.Instance();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="9" el="38" ec="79">Data\DataService.cs</location>
+            <body hash="b2b979bdbf66254c4eacb8a493b4402b"><![CDATA[private readonly DataProvider _dataProvider = DataProvider.Instance()]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddToken">
+          <declaration><![CDATA[public virtual void AddToken(PersistedToken token)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="9" el="67" ec="10">Data\DataService.cs</location>
+            <body hash="4064a100cf6739aa0a7ebe8e440060ba"><![CDATA[{
+            _dataProvider.ExecuteNonQuery("JsonWebTokens_Add", token.TokenId, token.UserId,
+                token.TokenExpiry, token.RenewalExpiry, token.TokenHash, token.RenewalHash);
+            DataCache.SetCache(GetCacheKey(token.TokenId), token, token.TokenExpiry.ToLocalTime());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteExpiredTokens">
+          <declaration><![CDATA[public virtual void DeleteExpiredTokens()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="95" ec="10">Data\DataService.cs</location>
+            <body hash="e01a8fc61f4e5e294ae3fe5a16f024e7"><![CDATA[{
+            // don't worry aabout caching; these will already be invalidated by cache manager
+            _dataProvider.ExecuteNonQuery("JsonWebTokens_DeleteExpired");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteToken">
+          <declaration><![CDATA[public virtual void DeleteToken(string tokenId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="77" sc="9" el="80" ec="10">Data\DataService.cs</location>
+            <body hash="5e18092ee04123a91b306859b7df41a7"><![CDATA[{
+            _dataProvider.ExecuteNonQuery("JsonWebTokens_DeleteById", tokenId);
+            DataCache.RemoveCache(GetCacheKey(tokenId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUserTokens">
+          <declaration><![CDATA[public virtual void DeleteUserTokens(int userId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="9" el="89" ec="10">Data\DataService.cs</location>
+            <body hash="b9d9a4d67148a082d60f3dab088476cd"><![CDATA[{
+            _dataProvider.ExecuteNonQuery("JsonWebTokens_DeleteByUser", userId);
+            foreach (var token in GetUserTokens(userId))
+            {
+                DataCache.RemoveCache(GetCacheKey(token.TokenId));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCacheKey">
+          <declaration><![CDATA[private static string GetCacheKey(string tokenId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="102" sc="9" el="104" ec="10">Data\DataService.cs</location>
+            <body hash="3b30f5e723173577265128a3f045c614"><![CDATA[{
+            return string.Join(":", "JsonWebTokens", tokenId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTokenById">
+          <declaration><![CDATA[public virtual PersistedToken GetTokenById(string tokenId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="55" ec="10">Data\DataService.cs</location>
+            <body hash="d53915d8e9ab944383dd35451709b229"><![CDATA[{
+            try
+            {
+                return CBO.GetCachedObject<PersistedToken>(
+                    new CacheItemArgs(GetCacheKey(tokenId), 60, CacheItemPriority.Default),
+                    _ => CBO.FillObject<PersistedToken>(_dataProvider.ExecuteReader("JsonWebTokens_GetById", tokenId)));
+            }
+            catch (InvalidCastException)
+            {
+                // occurs when no record found in th DB
+                return null;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserTokens">
+          <declaration><![CDATA[public virtual IList<PersistedToken> GetUserTokens(int userId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="9" el="60" ec="10">Data\DataService.cs</location>
+            <body hash="f094efc679c6b2d2f664f6dc4ab04b0f"><![CDATA[{
+            return CBO.FillCollection<PersistedToken>(_dataProvider.ExecuteReader("JsonWebTokens_GetByUserId", userId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateToken">
+          <declaration><![CDATA[public virtual void UpdateToken(PersistedToken token)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="74" ec="10">Data\DataService.cs</location>
+            <body hash="d5721904092bca46e160babf055f2b52"><![CDATA[{
+            _dataProvider.ExecuteNonQuery("JsonWebTokens_Update", token.TokenId, token.TokenExpiry, token.TokenHash);
+            token.RenewCount += 1;
+            DataCache.SetCache(GetCacheKey(token.TokenId), token, token.TokenExpiry.ToLocalTime());
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_dataProvider">
+          <declaration><![CDATA[private readonly DataProvider _dataProvider = DataProvider.Instance();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="IDataService">
+      <declaration><![CDATA[public interface IDataService]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="AddToken">
+          <declaration><![CDATA[void AddToken(PersistedToken token);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteExpiredTokens">
+          <declaration><![CDATA[void DeleteExpiredTokens();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteToken">
+          <declaration><![CDATA[void DeleteToken(string tokenId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUserTokens">
+          <declaration><![CDATA[void DeleteUserTokens(int userId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTokenById">
+          <declaration><![CDATA[PersistedToken GetTokenById(string tokenId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserTokens">
+          <declaration><![CDATA[IList<PersistedToken> GetUserTokens(int userId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateToken">
+          <declaration><![CDATA[void UpdateToken(PersistedToken token);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.AuthServices.Jwt.Services">
+    <class name="MobileController">
+      <declaration><![CDATA[public class MobileController : DnnApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MobileController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ExtendToken">
+          <declaration><![CDATA[public IHttpActionResult ExtendToken(RenewalDto rtoken)]]></declaration>
+          <documentation>
+            <summary>
+ Extends the token expiry. A new JWT is returned to the caller which must be used in
+ new API requests. The caller must pass the renewal token received at the login time.
+ The header still needs to pass the current token for validation even when it is expired.
+ </summary>
+ <remarks>The access token is allowed to get renewed one time only.<br />
+ AllowAnonymous attribute must stay in this call even though the
+ DnnAuthorize attribute is present at a class level.
+ </remarks></documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="75" ec="10">Services\MobileController.cs</location>
+            <body hash="da21b0f75da015fa9eb97ce556f34334"><![CDATA[{
+            var result = JwtController.Instance.RenewToken(Request, rtoken.RenewalToken);
+            return ReplyWith(result);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Login">
+          <declaration><![CDATA[public IHttpActionResult Login(LoginData loginData)]]></declaration>
+          <documentation>
+            <summary>
+ Clients that want to go cookie-less should call this API to login and receive
+ a Json Web Token (JWT) that allows them to authenticate the users to other
+ secure API endpoints afterwards.
+ </summary>
+ <remarks>AllowAnonymous attribute must stay in this call even though the
+ DnnAuthorize attribute is present at a class level.</remarks></documentation>
+          <codeblock>
+            <location sl="55" sc="9" el="58" ec="10">Services\MobileController.cs</location>
+            <body hash="ba8a3a0e57413d31ce6fafaf88365117"><![CDATA[{
+            var result = JwtController.Instance.LoginUser(Request, loginData);
+            return ReplyWith(result);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Logout">
+          <declaration><![CDATA[public IHttpActionResult Logout()]]></declaration>
+          <documentation>
+            <summary>
+ Clients that used JWT login should use this API call to logout and invalidate the tokens.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="43" ec="10">Services\MobileController.cs</location>
+            <body hash="b0a41c2e4423fcbada02e22a47771b6e"><![CDATA[{
+            return JwtController.Instance.LogoutUser(Request) ? (IHttpActionResult)Ok() : Unauthorized();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ReplyWith">
+          <declaration><![CDATA[private IHttpActionResult ReplyWith(LoginResultData result)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="82" sc="9" el="95" ec="10">Services\MobileController.cs</location>
+            <body hash="bc72a710446b2c2d9626f6c8d14ed79d"><![CDATA[{
+            if (result == null)
+            {
+                return Unauthorized();
+            }
+
+            if (!string.IsNullOrEmpty(result.Error))
+            {
+                //HACK: this will return the scheme with the error message as a challenge; non-standard method
+                return Unauthorized(new AuthenticationHeaderValue(JwtController.AuthScheme, result.Error));
+            }
+
+            return Ok(result);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TestGet">
+          <declaration><![CDATA[public IHttpActionResult TestGet()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="104" sc="9" el="108" ec="10">Services\MobileController.cs</location>
+            <body hash="7dcef6d4bd5c4cb4b3aff3f0d8bd1ea6"><![CDATA[{
+            var identity = System.Threading.Thread.CurrentPrincipal.Identity;
+            var reply = $"Hello {identity.Name}! You are authenticated through {identity.AuthenticationType}.";
+            return Ok(new { reply });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TestPost">
+          <declaration><![CDATA[public IHttpActionResult TestPost(MobileController.TestPostData something)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="114" sc="9" el="119" ec="10">Services\MobileController.cs</location>
+            <body hash="a8f0aad4f31a628be26c41f6177bcbf3"><![CDATA[{
+            var identity = System.Threading.Thread.CurrentPrincipal.Identity;
+            var reply = $"Hello {identity.Name}! You are authenticated through {identity.AuthenticationType}." +
+                        $" You said: ({something.Text})";
+            return Ok(new { reply });
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ServiceRouteMapper">
+      <declaration><![CDATA[public class ServiceRouteMapper : IServiceRouteMapper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServiceRouteMapper()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="RegisterRoutes">
+          <declaration><![CDATA[public void RegisterRoutes(IMapRoute mapRouteManager)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="34" ec="10">Services\ServiceRouteMapper.cs</location>
+            <body hash="a203870338ecabff272d045548c275c4"><![CDATA[{
+            mapRouteManager.MapHttpRoute(
+                "JwtAuth", "default", "{controller}/{action}", new[] { GetType().Namespace });
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

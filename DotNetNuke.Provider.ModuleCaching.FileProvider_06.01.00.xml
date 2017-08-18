@@ -1,0 +1,415 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Provider.ModuleCaching.FileProvider.dll" version="06.01.00" generated="2017-06-18 21:12:13Z" generationTime="1.6022781">
+  <namespace name="DotNetNuke.Services.ModuleCache">
+    <class name="FileProvider">
+      <declaration><![CDATA[public class FileProvider : ModuleCachingProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FileProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static FileProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="48" ec="145">FileProvider.cs</location>
+            <body hash="ecbe56c16ab0e1144b93bbb3a98845ae"><![CDATA[private static readonly SharedDictionary<int, string> CacheFolderPath = new SharedDictionary<int, string>(LockingStrategy.ReaderWriter)]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GenerateCacheKey">
+          <declaration><![CDATA[public override string GenerateCacheKey(int tabModuleId, SortedDictionary<string, string> varyBy)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="184" sc="9" el="196" ec="10">FileProvider.cs</location>
+            <body hash="30bff00e31862f3c76b33031418f0a87"><![CDATA[{
+            var cacheKey = new StringBuilder();
+            if (varyBy != null)
+            {
+                SortedDictionary<string, string>.Enumerator varyByParms = varyBy.GetEnumerator();
+                while ((varyByParms.MoveNext()))
+                {
+                    string key = varyByParms.Current.Key.ToLower();
+                    cacheKey.Append(string.Concat(key, "=", varyByParms.Current.Value, "|"));
+                }
+            }
+            return GenerateCacheKeyHash(tabModuleId, cacheKey.ToString());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GenerateCacheKeyHash">
+          <declaration><![CDATA[private string GenerateCacheKeyHash(int tabModuleId, string cacheKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="9" el="59" ec="10">FileProvider.cs</location>
+            <body hash="a3b85a5cc2c7c34bb892ea57c17e366f"><![CDATA[{
+            byte[] hash = Encoding.ASCII.GetBytes(cacheKey);
+            var md5 = new MD5CryptoServiceProvider();
+            hash = md5.ComputeHash(hash);
+            return tabModuleId + "_" + ByteArrayToString(hash);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAttribFileName">
+          <declaration><![CDATA[private static string GetAttribFileName(int tabModuleId, string cacheKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="62" sc="9" el="64" ec="10">FileProvider.cs</location>
+            <body hash="9b91277d7edd9899ee62519b3331001f"><![CDATA[{
+            return string.Concat(GetCacheFolder(), cacheKey, AttribFileExtension);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCachedItemCount">
+          <declaration><![CDATA[private static int GetCachedItemCount(int tabModuleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="69" ec="10">FileProvider.cs</location>
+            <body hash="1ff5db34ec3eb252e6a9037351edd8f2"><![CDATA[{
+            return Directory.GetFiles(GetCacheFolder(), String.Format("*{0}", DataFileExtension)).Length;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCachedOutputFileName">
+          <declaration><![CDATA[private static string GetCachedOutputFileName(int tabModuleId, string cacheKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="74" ec="10">FileProvider.cs</location>
+            <body hash="e851a8cf8bf39b2b0f8f936d8d503e6d"><![CDATA[{
+            return string.Concat(GetCacheFolder(), cacheKey, DataFileExtension);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCacheFolder">
+          <declaration><![CDATA[private static string GetCacheFolder(int portalId)]]></declaration>
+          <documentation>
+            <summary>
+ [jmarino]  2011-06-16 Check for ContainsKey for a write added
+ </summary>
+ <param name="portalId"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="82" sc="9" el="115" ec="10">FileProvider.cs</location>
+            <body hash="89af22b612897ee60ff2534c257db970"><![CDATA[{
+            string cacheFolder;
+
+            using (var readerLock = CacheFolderPath.GetReadLock())
+            {
+                if (CacheFolderPath.TryGetValue(portalId, out cacheFolder))
+                {
+                    return cacheFolder;
+                }
+            }
+
+            var portalController = new PortalController();
+            PortalInfo portalInfo = portalController.GetPortal(portalId);
+
+            string homeDirectoryMapPath = portalInfo.HomeDirectoryMapPath;
+
+
+            if (!(string.IsNullOrEmpty(homeDirectoryMapPath)))
+            {
+                cacheFolder = string.Concat(homeDirectoryMapPath, "Cache\\Pages\\");
+                if (!(Directory.Exists(cacheFolder)))
+                {
+                    Directory.CreateDirectory(cacheFolder);
+                }
+            }
+
+            using (var writerLock = CacheFolderPath.GetWriteLock())
+            {
+                if (!CacheFolderPath.ContainsKey(portalId))
+                    CacheFolderPath.Add(portalId, cacheFolder);
+            }
+
+            return cacheFolder;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCacheFolder">
+          <declaration><![CDATA[private static string GetCacheFolder()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="118" sc="9" el="121" ec="10">FileProvider.cs</location>
+            <body hash="79193a8f88ad2ebe6c104211f9b99d73"><![CDATA[{
+            int portalId = PortalController.GetCurrentPortalSettings().PortalId;
+            return GetCacheFolder(portalId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetItemCount">
+          <declaration><![CDATA[public override int GetItemCount(int tabModuleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="199" sc="9" el="201" ec="10">FileProvider.cs</location>
+            <body hash="92e5cc61e6b99a4b1525f194f59ebf81"><![CDATA[{
+            return GetCachedItemCount(tabModuleId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetModule">
+          <declaration><![CDATA[public override byte[] GetModule(int tabModuleId, string cacheKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="204" sc="9" el="233" ec="10">FileProvider.cs</location>
+            <body hash="e3b01421ecfa58503e1f00a5c926f8d4"><![CDATA[{
+            string cachedModule = GetCachedOutputFileName(tabModuleId, cacheKey);
+            BinaryReader br = null;
+            FileStream fStream = null;
+            byte[] data;
+            try
+            {
+                if (!File.Exists(cachedModule))
+                {
+                    return null;
+                }
+                var fInfo = new FileInfo(cachedModule);
+                long numBytes = fInfo.Length;
+                fStream = new FileStream(cachedModule, FileMode.Open, FileAccess.Read);
+                br = new BinaryReader(fStream);
+                data = br.ReadBytes(Convert.ToInt32(numBytes));
+            }
+            finally
+            {
+                if (br != null)
+                {
+                    br.Close();
+                }
+                if (fStream != null)
+                {
+                    fStream.Close();
+                }
+            }
+            return data;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsFileExpired">
+          <declaration><![CDATA[private bool IsFileExpired(string file)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="124" sc="9" el="151" ec="10">FileProvider.cs</location>
+            <body hash="5b0c6cacea24a479fc69f3c57693a724"><![CDATA[{
+            StreamReader oRead = null;
+            try
+            {
+                oRead = File.OpenText(file);
+                DateTime expires = DateTime.Parse(oRead.ReadLine(), CultureInfo.InvariantCulture);
+                if (expires < DateTime.UtcNow)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+			catch
+			{
+				//if check expire time failed, then force to expire the cache.
+				return true;
+			}
+            finally
+            {
+                if (oRead != null)
+                {
+                    oRead.Close();
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsPathInApplication">
+          <declaration><![CDATA[private static bool IsPathInApplication(string cacheFolder)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="175" sc="9" el="177" ec="10">FileProvider.cs</location>
+            <body hash="c989d75df43b51c4ecbdc76428312db7"><![CDATA[{
+            return cacheFolder.Contains(Globals.ApplicationMapPath);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeCache">
+          <declaration><![CDATA[private void PurgeCache(string folder)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="154" sc="9" el="172" ec="10">FileProvider.cs</location>
+            <body hash="d5ac78d0e09c18193bd5a90ea488de4b"><![CDATA[{
+            var filesNotDeleted = new StringBuilder();
+            int i = 0;
+            foreach (string File in Directory.GetFiles(folder, "*.resources"))
+            {
+                if (!FileSystemUtils.DeleteFileWithWait(File, 100, 200))
+                {
+                    filesNotDeleted.Append(String.Format("{0};", File));
+                }
+                else
+                {
+                    i += 1;
+                }
+            }
+            if (filesNotDeleted.Length > 0)
+            {
+                throw new IOException(String.Format("Deleted {0} files, however, some files are locked.  Could not delete the following files: {1}", i, filesNotDeleted));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeCache">
+          <declaration><![CDATA[public override void PurgeCache(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="236" sc="9" el="238" ec="10">FileProvider.cs</location>
+            <body hash="667190d4d30617136721dbc176342e2f"><![CDATA[{
+            PurgeCache(GetCacheFolder(portalId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeExpiredItems">
+          <declaration><![CDATA[public override void PurgeExpiredItems(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="241" sc="9" el="267" ec="10">FileProvider.cs</location>
+            <body hash="494fb442629a3f5254d5f552e18481aa"><![CDATA[{
+            var filesNotDeleted = new StringBuilder();
+            int i = 0;
+            string cacheFolder = GetCacheFolder(portalId);
+            if (Directory.Exists(cacheFolder) && IsPathInApplication(cacheFolder))
+            {
+                foreach (string File in Directory.GetFiles(cacheFolder, String.Format("*{0}", AttribFileExtension)))
+                {
+                    if (IsFileExpired(File))
+                    {
+                        string fileToDelete = File.Replace(AttribFileExtension, DataFileExtension);
+                        if (!FileSystemUtils.DeleteFileWithWait(fileToDelete, 100, 200))
+                        {
+                            filesNotDeleted.Append(String.Format("{0};", fileToDelete));
+                        }
+                        else
+                        {
+                            i += 1;
+                        }
+                    }
+                }
+            }
+            if (filesNotDeleted.Length > 0)
+            {
+                throw new IOException(String.Format("Deleted {0} files, however, some files are locked.  Could not delete the following files: {1}", i, filesNotDeleted));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Remove">
+          <declaration><![CDATA[public override void Remove(int tabModuleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="293" sc="9" el="321" ec="10">FileProvider.cs</location>
+            <body hash="51487cd4ebe4331b3b11d22c917442c5"><![CDATA[{
+            var controller = new ModuleController();
+            ModuleInfo tabModule = controller.GetTabModule(tabModuleId);
+
+            int portalId = tabModule.PortalID;
+            if (portalId == Null.NullInteger)
+            {
+                portalId = PortalSettings.Current.PortalId;
+            }
+
+            string cacheFolder = GetCacheFolder(portalId);
+            var filesNotDeleted = new StringBuilder();
+            int i = 0;
+            foreach (string File in Directory.GetFiles(cacheFolder, tabModuleId + "_*.*"))
+            {
+                if (!FileSystemUtils.DeleteFileWithWait(File, 100, 200))
+                {
+                    filesNotDeleted.Append(File + ";");
+                }
+                else
+                {
+                    i += 1;
+                }
+            }
+            if (filesNotDeleted.Length > 0)
+            {
+                throw new IOException("Deleted " + i + " files, however, some files are locked.  Could not delete the following files: " + filesNotDeleted);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetModule">
+          <declaration><![CDATA[public override void SetModule(int tabModuleId, string cacheKey, TimeSpan duration, byte[] output)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="270" sc="9" el="290" ec="10">FileProvider.cs</location>
+            <body hash="562a371177cb2adda57fe85ebe9c21ce"><![CDATA[{
+            try
+            {
+            
+                string cachedOutputFile = GetCachedOutputFileName(tabModuleId, cacheKey);
+                
+                if (File.Exists(cachedOutputFile))
+                {
+                    FileSystemUtils.DeleteFileWithWait(cachedOutputFile, 100, 200);
+                }
+
+                string attribFile = GetAttribFileName(tabModuleId, cacheKey);
+
+                File.WriteAllBytes(cachedOutputFile, output);
+                File.WriteAllLines(attribFile, new[] { DateTime.UtcNow.Add(duration).ToString(CultureInfo.InvariantCulture) });
+            }
+            catch (Exception ex)
+            {
+                Exceptions.Exceptions.LogException(ex);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="AttribFileExtension">
+          <declaration><![CDATA[private const string AttribFileExtension = ".attrib.resources";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="CacheFolderPath">
+          <declaration><![CDATA[private static readonly SharedDictionary<int, string> CacheFolderPath = new SharedDictionary<int, string>(LockingStrategy.ReaderWriter);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="DataFileExtension">
+          <declaration><![CDATA[private const string DataFileExtension = ".data.resources";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

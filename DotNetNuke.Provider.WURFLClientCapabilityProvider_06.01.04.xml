@@ -1,0 +1,838 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Provider.WURFLClientCapabilityProvider.dll" version="06.01.04" generated="2017-06-18 21:39:45Z" generationTime="1.5330549">
+  <namespace name="DotNetNuke.Services.ClientCapability">
+    <class name="DeviceInfoClientCapability">
+      <declaration><![CDATA[public class DeviceInfoClientCapability]]></declaration>
+      <documentation>
+        <summary>
+ WURFL Implementation of IClientCapability
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DeviceInfoClientCapability()]]></declaration>
+          <documentation>
+            <summary>
+   Default Constructor.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="73" ec="10">DeviceInfoClientCapability.cs</location>
+            <body hash="8174ccd72ff9aa1ff00baae96dfb997d"><![CDATA[public DeviceInfoClientCapability()
+        {
+            Capabilities = new Dictionary<string, string>();
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DeviceInfoClientCapability(DeviceInfo deviceInfo)]]></declaration>
+          <documentation>
+            <summary>
+   Constructor with DeviceInfo as parameter. Use this constructor to build capabailities collection
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="97" ec="10">DeviceInfoClientCapability.cs</location>
+            <body hash="de2762fb670e26e11030efe42a9abb89"><![CDATA[public DeviceInfoClientCapability(DeviceInfo deviceInfo)
+        {
+            DeviceInfo = deviceInfo;
+            Capabilities = new Dictionary<string, string>();
+            foreach (var knownCapability in KnownCapabilities)
+            {
+                Capabilities.Add(knownCapability, deviceInfo.GetCapability(knownCapability));
+            }
+
+            IsMobile = Capability<bool>(deviceInfo, is_wireless_device);
+            IsTablet = Capability<bool>(deviceInfo, is_tablet);
+            if (IsTablet)
+                IsMobile = false;
+            IsTouchScreen = Capability<String>(deviceInfo, pointing_method).Equals("touchscreen");
+            ScreenResolutionWidthInPixels = Capability<int>(deviceInfo, resolution_width);
+            ScreenResolutionHeightInPixels = Capability<int>(deviceInfo, resolution_height);
+            SupportsFlash = Capability<bool>(deviceInfo, full_flash_support);
+            BrowserName = Capability<string>(deviceInfo, mobile_browser);
+            HtmlPreferedDTD = Capability<string>(deviceInfo, html_preferred_dtd);            
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Capability">
+          <declaration><![CDATA[private T Capability<T>(DeviceInfo deviceInfo, string name)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <typeparam name="T"></typeparam>
+ <param name="deviceInfo">A DeviceInfo representing the device of interest</param>
+ <param name="name">A user Agent String</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="170" sc="9" el="173" ec="10">DeviceInfoClientCapability.cs</location>
+            <body hash="6d425b52b23d6011a74dfc2331ba92f1"><![CDATA[{
+            string ret = deviceInfo.GetCapability(name);            
+            return (T)Convert.ChangeType(ret, typeof(T));
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_knownCapabilities">
+          <declaration><![CDATA[private static IQueryable<string> _knownCapabilities;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="full_flash_support">
+          <declaration><![CDATA[private const string full_flash_support = "full_flash_support";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="html_preferred_dtd">
+          <declaration><![CDATA[private const string html_preferred_dtd = "html_preferred_dtd";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="is_tablet">
+          <declaration><![CDATA[private const string is_tablet = "is_tablet";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="is_wireless_device">
+          <declaration><![CDATA[private const string is_wireless_device = "is_wireless_device";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="mobile_browser">
+          <declaration><![CDATA[private const string mobile_browser = "mobile_browser";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="pointing_method">
+          <declaration><![CDATA[private const string pointing_method = "pointing_method";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="resolution_height">
+          <declaration><![CDATA[private const string resolution_height = "resolution_height";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="resolution_width">
+          <declaration><![CDATA[private const string resolution_width = "resolution_width";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="BrowserName">
+          <declaration><![CDATA[public string BrowserName]]></declaration>
+          <documentation>
+            <summary>
+ Represents the name of the broweser in the request
+ </summary>
+          </documentation>
+        </property>
+        <property name="Capabilities">
+          <declaration><![CDATA[public IDictionary<string, string> Capabilities]]></declaration>
+          <documentation>
+            <summary>
+ Capabilities - Collection of available capabilities of the device
+ </summary>
+          </documentation>
+        </property>
+        <property name="DeviceInfo">
+          <declaration><![CDATA[public DeviceInfo DeviceInfo]]></declaration>
+          <documentation>
+            <summary>
+ DeviceInfo - FifityOne DeviceInfo Object
+ </summary>
+          </documentation>
+        </property>
+        <property name="HtmlPreferedDTD">
+          <declaration><![CDATA[public string HtmlPreferedDTD]]></declaration>
+          <documentation>
+            <summary>
+ Returns the request prefered HTML DTD
+ </summary>
+          </documentation>
+        </property>
+        <property name="IsMobile">
+          <declaration><![CDATA[public bool IsMobile]]></declaration>
+          <documentation>
+            <summary>
+   Is request coming from a mobile device.
+ </summary>
+          </documentation>
+        </property>
+        <property name="IsTablet">
+          <declaration><![CDATA[public bool IsTablet]]></declaration>
+          <documentation>
+            <summary>
+   Is request coming from a tablet device.
+ </summary>
+          </documentation>
+        </property>
+        <property name="IsTouchScreen">
+          <declaration><![CDATA[public bool IsTouchScreen]]></declaration>
+          <documentation>
+            <summary>
+   Does the requesting device supports touch screen.
+ </summary>
+          </documentation>
+        </property>
+        <property name="KnownCapabilities">
+          <declaration><![CDATA[private static IQueryable<string> KnownCapabilities]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="116" sc="13" el="156" ec="14">DeviceInfoClientCapability.cs</location>
+            <body hash="f0b5a046c2d50ebe3731fa6add4cbb31"><![CDATA[{
+                if (_knownCapabilities == null)
+                {
+                    //add common default capabilities
+                    var knownCapabilities = new List<string>();
+
+                    knownCapabilities.Add(is_wireless_device);
+                    knownCapabilities.Add(is_tablet);
+                    knownCapabilities.Add("device_os");
+                    knownCapabilities.Add(mobile_browser);
+                    knownCapabilities.Add("mobile_browser_version");
+                    knownCapabilities.Add(pointing_method);
+                    knownCapabilities.Add("device_os_version");
+                    knownCapabilities.Add(resolution_width);
+                    knownCapabilities.Add(resolution_height);
+                    knownCapabilities.Add("brand_name");
+                    knownCapabilities.Add("marketing_name");
+                    knownCapabilities.Add("model_name");
+                    knownCapabilities.Add("physical_screen_width");
+                    knownCapabilities.Add("physical_screen_height");
+                    knownCapabilities.Add("max_image_width");
+                    knownCapabilities.Add("max_image_height");
+                    knownCapabilities.Add("access_key_support");
+                    knownCapabilities.Add("built_in_back_button_support");
+                    knownCapabilities.Add("colors");
+                    knownCapabilities.Add("png");
+                    knownCapabilities.Add("gif");
+                    knownCapabilities.Add("jpg");                    
+                    knownCapabilities.Add("ajax_support_javascript");
+                    knownCapabilities.Add("xhtml_support_level");
+                    knownCapabilities.Add("cookie_support");
+                    knownCapabilities.Add("preferred_markup");
+                    knownCapabilities.Add("xhtmlmp_preferred_mime_type");
+                    knownCapabilities.Add(full_flash_support);
+                    knownCapabilities.Add(html_preferred_dtd);
+
+                    _knownCapabilities = knownCapabilities.AsQueryable();                    
+                }
+
+                return _knownCapabilities;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ScreenResolutionHeightInPixels">
+          <declaration><![CDATA[public int ScreenResolutionHeightInPixels]]></declaration>
+          <documentation>
+            <summary>
+   ScreenResolution Height of the requester in Pixels.
+ </summary>
+          </documentation>
+        </property>
+        <property name="ScreenResolutionWidthInPixels">
+          <declaration><![CDATA[public int ScreenResolutionWidthInPixels]]></declaration>
+          <documentation>
+            <summary>
+   ScreenResolution Width of the requester in Pixels.
+ </summary>
+          </documentation>
+        </property>
+        <property name="SupportsFlash">
+          <declaration><![CDATA[public bool SupportsFlash]]></declaration>
+          <documentation>
+            <summary>
+   Does requester support Flash.
+ </summary>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="WURFLClientCapability">
+      <declaration><![CDATA[public class WURFLClientCapability : ClientCapability]]></declaration>
+      <documentation>
+        <summary>
+ WURFL Implementation of IClientCapability
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public WURFLClientCapability(DeviceInfo device) : this(new DeviceInfoClientCapability(device))]]></declaration>
+          <documentation>
+            <summary>
+ WURFLClientCapability constructor
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="3" el="26" ec="10">WURFLClientCapability.cs</location>
+            <body hash="4bb5592342dd2b27f25a98683adc58f9"><![CDATA[public WURFLClientCapability(DeviceInfo device)
+			: this(new DeviceInfoClientCapability(device))          
+        {
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public WURFLClientCapability(DeviceInfoClientCapability deviceInfoClientCapability)]]></declaration>
+          <documentation>
+            <summary>
+ WURFLClientCapability constructor
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="48" ec="10">WURFLClientCapability.cs</location>
+            <body hash="287e71567f6c3e1917e5ffd9bcf69938"><![CDATA[public WURFLClientCapability(DeviceInfoClientCapability deviceInfoClientCapability)
+        {
+
+            if (deviceInfoClientCapability != null)
+            {
+                ID = deviceInfoClientCapability.DeviceInfo.DeviceId;
+                IsMobile = deviceInfoClientCapability.IsMobile;
+                IsTablet = deviceInfoClientCapability.IsTablet;
+                IsTouchScreen = deviceInfoClientCapability.IsTouchScreen;
+                ScreenResolutionWidthInPixels = deviceInfoClientCapability.ScreenResolutionWidthInPixels;
+                ScreenResolutionHeightInPixels = deviceInfoClientCapability.ScreenResolutionHeightInPixels;
+                SupportsFlash = deviceInfoClientCapability.SupportsFlash;
+                BrowserName = deviceInfoClientCapability.BrowserName;
+                HtmlPreferedDTD = deviceInfoClientCapability.HtmlPreferedDTD;
+
+                Capabilities = deviceInfoClientCapability.Capabilities;
+            }
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="WURFLClientCapabilityProvider">
+      <declaration><![CDATA[public class WURFLClientCapabilityProvider : ClientCapabilityProvider]]></declaration>
+      <documentation>
+        <summary>
+   WURFL implementation of ClientCapabilityProvider
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public WURFLClientCapabilityProvider()]]></declaration>
+          <documentation>
+            <summary>
+ Default Contructor
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="9" el="67" ec="10">WURFLClientCapabilityProvider.cs</location>
+            <body hash="ad0eca1d093bcde9920fa5392dfea9e2"><![CDATA[public WURFLClientCapabilityProvider()
+        {
+            _wurflDataFile = Common.Globals.ApplicationMapPath + "/App_Data/WURFLDeviceDatabase/wurfl.xml.gz";
+            _wurflPatchFile = Common.Globals.ApplicationMapPath + "/App_Data/WURFLDeviceDatabase/web_browsers_patch.xml";
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public WURFLClientCapabilityProvider(string wurflDataFilePath, string tWurflPatchFilePath)]]></declaration>
+          <documentation>
+            <summary>
+ Constructotr injecting the path to data source.  The client code is responsible for passing the full path for the data source xml files
+ </summary>
+ <param name="wurflDataFilePath"></param>
+ <param name="tWurflPatchFilePath"></param></documentation>
+          <codeblock>
+            <location sl="74" sc="9" el="78" ec="10">WURFLClientCapabilityProvider.cs</location>
+            <body hash="5a41dd9297ad11b0e53fd69d659e6b10"><![CDATA[public WURFLClientCapabilityProvider(String wurflDataFilePath, String tWurflPatchFilePath)
+        {
+            _wurflDataFile = wurflDataFilePath;
+            _wurflPatchFile = tWurflPatchFilePath;
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static WURFLClientCapabilityProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="84" sc="9" el="190" ec="59">WURFLClientCapabilityProvider.cs</location>
+            <body hash="3a05b606adb45b36a1002b6f700b0e76"><![CDATA[static object _providerLock = new object();
+        static Provider _wurflProvider;
+        private static Provider WurflProvider
+        {
+            get
+            {
+                if (_wurflProvider != null)
+                    return _wurflProvider;
+
+                lock (_providerLock)
+                {
+                    // Initializes the WURFL infrastructure
+                    string[] wurflFiles = { _wurflDataFile, _wurflPatchFile };
+                    _wurflProvider = new Provider(wurflFiles, null, false);
+
+                    return _wurflProvider;
+                }
+            }
+        }
+
+        static object _capabiliyValueLock = new object();        
+        static IDictionary<string, List<string>> _capabilityValues;
+        private static IDictionary<string, List<string>> CapabilityValues
+        {
+            get
+            {
+                if (_capabilityValues != null)
+                    return _capabilityValues;
+
+                lock (_capabiliyValueLock)
+                {
+                    var capabilityValues = new Dictionary<string, List<string>>();
+                    
+                    foreach (var device in AllDevices)
+                    {                    	
+                        foreach (var capability in device.Capabilities)
+                        {
+							//check for empty capability.Value
+							if (string.IsNullOrEmpty((capability.Value)))
+							{
+								continue;
+							}
+
+							//if the capability is high piority item, add it to high piority list for later add them in top of list.
+							if (HighPiorityCapabilityValues.ContainsKey(capability.Key))
+							{
+								if (!HighPiorityCapabilityValues[capability.Key].Contains(capability.Value))
+								{
+									HighPiorityCapabilityValues[capability.Key].Add(capability.Value);
+								}
+							}
+							else
+							{
+								if (capabilityValues.ContainsKey(capability.Key))
+								{
+									if (!capabilityValues[capability.Key].Contains(capability.Value))
+									{
+										capabilityValues[capability.Key].Add(capability.Value);
+									}
+								}
+								else
+								{
+									capabilityValues.Add(capability.Key, new List<string>() { capability.Value });
+								}
+							}
+                        }
+                    }
+
+					//order the capability list
+					var sortedCapabilityValues = capabilityValues.OrderBy(c => c.Key);
+					//add high piority items into top of the list
+					_capabilityValues = HighPiorityCapabilityValues.Concat(sortedCapabilityValues).ToDictionary(c => c.Key, c => c.Value);
+
+                	return _capabilityValues;
+                }
+            }
+        }
+
+    	private static IDictionary<string, List<string>> _highPiorityCapabilityValues;
+		private static IDictionary<string, List<string>> HighPiorityCapabilityValues
+    	{
+    		get
+    		{
+    			if(_highPiorityCapabilityValues == null)
+    			{
+    				//add is_wireless_device,is_tablet,device_os,mobile_browser,mobile_browser_version,
+					//pointing_method,device_os_version,resolution_width,resolution_height,brand_name
+					//as high piority capability values, it will appear at the top of capability values list.
+					_highPiorityCapabilityValues = new Dictionary<string, List<string>>();
+
+					_highPiorityCapabilityValues.Add("is_wireless_device", new List<string>());
+					_highPiorityCapabilityValues.Add("is_tablet", new List<string>());
+					_highPiorityCapabilityValues.Add("device_os", new List<string>());
+					_highPiorityCapabilityValues.Add("mobile_browser", new List<string>());
+					_highPiorityCapabilityValues.Add("mobile_browser_version", new List<string>());
+					_highPiorityCapabilityValues.Add("pointing_method", new List<string>());
+					_highPiorityCapabilityValues.Add("device_os_version", new List<string>());
+					_highPiorityCapabilityValues.Add("resolution_width", new List<string>());
+					_highPiorityCapabilityValues.Add("resolution_height", new List<string>());
+					_highPiorityCapabilityValues.Add("brand_name", new List<string>());
+    			}
+
+    			return _highPiorityCapabilityValues;
+    		}
+    	}
+
+        static object _allCapabilitiesLock = new object();]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetAllClientCapabilities">
+          <declaration><![CDATA[public override IQueryable<IClientCapability> GetAllClientCapabilities()]]></declaration>
+          <documentation>
+            <summary>
+ Returns All available Client Capabilities present
+ </summary>
+ <returns>
+ List of IClientCapability present
+ </returns></documentation>
+          <codeblock>
+            <location sl="337" sc="9" el="339" ec="10">WURFLClientCapabilityProvider.cs</location>
+            <body hash="8560791d79490b13b8cbac445c90a46a"><![CDATA[{
+            return AllCapabilities;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAllClientCapabilityValues">
+          <declaration><![CDATA[public override IDictionary<string, List<string>> GetAllClientCapabilityValues()]]></declaration>
+          <documentation>
+            <summary>
+ Returns available Capability Values for every  Capability Name
+ </summary>
+ <returns>
+ Dictionary of Capability Name along with List of possible values of the Capability
+ </returns>
+ <example>Capability Name = mobile_browser, value = Safari, Andriod Webkit </example></documentation>
+          <codeblock>
+            <location sl="326" sc="9" el="328" ec="10">WURFLClientCapabilityProvider.cs</location>
+            <body hash="aca6e9a8ed252c8fe612632dbc3294d7"><![CDATA[{
+            return CapabilityValues;       
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAllDevicesCallBack">
+          <declaration><![CDATA[private static IQueryable<DeviceInfoClientCapability> GetAllDevicesCallBack(CacheItemArgs cacheItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="227" sc="3" el="242" ec="4">WURFLClientCapabilityProvider.cs</location>
+            <body hash="951f373894958cf295e9673bc5cfedc0"><![CDATA[{
+			var devices = new List<DeviceInfoClientCapability>();
+			var allDevicesField = WurflProvider.GetType().GetField("AllDevices", BindingFlags.Instance | BindingFlags.NonPublic);
+			var devicesInProvider = allDevicesField.GetValue(WurflProvider) as IDictionary<int, BaseDeviceInfo>;
+
+			foreach (var device in devicesInProvider.Values)
+			{
+				if (!string.IsNullOrEmpty(device.UserAgent))
+				{
+					devices.Add(new DeviceInfoClientCapability(device as DeviceInfo));
+				}
+			}
+
+			_allDevices = devices.AsQueryable();
+			return _allDevices;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="GetClientCapability">
+          <declaration><![CDATA[public override IClientCapability GetClientCapability(string userAgent)]]></declaration>
+          <documentation>
+            <summary>
+   Returns ClientCapability based on HttpRequest
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="254" sc="9" el="299" ec="10">WURFLClientCapabilityProvider.cs</location>
+            <body hash="ff589af6a005fa46a17dce00254eaa66"><![CDATA[{
+            DeviceInfoClientCapability deviceInfoClientCapability = null;
+
+			if (!string.IsNullOrEmpty(userAgent))
+			{
+				bool found = false;
+
+				//try to get content from cache
+                var cachedUserAgents = DataCache.GetCache<SharedDictionary<string, DeviceInfoClientCapability>>(UserAgentsCacheKey);
+				if (cachedUserAgents != null)
+                {
+                    using (cachedUserAgents.GetReadLock())
+                    {
+                        if (cachedUserAgents.ContainsKey(userAgent))
+                        {
+                            deviceInfoClientCapability = cachedUserAgents[userAgent];
+                            found = true;
+                        }                        
+                    }
+                }
+
+				if (!found)
+				{
+					var deviceInfo = WurflProvider.GetDeviceInfo(userAgent);
+					if (deviceInfo != null)
+					{
+						deviceInfoClientCapability = new DeviceInfoClientCapability(deviceInfo);
+
+						//update cache content
+						if(cachedUserAgents == null)
+						{
+                            cachedUserAgents = new SharedDictionary<string, DeviceInfoClientCapability>();
+						}
+                        using (cachedUserAgents.GetWriteLock())
+                        {
+                            cachedUserAgents[userAgent] = deviceInfoClientCapability;
+                        }
+					    DataCache.SetCache(UserAgentsCacheKey, cachedUserAgents, TimeSpan.FromMinutes(UserAgentsCacheTimeout));
+					}
+				}
+			}
+
+        	var wurflClientCapability =  new WURFLClientCapability(deviceInfoClientCapability);
+            wurflClientCapability.UserAgent = userAgent;
+            return wurflClientCapability;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetClientCapabilityById">
+          <declaration><![CDATA[public override IClientCapability GetClientCapabilityById(string clientId)]]></declaration>
+          <documentation>
+            <summary>
+   Returns ClientCapability based on ClientCapabilityId
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="305" sc="9" el="316" ec="10">WURFLClientCapabilityProvider.cs</location>
+            <body hash="e0e328d09e30fada732652d9bb46a152"><![CDATA[{
+			Requires.NotNullOrEmpty("clientId", clientId);
+
+        	var device = AllDevices.FirstOrDefault(c => c.DeviceInfo.DeviceId == clientId);
+            
+			if(device == null)
+			{
+				throw new Exception(string.Format("Can't get client capability for the id '{0}'", clientId));
+			}
+            
+			return new WURFLClientCapability(device);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_allCapabilities">
+          <declaration><![CDATA[private static IQueryable<IClientCapability> _allCapabilities;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_allCapabilitiesLock">
+          <declaration><![CDATA[private static object _allCapabilitiesLock = new object();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_allDevices">
+          <declaration><![CDATA[private static IQueryable<DeviceInfoClientCapability> _allDevices;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_capabilityValues">
+          <declaration><![CDATA[private static IDictionary<string, List<string>> _capabilityValues;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_capabiliyValueLock">
+          <declaration><![CDATA[private static object _capabiliyValueLock = new object();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_highPiorityCapabilityValues">
+          <declaration><![CDATA[private static IDictionary<string, List<string>> _highPiorityCapabilityValues;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_providerLock">
+          <declaration><![CDATA[private static object _providerLock = new object();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_wurflDataFile">
+          <declaration><![CDATA[private static string _wurflDataFile;]]></declaration>
+          <documentation>
+            <summary>
+ WURFL data paths
+ </summary>
+          </documentation>
+        </field>
+        <field name="_wurflPatchFile">
+          <declaration><![CDATA[private static string _wurflPatchFile;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_wurflProvider">
+          <declaration><![CDATA[private static Provider _wurflProvider;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="UserAgentsCacheKey">
+          <declaration><![CDATA[private const string UserAgentsCacheKey = "WurflUserAgents";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="UserAgentsCacheTimeout">
+          <declaration><![CDATA[private const int UserAgentsCacheTimeout = 60;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="AllCapabilities">
+          <declaration><![CDATA[private static IQueryable<IClientCapability> AllCapabilities]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="195" sc="13" el="211" ec="14">WURFLClientCapabilityProvider.cs</location>
+            <body hash="860cb6740c4b16b16f3797c2fa73aa6a"><![CDATA[{
+                if (_allCapabilities != null)
+                    return _allCapabilities;
+
+                lock (_allCapabilitiesLock)
+                {
+                    var capabilities = new List<IClientCapability>();
+                    
+                    foreach (var device in AllDevices)
+                    {
+                        capabilities.Add(new WURFLClientCapability(device));
+                    }
+
+                    _allCapabilities = capabilities.AsQueryable();
+                    return _allCapabilities;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="AllDevices">
+          <declaration><![CDATA[private static IQueryable<DeviceInfoClientCapability> AllDevices]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="218" sc="13" el="223" ec="14">WURFLClientCapabilityProvider.cs</location>
+            <body hash="1879f04f5364783c9d58af034a91394e"><![CDATA[{
+				const string cacheKey = "WURFLClientCapability_AllDevices";
+            	const int cacheTimeout = 1440;
+				var cacheArg = new CacheItemArgs(cacheKey, cacheTimeout, CacheItemPriority.Default);
+				return CBO.GetCachedObject<IQueryable<DeviceInfoClientCapability>>(cacheArg, GetAllDevicesCallBack);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CapabilityValues">
+          <declaration><![CDATA[private static IDictionary<string, List<string>> CapabilityValues]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="109" sc="13" el="159" ec="14">WURFLClientCapabilityProvider.cs</location>
+            <body hash="befc7255ee3e11da02357d8e69483ebf"><![CDATA[{
+                if (_capabilityValues != null)
+                    return _capabilityValues;
+
+                lock (_capabiliyValueLock)
+                {
+                    var capabilityValues = new Dictionary<string, List<string>>();
+                    
+                    foreach (var device in AllDevices)
+                    {                    	
+                        foreach (var capability in device.Capabilities)
+                        {
+							//check for empty capability.Value
+							if (string.IsNullOrEmpty((capability.Value)))
+							{
+								continue;
+							}
+
+							//if the capability is high piority item, add it to high piority list for later add them in top of list.
+							if (HighPiorityCapabilityValues.ContainsKey(capability.Key))
+							{
+								if (!HighPiorityCapabilityValues[capability.Key].Contains(capability.Value))
+								{
+									HighPiorityCapabilityValues[capability.Key].Add(capability.Value);
+								}
+							}
+							else
+							{
+								if (capabilityValues.ContainsKey(capability.Key))
+								{
+									if (!capabilityValues[capability.Key].Contains(capability.Value))
+									{
+										capabilityValues[capability.Key].Add(capability.Value);
+									}
+								}
+								else
+								{
+									capabilityValues.Add(capability.Key, new List<string>() { capability.Value });
+								}
+							}
+                        }
+                    }
+
+					//order the capability list
+					var sortedCapabilityValues = capabilityValues.OrderBy(c => c.Key);
+					//add high piority items into top of the list
+					_capabilityValues = HighPiorityCapabilityValues.Concat(sortedCapabilityValues).ToDictionary(c => c.Key, c => c.Value);
+
+                	return _capabilityValues;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="HighPiorityCapabilityValues">
+          <declaration><![CDATA[private static IDictionary<string, List<string>> HighPiorityCapabilityValues]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="166" sc="7" el="187" ec="8">WURFLClientCapabilityProvider.cs</location>
+            <body hash="5142bdeed557b64869d253d30c5edddc"><![CDATA[{
+    			if(_highPiorityCapabilityValues == null)
+    			{
+    				//add is_wireless_device,is_tablet,device_os,mobile_browser,mobile_browser_version,
+					//pointing_method,device_os_version,resolution_width,resolution_height,brand_name
+					//as high piority capability values, it will appear at the top of capability values list.
+					_highPiorityCapabilityValues = new Dictionary<string, List<string>>();
+
+					_highPiorityCapabilityValues.Add("is_wireless_device", new List<string>());
+					_highPiorityCapabilityValues.Add("is_tablet", new List<string>());
+					_highPiorityCapabilityValues.Add("device_os", new List<string>());
+					_highPiorityCapabilityValues.Add("mobile_browser", new List<string>());
+					_highPiorityCapabilityValues.Add("mobile_browser_version", new List<string>());
+					_highPiorityCapabilityValues.Add("pointing_method", new List<string>());
+					_highPiorityCapabilityValues.Add("device_os_version", new List<string>());
+					_highPiorityCapabilityValues.Add("resolution_width", new List<string>());
+					_highPiorityCapabilityValues.Add("resolution_height", new List<string>());
+					_highPiorityCapabilityValues.Add("brand_name", new List<string>());
+    			}
+
+    			return _highPiorityCapabilityValues;
+    		}]]></body>
+          </codeblock>
+        </property>
+        <property name="WurflProvider">
+          <declaration><![CDATA[private static Provider WurflProvider]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="13" el="101" ec="14">WURFLClientCapabilityProvider.cs</location>
+            <body hash="5e27a027262413f5ab9bde85fcb1fb3b"><![CDATA[{
+                if (_wurflProvider != null)
+                    return _wurflProvider;
+
+                lock (_providerLock)
+                {
+                    // Initializes the WURFL infrastructure
+                    string[] wurflFiles = { _wurflDataFile, _wurflPatchFile };
+                    _wurflProvider = new Provider(wurflFiles, null, false);
+
+                    return _wurflProvider;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

@@ -1,0 +1,551 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Provider.DBLoggingProvider.dll" version="06.02.01" generated="2017-06-19 00:23:02Z" generationTime="1.3764506">
+  <namespace name="DotNetNuke.Services.Log.EventLog.DBLoggingProvider">
+    <class name="DataProvider">
+      <declaration><![CDATA[public abstract class DataProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[protected DataProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddLog">
+          <declaration><![CDATA[public abstract void AddLog(string logGUID, string logTypeKey, int logUserID, string logUserName, int logPortalID, string logPortalName, DateTime logCreateDate, string logServerName, string logProperties, int logConfigID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="AddLogType">
+          <declaration><![CDATA[public abstract void AddLogType(string logTypeKey, string logTypeFriendlyName, string logTypeDescription, string logTypeCSSClass, string logTypeOwner);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="AddLogTypeConfigInfo">
+          <declaration><![CDATA[public abstract void AddLogTypeConfigInfo(bool loggingIsActive, string logTypeKey, string logTypePortalID, int keepMostRecent, bool emailNotificationIsActive, int threshold, int notificationThresholdTime, int notificationThresholdTimeType, string mailFromAddress, string mailToAddress);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ClearLog">
+          <declaration><![CDATA[public abstract void ClearLog();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLog">
+          <declaration><![CDATA[public abstract void DeleteLog(string logGUID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogType">
+          <declaration><![CDATA[public abstract void DeleteLogType(string logTypeKey);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogTypeConfigInfo">
+          <declaration><![CDATA[public abstract void DeleteLogTypeConfigInfo(string id);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEventLogPendingNotif">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetEventLogPendingNotif(int logConfigID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEventLogPendingNotifConfig">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetEventLogPendingNotifConfig();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogs">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetLogs(int portalID, string logType, int pageSize, int pageIndex);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeConfigInfo">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetLogTypeConfigInfo();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeConfigInfoByID">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetLogTypeConfigInfoByID(int id);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeInfo">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetLogTypeInfo();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSingleLog">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetSingleLog(string logGUID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="Instance">
+          <declaration><![CDATA[public static DataProvider Instance()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="9" el="38" ec="10">DataProvider.cs</location>
+            <body hash="701f2fc6864bad5aedc27bc491a46cbf"><![CDATA[{
+            return ComponentFactory.GetComponent<DataProvider>();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeLog">
+          <declaration><![CDATA[public abstract void PurgeLog();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateEventLogPendingNotif">
+          <declaration><![CDATA[public abstract void UpdateEventLogPendingNotif(int logConfigID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateLogType">
+          <declaration><![CDATA[public abstract void UpdateLogType(string logTypeKey, string logTypeFriendlyName, string logTypeDescription, string logTypeCSSClass, string logTypeOwner);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateLogTypeConfigInfo">
+          <declaration><![CDATA[public abstract void UpdateLogTypeConfigInfo(string id, bool loggingIsActive, string logTypeKey, string logTypePortalID, int keepMostRecent, bool emailNotificationIsActive, int threshold, int notificationThresholdTime, int notificationThresholdTimeType, string mailFromAddress, string mailToAddress);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SqlDataProvider">
+      <declaration><![CDATA[public class SqlDataProvider : DataProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SqlDataProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddLog">
+          <declaration><![CDATA[public override void AddLog(string logGUID, string logTypeKey, int logUserID, string logUserName, int logPortalID, string logPortalName, DateTime logCreateDate, string logServerName, string logProperties, int logConfigID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="80" ec="10">SqlDataProvider.cs</location>
+            <body hash="50af5be45dd6e063322539d5ebbe3493"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                                      DatabaseOwner + ObjectQualifier + "AddEventLog",
+                                      logGUID,
+                                      logTypeKey,
+                                      GetNull(logUserID),
+                                      GetNull(logUserName),
+                                      GetNull(logPortalID),
+                                      GetNull(logPortalName),
+                                      logCreateDate,
+                                      logServerName,
+                                      logProperties,
+                                      logConfigID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddLogType">
+          <declaration><![CDATA[public override void AddLogType(string logTypeKey, string logTypeFriendlyName, string logTypeDescription, string logTypeCSSClass, string logTypeOwner)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="9" el="85" ec="10">SqlDataProvider.cs</location>
+            <body hash="af4544868ab5732fd0e95fae0c4a59f4"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "AddEventLogType", logTypeKey, logTypeFriendlyName, logTypeDescription, logTypeOwner, logTypeCSSClass);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddLogTypeConfigInfo">
+          <declaration><![CDATA[public override void AddLogTypeConfigInfo(bool loggingIsActive, string logTypeKey, string logTypePortalID, int keepMostRecent, bool emailNotificationIsActive, int threshold, int notificationThresholdTime, int notificationThresholdTimeType, string mailFromAddress, string mailToAddress)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="9" el="115" ec="10">SqlDataProvider.cs</location>
+            <body hash="dd97db9782ce2bb7feb7aebbd53322ac"><![CDATA[{
+            int portalID;
+            if (logTypeKey == "*")
+            {
+                logTypeKey = "";
+            }
+            if (logTypePortalID == "*")
+            {
+                portalID = -1;
+            }
+            else
+            {
+                portalID = Convert.ToInt32(logTypePortalID);
+            }
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                                      DatabaseOwner + ObjectQualifier + "AddEventLogConfig",
+                                      GetNull(logTypeKey),
+                                      GetNull(portalID),
+                                      loggingIsActive,
+                                      keepMostRecent,
+                                      emailNotificationIsActive,
+                                      GetNull(threshold),
+                                      GetNull(notificationThresholdTime),
+                                      GetNull(notificationThresholdTimeType),
+                                      mailFromAddress,
+                                      mailToAddress);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ClearLog">
+          <declaration><![CDATA[public override void ClearLog()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="118" sc="9" el="120" ec="10">SqlDataProvider.cs</location>
+            <body hash="8f19ccbd343f5a7b2a4518ee3afae22e"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "DeleteEventLog", DBNull.Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLog">
+          <declaration><![CDATA[public override void DeleteLog(string logGUID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="123" sc="9" el="125" ec="10">SqlDataProvider.cs</location>
+            <body hash="988f6e3f2f2894077f2e2a2ca7691e17"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "DeleteEventLog", logGUID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogType">
+          <declaration><![CDATA[public override void DeleteLogType(string logTypeKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="128" sc="9" el="130" ec="10">SqlDataProvider.cs</location>
+            <body hash="09b1d779fea6a38f07979f3e2af4a2a5"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "DeleteEventLogType", logTypeKey);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteLogTypeConfigInfo">
+          <declaration><![CDATA[public override void DeleteLogTypeConfigInfo(string id)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="133" sc="9" el="135" ec="10">SqlDataProvider.cs</location>
+            <body hash="644e75d0853f58bedb7802db0555154a"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "DeleteEventLogConfig", id);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEventLogPendingNotif">
+          <declaration><![CDATA[public override System.Data.IDataReader GetEventLogPendingNotif(int logConfigID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="138" sc="9" el="140" ec="10">SqlDataProvider.cs</location>
+            <body hash="c41887e22f9520ba1cb61636a75dfbf8"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLogPendingNotif", logConfigID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEventLogPendingNotifConfig">
+          <declaration><![CDATA[public override System.Data.IDataReader GetEventLogPendingNotifConfig()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="143" sc="9" el="145" ec="10">SqlDataProvider.cs</location>
+            <body hash="47ee9a6c4149f52bf6398640eaf76356"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLogPendingNotifConfig");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogs">
+          <declaration><![CDATA[public override System.Data.IDataReader GetLogs(int portalID, string logType, int pageSize, int pageIndex)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="148" sc="9" el="150" ec="10">SqlDataProvider.cs</location>
+            <body hash="8bb2d4776c56d4285050a2b9c05f13ca"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLog", GetNull(portalID), GetNull(logType), pageSize, pageIndex);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeConfigInfo">
+          <declaration><![CDATA[public override System.Data.IDataReader GetLogTypeConfigInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="153" sc="9" el="155" ec="10">SqlDataProvider.cs</location>
+            <body hash="66a1388a69da85375e02fa1fe9f8fed1"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLogConfig", DBNull.Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeConfigInfoByID">
+          <declaration><![CDATA[public override System.Data.IDataReader GetLogTypeConfigInfoByID(int id)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="158" sc="9" el="160" ec="10">SqlDataProvider.cs</location>
+            <body hash="39b94fdb90b434fa5db1282adfefa751"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLogConfig", id);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLogTypeInfo">
+          <declaration><![CDATA[public override System.Data.IDataReader GetLogTypeInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="163" sc="9" el="165" ec="10">SqlDataProvider.cs</location>
+            <body hash="91f90fcd7ab155cebddb05f054f90d73"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLogType");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNull">
+          <declaration><![CDATA[private static object GetNull(object field)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="9" el="63" ec="10">SqlDataProvider.cs</location>
+            <body hash="aedf2ca2939af3fa7ccc8e98db1b9f98"><![CDATA[{
+            return Null.GetNull(field, DBNull.Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSingleLog">
+          <declaration><![CDATA[public override System.Data.IDataReader GetSingleLog(string logGUID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="168" sc="9" el="170" ec="10">SqlDataProvider.cs</location>
+            <body hash="b634f0b282adcfdcd77c6f023a0101d7"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetEventLogByLogGUID", logGUID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeLog">
+          <declaration><![CDATA[public override void PurgeLog()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="173" sc="9" el="178" ec="10">SqlDataProvider.cs</location>
+            <body hash="370f174be0a400088ed8cb050650e30e"><![CDATA[{
+			//Because event log is run on application end, app may not be fully installed, so check for the sproc first
+            string sql = "IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'" + DatabaseOwner + ObjectQualifier + "PurgeEventLog') AND OBJECTPROPERTY(id, N'IsProcedure') = 1) " + " BEGIN " +
+                         "    EXEC " + DatabaseOwner + ObjectQualifier + "PurgeEventLog" + " END ";
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, sql);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateEventLogPendingNotif">
+          <declaration><![CDATA[public override void UpdateEventLogPendingNotif(int logConfigID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="181" sc="9" el="183" ec="10">SqlDataProvider.cs</location>
+            <body hash="eabe4f246f93ae39a25fa4e5d667561d"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "UpdateEventLogPendingNotif", logConfigID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateLogType">
+          <declaration><![CDATA[public override void UpdateLogType(string logTypeKey, string logTypeFriendlyName, string logTypeDescription, string logTypeCSSClass, string logTypeOwner)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="186" sc="9" el="188" ec="10">SqlDataProvider.cs</location>
+            <body hash="a55e3f7731c7db9f77fba1ea1529d5ed"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "UpdateEventLogType", logTypeKey, logTypeFriendlyName, logTypeDescription, logTypeOwner, logTypeCSSClass);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateLogTypeConfigInfo">
+          <declaration><![CDATA[public override void UpdateLogTypeConfigInfo(string id, bool loggingIsActive, string logTypeKey, string logTypePortalID, int keepMostRecent, bool emailNotificationIsActive, int threshold, int notificationThresholdTime, int notificationThresholdTimeType, string mailFromAddress, string mailToAddress)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="192" sc="9" el="219" ec="10">SqlDataProvider.cs</location>
+            <body hash="1ae0427a3f3ba5b01b06f661e4137241"><![CDATA[{
+            int portalID;
+            if (logTypeKey == "*")
+            {
+                logTypeKey = "";
+            }
+            if (logTypePortalID == "*")
+            {
+                portalID = -1;
+            }
+            else
+            {
+                portalID = Convert.ToInt32(logTypePortalID);
+            }
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                                      DatabaseOwner + ObjectQualifier + "UpdateEventLogConfig",
+                                      id,
+                                      GetNull(logTypeKey),
+                                      GetNull(portalID),
+                                      loggingIsActive,
+                                      keepMostRecent,
+                                      emailNotificationIsActive,
+                                      GetNull(threshold),
+                                      GetNull(notificationThresholdTime),
+                                      GetNull(notificationThresholdTimeType),
+                                      mailFromAddress,
+                                      mailToAddress);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ConnectionString">
+          <declaration><![CDATA[public string ConnectionString]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="13" el="41" ec="14">SqlDataProvider.cs</location>
+            <body hash="61151ce45d4793ebf981479d49e758f7"><![CDATA[{
+                return Data.DataProvider.Instance().ConnectionString;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DatabaseOwner">
+          <declaration><![CDATA[public string DatabaseOwner]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="13" el="49" ec="14">SqlDataProvider.cs</location>
+            <body hash="bd934314ce26dbfaf12e2df8b461cfb5"><![CDATA[{
+                return Data.DataProvider.Instance().DatabaseOwner;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ObjectQualifier">
+          <declaration><![CDATA[public string ObjectQualifier]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="13" el="57" ec="14">SqlDataProvider.cs</location>
+            <body hash="ac915bd13f657a9577e9d532c24a42b4"><![CDATA[{
+                return Data.DataProvider.Instance().ObjectQualifier;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

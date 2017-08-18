@@ -1,0 +1,1990 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Modules.MemberDirectory.dll" version="07.04.02" generated="2017-06-19 14:51:34Z" generationTime="3.892493">
+  <namespace name="DotNetNuke.Modules.MemberDirectory">
+    <class name="Settings">
+      <declaration><![CDATA[public class Settings : SettingsView<MemberDirectorySettingsModel>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private string _defaultSearchField1 = "DisplayName";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="9" el="67" ec="54">Settings.ascx.cs</location>
+            <body hash="dfee7adb2be23b90c7a42b30e869b1b7"><![CDATA[private string _defaultSearchField1 = "DisplayName";
+        private string _defaultSearchField2 = "Email";
+        private string _defaultSearchField3 = "City";
+        private string _defaultSearchField4 = "Country";
+
+        private string _defaultSortField = "DisplayName";
+        private string _defaultSortOrder = "ASC";
+
+        private string _defaultFilterBy = "None";
+        private string _defaultFilterValue = String.Empty;
+
+        private string _defaultDisplaySearch = "Both";
+        private string _defaultEnablePopUp = "false";]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static Settings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="9" el="53" ec="92">Settings.ascx.cs</location>
+            <body hash="f425a59545b869239c2278916a4052b8"><![CDATA[private static string templatePath = "~/DesktopModules/MemberDirectory/Templates/"]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddSearchItem">
+          <declaration><![CDATA[private ListItem AddSearchItem(string name)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="301" sc="9" el="303" ec="10">Settings.ascx.cs</location>
+            <body hash="d6d4051097e5a0e86c0eead8f0d315a1"><![CDATA[{
+            return AddSearchItem(name, name);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddSearchItem">
+          <declaration><![CDATA[private ListItem AddSearchItem(string name, string resourceKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="306" sc="9" el="314" ec="10">Settings.ascx.cs</location>
+            <body hash="1a34de803bca25d369785a4c220a5bd8"><![CDATA[{
+            var text = Localization.GetString(resourceKey, LocalResourceFile);
+            if (String.IsNullOrEmpty(text))
+            {
+                text = resourceKey;
+            }
+            var item = new ListItem(text, name);
+            return item;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BindSortList">
+          <declaration><![CDATA[private void BindSortList()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="284" sc="9" el="298" ec="10">Settings.ascx.cs</location>
+            <body hash="fd72cbcf976940f0ceb59d5f6d9334e3"><![CDATA[{
+            sortFieldList.Items.Add(AddSearchItem("UserId"));
+            sortFieldList.Items.Add(AddSearchItem("LastName"));
+            sortFieldList.Items.Add(AddSearchItem("DisplayName"));
+            sortFieldList.Items.Add(AddSearchItem("CreatedOnDate", "DateCreated"));
+            var controller = new ListController();
+            var imageDataType = controller.GetListEntryInfo("DataType", "Image");
+            foreach (ProfilePropertyDefinition definition in Model.ProfileProperties)
+            {
+                if (imageDataType != null && definition.DataType != imageDataType.EntryID)
+                {
+                    sortFieldList.Items.Add(AddSearchItem(definition.PropertyName));
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLocalizeName">
+          <declaration><![CDATA[private string GetLocalizeName(string propertyName, string resourceFile)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="278" sc="9" el="281" ec="10">Settings.ascx.cs</location>
+            <body hash="21ebe4f9d2c6ca75e9493a7a243544f0"><![CDATA[{
+            var name = Localization.GetString("ProfileProperties_" + propertyName, resourceFile);
+            return string.IsNullOrEmpty(name) ? propertyName : name.Trim(':');
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPropertiesCollection">
+          <declaration><![CDATA[private ListItemCollection GetPropertiesCollection(string profileResourceFile)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="199" sc="9" el="207" ec="10">Settings.ascx.cs</location>
+            <body hash="11788ee77baa2e212e5396a0bcf685d8"><![CDATA[{
+            var result = new ListItemCollection();
+            foreach (var property in Model.ProfileProperties)
+            {
+                result.Add(new ListItem(GetLocalizeName(property.PropertyName,profileResourceFile),property.PropertyName));
+            }
+            
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="114" sc="9" el="118" ec="10">Settings.ascx.cs</location>
+            <body hash="842538fe5befb26c6dc6ab20d396bab4"><![CDATA[{
+            base.OnInit(e);
+
+            AutoDataBind = false;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="121" sc="9" el="196" ec="10">Settings.ascx.cs</location>
+            <body hash="3a872b9a97b30ed44dbe53f4f7af1162"><![CDATA[{
+            base.OnLoad(e);
+
+            if(!IsPostBack)
+            {
+                if (Model.Groups.Count > 0)
+                {
+                    groupList.DataSource = Model.Groups;
+                    groupList.DataBind();
+					groupList.Items.Insert(0, new ListItem(Localization.GetString("None_Specified"), Null.NullInteger.ToString()));
+                }
+                else
+                {
+                    filterBySelector.Items.FindByValue("Group").Enabled = false;
+                }
+
+                foreach (var rel in Model.Relationships)
+                {
+                    relationShipList.AddItem(Localization.GetString(rel.Name,Localization.SharedResourceFile),rel.RelationshipId.ToString());
+                }
+
+
+                var profileResourceFile = "~/DesktopModules/Admin/Security/App_LocalResources/Profile.ascx";
+
+                
+                System.Web.UI.WebControls.ListItemCollection propertiesCollection = GetPropertiesCollection(profileResourceFile);
+                    
+                
+                //Bind the ListItemCollection to the list
+                propertyList.DataSource = propertiesCollection;
+                propertyList.DataBind();
+
+                //Insert custom properties to the Search field lists
+                propertiesCollection.Insert(0,new ListItem(Localization.GetString("Username",LocalResourceFile),"Username"));
+                propertiesCollection.Insert(1, new ListItem(Localization.GetString("DisplayName", LocalResourceFile), "DisplayName"));
+                propertiesCollection.Insert(2, new ListItem(Localization.GetString("Email", LocalResourceFile), "Email"));
+
+                //Bind the properties collection in the Search Field Lists
+
+                searchField1List.DataSource = propertiesCollection;
+                searchField1List.DataBind();
+
+                searchField2List.DataSource = propertiesCollection;
+                searchField2List.DataBind();
+
+                searchField3List.DataSource = propertiesCollection;
+                searchField3List.DataBind();
+
+                searchField4List.DataSource = propertiesCollection;
+                searchField4List.DataBind();
+
+                filterBySelector.Select(_filterBy, false, 0);
+
+                switch (_filterBy)
+                {
+                    case "Group":
+                        groupList.Select(_filterValue, false, 0);
+                        break;
+                    case "Relationship":
+                        relationShipList.Select(_filterValue, false, 0);
+                        break;
+                    case "ProfileProperty":
+                        propertyList.Select(_filterValue, false, 0);
+                        break;
+                    case "User":
+                        break;
+                }
+
+                searchField1List.Select(GetTabModuleSetting("SearchField1", _defaultSearchField1));
+                searchField2List.Select(GetTabModuleSetting("SearchField2", _defaultSearchField2));
+                searchField3List.Select(GetTabModuleSetting("SearchField3", _defaultSearchField3));
+                searchField4List.Select(GetTabModuleSetting("SearchField4", _defaultSearchField4));
+
+                ExcludeHostUsersCheckBox.Checked = Boolean.Parse(GetTabModuleSetting("ExcludeHostUsers", "false"));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSavingSettings">
+          <declaration><![CDATA[protected override void OnSavingSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="236" sc="9" el="275" ec="10">Settings.ascx.cs</location>
+            <body hash="dd6f238cfeb6395f6e9cfd04e7d801e8"><![CDATA[{
+            Model.TabModuleSettings["ItemTemplate"] = itemTemplate.Text;
+            Model.TabModuleSettings["AlternateItemTemplate"] = alternateItemTemplate.Text;
+            Model.TabModuleSettings["PopUpTemplate"] = popUpTemplate.Text;
+            Model.TabModuleSettings["EnablePopUp"] = enablePopUp.Checked.ToString(CultureInfo.InvariantCulture);
+
+            _filterBy = filterBySelector.SelectedValue;
+            Model.ModuleSettings["FilterBy"] = _filterBy;
+
+            switch (_filterBy)
+            {
+                case "Group":
+                    Model.ModuleSettings["FilterValue"] = groupList.SelectedValue;
+                    break;
+                case "Relationship":
+                    Model.ModuleSettings["FilterValue"] = relationShipList.SelectedValue;
+                    break;
+                case "ProfileProperty":
+                    Model.ModuleSettings["FilterValue"] = propertyList.SelectedValue;
+                    break;
+            }
+
+            Model.ModuleSettings["FilterPropertyValue"] = propertyValue.Text;
+
+            Model.TabModuleSettings["SortField"] = sortFieldList.SelectedValue;
+            Model.TabModuleSettings["SortOrder"] = sortOrderList.SelectedValue;
+
+            Model.TabModuleSettings["SearchField1"] = searchField1List.SelectedValue;
+            Model.TabModuleSettings["SearchField2"] = searchField2List.SelectedValue;
+            Model.TabModuleSettings["SearchField3"] = searchField3List.SelectedValue;
+            Model.TabModuleSettings["SearchField4"] = searchField4List.SelectedValue;
+            Model.TabModuleSettings["DisplaySearch"] = displaySearchList.SelectedValue;
+
+            Model.TabModuleSettings["DisablePaging"] = disablePager.Checked.ToString(CultureInfo.InvariantCulture);
+            Model.TabModuleSettings["PageSize"] = pageSize.Text;
+            
+            Model.TabModuleSettings["ExcludeHostUsers"] = ExcludeHostUsersCheckBox.Checked.ToString(CultureInfo.InvariantCulture);
+
+            base.OnSavingSettings();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSettingsLoaded">
+          <declaration><![CDATA[protected override void OnSettingsLoaded()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="210" sc="9" el="233" ec="10">Settings.ascx.cs</location>
+            <body hash="70eb4fbc2bd8868d857b29a7c1e5fa2c"><![CDATA[{
+            base.OnSettingsLoaded();
+
+            if(!IsPostBack)
+            {
+                BindSortList();
+
+                itemTemplate.Text = GetTabModuleSetting("ItemTemplate", DefaultItemTemplate);
+                alternateItemTemplate.Text = GetTabModuleSetting("AlternateItemTemplate", DefaultAlternateItemTemplate);
+                popUpTemplate.Text = GetTabModuleSetting("PopUpTemplate", DefaultPopUpTemplate);
+                displaySearchList.Select(GetTabModuleSetting("DisplaySearch", _defaultDisplaySearch));
+                enablePopUp.Checked = Boolean.Parse(GetTabModuleSetting("EnablePopUp", _defaultEnablePopUp));
+
+                _filterBy = GetModuleSetting("FilterBy", _defaultFilterBy);
+                _filterValue = GetModuleSetting("FilterValue", _defaultFilterValue);
+                propertyValue.Text = GetModuleSetting("FilterPropertyValue", String.Empty);
+
+                sortFieldList.Select(GetTabModuleSetting("SortField", _defaultSortField));
+                sortOrderList.Select(GetTabModuleSetting("SortOrder", _defaultSortOrder));
+
+                pageSize.Text = GetTabModuleSetting("PageSize", DefaultPageSize.ToString(CultureInfo.InvariantCulture));
+                disablePager.Checked = Boolean.Parse(GetTabModuleSetting("DisablePaging", "False"));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_defaultDisplaySearch">
+          <declaration><![CDATA[private string _defaultDisplaySearch = "Both";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultEnablePopUp">
+          <declaration><![CDATA[private string _defaultEnablePopUp = "false";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultFilterBy">
+          <declaration><![CDATA[private string _defaultFilterBy = "None";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultFilterValue">
+          <declaration><![CDATA[private string _defaultFilterValue = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultSearchField1">
+          <declaration><![CDATA[private string _defaultSearchField1 = "DisplayName";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultSearchField2">
+          <declaration><![CDATA[private string _defaultSearchField2 = "Email";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultSearchField3">
+          <declaration><![CDATA[private string _defaultSearchField3 = "City";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultSearchField4">
+          <declaration><![CDATA[private string _defaultSearchField4 = "Country";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultSortField">
+          <declaration><![CDATA[private string _defaultSortField = "DisplayName";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultSortOrder">
+          <declaration><![CDATA[private string _defaultSortOrder = "ASC";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_filterBy">
+          <declaration><![CDATA[private string _filterBy;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_filterValue">
+          <declaration><![CDATA[private string _filterValue;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="alternateItemTemplate">
+          <declaration><![CDATA[protected TextBox alternateItemTemplate;]]></declaration>
+          <documentation>
+            <summary>
+ alternateItemTemplate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="alternateItemTemplateLabel">
+          <declaration><![CDATA[protected UserControl alternateItemTemplateLabel;]]></declaration>
+          <documentation>
+            <summary>
+ alternateItemTemplateLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DefaultPageSize">
+          <declaration><![CDATA[public const int DefaultPageSize = 20;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="disablePager">
+          <declaration><![CDATA[protected CheckBox disablePager;]]></declaration>
+          <documentation>
+            <summary>
+ disablePager control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="disablePagerLabel">
+          <declaration><![CDATA[protected UserControl disablePagerLabel;]]></declaration>
+          <documentation>
+            <summary>
+ disablePagerLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="displaySearchLabel">
+          <declaration><![CDATA[protected UserControl displaySearchLabel;]]></declaration>
+          <documentation>
+            <summary>
+ displaySearchLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="displaySearchList">
+          <declaration><![CDATA[protected DropDownList displaySearchList;]]></declaration>
+          <documentation>
+            <summary>
+ displaySearchList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="enablePopUp">
+          <declaration><![CDATA[protected CheckBox enablePopUp;]]></declaration>
+          <documentation>
+            <summary>
+ enablePopUp control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="enablePopUpLabel">
+          <declaration><![CDATA[protected UserControl enablePopUpLabel;]]></declaration>
+          <documentation>
+            <summary>
+ enablePopUpLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ExcludeHostUsersCheckBox">
+          <declaration><![CDATA[protected CheckBox ExcludeHostUsersCheckBox;]]></declaration>
+          <documentation>
+            <summary>
+ ExcludeHostUsersCheckBox control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ExcludeHostUsersLabel">
+          <declaration><![CDATA[protected UserControl ExcludeHostUsersLabel;]]></declaration>
+          <documentation>
+            <summary>
+ ExcludeHostUsersLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="filterBySelector">
+          <declaration><![CDATA[protected RadioButtonList filterBySelector;]]></declaration>
+          <documentation>
+            <summary>
+ filterBySelector control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="filterBySelectorLabel">
+          <declaration><![CDATA[protected UserControl filterBySelectorLabel;]]></declaration>
+          <documentation>
+            <summary>
+ filterBySelectorLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="groupList">
+          <declaration><![CDATA[protected DropDownList groupList;]]></declaration>
+          <documentation>
+            <summary>
+ groupList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="itemTemplate">
+          <declaration><![CDATA[protected TextBox itemTemplate;]]></declaration>
+          <documentation>
+            <summary>
+ itemTemplate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="itemTemplateLabel">
+          <declaration><![CDATA[protected UserControl itemTemplateLabel;]]></declaration>
+          <documentation>
+            <summary>
+ itemTemplateLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="pageSize">
+          <declaration><![CDATA[protected TextBox pageSize;]]></declaration>
+          <documentation>
+            <summary>
+ pageSize control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="pageSizeLabel">
+          <declaration><![CDATA[protected UserControl pageSizeLabel;]]></declaration>
+          <documentation>
+            <summary>
+ pageSizeLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="popUpTemplate">
+          <declaration><![CDATA[protected TextBox popUpTemplate;]]></declaration>
+          <documentation>
+            <summary>
+ popUpTemplate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="popUpTemplateLabel">
+          <declaration><![CDATA[protected UserControl popUpTemplateLabel;]]></declaration>
+          <documentation>
+            <summary>
+ popUpTemplateLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="propertyList">
+          <declaration><![CDATA[protected DropDownList propertyList;]]></declaration>
+          <documentation>
+            <summary>
+ propertyList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="propertyValue">
+          <declaration><![CDATA[protected TextBox propertyValue;]]></declaration>
+          <documentation>
+            <summary>
+ propertyValue control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="relationShipList">
+          <declaration><![CDATA[protected DropDownList relationShipList;]]></declaration>
+          <documentation>
+            <summary>
+ relationShipList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="searchField1Label">
+          <declaration><![CDATA[protected UserControl searchField1Label;]]></declaration>
+          <documentation>
+            <summary>
+ searchField1Label control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="searchField1List">
+          <declaration><![CDATA[protected DropDownList searchField1List;]]></declaration>
+          <documentation>
+            <summary>
+ searchField1List control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="searchField2Label">
+          <declaration><![CDATA[protected UserControl searchField2Label;]]></declaration>
+          <documentation>
+            <summary>
+ searchField2Label control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="searchField2List">
+          <declaration><![CDATA[protected DropDownList searchField2List;]]></declaration>
+          <documentation>
+            <summary>
+ searchField2List control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="searchField3Label">
+          <declaration><![CDATA[protected UserControl searchField3Label;]]></declaration>
+          <documentation>
+            <summary>
+ searchField3Label control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="searchField3List">
+          <declaration><![CDATA[protected DropDownList searchField3List;]]></declaration>
+          <documentation>
+            <summary>
+ searchField3List control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="searchField4Label">
+          <declaration><![CDATA[protected UserControl searchField4Label;]]></declaration>
+          <documentation>
+            <summary>
+ searchField4Label control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="searchField4List">
+          <declaration><![CDATA[protected DropDownList searchField4List;]]></declaration>
+          <documentation>
+            <summary>
+ searchField4List control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="sortFieldList">
+          <declaration><![CDATA[protected DropDownList sortFieldList;]]></declaration>
+          <documentation>
+            <summary>
+ sortFieldList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="sortFieldListLabel">
+          <declaration><![CDATA[protected UserControl sortFieldListLabel;]]></declaration>
+          <documentation>
+            <summary>
+ sortFieldListLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="sortOrderList">
+          <declaration><![CDATA[protected DropDownList sortOrderList;]]></declaration>
+          <documentation>
+            <summary>
+ sortOrderList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="sortOrderListLabel">
+          <declaration><![CDATA[protected UserControl sortOrderListLabel;]]></declaration>
+          <documentation>
+            <summary>
+ sortOrderListLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="templatePath">
+          <declaration><![CDATA[private static string templatePath = "~/DesktopModules/MemberDirectory/Templates/";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="DefaultAlternateItemTemplate">
+          <declaration><![CDATA[public static string DefaultAlternateItemTemplate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="75" sc="13" el="82" ec="14">Settings.ascx.cs</location>
+            <body hash="1d6b883d9bc8dc62985051e6c535ef80"><![CDATA[{
+                string template;
+                using (StreamReader sr = new StreamReader(HttpContext.Current.Server.MapPath(templatePath + "AlternateItemTemplate.htm"))) 
+                {
+                    template = sr.ReadToEnd();
+                }
+                return template;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DefaultItemTemplate">
+          <declaration><![CDATA[public static string DefaultItemTemplate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="88" sc="13" el="95" ec="14">Settings.ascx.cs</location>
+            <body hash="9b9754b13e526886bc875297b5338c39"><![CDATA[{
+                string template;
+                using (StreamReader sr = new StreamReader(HttpContext.Current.Server.MapPath(templatePath + "ItemTemplate.htm")))
+                {
+                    template = sr.ReadToEnd();
+                }
+                return template;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DefaultPopUpTemplate">
+          <declaration><![CDATA[public static string DefaultPopUpTemplate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="103" sc="13" el="110" ec="14">Settings.ascx.cs</location>
+            <body hash="aa7d2866397fa93f3c3d6eabea132e26"><![CDATA[{
+                string template;
+                using (StreamReader sr = new StreamReader(HttpContext.Current.Server.MapPath(templatePath + "PopUpTemplate.htm")))
+                {
+                    template = sr.ReadToEnd();
+                }
+                return template;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="View">
+      <declaration><![CDATA[public class View : ProfileModuleUserControlBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public View()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddIe7StyleSheet">
+          <declaration><![CDATA[private void AddIe7StyleSheet()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="193" sc="9" el="200" ec="10">View.ascx.cs</location>
+            <body hash="cef71058b9c6ead6e87be0575691f2ac"><![CDATA[{
+            var browser = Request.Browser;
+            if (browser.Type == "IE" || browser.MajorVersion < 8)
+            {
+                const string cssLink = @"<link href=""/DesktopModules/MemberDirectory/ie-member-directory.css"" rel=""stylesheet"" type=""text/css"" />";
+                Page.Header.Controls.Add(new LiteralControl(cssLink));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSetting">
+          <declaration><![CDATA[private string GetSetting(System.Collections.Hashtable settings, string key, string defaultValue)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="203" sc="9" el="210" ec="10">View.ascx.cs</location>
+            <body hash="d6e41efbb70e14914eb45aa8fc323a30"><![CDATA[{
+            string setting = defaultValue;
+            if (settings[key] != null)
+            {
+                setting = Convert.ToString(settings[key]);
+            }
+            return setting;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSettingAsInt32">
+          <declaration><![CDATA[private int GetSettingAsInt32(System.Collections.Hashtable settings, string key, int defaultValue)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="213" sc="9" el="220" ec="10">View.ascx.cs</location>
+            <body hash="1e5884fb7705b98e3ea44d3732a0bb16"><![CDATA[{
+            int setting = defaultValue;
+            if (settings[key] != null)
+            {
+                setting = Convert.ToInt32(settings[key]);
+            }
+            return setting;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="63" ec="10">View.ascx.cs</location>
+            <body hash="7ca5b740e508ec9ddb03fd278ad74258"><![CDATA[{
+            ServicesFramework.Instance.RequestAjaxAntiForgerySupport();
+            JavaScript.RequestRegistration(CommonJs.DnnPlugins);
+            JavaScript.RequestRegistration(CommonJs.jQueryFileUpload);
+            JavaScript.RequestRegistration(CommonJs.Knockout);
+
+            ClientResourceManager.RegisterScript(Page, "~/DesktopModules/MemberDirectory/Scripts/MemberDirectory.js");
+            AddIe7StyleSheet();
+
+            searchBar.Visible = DisplaySearch != "None";
+	        advancedSearchBar.Visible = DisplaySearch == "Both";
+            popUpPanel.Visible = EnablePopUp;
+            loadMore.Visible = !DisablePaging;
+
+            base.OnInit(e);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="advancedSearchBar">
+          <declaration><![CDATA[protected HtmlGenericControl advancedSearchBar;]]></declaration>
+          <documentation>
+            <summary>
+ advancedSearchBar control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnCssInclude1">
+          <declaration><![CDATA[protected DnnCssInclude DnnCssInclude1;]]></declaration>
+          <documentation>
+            <summary>
+ DnnCssInclude1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnCssInclude2">
+          <declaration><![CDATA[protected DnnCssInclude DnnCssInclude2;]]></declaration>
+          <documentation>
+            <summary>
+ DnnCssInclude2 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnCssInclude3">
+          <declaration><![CDATA[protected DnnCssInclude DnnCssInclude3;]]></declaration>
+          <documentation>
+            <summary>
+ DnnCssInclude3 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnCssInclude4">
+          <declaration><![CDATA[protected DnnCssInclude DnnCssInclude4;]]></declaration>
+          <documentation>
+            <summary>
+ DnnCssInclude4 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude1">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude1;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude2">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude2;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude2 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude3">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude3;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude3 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DnnJsInclude6">
+          <declaration><![CDATA[protected DnnJsInclude DnnJsInclude6;]]></declaration>
+          <documentation>
+            <summary>
+ DnnJsInclude6 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="loadMore">
+          <declaration><![CDATA[protected HtmlGenericControl loadMore;]]></declaration>
+          <documentation>
+            <summary>
+ loadMore control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="memberDirectory">
+          <declaration><![CDATA[protected HtmlGenericControl memberDirectory;]]></declaration>
+          <documentation>
+            <summary>
+ memberDirectory control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="popUpPanel">
+          <declaration><![CDATA[protected HtmlGenericControl popUpPanel;]]></declaration>
+          <documentation>
+            <summary>
+ popUpPanel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="searchBar">
+          <declaration><![CDATA[protected HtmlGenericControl searchBar;]]></declaration>
+          <documentation>
+            <summary>
+ searchBar control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="AlternateItemTemplate">
+          <declaration><![CDATA[protected string AlternateItemTemplate]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="DisablePaging">
+          <declaration><![CDATA[protected bool DisablePaging]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="DisablePrivateMessage">
+          <declaration><![CDATA[protected bool DisablePrivateMessage]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="173" sc="4" el="177" ec="5">View.ascx.cs</location>
+            <body hash="9e87277f2f4671e9e3b0ae9d73250aa0"><![CDATA[{
+				return PortalSettings.DisablePrivateMessage && !UserInfo.IsSuperUser
+					&& !UserInfo.IsInRole(PortalSettings.AdministratorRoleName);
+
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="DisplayModule">
+          <declaration><![CDATA[public override bool DisplayModule]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="124" sc="13" el="126" ec="14">View.ascx.cs</location>
+            <body hash="63c750ad47f55dfa4b8c17832f9f72e9"><![CDATA[{
+                return !(ProfileUserId == ModuleContext.PortalSettings.UserId && FilterBy == "User") && ModuleContext.PortalSettings.UserId > -1;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DisplaySearch">
+          <declaration><![CDATA[protected string DisplaySearch]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="EnablePopUp">
+          <declaration><![CDATA[protected bool EnablePopUp]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="FilterBy">
+          <declaration><![CDATA[protected string FilterBy]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="GroupId">
+          <declaration><![CDATA[protected int GroupId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="93" sc="13" el="100" ec="14">View.ascx.cs</location>
+            <body hash="1eade167bc17e069c36cf791739403aa"><![CDATA[{
+                int groupId = Null.NullInteger;
+                if (!string.IsNullOrEmpty(Request.Params["GroupId"]))
+                {
+                    groupId = Int32.Parse(Request.Params["GroupId"]);
+                }
+                return groupId;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ItemTemplate">
+          <declaration><![CDATA[protected string ItemTemplate]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="PageSize">
+          <declaration><![CDATA[protected int PageSize]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="111" sc="13" el="113" ec="14">View.ascx.cs</location>
+            <body hash="dab7dddbbf593b1471b1be6824e8b221"><![CDATA[{
+                return GetSettingAsInt32(ModuleContext.Configuration.TabModuleSettings, "PageSize", Settings.DefaultPageSize);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PopUpTemplate">
+          <declaration><![CDATA[protected string PopUpTemplate]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="PortalSettings">
+          <declaration><![CDATA[protected PortalSettings PortalSettings]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ProfileResourceFile">
+          <declaration><![CDATA[public string ProfileResourceFile]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ProfileUrlUserToken">
+          <declaration><![CDATA[protected string ProfileUrlUserToken]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="137" sc="13" el="139" ec="14">View.ascx.cs</location>
+            <body hash="e54cb8e5c4b21effc0f8a0e8d443d711"><![CDATA[{
+                return "PROFILEUSER";
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SearchField1">
+          <declaration><![CDATA[protected string SearchField1]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SearchField2">
+          <declaration><![CDATA[protected string SearchField2]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SearchField3">
+          <declaration><![CDATA[protected string SearchField3]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SearchField4">
+          <declaration><![CDATA[protected string SearchField4]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="UserInfo">
+          <declaration><![CDATA[protected UserInfo UserInfo]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ViewProfileUrl">
+          <declaration><![CDATA[protected string ViewProfileUrl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="165" sc="13" el="167" ec="14">View.ascx.cs</location>
+            <body hash="1dc083fbdf5c4b92a4288238385f914c"><![CDATA[{
+                return Globals.NavigateURL(ModuleContext.PortalSettings.UserTabId, "", "userId=PROFILEUSER");
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.MemberDirectory.Components">
+    <class name="UpgradeController">
+      <declaration><![CDATA[public class UpgradeController : IUpgradeable]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpgradeController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpdateDisplaySearchSettings">
+          <declaration><![CDATA[private void UpdateDisplaySearchSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="3" el="81" ec="4">Components\UpgradeController.cs</location>
+            <body hash="0b55bf9b826cd78c23295fa70f3e4130"><![CDATA[{
+            foreach (PortalInfo portal in PortalController.Instance.GetPortals())
+            {
+                foreach (ModuleInfo module in ModuleController.Instance.GetModulesByDefinition(portal.PortalID, "Member Directory"))
+	            {
+					foreach (ModuleInfo tabModule in ModuleController.Instance.GetAllTabsModulesByModuleID(module.ModuleID))
+					{
+					    bool oldValue;
+                        if (tabModule.TabModuleSettings.ContainsKey("DisplaySearch") && bool.TryParse(tabModule.TabModuleSettings["DisplaySearch"].ToString(), out oldValue))
+			            {
+                            ModuleController.Instance.UpdateTabModuleSetting(tabModule.TabModuleID, "DisplaySearch", oldValue ? "Both" : "None");
+			            }
+		            }
+	            }
+            }
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string Version)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="3" el="63" ec="4">Components\UpgradeController.cs</location>
+            <body hash="1cafedfdec66bd145b418748d27adf07"><![CDATA[{
+			try
+			{
+				switch (Version)
+				{
+					case "07.00.06":
+						UpdateDisplaySearchSettings();
+						break;
+				}
+			}
+			catch (Exception ex)
+			{
+				ExceptionLogController xlc = new ExceptionLogController();
+				xlc.AddLog(ex);
+
+				return "Failed";
+			}
+
+			return "Success";
+		}]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.MemberDirectory.Presenters">
+    <class name="ModuleSettingsPresenter">
+      <declaration><![CDATA[public class ModuleSettingsPresenter : ModuleSettingsPresenter<ISettingsView<MemberDirectorySettingsModel>, MemberDirectorySettingsModel>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ModuleSettingsPresenter(ISettingsView<MemberDirectorySettingsModel> view) : base(view)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="9" el="46" ec="10">Presenters\ModuleSettingsPresenter.cs</location>
+            <body hash="0b18c5739b0f9fda38fd5dfa2a414932"><![CDATA[public ModuleSettingsPresenter(ISettingsView<MemberDirectorySettingsModel> view)
+            : base(view)
+        {
+            
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="67" ec="10">Presenters\ModuleSettingsPresenter.cs</location>
+            <body hash="2d9d4bbbe14e140e6e6cb7c625ec04c6"><![CDATA[{
+            base.OnLoad();
+
+            View.Model.Groups = RoleController.Instance.GetRoles(PortalId, r => r.Status == RoleStatus.Approved);
+            View.Model.Relationships = RelationshipController.Instance.GetRelationshipsByPortalId(PortalId);
+
+            View.Model.ProfileProperties = new List<ProfilePropertyDefinition>();
+            foreach (ProfilePropertyDefinition definition in ProfileController.GetPropertyDefinitionsByPortal(PortalId))
+            {
+                var controller = new ListController();
+                ListEntryInfo textType = controller.GetListEntryInfo("DataType", "Text");
+                ListEntryInfo regionType = controller.GetListEntryInfo("DataType", "Region");
+                ListEntryInfo countryType = controller.GetListEntryInfo("DataType", "Country");
+                if (definition.DataType == textType.EntryID || definition.DataType == regionType.EntryID || definition.DataType == countryType.EntryID)
+                {
+                    View.Model.ProfileProperties.Add(definition);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.MemberDirectory.Services">
+    <class name="Member">
+      <declaration><![CDATA[public class Member]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Member(UserInfo user, PortalSettings settings)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="48" ec="10">Services\Member.cs</location>
+            <body hash="b817b7317a5f718f797402c00ade22fd"><![CDATA[public Member(UserInfo user, PortalSettings settings)
+        {
+            _user = user;
+            _settings = settings;
+            _viewer = settings.UserInfo;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetProfileProperty">
+          <declaration><![CDATA[private string GetProfileProperty(string propertyName)]]></declaration>
+          <documentation>
+            <summary>
+ This method returns the value of the ProfileProperty if is defined, otherwise it returns an Empty string
+ </summary>
+ <param name="propertyName">property name</param>
+ <returns>property value</returns></documentation>
+          <codeblock>
+            <location sl="163" sc="9" el="168" ec="10">Services\Member.cs</location>
+            <body hash="c44e8e75ae9f871267fc829900cda1d2"><![CDATA[{
+            var profileProperties = ProfileProperties;
+            string value;
+
+            return profileProperties.TryGetValue(propertyName, out value) ? value : string.Empty;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_settings">
+          <declaration><![CDATA[private PortalSettings _settings;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_user">
+          <declaration><![CDATA[private UserInfo _user;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_viewer">
+          <declaration><![CDATA[private UserInfo _viewer;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="City">
+          <declaration><![CDATA[public string City]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Country">
+          <declaration><![CDATA[public string Country]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="DisplayName">
+          <declaration><![CDATA[public string DisplayName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Email">
+          <declaration><![CDATA[public string Email]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="FirstName">
+          <declaration><![CDATA[public string FirstName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="FollowerStatus">
+          <declaration><![CDATA[public int FollowerStatus]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="FollowingStatus">
+          <declaration><![CDATA[public int FollowingStatus]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="FriendId">
+          <declaration><![CDATA[public int FriendId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="FriendStatus">
+          <declaration><![CDATA[public int FriendStatus]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LastName">
+          <declaration><![CDATA[public string LastName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="MemberId">
+          <declaration><![CDATA[public int MemberId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Phone">
+          <declaration><![CDATA[public string Phone]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="PhotoURL">
+          <declaration><![CDATA[public string PhotoURL]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ProfileProperties">
+          <declaration><![CDATA[public System.Collections.Generic.Dictionary<string, string> ProfileProperties]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="118" sc="13" el="134" ec="14">Services\Member.cs</location>
+            <body hash="316bbac6888533452a2f2d0a598b16fd"><![CDATA[{
+                var properties = new Dictionary<string, string>();
+                bool propertyNotFound = false;
+                var propertyAccess = new ProfilePropertyAccess(_user);
+                foreach(ProfilePropertyDefinition property in _user.Profile.ProfileProperties)
+                {
+                    string value = propertyAccess.GetProperty(property.PropertyName,
+                                                             String.Empty,
+                                                             Thread.CurrentThread.CurrentUICulture,
+                                                             _viewer,
+                                                             Scope.DefaultSettings,
+                                                             ref propertyNotFound);
+
+                    properties[property.PropertyName] = string.IsNullOrEmpty(value) ? "" : Common.Utilities.HtmlUtils.Clean(WebUtility.HtmlDecode(value), false);
+                }
+                return properties;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ProfileUrl">
+          <declaration><![CDATA[public string ProfileUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Title">
+          <declaration><![CDATA[public string Title]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="UserName">
+          <declaration><![CDATA[public string UserName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Website">
+          <declaration><![CDATA[public string Website]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="MemberDirectoryController">
+      <declaration><![CDATA[public class MemberDirectoryController : DnnApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MemberDirectoryController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static MemberDirectoryController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="6" el="47" ec="112">Services\MemberDirectoryController.cs</location>
+            <body hash="25a93727819f37b3990f90e6095fda6b"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (MemberDirectoryController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AcceptFriend">
+          <declaration><![CDATA[public HttpResponseMessage AcceptFriend(MemberDirectoryController.FriendDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="277" sc="9" el="289" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="1caec76441a9e01f2fab1466f2696c58"><![CDATA[{
+            try
+            {
+                var friend = UserController.GetUserById(PortalSettings.PortalId, postData.FriendId);
+                FriendsController.Instance.AcceptFriend(friend);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddFriend">
+          <declaration><![CDATA[public HttpResponseMessage AddFriend(MemberDirectoryController.FriendDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="294" sc="9" el="306" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="1c5dbf1b0e16831bf96ab9a49c3f7241"><![CDATA[{
+            try
+            {
+                var friend = UserController.GetUserById(PortalSettings.PortalId, postData.FriendId);
+                FriendsController.Instance.AddFriend(friend);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddSearchTerm">
+          <declaration><![CDATA[private static void AddSearchTerm(ref string propertyNames, ref string propertyValues, string name, string value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="57" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="198afcb4bd13e1b20d568dcf287d1252"><![CDATA[{
+            if (!String.IsNullOrEmpty(value))
+            {
+                propertyNames += name + ",";
+                propertyValues += value + ",";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AdvancedSearch">
+          <declaration><![CDATA[public HttpResponseMessage AdvancedSearch(int userId, int groupId, int pageIndex, int pageSize, string searchTerm1, string searchTerm2, string searchTerm3, string searchTerm4)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="196" sc="9" el="221" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="6f5ca00f9711a2e3e5b302dcf0ed4644"><![CDATA[{
+            try
+            {
+                if (userId < 0) userId = PortalSettings.UserId;
+                
+                var searchField1 = GetSetting(ActiveModule.TabModuleSettings, "SearchField1", "DisplayName");
+                var searchField2 = GetSetting(ActiveModule.TabModuleSettings, "SearchField2", "Email");
+                var searchField3 = GetSetting(ActiveModule.TabModuleSettings, "SearchField3", "City");
+                var searchField4 = GetSetting(ActiveModule.TabModuleSettings, "SearchField4", "Country");
+
+                var propertyNames = "";
+                var propertyValues = "";
+                AddSearchTerm(ref propertyNames, ref propertyValues, searchField1, searchTerm1);
+                AddSearchTerm(ref propertyNames, ref propertyValues, searchField2, searchTerm2);
+                AddSearchTerm(ref propertyNames, ref propertyValues, searchField3, searchTerm3);
+                AddSearchTerm(ref propertyNames, ref propertyValues, searchField4, searchTerm4);
+
+                return Request.CreateResponse(HttpStatusCode.OK, GetMembers(
+                                                                    GetUsers(userId, groupId, searchTerm1, pageIndex, pageSize, propertyNames, propertyValues)));
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BasicSearch">
+          <declaration><![CDATA[public HttpResponseMessage BasicSearch(int groupId, string searchTerm, int pageIndex, int pageSize)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="225" sc="9" el="236" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="c61d39f0d97d0ea4eed827d9145f7f86"><![CDATA[{
+            try
+            {
+                var users = GetUsers(PortalSettings.UserId, groupId, string.IsNullOrEmpty(searchTerm) ? string.Empty : searchTerm.Trim(), pageIndex, pageSize, "", "");
+                return Request.CreateResponse(HttpStatusCode.OK, GetMembers(users));
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CanViewGroupMembers">
+          <declaration><![CDATA[private bool CanViewGroupMembers(int portalId, int groupId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="77" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="268ce6078dfcdfa371cdae24ba944146"><![CDATA[{
+            var group = RoleController.Instance.GetRole(portalId, r => r.RoleID == groupId);
+            if(group == null)
+            {
+                return false;
+            }
+
+            var canView = (group.SecurityMode == SecurityMode.SecurityRole)
+                               ? (PortalSettings.UserInfo.IsInRole(PortalSettings.AdministratorRoleName))
+                               : (PortalSettings.UserInfo.IsInRole(group.RoleName));
+
+			//if current user can view the group page and group is public, then should be able to view members.
+			if (!canView)
+			{
+				canView = ModulePermissionController.CanViewModule(ActiveModule) && group.IsPublic;
+			}
+            return canView;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FilterExcludedUsers">
+          <declaration><![CDATA[private System.Collections.Generic.IEnumerable<UserInfo> FilterExcludedUsers(System.Collections.Generic.IEnumerable<UserInfo> users)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="186" sc="9" el="188" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="631bc7822755682302134313f1b206a1"><![CDATA[{
+            return users.Where(u => !u.IsSuperUser).Select(u => u).ToList();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Follow">
+          <declaration><![CDATA[public HttpResponseMessage Follow(MemberDirectoryController.FollowDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="311" sc="9" el="323" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="96802a605853d2ef80b7cb17f11a5c97"><![CDATA[{
+            try
+            {
+                var follow = UserController.GetUserById(PortalSettings.PortalId, postData.FollowId);
+                FollowersController.Instance.FollowUser(follow);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetMember">
+          <declaration><![CDATA[public HttpResponseMessage GetMember(int userId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="240" sc="9" el="254" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="711db7604c134aad5c4a4c28ebc69200"><![CDATA[{
+            try
+            {
+                var users = new List<UserInfo>();
+                var user = UserController.GetUserById(PortalSettings.PortalId, userId);
+                users.Add(user);
+
+                return Request.CreateResponse(HttpStatusCode.OK, GetMembers(users));
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetMembers">
+          <declaration><![CDATA[private System.Collections.Generic.IList<Member> GetMembers(System.Collections.Generic.IEnumerable<UserInfo> users)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="80" sc="9" el="82" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="c0f636776f1a575bda5a023547b53a4b"><![CDATA[{
+            return users.Select(user => new Member(user, PortalSettings)).ToList();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSetting">
+          <declaration><![CDATA[private static string GetSetting(System.Collections.IDictionary settings, string key, string defaultValue)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="85" sc="9" el="92" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="6957621e533cb375067ea18ee0ea0873"><![CDATA[{
+            var setting = defaultValue;
+            if (settings[key] != null)
+            {
+                setting = Convert.ToString(settings[key]);
+            }
+            return setting;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSuggestions">
+          <declaration><![CDATA[public HttpResponseMessage GetSuggestions(int groupId, string displayName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="258" sc="9" el="272" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="0fbaa11d096034830f975821e0a9f363"><![CDATA[{
+            try
+            {
+                var names = (from UserInfo user in GetUsers(PortalSettings.UserId, groupId, displayName.Trim(), 0, 10, "", "")
+                             select new { label = user.DisplayName, value = user.DisplayName, userId = user.UserID })
+                                .ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK, names);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsers">
+          <declaration><![CDATA[private System.Collections.Generic.IEnumerable<UserInfo> GetUsers(int userId, int groupId, string searchTerm, int pageIndex, int pageSize, string propertyNames, string propertyValues)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="95" sc="9" el="183" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="bcc1e59b5fa6f9edc5ec990bf1b94861"><![CDATA[{
+            var portalId = PortalSettings.PortalId;            
+            var isAdmin = PortalSettings.UserInfo.IsInRole(PortalSettings.AdministratorRoleName);
+
+            var filterBy = GetSetting(ActiveModule.ModuleSettings, "FilterBy", String.Empty);
+            var filterValue = GetSetting(ActiveModule.ModuleSettings, "FilterValue", String.Empty);
+
+            if (filterBy == "Group" && filterValue == "-1" && groupId > 0)
+            {
+                filterValue = groupId.ToString();
+            }
+
+            var sortField = GetSetting(ActiveModule.TabModuleSettings, "SortField", "DisplayName");
+
+            // QuickFix DNN-6096. See: https://dnntracker.atlassian.net/browse/DNN-6096
+            // Instead of changing the available SortFields, we'll use "UserId" as SortField if the TabModuleSetting SortField was CreatedOnDate.
+            // This is because the GetUsersBasicSearch and GetUsersAdvancedSearch do not allow sorting on CreatedOnDate. Sorting on UserId however
+            // has the same effect as sorting on CreatedOnDate.
+            if (sortField.Equals("CreatedOnDate", StringComparison.InvariantCultureIgnoreCase))
+            {
+                sortField = "UserId";
+            }
+
+            var sortOrder = GetSetting(ActiveModule.TabModuleSettings, "SortOrder", "ASC");
+
+            var excludeHostUsers = Boolean.Parse(GetSetting(ActiveModule.TabModuleSettings, "ExcludeHostUsers", "false"));
+            var isBasicSearch = false;
+            if (String.IsNullOrEmpty(propertyNames))
+            {
+                isBasicSearch = true;
+                AddSearchTerm(ref propertyNames, ref propertyValues, "DisplayName", searchTerm);
+            }
+
+            IList<UserInfo> users;
+            switch (filterBy)
+            {
+                case "User":
+                    users = new List<UserInfo> { UserController.GetUserById(portalId, userId) };
+                    break;
+                case "Group":
+                    if (groupId == -1)
+                    {
+                        groupId = Int32.Parse(filterValue);
+                    }
+                    if (CanViewGroupMembers(portalId, groupId))
+                    {
+                        users = UserController.Instance.GetUsersAdvancedSearch(portalId, userId, -1,
+                                                                                       Int32.Parse(filterValue),
+                                                                                       -1, isAdmin, pageIndex, pageSize,
+                                                                                       sortField, (sortOrder == "ASC"),
+                                                                                       propertyNames, propertyValues);
+                    }
+                    else
+                    {
+                        users = new List<UserInfo>();
+                    }
+                    break;
+                case "Relationship":
+                    users = UserController.Instance.GetUsersAdvancedSearch(portalId, userId, userId, -1,
+                                                                           Int32.Parse(filterValue), isAdmin, pageIndex, pageSize,
+                                                                           sortField, (sortOrder == "ASC"),
+                                                                           propertyNames, propertyValues);
+                    break;
+                case "ProfileProperty":
+                    var propertyValue = GetSetting(ActiveModule.ModuleSettings, "FilterPropertyValue", String.Empty);
+                    AddSearchTerm(ref propertyNames, ref propertyValues, filterValue, propertyValue);
+
+                    users = UserController.Instance.GetUsersAdvancedSearch(portalId, userId, -1, -1,
+                                                                           -1, isAdmin, pageIndex, pageSize,
+                                                                           sortField, (sortOrder == "ASC"),
+                                                                           propertyNames, propertyValues);
+                    break;
+                default:
+                    users = isBasicSearch ? UserController.Instance.GetUsersBasicSearch(PortalSettings.PortalId, pageIndex, pageSize,
+                                                                           sortField, (sortOrder == "ASC"),
+                                                                           "DisplayName", searchTerm)
+                                                                           :
+                                                                           UserController.Instance.GetUsersAdvancedSearch(portalId, PortalSettings.UserId, -1, -1,
+                                                                               -1, isAdmin, pageIndex, pageSize,
+                                                                               sortField, (sortOrder == "ASC"),
+                                                                               propertyNames, propertyValues);
+                    break;
+            }
+            if (excludeHostUsers)
+            {                
+                return FilterExcludedUsers(users);
+            }
+            return users;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveFriend">
+          <declaration><![CDATA[public HttpResponseMessage RemoveFriend(MemberDirectoryController.FriendDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="328" sc="9" el="340" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="6c2087efc33ba7e2277c01d4f44ba770"><![CDATA[{
+            try
+            {
+                var friend = UserController.GetUserById(PortalSettings.PortalId, postData.FriendId);
+                FriendsController.Instance.DeleteFriend(friend);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UnFollow">
+          <declaration><![CDATA[public HttpResponseMessage UnFollow(MemberDirectoryController.FollowDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="345" sc="9" el="357" ec="10">Services\MemberDirectoryController.cs</location>
+            <body hash="5f2212ea2e2b88ec9402cc975dd2c040"><![CDATA[{
+            try
+            {
+                var follow = UserController.GetUserById(PortalSettings.PortalId, postData.FollowId);
+                FollowersController.Instance.UnFollowUser(follow);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(MemberDirectoryController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="MemberDirectoryServiceRouteMapper">
+      <declaration><![CDATA[public class MemberDirectoryServiceRouteMapper : IServiceRouteMapper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MemberDirectoryServiceRouteMapper()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="RegisterRoutes">
+          <declaration><![CDATA[public void RegisterRoutes(IMapRoute mapRouteManager)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="9" el="31" ec="10">Services\MemberDirectoryServiceRouteMapper.cs</location>
+            <body hash="2613fa09f47e98d79cf9ba6ebb00fcab"><![CDATA[{
+            mapRouteManager.MapHttpRoute("MemberDirectory", "default", "{controller}/{action}", new[] { "DotNetNuke.Modules.MemberDirectory.Services" });
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.MemberDirectory.ViewModels">
+    <class name="MemberDirectorySettingsModel">
+      <declaration><![CDATA[public class MemberDirectorySettingsModel : SettingsModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MemberDirectorySettingsModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="Groups">
+          <declaration><![CDATA[public System.Collections.Generic.IList<RoleInfo> Groups;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ProfileProperties">
+          <declaration><![CDATA[public System.Collections.Generic.IList<ProfilePropertyDefinition> ProfileProperties;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Relationships">
+          <declaration><![CDATA[public System.Collections.Generic.IList<Relationship> Relationships;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

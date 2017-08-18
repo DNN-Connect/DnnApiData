@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Provider.ModuleCaching.MemoryProvider.dll" version="06.01.01" generated="2017-06-18 21:20:18Z" generationTime="1.0650086">
+  <namespace name="DotNetNuke.Services.ModuleCache">
+    <class name="MemoryProvider">
+      <declaration><![CDATA[public class MemoryProvider : ModuleCachingProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MemoryProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GenerateCacheKey">
+          <declaration><![CDATA[public override string GenerateCacheKey(int tabModuleId, SortedDictionary<string, string> varyBy)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="9" el="68" ec="10">MemoryProvider.cs</location>
+            <body hash="e99b048c15f527a71863a80c60820381"><![CDATA[{
+            var cacheKey = new StringBuilder();
+            if (varyBy != null)
+            {
+                foreach (KeyValuePair<string, string> kvp in varyBy)
+                {
+                    cacheKey.Append(string.Concat(kvp.Key.ToLower(), "=", kvp.Value, "|"));
+                }
+            }
+            return string.Concat(cachePrefix, "|", tabModuleId.ToString(), "|", cacheKey.ToString());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCacheKeys">
+          <declaration><![CDATA[private List<string> GetCacheKeys(int tabModuleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="9" el="55" ec="10">MemoryProvider.cs</location>
+            <body hash="bf14a8d0836da7136995c755cd77a70b"><![CDATA[{
+            var keys = new List<string>();
+            IDictionaryEnumerator CacheEnum = CachingProvider.Instance().GetEnumerator();
+            while ((CacheEnum.MoveNext()))
+            {
+                if (CacheEnum.Key.ToString().StartsWith(string.Concat(cachePrefix, "|", tabModuleId.ToString(), "|")))
+                {
+                    keys.Add(CacheEnum.Key.ToString());
+                }
+            }
+            return keys;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetItemCount">
+          <declaration><![CDATA[public override int GetItemCount(int tabModuleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="9" el="73" ec="10">MemoryProvider.cs</location>
+            <body hash="0bb487e99f841ab9f78faa123125c4fc"><![CDATA[{
+            return GetCacheKeys(tabModuleId).Count;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetModule">
+          <declaration><![CDATA[public override byte[] GetModule(int tabModuleId, string cacheKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="9" el="78" ec="10">MemoryProvider.cs</location>
+            <body hash="ff0f6ec8e9e6f679ed2b65ea02551ef9"><![CDATA[{
+            return DataCache.GetCache<byte[]>(cacheKey);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeCache">
+          <declaration><![CDATA[public override void PurgeCache(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="81" sc="9" el="83" ec="10">MemoryProvider.cs</location>
+            <body hash="dd610167a32a9ee747cb2a181e055b5e"><![CDATA[{
+            DataCache.ClearCache(cachePrefix);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeExpiredItems">
+          <declaration><![CDATA[public override void PurgeExpiredItems(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="97" sc="9" el="99" ec="10">MemoryProvider.cs</location>
+            <body hash="5385c709fac48e42eb84336983b21c90"><![CDATA[{
+            //throw new NotSupportedException();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Remove">
+          <declaration><![CDATA[public override void Remove(int tabModuleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="9" el="88" ec="10">MemoryProvider.cs</location>
+            <body hash="594a47f1305fc3589c60966c6931001b"><![CDATA[{
+            DataCache.ClearCache(string.Concat(cachePrefix, "|", tabModuleId.ToString()));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetModule">
+          <declaration><![CDATA[public override void SetModule(int tabModuleId, string cacheKey, TimeSpan duration, byte[] moduleOutput)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="91" sc="9" el="94" ec="10">MemoryProvider.cs</location>
+            <body hash="78dd6352ce638551eaa24c64845d66e6"><![CDATA[{
+            DNNCacheDependency dep = null;
+            DataCache.SetCache(cacheKey, moduleOutput, dep, DateTime.UtcNow.Add(duration), System.Web.Caching.Cache.NoSlidingExpiration, CacheItemPriority.Default, null);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cachePrefix">
+          <declaration><![CDATA[private const string cachePrefix = "ModuleCache:";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

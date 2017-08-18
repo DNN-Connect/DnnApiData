@@ -1,0 +1,2066 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Web.Client.dll" version="07.03.01" generated="2017-06-19 11:48:51Z" generationTime="2.0146433">
+  <namespace name="DotNetNuke.Web.Client">
+    <class name="ClientResourceSettings">
+      <declaration><![CDATA[public class ClientResourceSettings]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ClientResourceSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="9" el="60" ec="10">ClientResourceSettings.cs</location>
+            <body hash="b430fea4dea1a429452b04761590f5b0"><![CDATA[public static readonly string HostSettingsDictionaryKey = "HostSettingsDictionary";
+        public static readonly string PortalSettingsDictionaryKey = "PortalSettingsDictionary";
+
+        // public keys used to identify the various host and portal level settings
+        public static readonly string EnableCompositeFilesKey = "CrmEnableCompositeFiles";
+        public static readonly string MinifyCssKey = "CrmMinifyCss";
+        public static readonly string MinifyJsKey = "CrmMinifyJs";
+        public static readonly string OverrideDefaultSettingsKey = "CrmUseApplicationSettings";
+        public static readonly string VersionKey = "CrmVersion";
+
+        private static readonly Type _portalControllerType;
+        private static readonly Type _portalAliasControllerType;
+        private static readonly Type _hostControllerType;
+        private static readonly Type _commonGlobalsType;
+
+        static ClientResourceSettings()
+        {
+            try
+            {
+                // all these types are part of the same library, so we don't need a separate catch for each one
+                _commonGlobalsType = Type.GetType("DotNetNuke.Common.Globals, DotNetNuke");
+                _portalControllerType = Type.GetType("DotNetNuke.Entities.Portals.PortalController, DotNetNuke");
+                _portalAliasControllerType = Type.GetType("DotNetNuke.Entities.Portals.PortalAliasController, DotNetNuke");
+                _hostControllerType = Type.GetType("DotNetNuke.Entities.Controllers.HostController, DotNetNuke");
+            }
+            catch (Exception)
+            {
+            }
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ClientResourceSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AreCompositeFilesEnabled">
+          <declaration><![CDATA[public bool? AreCompositeFilesEnabled()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="82" sc="9" el="84" ec="10">ClientResourceSettings.cs</location>
+            <body hash="3ee2e29b4a4c3b1b6f038c66becd938a"><![CDATA[{
+            return IsBooleanSettingEnabled(EnableCompositeFilesKey);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="EnableCssMinification">
+          <declaration><![CDATA[public bool? EnableCssMinification()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="87" sc="9" el="89" ec="10">ClientResourceSettings.cs</location>
+            <body hash="35e7dd8355e74ad2046c456c6915440c"><![CDATA[{
+            return IsBooleanSettingEnabled(MinifyCssKey);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="EnableJsMinification">
+          <declaration><![CDATA[public bool? EnableJsMinification()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="94" ec="10">ClientResourceSettings.cs</location>
+            <body hash="b96f52b9a09d208fdc8a854824c5dc63"><![CDATA[{
+            return IsBooleanSettingEnabled(MinifyJsKey);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetBooleanSetting">
+          <declaration><![CDATA[private static bool? GetBooleanSetting(string dictionaryKey, string settingKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="121" sc="9" el="129" ec="10">ClientResourceSettings.cs</location>
+            <body hash="2c0439f8ab9c43e3f9988c141361e623"><![CDATA[{
+            var setting = GetSetting(dictionaryKey, settingKey);
+            bool result;
+            if (setting != null && bool.TryParse(setting, out result))
+            {
+                return result;
+            }
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetHostSettingThroughReflection">
+          <declaration><![CDATA[private static string GetHostSettingThroughReflection(string settingKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="208" sc="9" el="225" ec="10">ClientResourceSettings.cs</location>
+            <body hash="27e87db711be442bc227141c8fcb1ab7"><![CDATA[{
+            try
+            {
+                var method = _hostControllerType.GetMethod("GetSettingsDictionary");
+                var property = _hostControllerType.BaseType.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public);
+                var instance = property.GetValue(null, Type.EmptyTypes);
+                var dictionary = (Dictionary<string, string>)method.Invoke(instance, Type.EmptyTypes);
+                string value;
+                if (dictionary.TryGetValue(settingKey, out value))
+                {
+                    return value;
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetIntegerSetting">
+          <declaration><![CDATA[private static int? GetIntegerSetting(string dictionaryKey, string settingKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="132" sc="9" el="143" ec="10">ClientResourceSettings.cs</location>
+            <body hash="6556ddd242c4dd19a7899400bc9676dc"><![CDATA[{
+            var setting = GetSetting(dictionaryKey, settingKey);
+            int version;
+            if (setting != null && int.TryParse(setting, out version))
+            {
+                if (version > -1)
+                {
+                    return version;
+                }
+            }
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalIdThroughReflection">
+          <declaration><![CDATA[private static int? GetPortalIdThroughReflection()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="190" sc="9" el="205" ec="10">ClientResourceSettings.cs</location>
+            <body hash="5fcaf8c83054010a47d5ddc59baa03bb"><![CDATA[{
+            try
+            {
+                var method = _portalAliasControllerType.GetMethod("GetPortalAliasInfo");
+                var portalAliasInfo = method.Invoke(null, new object[] { HttpContext.Current.Request.Url.Host });
+                if (portalAliasInfo != null)
+                {
+                    object portalId = portalAliasInfo.GetType().GetProperty("PortalID").GetValue(portalAliasInfo, new object[] { });
+                    return (int)portalId;
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalSettingThroughReflection">
+          <declaration><![CDATA[private static string GetPortalSettingThroughReflection(string settingKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="168" sc="9" el="187" ec="10">ClientResourceSettings.cs</location>
+            <body hash="b34c6204b71766db388b2be5ad996208"><![CDATA[{
+            try
+            {
+                int? portalId = GetPortalIdThroughReflection();
+                if (portalId.HasValue)
+                {
+                    var method = _portalControllerType.GetMethod("GetPortalSettingsDictionary");
+                    var dictionary = (Dictionary<string, string>)method.Invoke(null, new object[] { portalId.Value });
+                    string value;
+                    if (dictionary.TryGetValue(settingKey, out value))
+                    {
+                        return value;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSetting">
+          <declaration><![CDATA[private static string GetSetting(string dictionaryKey, string settingKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="146" sc="9" el="165" ec="10">ClientResourceSettings.cs</location>
+            <body hash="62f82b00caa07911404a431b0478ffa8"><![CDATA[{
+            var settings = HttpContext.Current.Items[dictionaryKey];
+            if (settings == null)
+            {
+                if (dictionaryKey == HostSettingsDictionaryKey)
+                    return GetHostSettingThroughReflection(settingKey);
+
+                return GetPortalSettingThroughReflection(settingKey);
+            }
+
+            string value;
+            var dictionary = (Dictionary<string, string>)settings;
+            if (dictionary.TryGetValue(settingKey, out value))
+            {
+                return value;
+            }
+
+            // no valid setting was found
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetStatusByReflection">
+          <declaration><![CDATA[private ClientResourceSettings.UpgradeStatus GetStatusByReflection()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="245" sc="9" el="256" ec="10">ClientResourceSettings.cs</location>
+            <body hash="5ccdd537bbbbe1182e4c6bd2e4378fd1"><![CDATA[{
+            try
+            {
+                var property = _commonGlobalsType.GetProperty("Status", BindingFlags.Static | BindingFlags.Public);
+                var status = (UpgradeStatus)property.GetValue(null, null);
+                return status;
+            }
+            catch (Exception)
+            {
+                return UpgradeStatus.Unknown;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetVersion">
+          <declaration><![CDATA[public int? GetVersion()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="9" el="79" ec="10">ClientResourceSettings.cs</location>
+            <body hash="b31fa837895eee7671bffaf72279193a"><![CDATA[{
+            var portalVersion = GetIntegerSetting(PortalSettingsDictionaryKey, VersionKey);
+            var overrideDefaultSettings = GetBooleanSetting(PortalSettingsDictionaryKey, OverrideDefaultSettingsKey);
+
+            // if portal version is set
+            // and the portal "override default settings" flag is set and set to true
+            if (portalVersion.HasValue && overrideDefaultSettings.HasValue && overrideDefaultSettings.Value)
+                return portalVersion.Value;
+
+            // otherwise return the host setting
+            var hostVersion = GetIntegerSetting(HostSettingsDictionaryKey, VersionKey);
+            if (hostVersion.HasValue)
+                return hostVersion.Value;
+
+            // otherwise tell the calling method that nothing is set
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsBooleanSettingEnabled">
+          <declaration><![CDATA[private bool? IsBooleanSettingEnabled(string settingKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="97" sc="9" el="118" ec="10">ClientResourceSettings.cs</location>
+            <body hash="ae54d87dbc8f5c8986beef30d1c0ba04"><![CDATA[{
+            if(Status != UpgradeStatus.None)
+            {
+                return false;
+            }
+            
+            var portalEnabled = GetBooleanSetting(PortalSettingsDictionaryKey, settingKey);
+            var overrideDefaultSettings = GetBooleanSetting(PortalSettingsDictionaryKey, OverrideDefaultSettingsKey);
+
+            // if portal version is set
+            // and the portal "override default settings" flag is set and set to true
+            if (portalEnabled.HasValue && overrideDefaultSettings.HasValue && overrideDefaultSettings.Value)
+                return portalEnabled.Value;
+
+            // otherwise return the host setting
+            var hostEnabled = GetBooleanSetting(HostSettingsDictionaryKey, settingKey);
+            if (hostEnabled.HasValue)
+                return hostEnabled.Value;
+
+            // otherwise tell the calling method that nothing is set
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_commonGlobalsType">
+          <declaration><![CDATA[private static readonly Type _commonGlobalsType;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_hostControllerType">
+          <declaration><![CDATA[private static readonly Type _hostControllerType;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_portalAliasControllerType">
+          <declaration><![CDATA[private static readonly Type _portalAliasControllerType;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_portalControllerType">
+          <declaration><![CDATA[private static readonly Type _portalControllerType;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_status">
+          <declaration><![CDATA[private ClientResourceSettings.UpgradeStatus _status;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_statusChecked">
+          <declaration><![CDATA[private bool _statusChecked;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="EnableCompositeFilesKey">
+          <declaration><![CDATA[public static readonly string EnableCompositeFilesKey;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="HostSettingsDictionaryKey">
+          <declaration><![CDATA[public static readonly string HostSettingsDictionaryKey;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MinifyCssKey">
+          <declaration><![CDATA[public static readonly string MinifyCssKey;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MinifyJsKey">
+          <declaration><![CDATA[public static readonly string MinifyJsKey;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="OverrideDefaultSettingsKey">
+          <declaration><![CDATA[public static readonly string OverrideDefaultSettingsKey;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="PortalSettingsDictionaryKey">
+          <declaration><![CDATA[public static readonly string PortalSettingsDictionaryKey;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="VersionKey">
+          <declaration><![CDATA[public static readonly string VersionKey;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Status">
+          <declaration><![CDATA[private ClientResourceSettings.UpgradeStatus Status]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="233" sc="13" el="241" ec="14">ClientResourceSettings.cs</location>
+            <body hash="4045ded74fcd33ac39c5b5330f96b599"><![CDATA[{
+                if (!_statusChecked)
+                {
+                    _status = GetStatusByReflection();
+                    _statusChecked = true;
+                }
+
+                return _status;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="FileOrder">
+      <declaration><![CDATA[public class FileOrder]]></declaration>
+      <documentation>
+        <summary>
+ Contains enumerations that define the relative loading order of both JavaScript and CSS files within the framework's registration system.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FileOrder()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Web.Client.ClientResourceManagement">
+    <class name="ClientResourceInclude">
+      <declaration><![CDATA[public class ClientResourceInclude : ClientDependencyInclude]]></declaration>
+      <documentation>
+        <summary>
+ Represents an included client resource
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ClientResourceInclude()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ClientResourceLoader">
+      <declaration><![CDATA[public class ClientResourceLoader : ClientDependencyLoader]]></declaration>
+      <documentation>
+        <summary>
+ The central control with which all client resources are registered.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ClientResourceLoader()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnPreRender">
+          <declaration><![CDATA[protected override void OnPreRender(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="89" ec="10">Controls\ClientResourceLoader.cs</location>
+            <body hash="570b432f254dfc82b640e923870928b0"><![CDATA[{
+            foreach (var path in Paths)
+            {
+                path.Name = path.Name.ToLowerInvariant();
+            }
+
+            if (AsyncPostBackHandlerEnabled)
+            {
+                const string handlerScript = @"
+(function($){
+Sys.WebForms.PageRequestManager.getInstance().add_pageLoading(function (sender, args){
+    var dataItems = args.get_dataItems();
+    for(var item in dataItems){
+        if(item.indexOf('$crm_') > -1){
+            var content = dataItems[item];
+            //check whether script already register to page.
+            var scripts = content.match(/<script.+?><\/script>/gi);
+            if(scripts && scripts.length > 0){
+                for(var i = 0; i < scripts.length; i++){
+                    var src = scripts[i].match(/src=""(.+?)""/i)[1];
+                    if($('script[src=""' + src + '""]').length == 0){
+                        $(document.body).append(scripts[i]);
+                    }
+                }
+            }
+
+            var styles = content.match(/<link[^>]+?>/gi);
+            if(styles && styles.length > 0){
+                for(var i = 0; i < styles.length; i++){
+                    var src = styles[i].match(/href=""(.+?)""/i)[1];
+                    if($('link[href=""' + src + '""]').length == 0){
+                        $(document.body).append(styles[i]);
+                    }
+                }
+            }
+        }
+    }
+});
+}(jQuery));
+";
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "CRMHandler", handlerScript, true);
+            }
+
+            base.OnPreRender(e);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AsyncPostBackHandlerEnabled">
+          <declaration><![CDATA[private bool AsyncPostBackHandlerEnabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="13" el="41" ec="14">Controls\ClientResourceLoader.cs</location>
+            <body hash="6a6dea720627ecf29f3b957c7e76c44c"><![CDATA[{
+                return HttpContext.Current != null
+                       && HttpContext.Current.Items.Contains("AsyncPostBackHandlerEnabled");
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ClientResourceManager">
+      <declaration><![CDATA[public class ClientResourceManager]]></declaration>
+      <documentation>
+        <summary>
+ Provides the ability to request that client resources (JavaScript and CSS) be loaded on the client browser.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ClientResourceManager()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ClientResourceManager()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="6" el="50" ec="108">ClientResourceManager.cs</location>
+            <body hash="c303d81890cee531ef286c295e83ebee"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (ClientResourceManager))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddConfiguration">
+          <declaration><![CDATA[public static void AddConfiguration()]]></declaration>
+          <documentation>
+            <summary>
+ Adds the neccessary configuration to website root web.config to use the Client Depenedecny componenet.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="84" sc="9" el="188" ec="10">ClientResourceManager.cs</location>
+            <body hash="0767aa0b0b02667fbe84e7432607482f"><![CDATA[{
+            var configPath = HostingEnvironment.MapPath("~/web.config");
+            if (!String.IsNullOrEmpty(configPath))
+            {
+                var xmlDoc = new XmlDocument();
+                xmlDoc.Load(configPath);
+                XmlDocumentFragment xmlFrag;
+
+                // Config Sections
+                var sectionsConfig = xmlDoc.DocumentElement.SelectSingleNode("configSections");
+                if (sectionsConfig != null)
+                {
+                    var clientDependencySectionConfig = sectionsConfig.SelectSingleNode("section[@name='clientDependency']");
+                    if (clientDependencySectionConfig == null)
+                    {
+                        xmlFrag = xmlDoc.CreateDocumentFragment();
+                        xmlFrag.InnerXml = "<section name=\"clientDependency\" type=\"ClientDependency.Core.Config.ClientDependencySection, ClientDependency.Core\" requirePermission=\"false\" />";
+                        xmlDoc.DocumentElement.SelectSingleNode("configSections").AppendChild(xmlFrag);
+                    }
+                }
+
+                // Module Config
+                var systemWebServerModulesConfig = xmlDoc.DocumentElement.SelectSingleNode("system.webServer/modules");
+                if (systemWebServerModulesConfig != null)
+                {
+                    var moduleConfig = systemWebServerModulesConfig.SelectSingleNode("add[@name=\"ClientDependencyModule\"]");
+                    if (moduleConfig == null)
+                    {
+                        xmlFrag = xmlDoc.CreateDocumentFragment();
+                        xmlFrag.InnerXml = "<add name=\"ClientDependencyModule\" type=\"ClientDependency.Core.Module.ClientDependencyModule, ClientDependency.Core\" />";
+                        xmlDoc.DocumentElement.SelectSingleNode("system.webServer/modules").AppendChild(xmlFrag);
+                    }
+                }
+                // Handler Config
+                var systemWebServerHandlersConfig = xmlDoc.DocumentElement.SelectSingleNode("system.webServer/handlers");
+                if (systemWebServerHandlersConfig != null)
+                {
+                    var handlerConfig = systemWebServerHandlersConfig.SelectSingleNode("add[@name=\"ClientDependencyHandler\"]");
+                    if (handlerConfig == null)
+                    {
+                        xmlFrag = xmlDoc.CreateDocumentFragment();
+                        xmlFrag.InnerXml = "<add name=\"ClientDependencyHandler\" verb=\"*\" path=\"DependencyHandler.axd\" type=\"ClientDependency.Core.CompositeFiles.CompositeDependencyHandler, ClientDependency.Core\" preCondition=\"integratedMode\" />";
+                        xmlDoc.DocumentElement.SelectSingleNode("system.webServer/handlers").AppendChild(xmlFrag);
+                    }
+                }
+
+                // HttpModules Config
+                var systemWebServerHttpModulesConfig = xmlDoc.DocumentElement.SelectSingleNode("system.web/httpModules");
+                if (systemWebServerHttpModulesConfig != null)
+                {
+                    var httpModuleConfig = systemWebServerHttpModulesConfig.SelectSingleNode("add[@name=\"ClientDependencyModule\"]");
+                    if (httpModuleConfig == null)
+                    {
+                        xmlFrag = xmlDoc.CreateDocumentFragment();
+                        xmlFrag.InnerXml = "<add name=\"ClientDependencyModule\" type=\"ClientDependency.Core.Module.ClientDependencyModule, ClientDependency.Core\" />";
+                        xmlDoc.DocumentElement.SelectSingleNode("system.web/httpModules").AppendChild(xmlFrag);
+                    }
+                }
+                // HttpHandler Config
+                var systemWebServerHttpHandlersConfig = xmlDoc.DocumentElement.SelectSingleNode("system.web/httpHandlers");
+                if (systemWebServerHttpHandlersConfig != null)
+                {
+                    var httpHandlerConfig = systemWebServerHttpHandlersConfig.SelectSingleNode("add[@type=\"ClientDependency.Core.CompositeFiles.CompositeDependencyHandler, ClientDependency.Core\"]");
+                    if (httpHandlerConfig == null)
+                    {
+                        xmlFrag = xmlDoc.CreateDocumentFragment();
+                        xmlFrag.InnerXml = "<add verb=\"*\" path=\"DependencyHandler.axd\" type=\"ClientDependency.Core.CompositeFiles.CompositeDependencyHandler, ClientDependency.Core\" />";
+                        xmlDoc.DocumentElement.SelectSingleNode("system.web/httpHandlers").AppendChild(xmlFrag);
+                    }
+                }
+
+                // ClientDependency Config
+                var clientDependencyConfig = xmlDoc.DocumentElement.SelectSingleNode("clientDependency");
+                if (clientDependencyConfig == null)
+                {
+                    xmlFrag = xmlDoc.CreateDocumentFragment();
+                    xmlFrag.InnerXml = @"<clientDependency version=""0"" fileDependencyExtensions="".js,.css"">
+                                            <fileRegistration defaultProvider=""DnnPageHeaderProvider"">
+                                              <providers>
+                                                <add name=""DnnBodyProvider"" type=""DotNetNuke.Web.Client.Providers.DnnBodyProvider, DotNetNuke.Web.Client"" enableCompositeFiles=""false"" />
+                                                <add name=""DnnPageHeaderProvider"" type=""DotNetNuke.Web.Client.Providers.DnnPageHeaderProvider, DotNetNuke.Web.Client"" enableCompositeFiles=""false"" />
+                                                <add name=""DnnFormBottomProvider"" type=""DotNetNuke.Web.Client.Providers.DnnFormBottomProvider, DotNetNuke.Web.Client"" enableCompositeFiles=""false"" />
+                                                <add name=""PageHeaderProvider"" type=""ClientDependency.Core.FileRegistration.Providers.PageHeaderProvider, ClientDependency.Core"" enableCompositeFiles=""false""/>
+                                                <add name=""LazyLoadProvider"" type=""ClientDependency.Core.FileRegistration.Providers.LazyLoadProvider, ClientDependency.Core"" enableCompositeFiles=""false""/>
+                                                <add name=""LoaderControlProvider"" type=""ClientDependency.Core.FileRegistration.Providers.LoaderControlProvider, ClientDependency.Core"" enableCompositeFiles=""false""/>
+                                              </providers>
+                                            </fileRegistration>
+                                            <compositeFiles defaultFileProcessingProvider=""DnnCompositeFileProcessor"" compositeFileHandlerPath=""~/DependencyHandler.axd"">
+                                              <fileProcessingProviders>
+                                                <add name=""CompositeFileProcessor"" type=""ClientDependency.Core.CompositeFiles.Providers.CompositeFileProcessingProvider, ClientDependency.Core"" enableCssMinify=""false"" enableJsMinify=""true"" persistFiles=""true"" compositeFilePath=""~/App_Data/ClientDependency"" bundleDomains="""" urlType=""MappedId"" />
+                                                <!-- For webfarms remove the above CompositeFileProcessor and uncomment this section
+                                                <add name=""CompositeFileProcessor"" type=""ClientDependency.Core.CompositeFiles.Providers.CompositeFileProcessingProvider, ClientDependency.Core"" enableCssMinify=""false"" enableJsMinify=""true"" persistFiles=""true"" compositeFilePath=""~/App_Data/ClientDependency"" bundleDomains="""" urlType=""Base64QueryStrings"" />
+                                                -->
+                                                <add name=""DnnCompositeFileProcessor"" type=""DotNetNuke.Web.Client.Providers.DnnCompositeFileProcessingProvider, DotNetNuke.Web.Client"" enableCssMinify=""false"" enableJsMinify=""true"" persistFiles=""true"" compositeFilePath=""~/App_Data/ClientDependency"" bundleDomains="""" urlType=""MappedId"" />
+                                              </fileProcessingProviders>
+                                            </compositeFiles>
+                                          </clientDependency>";
+
+                    xmlDoc.DocumentElement.AppendChild(xmlFrag);
+                }
+
+                // Save Config
+                xmlDoc.Save(configPath);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ClearCache">
+          <declaration><![CDATA[public static void ClearCache()]]></declaration>
+          <documentation>
+            <summary>
+ Clear the default compisite files so that it can be generated next time.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="409" sc="3" el="431" ec="4">ClientResourceManager.cs</location>
+            <body hash="4dadf1717f8da0ef680375f6a33dca4c"><![CDATA[{
+			var provider = ClientDependencySettings.Instance.DefaultCompositeFileProcessingProvider;
+			if(provider is CompositeFileProcessingProvider)
+			{
+				try
+				{
+					var folder = provider.CompositeFilePath;
+					if (folder.Exists)
+					{
+						var files = folder.GetFiles("*.cd?");
+						foreach (var file in files)
+						{
+							file.Delete();
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					Logger.Error(ex);
+				}
+
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="EnableAsyncPostBackHandler">
+          <declaration><![CDATA[public static void EnableAsyncPostBackHandler()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="434" sc="9" el="439" ec="10">ClientResourceManager.cs</location>
+            <body hash="073dd6ddf80fa7a220fa276d5bd77664"><![CDATA[{
+            if (HttpContext.Current != null && !HttpContext.Current.Items.Contains("AsyncPostBackHandlerEnabled"))
+            {
+                HttpContext.Current.Items.Add("AsyncPostBackHandlerEnabled", true);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FileExists">
+          <declaration><![CDATA[private static bool FileExists(Page page, string filePath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="9" el="62" ec="10">ClientResourceManager.cs</location>
+            <body hash="7904d4f24fa87322a492079c1ecdf356"><![CDATA[{
+            // remove query string for the file exists check, won't impact the absoluteness, so just do it either way.
+            filePath = RemoveQueryString(filePath);
+
+            return IsAbsoluteUrl(filePath) || File.Exists(page.Server.MapPath(filePath));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsAbsoluteUrl">
+          <declaration><![CDATA[private static bool IsAbsoluteUrl(string url)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="68" ec="10">ClientResourceManager.cs</location>
+            <body hash="68860a017263442476d0f020ff0e1b77"><![CDATA[{
+            Uri result;
+            return Uri.TryCreate(url, UriKind.Absolute, out result);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsInstalled">
+          <declaration><![CDATA[public static bool IsInstalled()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="191" sc="9" el="210" ec="10">ClientResourceManager.cs</location>
+            <body hash="f31bcbdbd1864b5bda889a3fd6d1a5f2"><![CDATA[{
+            var configPath = HostingEnvironment.MapPath("~/web.config");
+            var installed = false;
+
+            if (!String.IsNullOrEmpty(configPath))
+            {
+                var xmlDoc = new XmlDocument();
+                xmlDoc.Load(configPath);
+
+                // Config Sections
+                var sectionsConfig = xmlDoc.DocumentElement.SelectSingleNode("configSections");
+                if (sectionsConfig != null)
+                {
+                    var clientDependencySectionConfig = sectionsConfig.SelectSingleNode("section[@name='clientDependency']");
+                    installed = clientDependencySectionConfig != null;
+                }
+            }
+
+            return installed;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterAdminStylesheet">
+          <declaration><![CDATA[public static void RegisterAdminStylesheet(Page page, string filePath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="213" sc="9" el="215" ec="10">ClientResourceManager.cs</location>
+            <body hash="c64368c3dba0ed5aed22398fea71a1be"><![CDATA[{
+            RegisterStyleSheet(page, filePath, FileOrder.Css.AdminCss);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterDefaultStylesheet">
+          <declaration><![CDATA[public static void RegisterDefaultStylesheet(Page page, string filePath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="218" sc="9" el="220" ec="10">ClientResourceManager.cs</location>
+            <body hash="bdc828704e47756deffaa3ea43e7ab5a"><![CDATA[{
+            RegisterStyleSheet(page, filePath, FileOrder.Css.DefaultCss);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterFeatureStylesheet">
+          <declaration><![CDATA[public static void RegisterFeatureStylesheet(Page page, string filePath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="223" sc="9" el="225" ec="10">ClientResourceManager.cs</location>
+            <body hash="918274b69b50598d78a3b2d7dd6dde38"><![CDATA[{
+            RegisterStyleSheet(page, filePath, FileOrder.Css.FeatureCss);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterIEStylesheet">
+          <declaration><![CDATA[public static void RegisterIEStylesheet(Page page, string filePath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="228" sc="9" el="234" ec="10">ClientResourceManager.cs</location>
+            <body hash="be82cb03b9f2909d72a0f3094e1868b6"><![CDATA[{
+            var browser = HttpContext.Current.Request.Browser;
+            if (browser.Browser == "Internet Explorer" || browser.Browser == "IE")
+            {
+                RegisterStyleSheet(page, filePath, FileOrder.Css.IeCss);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterScript">
+          <declaration><![CDATA[public static void RegisterScript(Page page, string filePath)]]></declaration>
+          <documentation>
+            <summary>
+ Requests that a JavaScript file be registered on the client browser
+ </summary>
+ <param name="page">The current page. Used to get a reference to the client resource loader.</param>
+ <param name="filePath">The relative file path to the JavaScript resource.</param></documentation>
+          <codeblock>
+            <location sl="242" sc="9" el="244" ec="10">ClientResourceManager.cs</location>
+            <body hash="e09b9b0d6a5b3931c5c23d002ff418ca"><![CDATA[{
+            RegisterScript(page, filePath, FileOrder.Js.DefaultPriority);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterScript">
+          <declaration><![CDATA[public static void RegisterScript(Page page, string filePath, int priority)]]></declaration>
+          <documentation>
+            <summary>
+ Requests that a JavaScript file be registered on the client browser
+ </summary>
+ <param name="page">The current page. Used to get a reference to the client resource loader.</param>
+ <param name="filePath">The relative file path to the JavaScript resource.</param>
+ <param name="priority">The relative priority in which the file should be loaded.</param></documentation>
+          <codeblock>
+            <location sl="253" sc="9" el="255" ec="10">ClientResourceManager.cs</location>
+            <body hash="177dc24bfdea1498629cb9f4c2193483"><![CDATA[{
+            RegisterScript(page, filePath, priority, DefaultJsProvider);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterScript">
+          <declaration><![CDATA[public static void RegisterScript(Page page, string filePath, FileOrder.Js priority)]]></declaration>
+          <documentation>
+            <summary>
+ Requests that a JavaScript file be registered on the client browser
+ </summary>
+ <param name="page">The current page. Used to get a reference to the client resource loader.</param>
+ <param name="filePath">The relative file path to the JavaScript resource.</param>
+ <param name="priority">The relative priority in which the file should be loaded.</param></documentation>
+          <codeblock>
+            <location sl="264" sc="9" el="266" ec="10">ClientResourceManager.cs</location>
+            <body hash="7a9909f8f97d8089a40391a3fb566e81"><![CDATA[{
+            RegisterScript(page, filePath, (int)priority, DefaultJsProvider);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterScript">
+          <declaration><![CDATA[public static void RegisterScript(Page page, string filePath, FileOrder.Js priority, string provider)]]></declaration>
+          <documentation>
+            <summary>
+ Requests that a JavaScript file be registered on the client browser
+ </summary>
+ <param name="page">The current page. Used to get a reference to the client resource loader.</param>
+ <param name="filePath">The relative file path to the JavaScript resource.</param>
+ <param name="priority">The relative priority in which the file should be loaded.</param>
+ <param name="provider">The name of the provider responsible for rendering the script output.</param></documentation>
+          <codeblock>
+            <location sl="276" sc="9" el="278" ec="10">ClientResourceManager.cs</location>
+            <body hash="a393aa862b5d0417399000ccefe1323d"><![CDATA[{
+            RegisterScript(page, filePath, (int) priority, provider);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterScript">
+          <declaration><![CDATA[public static void RegisterScript(Page page, string filePath, int priority, string provider)]]></declaration>
+          <documentation>
+            <summary>
+ Requests that a JavaScript file be registered on the client browser
+ </summary>
+ <param name="page">The current page. Used to get a reference to the client resource loader.</param>
+ <param name="filePath">The relative file path to the JavaScript resource.</param>
+ <param name="priority">The relative priority in which the file should be loaded.</param>
+ <param name="provider">The name of the provider responsible for rendering the script output.</param></documentation>
+          <codeblock>
+            <location sl="288" sc="9" el="295" ec="10">ClientResourceManager.cs</location>
+            <body hash="1056e2c46fe3a5738eda1e09f35951b3"><![CDATA[{
+            var include = new DnnJsInclude { ForceProvider = provider, Priority = priority, FilePath = filePath, AddTag = false };
+            var loader = page.FindControl("ClientResourceIncludes");
+            if (loader != null)
+            {
+                loader.Controls.Add(include);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterStyleSheet">
+          <declaration><![CDATA[public static void RegisterStyleSheet(Page page, string filePath)]]></declaration>
+          <documentation>
+            <summary>
+ Requests that a CSS file be registered on the client browser
+ </summary>
+ <param name="page">The current page. Used to get a reference to the client resource loader.</param>
+ <param name="filePath">The relative file path to the CSS resource.</param></documentation>
+          <codeblock>
+            <location sl="303" sc="9" el="305" ec="10">ClientResourceManager.cs</location>
+            <body hash="6ab3aef7c3264a069e304c7348c86681"><![CDATA[{
+            RegisterStyleSheet(page, filePath, Constants.DefaultPriority, DefaultCssProvider);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterStyleSheet">
+          <declaration><![CDATA[public static void RegisterStyleSheet(Page page, string filePath, int priority)]]></declaration>
+          <documentation>
+            <summary>
+ Requests that a CSS file be registered on the client browser. Defaults to rendering in the page header.
+ </summary>
+ <param name="page">The current page. Used to get a reference to the client resource loader.</param>
+ <param name="filePath">The relative file path to the CSS resource.</param>
+ <param name="priority">The relative priority in which the file should be loaded.</param></documentation>
+          <codeblock>
+            <location sl="314" sc="9" el="316" ec="10">ClientResourceManager.cs</location>
+            <body hash="c265e6010044228e4be4c1484e6f4b2c"><![CDATA[{
+            RegisterStyleSheet(page, filePath, priority, DefaultCssProvider);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterStyleSheet">
+          <declaration><![CDATA[public static void RegisterStyleSheet(Page page, string filePath, FileOrder.Css priority)]]></declaration>
+          <documentation>
+            <summary>
+ Requests that a CSS file be registered on the client browser. Defaults to rendering in the page header.
+ </summary>
+ <param name="page">The current page. Used to get a reference to the client resource loader.</param>
+ <param name="filePath">The relative file path to the CSS resource.</param>
+ <param name="priority">The relative priority in which the file should be loaded.</param></documentation>
+          <codeblock>
+            <location sl="325" sc="9" el="327" ec="10">ClientResourceManager.cs</location>
+            <body hash="f762da8bbda9cf8ed92c70508a079703"><![CDATA[{
+            RegisterStyleSheet(page, filePath, (int)priority, DefaultCssProvider);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterStyleSheet">
+          <declaration><![CDATA[public static void RegisterStyleSheet(Page page, string filePath, int priority, string provider)]]></declaration>
+          <documentation>
+            <summary>
+ Requests that a CSS file be registered on the client browser. Allows for overriding the default provider.
+ </summary>
+ <param name="page">The current page. Used to get a reference to the client resource loader.</param>
+ <param name="filePath">The relative file path to the CSS resource.</param>
+ <param name="priority">The relative priority in which the file should be loaded.</param>
+ <param name="provider">The provider name to be used to render the css file on the page.</param></documentation>
+          <codeblock>
+            <location sl="337" sc="9" el="362" ec="10">ClientResourceManager.cs</location>
+            <body hash="a1910d12af60da9d8f0cc0e1875cb80a"><![CDATA[{
+            var fileExists = false;
+
+            // Some "legacy URLs" could be using their own query string versioning scheme (and we've forced them to use the new API through re-routing PageBase.RegisterStyleSheet
+            // Ensure that physical CSS files with query strings have their query strings removed
+            if (filePath.Contains(".css?"))
+            {
+                var filePathSansQueryString = RemoveQueryString(filePath);
+                if (File.Exists(page.Server.MapPath(filePathSansQueryString)))
+                {
+                    fileExists = true;
+                    filePath = filePathSansQueryString;
+                }
+            }
+
+            if (fileExists || FileExists(page, filePath))
+            {
+                var include = new DnnCssInclude {ForceProvider = provider, Priority = priority, FilePath = filePath, AddTag = false};
+                var loader = page.FindControl("ClientResourceIncludes");
+
+                if (loader != null)
+                {
+                    loader.Controls.Add(include);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveQueryString">
+          <declaration><![CDATA[private static string RemoveQueryString(string filePath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="9" el="74" ec="10">ClientResourceManager.cs</location>
+            <body hash="899fad84da818ce29182f5be0e229844"><![CDATA[{
+            var queryStringPosition = filePath.IndexOf("?", StringComparison.Ordinal);
+            return queryStringPosition != -1 ? filePath.Substring(0, queryStringPosition) : filePath;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateVersion">
+          <declaration><![CDATA[public static void UpdateVersion()]]></declaration>
+          <documentation>
+            <summary>
+ This is a utility method that can be called to update the version of the composite files.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="368" sc="9" el="403" ec="10">ClientResourceManager.cs</location>
+            <body hash="37e5dbce814e07238c24a2e2053ae216"><![CDATA[{
+            //open the config file
+            var configPath = HostingEnvironment.MapPath("~/web.config");
+
+            if (!String.IsNullOrEmpty(configPath))
+            {
+                var xmlConfig = new XmlDocument();
+                xmlConfig.Load(configPath);
+
+                //test for namespace added by Web Admin Tool
+                if (!String.IsNullOrEmpty(xmlConfig.DocumentElement.GetAttribute("xmlns")))
+                {
+                    //remove namespace
+                    string strDoc = xmlConfig.InnerXml.Replace("xmlns=\"http://schemas.microsoft.com/.NetConfiguration/v2.0\"", "");
+                    xmlConfig.LoadXml(strDoc);
+                }
+
+                XmlNode xmlDependency = xmlConfig.SelectSingleNode("configuration/clientDependency");
+                if (xmlDependency == null)
+                {
+                    xmlDependency = xmlConfig.SelectSingleNode("configuration/location/clientDependency");
+                }
+                if ((xmlDependency != null))
+                {
+                    XmlAttribute attrib = xmlDependency.Attributes["version"];
+                    if (attrib != null)
+                    {
+                        int version = Int32.Parse(attrib.InnerText);
+                        version += 1;
+                        attrib.InnerText = version.ToString();
+                    }
+                }
+
+                xmlConfig.Save(configPath);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="DefaultCssProvider">
+          <declaration><![CDATA[internal const string DefaultCssProvider = "DnnPageHeaderProvider";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="DefaultJsProvider">
+          <declaration><![CDATA[internal const string DefaultJsProvider = "DnnBodyProvider";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ClientResourceManager));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ClientResourcePath">
+      <declaration><![CDATA[public class ClientResourcePath : ClientDependencyPath]]></declaration>
+      <documentation>
+        <summary>
+ Defines the path to a client resource
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ClientResourcePath()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ClientResourcePathCollection">
+      <declaration><![CDATA[public class ClientResourcePathCollection : ClientDependencyPathCollection]]></declaration>
+      <documentation>
+        <summary>
+ Represents a collection of client resource paths.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ClientResourcePathCollection()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DnnCssInclude">
+      <declaration><![CDATA[public class DnnCssInclude : CssInclude]]></declaration>
+      <documentation>
+        <summary>
+ Registers a CSS resource
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DnnCssInclude()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="33" ec="10">Controls\DnnCssInclude.cs</location>
+            <body hash="d7ff394c1718380976f6ee25acd79841"><![CDATA[public DnnCssInclude()
+        {
+            ForceProvider = ClientResourceManager.DefaultCssProvider;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="9" el="40" ec="10">Controls\DnnCssInclude.cs</location>
+            <body hash="bd08baef7e53e13c5367ca48a37d180f"><![CDATA[{
+            base.OnLoad(e);
+
+            this.PathNameAlias = this.PathNameAlias.ToLowerInvariant();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DnnHtmlInclude">
+      <declaration><![CDATA[public class DnnHtmlInclude : HtmlInclude]]></declaration>
+      <documentation>
+        <summary>
+ Allows for registration of CSS and JavaScript resources
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DnnHtmlInclude()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DnnJsInclude">
+      <declaration><![CDATA[public class DnnJsInclude : JsInclude]]></declaration>
+      <documentation>
+        <summary>
+ Registers a JavaScript resource
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DnnJsInclude()]]></declaration>
+          <documentation>
+            <summary>
+ Sets up default settings for the control
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="9" el="36" ec="10">Controls\DnnJsInclude.cs</location>
+            <body hash="a13dee72ffee8bbe7312e87c4593d046"><![CDATA[public DnnJsInclude()
+        {
+            ForceProvider = ClientResourceManager.DefaultJsProvider;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="43" ec="10">Controls\DnnJsInclude.cs</location>
+            <body hash="bd08baef7e53e13c5367ca48a37d180f"><![CDATA[{
+            base.OnLoad(e);
+
+            this.PathNameAlias = this.PathNameAlias.ToLowerInvariant();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DnnJsIncludeFallback">
+      <declaration><![CDATA[public class DnnJsIncludeFallback : WebControl]]></declaration>
+      <documentation>
+        <summary>
+     Emit a fallback block for a script in the same part of the page
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DnnJsIncludeFallback(string objectName, string fileName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="9" el="40" ec="10">Controls\DnnJsIncludeFallback.cs</location>
+            <body hash="d72cf4bb05f5b2d429e8df934363e66b"><![CDATA[public DnnJsIncludeFallback(string objectName, string fileName)
+        {
+            ObjectName = objectName;
+            FileName = fileName;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="RenderControl">
+          <declaration><![CDATA[public override void RenderControl(HtmlTextWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="9" el="65" ec="10">Controls\DnnJsIncludeFallback.cs</location>
+            <body hash="d32ac43194d682fbea81e5e3fe547529"><![CDATA[{
+            writer.AddAttribute(HtmlTextWriterAttribute.Type, "text/javascript");
+            writer.RenderBeginTag(HtmlTextWriterTag.Script);
+
+            if (ObjectName.Contains("."))
+            {
+                //generate function check
+                writer.Write("if (typeof " + ObjectName + " != 'function') {");
+            }
+            else
+            {
+                //generate object check
+                writer.Write("if (typeof " + ObjectName + " == 'undefined') {");
+            }
+
+            writer.Write("document.write('<script src=\"" + FileName + "\" type=\"text/javascript\"></' + 'script>');");
+            writer.Write("}");
+            writer.RenderEndTag();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="FileName">
+          <declaration><![CDATA[public string FileName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ObjectName">
+          <declaration><![CDATA[public string ObjectName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Web.Client.Providers">
+    <class name="DnnBodyProvider">
+      <declaration><![CDATA[public class DnnBodyProvider : DnnFileRegistrationProvider]]></declaration>
+      <documentation>
+        <summary>
+ Registers resources at the top of the body on default.aspx
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DnnBodyProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Initialize">
+          <declaration><![CDATA[public override void Initialize(string name, NameValueCollection config)]]></declaration>
+          <documentation>
+            <summary>
+ Initializes the provider.
+ </summary>
+ <param name="name">The friendly name of the provider.
+                 </param><param name="config">A collection of the name/value pairs representing the provider-specific attributes specified in the configuration for this provider.
+                 </param><exception cref="T:System.ArgumentNullException">The name of the provider is null.
+                 </exception><exception cref="T:System.ArgumentException">The name of the provider has a length of zero.
+                 </exception><exception cref="T:System.InvalidOperationException">An attempt is made to call <see cref="M:System.Configuration.Provider.ProviderBase.Initialize(System.String,System.Collections.Specialized.NameValueCollection)" /> on a provider after the provider has already been initialized.
+                 </exception></documentation>
+          <codeblock>
+            <location sl="63" sc="9" el="69" ec="10">Providers\DnnBodyRenderProvider.cs</location>
+            <body hash="4707389e73a898e6ec59bdf29d09471a"><![CDATA[{
+            // Assign the provider a default name if it doesn't have one
+            if (string.IsNullOrEmpty(name))
+                name = DefaultName;
+
+            base.Initialize(name, config);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterDependencies">
+          <declaration><![CDATA[protected override void RegisterDependencies(HttpContextBase http, string js, string css)]]></declaration>
+          <documentation>
+            <summary>
+ Registers the dependencies in the body of default.aspx
+ </summary>
+ <param name="http"></param>
+ <param name="js"></param>
+ <param name="css"></param>
+ <remarks>
+ For some reason ampersands that aren't html escaped are not compliant to HTML standards when they exist in 'link' or 'script' tags in URLs,
+ we need to replace the ampersands with &amp; . This is only required for this one w3c compliancy, the URL itself is a valid URL.
+
+ </remarks></documentation>
+          <codeblock>
+            <location sl="145" sc="9" el="175" ec="10">Providers\DnnBodyRenderProvider.cs</location>
+            <body hash="69e9fd6f580c6ded99724eab32f54613"><![CDATA[{
+            if (!(http.CurrentHandler is Page))
+            {
+                throw new InvalidOperationException("The current HttpHandler in a WebFormsFileRegistrationProvider must be of type Page");
+            }
+            var page = (Page)http.CurrentHandler;
+
+            if (page.Header == null)
+                throw new NullReferenceException("DnnBodyProvider requires a runat='server' tag in the page's header tag");
+
+            var jsScriptBlock = new LiteralControl(js.Replace("&", "&amp;"));
+            var cssStyleBlock = new LiteralControl(css.Replace("&", "&amp;"));
+
+            var holderControl = page.FindControl(DnnBodyPlaceHolderName);
+            holderControl.Controls.Add(jsScriptBlock);
+            holderControl.Controls.Add(cssStyleBlock);
+
+            var form = (HtmlForm)page.FindControl("Form");
+            if (form != null)
+            {
+                form.Controls.Remove(holderControl);
+                form.Controls.AddAt(0, holderControl);
+            }
+
+            var scriptManager = ScriptManager.GetCurrent(page);
+            if (scriptManager != null && scriptManager.IsInAsyncPostBack)
+            {
+                holderControl.ID = "$crm_" + holderControl.ID;
+                scriptManager.RegisterDataItem(holderControl, string.Format("{0}{1}", jsScriptBlock.Text, cssStyleBlock.Text));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenderCssDependencies">
+          <declaration><![CDATA[protected override string RenderCssDependencies(IEnumerable<IClientDependencyFile> cssDependencies, HttpContextBase http, IDictionary<string, string> htmlAttributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="103" sc="9" el="126" ec="10">Providers\DnnBodyRenderProvider.cs</location>
+            <body hash="3f1e33ff253369636b79f02d92eb5eeb"><![CDATA[{
+            if (!cssDependencies.Any())
+                return string.Empty;
+
+            var sb = new StringBuilder();
+
+            if (http.IsDebuggingEnabled || !EnableCompositeFiles)
+            {
+                foreach (var dependency in cssDependencies)
+                {
+                    sb.Append(RenderSingleCssFile(dependency.FilePath, htmlAttributes));
+                }
+            }
+            else
+            {
+                var comp = ClientDependencySettings.Instance.DefaultCompositeFileProcessingProvider.ProcessCompositeList(cssDependencies, ClientDependencyType.Css, http);
+                foreach (var s in comp)
+                {
+                    sb.Append(RenderSingleCssFile(s, htmlAttributes));
+                }
+            }
+
+            return sb.ToString();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenderJsDependencies">
+          <declaration><![CDATA[protected override string RenderJsDependencies(IEnumerable<IClientDependencyFile> jsDependencies, HttpContextBase http, IDictionary<string, string> htmlAttributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="95" ec="10">Providers\DnnBodyRenderProvider.cs</location>
+            <body hash="7c4a954bcc47f7f534e7a32f67401001"><![CDATA[{
+            if (!jsDependencies.Any())
+                return string.Empty;
+
+            var sb = new StringBuilder();
+
+            if (http.IsDebuggingEnabled || !EnableCompositeFiles)
+            {
+                foreach (var dependency in jsDependencies)
+                {
+                    sb.Append(RenderSingleJsFile(dependency.FilePath, htmlAttributes));
+                }
+            }
+            else
+            {
+                var comp = ClientDependencySettings.Instance.DefaultCompositeFileProcessingProvider.ProcessCompositeList(jsDependencies, ClientDependencyType.Javascript, http);
+                foreach (var s in comp)
+                {
+                    sb.Append(RenderSingleJsFile(s, htmlAttributes));
+                }
+            }
+
+            return sb.ToString();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenderSingleCssFile">
+          <declaration><![CDATA[protected override string RenderSingleCssFile(string css, IDictionary<string, string> htmlAttributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="129" sc="9" el="131" ec="10">Providers\DnnBodyRenderProvider.cs</location>
+            <body hash="68504481af4e99585c5f90d1cddce381"><![CDATA[{
+            return string.Format(HtmlEmbedContants.CssEmbedWithSource, css, htmlAttributes.ToHtmlAttributes());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenderSingleJsFile">
+          <declaration><![CDATA[protected override string RenderSingleJsFile(string js, IDictionary<string, string> htmlAttributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="98" sc="9" el="100" ec="10">Providers\DnnBodyRenderProvider.cs</location>
+            <body hash="5e1ab9f30143180a918960f9a74f7674"><![CDATA[{
+            return string.Format(HtmlEmbedContants.ScriptEmbedWithSource, js, htmlAttributes.ToHtmlAttributes());
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="DefaultName">
+          <declaration><![CDATA[public const string DefaultName = "DnnBodyProvider";]]></declaration>
+          <documentation>
+            <summary>
+ The name of the provider
+ </summary>
+          </documentation>
+        </field>
+        <field name="DnnBodyPlaceHolderName">
+          <declaration><![CDATA[public const string DnnBodyPlaceHolderName = "BodySCRIPTS";]]></declaration>
+          <documentation>
+            <summary>
+ The name of the placeholder in which the controls will be rendered
+ </summary>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DnnCompositeFileProcessingProvider">
+      <declaration><![CDATA[public class DnnCompositeFileProcessingProvider : CompositeFileProcessingProvider]]></declaration>
+      <documentation>
+        <summary>
+ A provider for combining, minifying, compressing and saving composite scripts/css files
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly ClientResourceSettings clientResourceSettings = new ClientResourceSettings();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="9" el="34" ec="103">Providers\DnnCompositeFileProcessingProvider.cs</location>
+            <body hash="08ef4f0d9dc9b55adf8d01944e0177d9"><![CDATA[private readonly ClientResourceSettings clientResourceSettings = new ClientResourceSettings()]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetVersion">
+          <declaration><![CDATA[public override int GetVersion()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="9" el="40" ec="10">Providers\DnnCompositeFileProcessingProvider.cs</location>
+            <body hash="95812ec814a99bcb6a4d9cbcedc38091"><![CDATA[{
+            var settingsVersion = clientResourceSettings.GetVersion();
+            return settingsVersion.HasValue ? settingsVersion.Value : base.GetVersion();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MinifyFile">
+          <declaration><![CDATA[protected override string MinifyFile(string fileContents, ClientDependencyType type)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="53" ec="10">Providers\DnnCompositeFileProcessingProvider.cs</location>
+            <body hash="16adb0f5744afeeaab50a19768fdfa88"><![CDATA[{
+            switch (type)
+            {
+                case ClientDependencyType.Css:
+                    return MinifyCss ? CssMin.CompressCSS(fileContents) : fileContents;
+                case ClientDependencyType.Javascript:
+                    return MinifyJs ? JSMin.CompressJS(fileContents) : fileContents;
+                default:
+                    return fileContents;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="clientResourceSettings">
+          <declaration><![CDATA[private readonly ClientResourceSettings clientResourceSettings = new ClientResourceSettings();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="MinifyCss">
+          <declaration><![CDATA[private bool MinifyCss]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="13" el="61" ec="14">Providers\DnnCompositeFileProcessingProvider.cs</location>
+            <body hash="7be89b940269556d6fcd0428f1678a08"><![CDATA[{
+                var enableCssMinification = clientResourceSettings.EnableCssMinification();
+                return enableCssMinification.HasValue ? enableCssMinification.Value : EnableCssMinify;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="MinifyJs">
+          <declaration><![CDATA[private bool MinifyJs]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="13" el="70" ec="14">Providers\DnnCompositeFileProcessingProvider.cs</location>
+            <body hash="eff9c3ceb16ba9f80d02a79e7614f7ae"><![CDATA[{
+                var enableJsMinification = clientResourceSettings.EnableJsMinification();
+                return enableJsMinification.HasValue ? enableJsMinification.Value : EnableJsMinify;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DnnFileRegistrationProvider">
+      <declaration><![CDATA[public abstract class DnnFileRegistrationProvider : WebFormsFileRegistrationProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[protected DnnFileRegistrationProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetVersion">
+          <declaration><![CDATA[public override int GetVersion()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="38" ec="10">Providers\DnnFileRegistrationProvider.cs</location>
+            <body hash="7cf0e4f3508fa70edfd4acd2c2bbfd5e"><![CDATA[{
+            _settingsVersion = new ClientResourceSettings().GetVersion();
+            if (_settingsVersion.HasValue)
+            {
+                return _settingsVersion.Value;
+            }
+            _settingsVersion = base.GetVersion();
+            return _settingsVersion.Value;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_settingsVersion">
+          <declaration><![CDATA[private int? _settingsVersion;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="EnableCompositeFiles">
+          <declaration><![CDATA[public override bool EnableCompositeFiles]]></declaration>
+          <documentation>
+            <summary>
+ Checks if the composite files option is set for the current portal (DNN site settings).
+ If not enabled at the portal level it defers to the core CDF setting (web.config).
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="13" el="51" ec="14">Providers\DnnFileRegistrationProvider.cs</location>
+            <body hash="02c39bef4959ac37e636f726242887b2"><![CDATA[{
+                var dnnSettingsHelper = new ClientResourceSettings();
+                var settingsVersion = dnnSettingsHelper.AreCompositeFilesEnabled();
+                return settingsVersion.HasValue ? settingsVersion.Value : base.EnableCompositeFiles;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DnnFormBottomProvider">
+      <declaration><![CDATA[public class DnnFormBottomProvider : DnnFileRegistrationProvider]]></declaration>
+      <documentation>
+        <summary>
+ Registers resources at the top of the body on default.aspx
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DnnFormBottomProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Initialize">
+          <declaration><![CDATA[public override void Initialize(string name, NameValueCollection config)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="57" ec="10">Providers\DnnFormBottomRenderProvider.cs</location>
+            <body hash="4707389e73a898e6ec59bdf29d09471a"><![CDATA[{
+            // Assign the provider a default name if it doesn't have one
+            if (string.IsNullOrEmpty(name))
+                name = DefaultName;
+
+            base.Initialize(name, config);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterDependencies">
+          <declaration><![CDATA[protected override void RegisterDependencies(HttpContextBase http, string js, string css)]]></declaration>
+          <documentation>
+            <summary>
+ Registers the dependencies in the body of default.aspx
+ </summary>
+ <param name="http"></param>
+ <param name="js"></param>
+ <param name="css"></param>
+ <remarks>
+ For some reason ampersands that aren't html escaped are not compliant to HTML standards when they exist in 'link' or 'script' tags in URLs,
+ we need to replace the ampersands with &amp; . This is only required for this one w3c compliancy, the URL itself is a valid URL.
+
+ </remarks></documentation>
+          <codeblock>
+            <location sl="133" sc="9" el="147" ec="10">Providers\DnnFormBottomRenderProvider.cs</location>
+            <body hash="cbac05c8183222aef14596851c06448c"><![CDATA[{
+            if (!(http.CurrentHandler is Page))
+            {
+                throw new InvalidOperationException("The current HttpHandler in a WebFormsFileRegistrationProvider must be of type Page");
+            }
+            var page = (Page)http.CurrentHandler;
+
+            if (page.Header == null)
+                throw new NullReferenceException("DnnFormBottomProvider requires a runat='server' tag in the page's header tag");
+
+            var jsScriptBlock = new LiteralControl(js.Replace("&", "&amp;"));
+            var cssStyleBlock = new LiteralControl(css.Replace("&", "&amp;"));
+            page.FindControl(DnnFormBottomPlaceHolderName).Controls.Add(jsScriptBlock);
+            page.FindControl(DnnFormBottomPlaceHolderName).Controls.Add(cssStyleBlock);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenderCssDependencies">
+          <declaration><![CDATA[protected override string RenderCssDependencies(IEnumerable<IClientDependencyFile> cssDependencies, HttpContextBase http, IDictionary<string, string> htmlAttributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="91" sc="9" el="114" ec="10">Providers\DnnFormBottomRenderProvider.cs</location>
+            <body hash="3f1e33ff253369636b79f02d92eb5eeb"><![CDATA[{
+            if (!cssDependencies.Any())
+                return string.Empty;
+
+            var sb = new StringBuilder();
+
+            if (http.IsDebuggingEnabled || !EnableCompositeFiles)
+            {
+                foreach (var dependency in cssDependencies)
+                {
+                    sb.Append(RenderSingleCssFile(dependency.FilePath, htmlAttributes));
+                }
+            }
+            else
+            {
+                var comp = ClientDependencySettings.Instance.DefaultCompositeFileProcessingProvider.ProcessCompositeList(cssDependencies, ClientDependencyType.Css, http);
+                foreach (var s in comp)
+                {
+                    sb.Append(RenderSingleCssFile(s, htmlAttributes));
+                }
+            }
+
+            return sb.ToString();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenderJsDependencies">
+          <declaration><![CDATA[protected override string RenderJsDependencies(IEnumerable<IClientDependencyFile> jsDependencies, HttpContextBase http, IDictionary<string, string> htmlAttributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="83" ec="10">Providers\DnnFormBottomRenderProvider.cs</location>
+            <body hash="d29675eb0e006f17fd7f238e135aaf7c"><![CDATA[{
+            if (!jsDependencies.Any())
+                return string.Empty;
+
+            var sb = new StringBuilder();
+            
+            if (http.IsDebuggingEnabled || !EnableCompositeFiles)
+            {
+                foreach (var dependency in jsDependencies)
+                {
+                    sb.Append(RenderSingleJsFile(dependency.FilePath, htmlAttributes));
+                }
+            }
+            else
+            {
+                var comp = ClientDependencySettings.Instance.DefaultCompositeFileProcessingProvider.ProcessCompositeList(jsDependencies, ClientDependencyType.Javascript, http);
+                foreach (var s in comp)
+                {
+                    sb.Append(RenderSingleJsFile(s, htmlAttributes));
+                }
+            }
+
+            return sb.ToString();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenderSingleCssFile">
+          <declaration><![CDATA[protected override string RenderSingleCssFile(string css, IDictionary<string, string> htmlAttributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="117" sc="9" el="119" ec="10">Providers\DnnFormBottomRenderProvider.cs</location>
+            <body hash="68504481af4e99585c5f90d1cddce381"><![CDATA[{
+            return string.Format(HtmlEmbedContants.CssEmbedWithSource, css, htmlAttributes.ToHtmlAttributes());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenderSingleJsFile">
+          <declaration><![CDATA[protected override string RenderSingleJsFile(string js, IDictionary<string, string> htmlAttributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="9" el="88" ec="10">Providers\DnnFormBottomRenderProvider.cs</location>
+            <body hash="5e1ab9f30143180a918960f9a74f7674"><![CDATA[{
+            return string.Format(HtmlEmbedContants.ScriptEmbedWithSource, js, htmlAttributes.ToHtmlAttributes());
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="DefaultName">
+          <declaration><![CDATA[public const string DefaultName = "DnnFormBottomProvider";]]></declaration>
+          <documentation>
+            <summary>
+ The default name of the provider
+ </summary>
+          </documentation>
+        </field>
+        <field name="DnnFormBottomPlaceHolderName">
+          <declaration><![CDATA[public const string DnnFormBottomPlaceHolderName = "ClientResourcesFormBottom";]]></declaration>
+          <documentation>
+            <summary>
+ The name of the placeholder in which the controls will be rendered
+ </summary>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DnnPageHeaderProvider">
+      <declaration><![CDATA[public class DnnPageHeaderProvider : DnnFileRegistrationProvider]]></declaration>
+      <documentation>
+        <summary>
+ Registers resources at the top of the body on default.aspx
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DnnPageHeaderProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Initialize">
+          <declaration><![CDATA[public override void Initialize(string name, NameValueCollection config)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="9" el="58" ec="10">Providers\DnnPageHeaderProvider.cs</location>
+            <body hash="4707389e73a898e6ec59bdf29d09471a"><![CDATA[{
+            // Assign the provider a default name if it doesn't have one
+            if (string.IsNullOrEmpty(name))
+                name = DefaultName;
+
+            base.Initialize(name, config);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RegisterDependencies">
+          <declaration><![CDATA[protected override void RegisterDependencies(HttpContextBase http, string js, string css)]]></declaration>
+          <documentation>
+            <summary>
+ Registers the dependencies in the body of default.aspx
+ </summary>
+ <param name="http"></param>
+ <param name="js"></param>
+ <param name="css"></param>
+ <remarks>
+ For some reason ampersands that aren't html escaped are not compliant to HTML standards when they exist in 'link' or 'script' tags in URLs,
+ we need to replace the ampersands with &amp; . This is only required for this one w3c compliancy, the URL itself is a valid URL.
+
+ </remarks></documentation>
+          <codeblock>
+            <location sl="134" sc="9" el="156" ec="10">Providers\DnnPageHeaderProvider.cs</location>
+            <body hash="205fe2248c4d5dff6f6ccfea8b54c539"><![CDATA[{
+            if (!(http.CurrentHandler is Page))
+            {
+                throw new InvalidOperationException("The current HttpHandler in a WebFormsFileRegistrationProvider must be of type Page");
+            }
+            var page = (Page)http.CurrentHandler;
+
+            if (page.Header == null)
+                throw new NullReferenceException("DnnPageHeaderProvider requires a runat='server' tag in the page's header tag");
+
+            var jsScriptBlock = new LiteralControl(js.Replace("&", "&amp;"));
+            var cssStyleBlock = new LiteralControl(css.Replace("&", "&amp;"));
+            page.FindControl(JsPlaceHolderName).Controls.Add(jsScriptBlock);
+            page.FindControl(CssPlaceHolderName).Controls.Add(cssStyleBlock);
+
+            var scriptManager = ScriptManager.GetCurrent(page);
+            if (scriptManager != null && scriptManager.IsInAsyncPostBack)
+            {
+                var jsHolder = page.FindControl(JsPlaceHolderName);
+                jsHolder.ID = "$crm_" + jsHolder.ID;
+                scriptManager.RegisterDataItem(jsHolder, string.Format("{0}{1}", jsScriptBlock.Text, cssStyleBlock.Text));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenderCssDependencies">
+          <declaration><![CDATA[protected override string RenderCssDependencies(IEnumerable<IClientDependencyFile> cssDependencies, HttpContextBase http, IDictionary<string, string> htmlAttributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="115" ec="10">Providers\DnnPageHeaderProvider.cs</location>
+            <body hash="3f1e33ff253369636b79f02d92eb5eeb"><![CDATA[{
+            if (!cssDependencies.Any())
+                return string.Empty;
+
+            var sb = new StringBuilder();
+
+            if (http.IsDebuggingEnabled || !EnableCompositeFiles)
+            {
+                foreach (var dependency in cssDependencies)
+                {
+                    sb.Append(RenderSingleCssFile(dependency.FilePath, htmlAttributes));
+                }
+            }
+            else
+            {
+                var comp = ClientDependencySettings.Instance.DefaultCompositeFileProcessingProvider.ProcessCompositeList(cssDependencies, ClientDependencyType.Css, http);
+                foreach (var s in comp)
+                {
+                    sb.Append(RenderSingleCssFile(s, htmlAttributes));
+                }
+            }
+
+            return sb.ToString();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenderJsDependencies">
+          <declaration><![CDATA[protected override string RenderJsDependencies(IEnumerable<IClientDependencyFile> jsDependencies, HttpContextBase http, IDictionary<string, string> htmlAttributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="9" el="84" ec="10">Providers\DnnPageHeaderProvider.cs</location>
+            <body hash="7c4a954bcc47f7f534e7a32f67401001"><![CDATA[{
+            if (!jsDependencies.Any())
+                return string.Empty;
+
+            var sb = new StringBuilder();
+
+            if (http.IsDebuggingEnabled || !EnableCompositeFiles)
+            {
+                foreach (var dependency in jsDependencies)
+                {
+                    sb.Append(RenderSingleJsFile(dependency.FilePath, htmlAttributes));
+                }
+            }
+            else
+            {
+                var comp = ClientDependencySettings.Instance.DefaultCompositeFileProcessingProvider.ProcessCompositeList(jsDependencies, ClientDependencyType.Javascript, http);
+                foreach (var s in comp)
+                {
+                    sb.Append(RenderSingleJsFile(s, htmlAttributes));
+                }
+            }
+
+            return sb.ToString();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenderSingleCssFile">
+          <declaration><![CDATA[protected override string RenderSingleCssFile(string css, IDictionary<string, string> htmlAttributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="118" sc="9" el="120" ec="10">Providers\DnnPageHeaderProvider.cs</location>
+            <body hash="68504481af4e99585c5f90d1cddce381"><![CDATA[{
+            return string.Format(HtmlEmbedContants.CssEmbedWithSource, css, htmlAttributes.ToHtmlAttributes());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RenderSingleJsFile">
+          <declaration><![CDATA[protected override string RenderSingleJsFile(string js, IDictionary<string, string> htmlAttributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="87" sc="9" el="89" ec="10">Providers\DnnPageHeaderProvider.cs</location>
+            <body hash="5e1ab9f30143180a918960f9a74f7674"><![CDATA[{
+            return string.Format(HtmlEmbedContants.ScriptEmbedWithSource, js, htmlAttributes.ToHtmlAttributes());
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="CssPlaceHolderName">
+          <declaration><![CDATA[public const string CssPlaceHolderName = "ClientDependencyHeadCss";]]></declaration>
+          <documentation>
+            <summary>
+ The name of the placeholder in which the controls will be rendered
+ </summary>
+          </documentation>
+        </field>
+        <field name="DefaultName">
+          <declaration><![CDATA[public const string DefaultName = "DnnPageHeaderProvider";]]></declaration>
+          <documentation>
+            <summary>
+ The default name of the provider
+ </summary>
+          </documentation>
+        </field>
+        <field name="JsPlaceHolderName">
+          <declaration><![CDATA[public const string JsPlaceHolderName = "ClientDependencyHeadJs";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

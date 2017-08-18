@@ -1,0 +1,274 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Authentication.Twitter.dll" version="07.03.02" generated="2017-06-19 12:17:13Z" generationTime="1.0075928">
+  <namespace name="DotNetNuke.Authentication.Twitter">
+    <class name="Login">
+      <declaration><![CDATA[public class Login : OAuthLoginBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Login()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddCustomProperties">
+          <declaration><![CDATA[protected override void AddCustomProperties(NameValueCollection properties)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="9" el="57" ec="10">Login.ascx.cs</location>
+            <body hash="8c17f291ec441f5842d07c805924777a"><![CDATA[{
+            base.AddCustomProperties(properties);
+
+            properties.Add("Twitter", string.Format("http://twitter.com/{0}", OAuthClient.GetCurrentUser<TwitterUserData>().ScreenName));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCurrentUser">
+          <declaration><![CDATA[protected override UserData GetCurrentUser()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="50" ec="10">Login.ascx.cs</location>
+            <body hash="d320a103f1f469a1103d24706d959510"><![CDATA[{
+            return OAuthClient.GetCurrentUser<TwitterUserData>();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="loginButton_Click">
+          <declaration><![CDATA[private void loginButton_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="9" el="76" ec="10">Login.ascx.cs</location>
+            <body hash="22c06792924fc88cdada8c6ae5f6806f"><![CDATA[{
+            OAuthClient.CallbackUri = new Uri(OAuthClient.CallbackUri + "?state=Twitter");
+            OAuthClient.Authorize();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="70" ec="10">Login.ascx.cs</location>
+            <body hash="9142bce0232334aefba49f25e13b2165"><![CDATA[{
+            base.OnInit(e);
+
+            loginButton.Click += loginButton_Click;
+            registerButton.Click += loginButton_Click;
+
+            OAuthClient = new TwitterClient(PortalId, Mode);
+
+            loginItem.Visible = (Mode == AuthMode.Login);
+            registerItem.Visible = (Mode == AuthMode.Register);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="loginButton">
+          <declaration><![CDATA[protected LinkButton loginButton;]]></declaration>
+          <documentation>
+            <summary>
+ loginButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="loginItem">
+          <declaration><![CDATA[protected HtmlGenericControl loginItem;]]></declaration>
+          <documentation>
+            <summary>
+ loginItem control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="registerButton">
+          <declaration><![CDATA[protected LinkButton registerButton;]]></declaration>
+          <documentation>
+            <summary>
+ registerButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="registerItem">
+          <declaration><![CDATA[protected HtmlGenericControl registerItem;]]></declaration>
+          <documentation>
+            <summary>
+ registerItem control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="AuthSystemApplicationName">
+          <declaration><![CDATA[protected override string AuthSystemApplicationName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SupportsRegistration">
+          <declaration><![CDATA[public override bool SupportsRegistration]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Settings">
+      <declaration><![CDATA[public class Settings : OAuthSettingsBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Settings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AuthSystemApplicationName">
+          <declaration><![CDATA[protected override string AuthSystemApplicationName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Authentication.Twitter.Components">
+    <class name="TwitterClient">
+      <declaration><![CDATA[public class TwitterClient : OAuthClientBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public TwitterClient(int portalId, AuthMode mode) : base(portalId, mode, "Twitter")]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="9" el="51" ec="10">Components\TwitterClient.cs</location>
+            <body hash="359778f706987a1c72a5b89d63c7dc83"><![CDATA[public TwitterClient(int portalId, AuthMode mode)
+            : base(portalId, mode, "Twitter")
+        {
+            AuthorizationEndpoint = new Uri("https://api.twitter.com/oauth/authorize");
+            RequestTokenEndpoint = new Uri("https://api.twitter.com/oauth/request_token");
+            RequestTokenMethod = HttpMethod.POST;
+            TokenEndpoint = new Uri("https://api.twitter.com/oauth/access_token");
+            MeGraphEndpoint = new Uri("https://api.twitter.com/1.1/account/verify_credentials.json");
+
+            AuthTokenName = "TwitterUserToken";
+
+            OAuthVersion = "1.0";
+
+            LoadTokenCookie(String.Empty);
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="TwitterUserData">
+      <declaration><![CDATA[public class TwitterUserData : UserData]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public TwitterUserData()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="DisplayName">
+          <declaration><![CDATA[public override string DisplayName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LanguageCode">
+          <declaration><![CDATA[public string LanguageCode]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Locale">
+          <declaration><![CDATA[public override string Locale]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ProfileImage">
+          <declaration><![CDATA[public override string ProfileImage]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ProfileImageUrl">
+          <declaration><![CDATA[public string ProfileImageUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ScreenName">
+          <declaration><![CDATA[public string ScreenName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Url">
+          <declaration><![CDATA[public string Url]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Website">
+          <declaration><![CDATA[public override string Website]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

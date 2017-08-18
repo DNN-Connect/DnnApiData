@@ -1,0 +1,713 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.SqlConsole.dll" version="01.01.00" generated="2017-08-10 12:34:47Z" generationTime="2.3180179">
+  <namespace name="Dnn.PersonaBar.SqlConsole.Components">
+    <class name="AdhocSqlQuery">
+      <declaration><![CDATA[public class AdhocSqlQuery]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AdhocSqlQuery()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ConnectionStringName">
+          <declaration><![CDATA[public string ConnectionStringName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="46" el="33" ec="50">Components\AdhocSqlQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="33" sc="51" el="33" ec="55">Components\AdhocSqlQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Query">
+          <declaration><![CDATA[public string Query]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="31" el="36" ec="35">Components\AdhocSqlQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="36" sc="36" el="36" ec="40">Components\AdhocSqlQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Timeout">
+          <declaration><![CDATA[public int Timeout]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="30" el="39" ec="34">Components\AdhocSqlQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="39" sc="35" el="39" ec="39">Components\AdhocSqlQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ISqlQueryController">
+      <declaration><![CDATA[public interface ISqlQueryController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="AddQuery">
+          <declaration><![CDATA[void AddQuery(SqlQuery query);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteQuery">
+          <declaration><![CDATA[void DeleteQuery(SqlQuery query);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetConnections">
+          <declaration><![CDATA[IList<string> GetConnections();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetQueries">
+          <declaration><![CDATA[IEnumerable<SqlQuery> GetQueries();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetQuery">
+          <declaration><![CDATA[SqlQuery GetQuery(int id);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetQuery">
+          <declaration><![CDATA[SqlQuery GetQuery(string name);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateQuery">
+          <declaration><![CDATA[void UpdateQuery(SqlQuery query);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SqlQuery">
+      <declaration><![CDATA[public class SqlQuery]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SqlQuery()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ConnectionStringName">
+          <declaration><![CDATA[public string ConnectionStringName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="46" el="46" ec="50">Components\SqlConsoleQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="46" sc="51" el="46" ec="55">Components\SqlConsoleQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CreatedByUserId">
+          <declaration><![CDATA[public int CreatedByUserId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="38" el="49" ec="42">Components\SqlConsoleQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="49" sc="43" el="49" ec="47">Components\SqlConsoleQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CreatedOnDate">
+          <declaration><![CDATA[public DateTime CreatedOnDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="41" el="52" ec="45">Components\SqlConsoleQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="52" sc="46" el="52" ec="50">Components\SqlConsoleQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LastModifiedByUserId">
+          <declaration><![CDATA[public int LastModifiedByUserId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="43" el="55" ec="47">Components\SqlConsoleQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="55" sc="48" el="55" ec="52">Components\SqlConsoleQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LastModifiedOnDate">
+          <declaration><![CDATA[public DateTime LastModifiedOnDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="46" el="58" ec="50">Components\SqlConsoleQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="58" sc="51" el="58" ec="55">Components\SqlConsoleQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="30" el="40" ec="34">Components\SqlConsoleQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="40" sc="35" el="40" ec="39">Components\SqlConsoleQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Query">
+          <declaration><![CDATA[public string Query]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="31" el="43" ec="35">Components\SqlConsoleQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="36" el="43" ec="40">Components\SqlConsoleQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="QueryId">
+          <declaration><![CDATA[public int QueryId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="30" el="37" ec="34">Components\SqlConsoleQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="35" el="37" ec="39">Components\SqlConsoleQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SqlQueryController">
+      <declaration><![CDATA[public class SqlQueryController : ServiceLocator<ISqlQueryController, SqlQueryController>, ISqlQueryController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SqlQueryController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddQuery">
+          <declaration><![CDATA[public void AddQuery(SqlQuery query)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="9" el="44" ec="10">Components\SqlConsoleController.cs</location>
+            <body hash="7844f83355a095c85a0181281eb0d7ae"><![CDATA[{
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                rep.Insert(query);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteQuery">
+          <declaration><![CDATA[public void DeleteQuery(SqlQuery query)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="9" el="53" ec="10">Components\SqlConsoleController.cs</location>
+            <body hash="ca01d8207c1e46d1d3fcf1807c67b140"><![CDATA[{
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                rep.Delete(query);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetConnections">
+          <declaration><![CDATA[public IList<string> GetConnections()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="104" sc="9" el="115" ec="10">Components\SqlConsoleController.cs</location>
+            <body hash="ecc160ff021a7421547b6387522beb9a"><![CDATA[{
+            IList<string> connections = new List<string>();
+            foreach (ConnectionStringSettings connection in ConfigurationManager.ConnectionStrings)
+            {
+                if (connection.Name.ToLowerInvariant() != "localmysqlserver" && connection.Name.ToLowerInvariant() != "localsqlserver")
+                {
+                    connections.Add(connection.Name);
+                }
+            }
+
+            return connections;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFactory">
+          <declaration><![CDATA[protected override Func<ISqlQueryController> GetFactory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="118" sc="9" el="120" ec="10">Components\SqlConsoleController.cs</location>
+            <body hash="31a460a8e902e2c6f4e97ab47b431ba0"><![CDATA[{
+            return () => new SqlQueryController();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetQueries">
+          <declaration><![CDATA[public IEnumerable<SqlQuery> GetQueries()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="9" el="65" ec="10">Components\SqlConsoleController.cs</location>
+            <body hash="717d945ec4be423f06b100b20f8be30a"><![CDATA[{
+            IEnumerable<SqlQuery> queries;
+
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                queries = rep.Get();
+            }
+            return queries;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetQuery">
+          <declaration><![CDATA[public SqlQuery GetQuery(int id)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="9" el="77" ec="10">Components\SqlConsoleController.cs</location>
+            <body hash="894336c13fca763f4c43ed803dc7d49b"><![CDATA[{
+            SqlQuery query;
+
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                query = rep.GetById(id);
+            }
+            return query;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetQuery">
+          <declaration><![CDATA[public SqlQuery GetQuery(string name)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="80" sc="9" el="92" ec="10">Components\SqlConsoleController.cs</location>
+            <body hash="d175c9da82f8d4ea07a4c115dcb71758"><![CDATA[{
+            List<SqlQuery> queries;
+            SqlQuery query = null;
+
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                queries = rep.Find("where name = @0", name).ToList();
+                if (queries != null && queries.Count > 0)
+                    query = queries.ElementAt(0);
+            }
+            return query;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateQuery">
+          <declaration><![CDATA[public void UpdateQuery(SqlQuery query)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="95" sc="9" el="101" ec="10">Components\SqlConsoleController.cs</location>
+            <body hash="9100ecd336eb3d68c136e60d62b4bf0c"><![CDATA[{
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                rep.Update(query);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.SqlConsole.MenuControllers">
+    <class name="HostMenuController">
+      <declaration><![CDATA[public class HostMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public HostMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="9" el="29" ec="10">MenuControllers\HostMenuController.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="9" el="18" ec="10">MenuControllers\HostMenuController.cs</location>
+            <body hash="4a8f06184b6087940b8e4519251d0924"><![CDATA[{
+            
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="9" el="24" ec="10">MenuControllers\HostMenuController.cs</location>
+            <body hash="c393c42544f107d48bfa9b85d7b12404"><![CDATA[{
+            var user = UserController.Instance.GetCurrentUserInfo();
+            return user.IsSuperUser;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.SqlConsole.Services">
+    <class name="SqlConsoleController">
+      <declaration><![CDATA[public class SqlConsoleController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private ISqlQueryController _controller = ServiceLocator<ISqlQueryController, SqlQueryController>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="31" ec="79">Services\SqlConsoleController.cs</location>
+            <body hash="ef976527d6cbfacf1264de93d80a1672"><![CDATA[private ISqlQueryController _controller = SqlQueryController.Instance]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static SqlConsoleController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="9" el="34" ec="87">Services\SqlConsoleController.cs</location>
+            <body hash="d6b6b8cc0707c6782f342fd1349299a1"><![CDATA[private static readonly Regex SqlObjRegex = new Regex(ScriptDelimiterRegex,
+            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="DeleteQuery">
+          <declaration><![CDATA[public HttpResponseMessage DeleteQuery(SqlQuery query)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="90" sc="9" el="100" ec="10">Services\SqlConsoleController.cs</location>
+            <body hash="e1cea5ec0879713b00420ea7abdeb59f"><![CDATA[{
+            var savedQuery = _controller.GetQuery(query.QueryId);
+            if (savedQuery != null)
+            {
+                _controller.DeleteQuery(savedQuery);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new {});
+            }
+
+            return Request.CreateResponse(HttpStatusCode.NoContent);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSavedQueries">
+          <declaration><![CDATA[public HttpResponseMessage GetSavedQueries()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="9" el="48" ec="10">Services\SqlConsoleController.cs</location>
+            <body hash="a53cadf570f5642af713daf0786317be"><![CDATA[{
+            return Request.CreateResponse(HttpStatusCode.OK, new
+            {
+                queries = _controller.GetQueries(),
+                connections = _controller.GetConnections()
+            });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSavedQuery">
+          <declaration><![CDATA[public HttpResponseMessage GetSavedQuery(int id)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="9" el="54" ec="10">Services\SqlConsoleController.cs</location>
+            <body hash="3af90e7984f0bf03faa086346fb74beb"><![CDATA[{
+            return Request.CreateResponse(HttpStatusCode.OK, _controller.GetQuery(id));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RecordAuditEventLog">
+          <declaration><![CDATA[private void RecordAuditEventLog(string query)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="149" sc="9" el="163" ec="10">Services\SqlConsoleController.cs</location>
+            <body hash="6d16532d443198b993bf6f66e71297ce"><![CDATA[{
+            var props = new LogProperties { new LogDetailInfo("User", UserInfo.Username), new LogDetailInfo("SQL Query", query) };
+
+            //Add the event log with host portal id.
+            var log = new LogInfo
+            {
+                LogUserID = UserInfo.UserID,
+                LogTypeKey = EventLogController.EventLogType.HOST_SQL_EXECUTED.ToString(),
+                LogProperties = props,
+                BypassBuffering = true,
+                LogPortalID = Null.NullInteger
+            };
+
+            LogController.Instance.AddLog(log);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RunAsScript">
+          <declaration><![CDATA[private bool RunAsScript(string query)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="166" sc="9" el="168" ec="10">Services\SqlConsoleController.cs</location>
+            <body hash="72f80ee8d4fbcd265f185d10b12acc40"><![CDATA[{
+            return SqlObjRegex.IsMatch(query);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RunQuery">
+          <declaration><![CDATA[public HttpResponseMessage RunQuery(AdhocSqlQuery query)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="105" sc="9" el="142" ec="10">Services\SqlConsoleController.cs</location>
+            <body hash="9e00dc3f6f4f4f0aba652b5fc67f0ffb"><![CDATA[{
+            var connectionstring = Config.GetConnectionString(query.ConnectionStringName);
+
+            var outputTables = new List<DataTable>();
+            string errorMessage;
+
+            var runAsQuery = RunAsScript(query.Query);
+            if (runAsQuery)
+            {
+                errorMessage = DataProvider.Instance().ExecuteScript(connectionstring, query.Query, query.Timeout);
+            }
+            else
+            {
+                try
+                {
+                    var dr = DataProvider.Instance().ExecuteSQLTemp(connectionstring, query.Query, query.Timeout, out errorMessage);
+                    if (dr != null)
+                    {
+                        do
+                        {
+                            var table = new DataTable { Locale = CultureInfo.CurrentCulture };
+                            table.Load(dr);
+                            outputTables.Add(table);
+                        }
+                        while (!dr.IsClosed);
+                    }
+                }
+                catch (SqlException sqlException)
+                {
+                    errorMessage = sqlException.Message;
+                }
+            }
+
+            RecordAuditEventLog(query.Query);
+
+            var statusCode = string.IsNullOrEmpty(errorMessage) ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
+            return Request.CreateResponse(statusCode,  new { Data = runAsQuery ? null : outputTables, Error = errorMessage });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveQuery">
+          <declaration><![CDATA[public HttpResponseMessage SaveQuery(SqlQuery query)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="9" el="85" ec="10">Services\SqlConsoleController.cs</location>
+            <body hash="9215e103598cc444851d8aad39c2b234"><![CDATA[{
+            query.CreatedOnDate = DateTime.Now;
+            query.CreatedByUserId = UserInfo.UserID;
+            query.LastModifiedOnDate = DateTime.Now;
+            query.LastModifiedByUserId = UserInfo.UserID;
+
+            if (query.QueryId <= 0)
+            {
+                var saveQueries = _controller.GetQueries();
+                var saveQuery = saveQueries.FirstOrDefault(q => q.Name.Equals(query.Name, StringComparison.InvariantCultureIgnoreCase));
+                if (saveQuery != null)
+                {
+                    query.QueryId = saveQuery.QueryId;
+                }
+            }
+
+            if (query.QueryId > 0)
+            {
+                _controller.UpdateQuery(query);
+            }
+            else
+            {
+                _controller.AddQuery(query);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, query);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_controller">
+          <declaration><![CDATA[private ISqlQueryController _controller = ServiceLocator<ISqlQueryController, SqlQueryController>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ScriptDelimiterRegex">
+          <declaration><![CDATA[private const string ScriptDelimiterRegex = "(?<=(?:[^\\w]+|^))GO(?=(?: |\\t)*?(?:\\r?\\n|$))";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="SqlObjRegex">
+          <declaration><![CDATA[private static readonly Regex SqlObjRegex = new Regex("(?<=(?:[^\\w]+|^))GO(?=(?: |\\t)*?(?:\\r?\\n|$))", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

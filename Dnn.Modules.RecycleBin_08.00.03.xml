@@ -1,0 +1,641 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.Modules.RecycleBin.dll" version="08.00.03" generated="2017-06-19 23:25:09Z" generationTime="1.7075636">
+  <namespace name="DesktopModules.Admin.RecycleBin">
+    <class name="RecycleBin">
+      <declaration><![CDATA[public class RecycleBin : PortalModuleBase]]></declaration>
+      <documentation>
+        <summary>
+ The RecycleBin PortalModuleBase allows Tabs and Modules to be recovered or
+ prmanentl deleted
+ </summary>
+ <remarks>
+ </remarks></documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RecycleBin()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindData">
+          <declaration><![CDATA[private void BindData(bool refresh)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="3" el="120" ec="4">RecycleBin.ascx.cs</location>
+            <body hash="b9147e31aa46e5e628a467c1bcae6039"><![CDATA[{
+            if (refresh)
+            {
+                LoadData();
+            }
+
+            modulesListBox.Items.Clear();
+            tabsListBox.Items.Clear();
+
+            foreach (ModuleInfo module in DeletedModules)
+            {
+                if (String.IsNullOrEmpty(module.ModuleTitle))
+                {
+                    module.ModuleTitle = module.DesktopModule.FriendlyName;
+                }
+
+                var locale = LocaleController.Instance.GetLocale(module.CultureCode);
+
+                TabInfo tab = locale != null
+                                ? TabController.Instance.GetTabByCulture(module.TabID, PortalId, locale)
+                                : TabController.Instance.GetTab(module.TabID, PortalId, false);
+
+                if (tab == null)
+                {
+                    modulesListBox.Items.Add(new ListItem(module.ModuleTitle + " - " + module.LastModifiedOnDate, module.TabID + "-" + module.ModuleID));
+                }
+                else if (tab.TabID == module.TabID)
+                {
+                    modulesListBox.Items.Add(new ListItem(tab.TabName + " - " + module.ModuleTitle + " - " + module.LastModifiedOnDate, module.TabID + "-" + module.ModuleID));
+                }
+            }
+
+            foreach (var tab in DeletedTabs)
+            {
+	            var item = new ListItem(tab.IndentedTabName + " - " + tab.LastModifiedOnDate, tab.TabID.ToString());
+				item.Attributes.Add("ParentId", tab.ParentId.ToString());
+				tabsListBox.Items.Add(item);
+            }
+
+            cmdRestoreTab.Enabled = (DeletedTabs.Count > 0);
+            cmdDeleteTab.Enabled = (DeletedTabs.Count > 0);
+            cmdRestoreModule.Enabled = (modulesListBox.Items.Count > 0);
+            cmdDeleteModule.Enabled = (modulesListBox.Items.Count > 0);
+            cmdEmpty.Enabled = DeletedTabs.Count > 0 || modulesListBox.Items.Count > 0;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteModule">
+          <declaration><![CDATA[private void DeleteModule(ModuleInfo module)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="123" sc="9" el="127" ec="10">RecycleBin.ascx.cs</location>
+            <body hash="ba5ae2b2744b0905fef2824f2f17fb1e"><![CDATA[{
+            //hard-delete Tab Module Instance
+            ModuleController.Instance.DeleteTabModule(module.TabID, module.ModuleID, false);
+            EventLogController.Instance.AddLog(module, PortalSettings, UserId, "", EventLogController.EventLogType.MODULE_DELETED);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteTab">
+          <declaration><![CDATA[private void DeleteTab(TabInfo tab, bool deleteDescendants)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="130" sc="3" el="148" ec="4">RecycleBin.ascx.cs</location>
+            <body hash="0202f15b91f5d0aa87b6612738489b22"><![CDATA[{
+			//get tab modules before deleting page
+            var tabModules = ModuleController.Instance.GetTabModules(tab.TabID);
+
+			//hard delete the tab
+			TabController.Instance.DeleteTab(tab.TabID, tab.PortalID, deleteDescendants);
+			
+			//delete modules that do not have other instances
+			foreach (var kvp in tabModules)
+			{
+				//check if all modules instances have been deleted
+                var delModule = ModuleController.Instance.GetModule(kvp.Value.ModuleID, Null.NullInteger, false);
+				if (delModule == null || delModule.TabID == Null.NullInteger)
+				{
+                    ModuleController.Instance.DeleteModule(kvp.Value.ModuleID);
+				}
+			}
+            EventLogController.Instance.AddLog(tab, PortalSettings, UserId, "", EventLogController.EventLogType.TAB_DELETED);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadData">
+          <declaration><![CDATA[private void LoadData()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="151" sc="9" el="166" ec="10">RecycleBin.ascx.cs</location>
+            <body hash="d97badd8fe0274fed7f2558c52991400"><![CDATA[{
+            var currentLocale = LocaleController.Instance.GetCurrentLocale(PortalId);
+
+            TabCollection tabsList = modeButtonList.SelectedValue == "ALL"
+                             ? TabController.Instance.GetTabsByPortal(PortalId)
+                             : TabController.Instance.GetTabsByPortal(PortalId).WithCulture(currentLocale.Code, true);
+
+            DeletedTabs = tabsList.Values.Where(tab => tab.IsDeleted)
+                                            .OrderBy(tab => tab.TabPath)
+                                            .ToList();
+
+            DeletedModules = ModuleController.Instance.GetModules(PortalId)
+                                                .Cast<ModuleInfo>()
+                                                .Where(module => module.IsDeleted && (modeButtonList.SelectedValue == "ALL" || module.CultureCode == currentLocale.Code))
+                                                .ToList();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnEmptyBinClick">
+          <declaration><![CDATA[private void OnEmptyBinClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="287" sc="3" el="300" ec="4">RecycleBin.ascx.cs</location>
+            <body hash="114e0cf085ed556a5e1ad29b6028b01f"><![CDATA[{
+            foreach(var module in DeletedModules)
+            {
+                DeleteModule(module);
+            }
+
+            //Delete tabs starting with the deepest children
+            foreach(var tab in DeletedTabs.OrderByDescending(t => t.Level))
+            {
+                DeleteTab(tab, true);
+            }
+
+			BindData(true);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="242" sc="9" el="253" ec="10">RecycleBin.ascx.cs</location>
+            <body hash="a99cef7eb4d5d83f8ef0f0a898febcda"><![CDATA[{
+            base.OnInit(e);
+
+			JavaScript.RequestRegistration(CommonJs.DnnPlugins);
+
+            cmdDeleteModule.Click += OnModuleDeleteClick;
+            cmdDeleteTab.Click += OnTabDeleteClick;
+            cmdEmpty.Click += OnEmptyBinClick;
+            cmdRestoreModule.Click += OnModuleRestoreClick;
+            cmdRestoreTab.Click += OnTabRestoreClick;
+            modeButtonList.SelectedIndexChanged += OnModeIndexChanged;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="256" sc="3" el="284" ec="10">RecycleBin.ascx.cs</location>
+            <body hash="9b90e7be621ba8268984b13811109941"><![CDATA[{
+			base.OnLoad(e);
+
+			var resourceFileRoot = TemplateSourceDirectory + "/" + Localization.LocalResourceDirectory + "/" + ID;
+
+            LoadData();
+
+			if ((Page.IsPostBack == false))
+			{
+				if (PortalSettings.ContentLocalizationEnabled)
+				{
+					ClientAPI.AddButtonConfirm(cmdRestoreTab, Localization.GetString("RestoreTab", resourceFileRoot));
+				}
+				divModuleButtons.Visible = ModulePermissionController.HasModulePermission(ModuleConfiguration.ModulePermissions, "Edit");
+                divTabButtons.Visible = ModulePermissionController.HasModulePermission(ModuleConfiguration.ModulePermissions, "Edit");
+                cmdEmpty.Visible = ModulePermissionController.HasModulePermission(ModuleConfiguration.ModulePermissions, "Edit");
+				divMode.Visible = PortalSettings.ContentLocalizationEnabled;
+
+				var mode = "ALL";
+				if (!string.IsNullOrEmpty(Request.QueryString["mode"]))
+				{
+					mode = Request.QueryString["mode"];
+				}
+				modeButtonList.SelectedValue = mode.ToUpperInvariant() == "SINGLE" ? "SINGLE" : "ALL";
+
+                BindData(false);
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnModeIndexChanged">
+          <declaration><![CDATA[private void OnModeIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="303" sc="9" el="305" ec="10">RecycleBin.ascx.cs</location>
+            <body hash="65f72ca7078ca93bb8f3a8a8feb9d2f2"><![CDATA[{
+            BindData(true);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnModuleDeleteClick">
+          <declaration><![CDATA[private void OnModuleDeleteClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="308" sc="9" el="324" ec="10">RecycleBin.ascx.cs</location>
+            <body hash="b433b70d581951227e0a50f53c628667"><![CDATA[{
+            foreach (ListItem item in modulesListBox.Items)
+            {
+                if (item.Selected)
+                {
+                    var values = item.Value.Split('-');
+                    var module = DeletedModules.SingleOrDefault(m => m.ModuleID == int.Parse(values[1])
+                                                                    && m.TabID == int.Parse(values[0]));
+                    if (module != null)
+                    {
+                        DeleteModule(module);
+                    }
+                }
+            }
+
+            BindData(true);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnModuleRestoreClick">
+          <declaration><![CDATA[private void OnModuleRestoreClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="327" sc="3" el="340" ec="4">RecycleBin.ascx.cs</location>
+            <body hash="6de1d92318b20553656d17963df57e7b"><![CDATA[{
+			foreach (ListItem item in modulesListBox.Items)
+			{
+				if (item.Selected)
+				{
+					var values = item.Value.Split('-');
+
+                    // restore module
+                    RestoreModule(int.Parse(values[1]), int.Parse(values[0]));
+				}
+			}
+
+			BindData(true);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnTabDeleteClick">
+          <declaration><![CDATA[private void OnTabDeleteClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="343" sc="9" el="363" ec="10">RecycleBin.ascx.cs</location>
+            <body hash="510c7b00b3b8e537cddd128341c3baab"><![CDATA[{
+            foreach (ListItem item in tabsListBox.Items)
+            {
+                if (item.Selected)
+                {
+                    var tab = DeletedTabs.SingleOrDefault(t => t.TabID == int.Parse(item.Value));
+                    if (tab != null)
+                    {
+                        if (tab.HasChildren)
+                        {
+                            Skin.AddModuleMessage(this, String.Format(Localization.GetString("ParentTab.ErrorMessage", LocalResourceFile), tab.TabName), ModuleMessage.ModuleMessageType.YellowWarning);
+                        }
+                        else
+                        {
+                            DeleteTab(tab, false);
+                        }
+                    }
+                }
+            }
+            BindData(true);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnTabRestoreClick">
+          <declaration><![CDATA[private void OnTabRestoreClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="366" sc="3" el="389" ec="4">RecycleBin.ascx.cs</location>
+            <body hash="fa255d719fed7eed4f4afd031697de42"><![CDATA[{
+			var errors = false;
+
+			foreach (ListItem item in tabsListBox.Items)
+			{
+				if (item.Selected)
+				{
+                    var tab = DeletedTabs.SingleOrDefault(t => t.TabID == int.Parse(item.Value));
+
+                    if (!RestoreTab(tab))
+					{
+						errors = true;
+					}
+				}
+			}
+			if (!errors)
+			{
+				Response.Redirect(Globals.NavigateURL(TabId, "", "mode=" + modeButtonList.SelectedValue.ToLowerInvariant()));
+			}
+			else
+			{
+				BindData(true);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreModule">
+          <declaration><![CDATA[private void RestoreModule(int moduleId, int tabId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="169" sc="9" el="188" ec="10">RecycleBin.ascx.cs</location>
+            <body hash="c84a04202136efbfe6944a0b79dd6d61"><![CDATA[{
+            // restore module
+            var module = ModuleController.Instance.GetModule(moduleId, tabId, false);
+            if ((module != null))
+            {
+                if (DeletedTabs.Any(t => t.TabID == module.TabID))
+                {
+                    var title = !string.IsNullOrEmpty(module.ModuleTitle) ? module.ModuleTitle : module.DesktopModule.FriendlyName;
+                    Skin.AddModuleMessage(this, string.Format(Localization.GetString("TabDeleted.ErrorMessage", LocalResourceFile), title),
+                                                   ModuleMessage.ModuleMessageType.RedError);
+                    return;
+                }
+                ModuleController.Instance.RestoreModule(module);
+                
+                var currentUser = UserController.Instance.GetCurrentUserInfo();
+                var currentModuleVersion = TabVersionBuilder.Instance.GetModuleContentLatestVersion(module);
+                TabChangeTracker.Instance.TrackModuleAddition(module, currentModuleVersion, currentUser.UserID);
+                EventLogController.Instance.AddLog(module, PortalSettings, UserId, "", EventLogController.EventLogType.MODULE_RESTORED);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreTab">
+          <declaration><![CDATA[private bool RestoreTab(TabInfo tab)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="191" sc="3" el="235" ec="4">RecycleBin.ascx.cs</location>
+            <body hash="835235ac2ce140918530d0226d85e3fc"><![CDATA[{
+			var success = true;
+
+			if (tab != null)
+			{
+				if (!Null.IsNull(tab.ParentId) && DeletedTabs.Any(t => t.TabID == tab.ParentId))
+				{
+					Skin.AddModuleMessage(this,
+												   string.Format(Localization.GetString("ChildTab.ErrorMessage", LocalResourceFile), tab.TabName),
+												   ModuleMessage.ModuleMessageType.YellowWarning);
+					success = false;
+				}
+				else
+				{
+                    var changeControlStateForTab = TabChangeSettings.Instance.GetChangeControlState(tab.PortalID, tab.TabID);
+                    if (changeControlStateForTab.IsChangeControlEnabledForTab)
+                    {
+                        TabVersionSettings.Instance.SetEnabledVersioningForTab(tab.TabID, false);
+                        TabWorkflowSettings.Instance.SetWorkflowEnabled(tab.PortalID, tab.TabID, false);
+                    }
+
+                    TabController.Instance.RestoreTab(tab, PortalSettings);
+					DeletedTabs.Remove(tab);
+
+					//restore modules in this tab
+					modulesListBox.Items.Cast<ListItem>().ToList().ForEach(i =>
+					                                                   	{
+																			var values = i.Value.Split('-');
+																			var tabId = int.Parse(values[0]);
+																			var moduleId = int.Parse(values[1]);
+																			if(tabId == tab.TabID)
+																			{
+																				RestoreModule(moduleId, tabId);
+																			}
+					                                                   	});
+
+                    if (changeControlStateForTab.IsChangeControlEnabledForTab)
+                    {
+                        TabVersionSettings.Instance.SetEnabledVersioningForTab(tab.TabID, changeControlStateForTab.IsVersioningEnabledForTab);
+                        TabWorkflowSettings.Instance.SetWorkflowEnabled(tab.PortalID, tab.TabID, changeControlStateForTab.IsWorkflowEnabledForTab);
+                    }
+				}
+			}
+			return success;
+		}]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cmdDeleteModule">
+          <declaration><![CDATA[protected LinkButton cmdDeleteModule;]]></declaration>
+          <documentation>
+            <summary>
+ cmdDeleteModule control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdDeleteTab">
+          <declaration><![CDATA[protected LinkButton cmdDeleteTab;]]></declaration>
+          <documentation>
+            <summary>
+ cmdDeleteTab control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdEmpty">
+          <declaration><![CDATA[protected LinkButton cmdEmpty;]]></declaration>
+          <documentation>
+            <summary>
+ cmdEmpty control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdRestoreModule">
+          <declaration><![CDATA[protected LinkButton cmdRestoreModule;]]></declaration>
+          <documentation>
+            <summary>
+ cmdRestoreModule control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdRestoreTab">
+          <declaration><![CDATA[protected LinkButton cmdRestoreTab;]]></declaration>
+          <documentation>
+            <summary>
+ cmdRestoreTab control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="divMode">
+          <declaration><![CDATA[protected HtmlGenericControl divMode;]]></declaration>
+          <documentation>
+            <summary>
+ divMode control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="divModuleButtons">
+          <declaration><![CDATA[protected HtmlGenericControl divModuleButtons;]]></declaration>
+          <documentation>
+            <summary>
+ divModuleButtons control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="divTabButtons">
+          <declaration><![CDATA[protected HtmlGenericControl divTabButtons;]]></declaration>
+          <documentation>
+            <summary>
+ divTabButtons control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="modeButtonList">
+          <declaration><![CDATA[protected RadioButtonList modeButtonList;]]></declaration>
+          <documentation>
+            <summary>
+ modeButtonList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="modulesListBox">
+          <declaration><![CDATA[protected ListBox modulesListBox;]]></declaration>
+          <documentation>
+            <summary>
+ modulesListBox control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="tabsListBox">
+          <declaration><![CDATA[protected ListBox tabsListBox;]]></declaration>
+          <documentation>
+            <summary>
+ tabsListBox control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="DeletedModules">
+          <declaration><![CDATA[protected List<ModuleInfo> DeletedModules]]></declaration>
+          <documentation>
+            <summary>
+ Deleted Modules List.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="53" el="69" ec="57">RecycleBin.ascx.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="69" sc="58" el="69" ec="70">RecycleBin.ascx.cs</location>
+            <body hash="5dbe2cc086ebbf5db6b03610487cca4c"><![CDATA[private set]]></body>
+          </codeblock>
+        </property>
+        <property name="DeletedTabs">
+          <declaration><![CDATA[protected List<TabInfo> DeletedTabs]]></declaration>
+          <documentation>
+            <summary>
+ Deleted Tabs List.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="47" el="64" ec="51">RecycleBin.ascx.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="64" sc="52" el="64" ec="64">RecycleBin.ascx.cs</location>
+            <body hash="5dbe2cc086ebbf5db6b03610487cca4c"><![CDATA[private set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.RecycleBin.Components">
+    <class name="RecycleBinController">
+      <declaration><![CDATA[public class RecycleBinController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RecycleBinController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="54" ec="10">Components\RecycleBinController.cs</location>
+            <body hash="67abc96a144fec1e91cc1f2ff9dacb31"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "08.00.00":
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

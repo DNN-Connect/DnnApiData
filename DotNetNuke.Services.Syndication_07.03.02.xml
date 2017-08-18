@@ -1,0 +1,3487 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Services.Syndication.dll" version="07.03.02" generated="2017-06-19 12:17:30Z" generationTime="2.7290984">
+  <namespace name="DotNetNuke.Services.Syndication">
+    <class name="GenericRssChannel">
+      <declaration><![CDATA[public sealed class GenericRssChannel : RssChannelBase<GenericRssElement, GenericRssElement>]]></declaration>
+      <documentation>
+        <summary>
+   Class to consume (or create) a channel in a late-bound way
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GenericRssChannel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="LoadChannel">
+          <declaration><![CDATA[public static GenericRssChannel LoadChannel(string url)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="69" ec="10">RSS\GenericRssChannel.cs</location>
+            <body hash="86fa4e72f56ac482ba1f72e28fbc08ef"><![CDATA[{
+            var channel = new GenericRssChannel();
+            channel.LoadFromUrl(url);
+            return channel;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadChannel">
+          <declaration><![CDATA[public static GenericRssChannel LoadChannel(XmlDocument doc)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="76" ec="10">RSS\GenericRssChannel.cs</location>
+            <body hash="a0a0b7d20861edf77b1cc3ab4bf4359c"><![CDATA[{
+            var channel = new GenericRssChannel();
+            channel.LoadFromXml(doc);
+            return channel;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SelectItems">
+          <declaration><![CDATA[public IEnumerable SelectItems()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="80" sc="9" el="82" ec="10">RSS\GenericRssChannel.cs</location>
+            <body hash="b227ae87239e382043f605741579873f"><![CDATA[{
+            return SelectItems(-1);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SelectItems">
+          <declaration><![CDATA[public IEnumerable SelectItems(int maxItems)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="85" sc="9" el="99" ec="10">RSS\GenericRssChannel.cs</location>
+            <body hash="ba75da5cb20eec8c55d36120c2fbca01"><![CDATA[{
+            var data = new ArrayList();
+
+            foreach (GenericRssElement element in Items)
+            {
+                if (maxItems > 0 && data.Count >= maxItems)
+                {
+                    break;
+                }
+
+                data.Add(new RssElementCustomTypeDescriptor(element.Attributes));
+            }
+
+            return data;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Attributes">
+          <declaration><![CDATA[public new Dictionary<string, string> Attributes]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="13" el="41" ec="14">RSS\GenericRssChannel.cs</location>
+            <body hash="46c387fb4830584bdd16639a04cca64c"><![CDATA[{
+                return base.Attributes;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Image">
+          <declaration><![CDATA[public GenericRssElement Image]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="13" el="61" ec="14">RSS\GenericRssChannel.cs</location>
+            <body hash="51df5ec9ae15f6afc495cb857ffffbaf"><![CDATA[{
+                return GetImage();
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Item">
+          <declaration><![CDATA[public string this[string attributeName]]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="13" el="49" ec="14">RSS\GenericRssChannel.cs</location>
+            <body hash="43891ebd7b02da394add176d4064625f"><![CDATA[{
+                return GetAttributeValue(attributeName);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="51" sc="13" el="53" ec="14">RSS\GenericRssChannel.cs</location>
+            <body hash="da56bdd0d4efdf0f27fdeab89609c58c"><![CDATA[{
+                Attributes[attributeName] = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GenericRssElement">
+      <declaration><![CDATA[public sealed class GenericRssElement : RssElementBase]]></declaration>
+      <documentation>
+        <summary>
+   Late-bound RSS element (used for late bound item and image)
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GenericRssElement()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Attributes">
+          <declaration><![CDATA[public new Dictionary<string, string> Attributes]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="13" el="39" ec="14">RSS\GenericRssElement.cs</location>
+            <body hash="46c387fb4830584bdd16639a04cca64c"><![CDATA[{
+                return base.Attributes;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Item">
+          <declaration><![CDATA[public string this[string attributeName]]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="13" el="47" ec="14">RSS\GenericRssElement.cs</location>
+            <body hash="43891ebd7b02da394add176d4064625f"><![CDATA[{
+                return GetAttributeValue(attributeName);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="49" sc="13" el="51" ec="14">RSS\GenericRssElement.cs</location>
+            <body hash="da56bdd0d4efdf0f27fdeab89609c58c"><![CDATA[{
+                Attributes[attributeName] = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GenericRssHttpHandlerBase">
+      <declaration><![CDATA[public class GenericRssHttpHandlerBase : RssHttpHandlerBase<GenericRssChannel, GenericRssElement, GenericRssElement>]]></declaration>
+      <documentation>
+        <summary>
+   Late-bound RSS HTTP Handler to publish RSS channel
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GenericRssHttpHandlerBase()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="e);">
+      <declaration><![CDATA[public delegate void InitEventHandler(object source, EventArgs e);]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public extern InitEventHandler(object @object, IntPtr method);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BeginInvoke">
+          <declaration><![CDATA[public virtual extern IAsyncResult BeginInvoke(object source, EventArgs e, AsyncCallback callback, object @object);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="EndInvoke">
+          <declaration><![CDATA[public virtual extern void EndInvoke(IAsyncResult result);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="Invoke">
+          <declaration><![CDATA[public virtual extern void Invoke(object source, EventArgs e);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Opml">
+      <declaration><![CDATA[public class Opml]]></declaration>
+      <documentation>
+        <summary>
+   Class for managing an OPML feed
+   <history>
+     Created     Nik Kalyani     3/1/2007
+   </history>
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private DateTime _dateCreated = DateTime.MinValue;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="61" ec="10">OPML\Opml.cs</location>
+            <body hash="b8219a853c2bb6ffa056036d658bcabf"><![CDATA[private DateTime _dateCreated = DateTime.MinValue;
+        private DateTime _dateModified = DateTime.MinValue;
+        private string _docs = string.Empty;
+        private string _expansionState = string.Empty;
+        private OpmlOutlines _outlines;
+        private string _ownerEmail = string.Empty;
+        private string _ownerId = string.Empty;
+        private string _ownerName = string.Empty;
+        private string _title = string.Empty;
+        private DateTime _utcExpiry = DateTime.Now.AddMinutes(180);
+        private string _vertScrollState = string.Empty;
+        private string _windowBottom = string.Empty;
+        private string _windowLeft = string.Empty;
+        private string _windowRight = string.Empty;
+        private string _windowTop = string.Empty;
+        private XmlDocument opmlDoc;
+
+        public Opml()
+        {
+            _outlines = new OpmlOutlines();
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static Opml()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="6" el="40" ec="91">OPML\Opml.cs</location>
+            <body hash="fc82698cc342c07fd257bb210187657d"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (Opml))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddOutline">
+          <declaration><![CDATA[public void AddOutline(OpmlOutline item)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="244" sc="9" el="246" ec="10">OPML\Opml.cs</location>
+            <body hash="1e35bbd3bf7aaf0af4fcdd7d45950bc8"><![CDATA[{
+            _outlines.Add(item);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddOutline">
+          <declaration><![CDATA[public void AddOutline(string text, string type, Uri xmlUrl, string category)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="249" sc="9" el="251" ec="10">OPML\Opml.cs</location>
+            <body hash="8e7caae8bd64529cd611f6703268559f"><![CDATA[{
+            AddOutline(text, type, xmlUrl, category, null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddOutline">
+          <declaration><![CDATA[public void AddOutline(string text, string type, Uri xmlUrl, string category, OpmlOutlines outlines)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="254" sc="9" el="262" ec="10">OPML\Opml.cs</location>
+            <body hash="4d16415d613cef36d8fc15b9bef9fe4b"><![CDATA[{
+            var item = new OpmlOutline();
+            item.Text = text;
+            item.Type = type;
+            item.XmlUrl = xmlUrl;
+            item.Category = category;
+            item.Outlines = outlines;
+            _outlines.Add(item);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetXml">
+          <declaration><![CDATA[public string GetXml()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="265" sc="9" el="267" ec="10">OPML\Opml.cs</location>
+            <body hash="91b09f60f3bd9234552964f6319b3834"><![CDATA[{
+            return opmlDoc.OuterXml;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadFromFile">
+          <declaration><![CDATA[public static Opml LoadFromFile(string path)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="363" sc="9" el="375" ec="10">OPML\Opml.cs</location>
+            <body hash="c58d416c07bce28864e3cfd1662a3659"><![CDATA[{
+            try
+            {
+                var opmlDoc = new XmlDocument();
+                opmlDoc.Load(path);
+
+                return (LoadFromXml(opmlDoc));
+            }
+            catch
+            {
+                return (new Opml());
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadFromUrl">
+          <declaration><![CDATA[public static Opml LoadFromUrl(Uri uri)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="358" sc="9" el="360" ec="10">OPML\Opml.cs</location>
+            <body hash="c591246059b7309cf83d32a7d46c6acf"><![CDATA[{
+            return (OpmlDownloadManager.GetOpmlFeed(uri));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadFromXml">
+          <declaration><![CDATA[public static Opml LoadFromXml(XmlDocument doc)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="378" sc="9" el="477" ec="10">OPML\Opml.cs</location>
+            <body hash="853af35d5680a9124b1d65d8a947b366"><![CDATA[{
+            var _out = new Opml();
+            try
+            {
+                // Parse head
+                XmlNode head = doc.GetElementsByTagName("head")[0];
+                XmlNode title = head.SelectSingleNode("./title");
+                XmlNode dateCreated = head.SelectSingleNode("./dateCreated");
+                XmlNode dateModified = head.SelectSingleNode("./dateModified");
+                XmlNode ownerName = head.SelectSingleNode("./ownerName");
+                XmlNode ownerEmail = head.SelectSingleNode("./ownerEmail");
+                XmlNode ownerId = head.SelectSingleNode("./ownerId");
+                XmlNode docs = head.SelectSingleNode("./docs");
+                XmlNode expansionState = head.SelectSingleNode("./expansionState");
+                XmlNode vertScrollState = head.SelectSingleNode("./vertScrollState");
+                XmlNode windowTop = head.SelectSingleNode("./windowTop");
+                XmlNode windowLeft = head.SelectSingleNode("./windowLeft");
+                XmlNode windowBottom = head.SelectSingleNode("./windowBottom");
+                XmlNode windowRight = head.SelectSingleNode("./windowRight");
+
+                if (title != null)
+                {
+                    _out.Title = title.InnerText;
+                }
+
+                if (dateCreated != null)
+                {
+                    _out.DateCreated = DateTime.Parse(dateCreated.InnerText);
+                }
+
+                if (dateModified != null)
+                {
+                    _out.DateModified = DateTime.Parse(dateModified.InnerText);
+                }
+
+                if (ownerName != null)
+                {
+                    _out.OwnerName = ownerName.InnerText;
+                }
+
+                if (ownerEmail != null)
+                {
+                    _out.OwnerEmail = ownerEmail.InnerText;
+                }
+
+                if (ownerId != null)
+                {
+                    _out.OwnerId = ownerId.InnerText;
+                }
+
+                if (docs != null)
+                {
+                    _out.Docs = docs.InnerText;
+                }
+
+                if (expansionState != null)
+                {
+                    _out.ExpansionState = expansionState.InnerText;
+                }
+
+                if (vertScrollState != null)
+                {
+                    _out.VertScrollState = vertScrollState.InnerText;
+                }
+
+                if (windowTop != null)
+                {
+                    _out.WindowTop = windowTop.InnerText;
+                }
+
+                if (windowLeft != null)
+                {
+                    _out.WindowLeft = windowLeft.InnerText;
+                }
+
+                if (windowBottom != null)
+                {
+                    _out.WindowBottom = windowBottom.InnerText;
+                }
+
+                if (windowLeft != null)
+                {
+                    _out.WindowLeft = windowLeft.InnerText;
+                }
+
+                // Parse body
+                XmlNode body = doc.GetElementsByTagName("body")[0];
+                XmlNodeList outlineList = body.SelectNodes("./outline");
+                foreach (XmlElement outline in outlineList)
+                {
+                    _out.Outlines.Add(ParseXml(outline));
+                }
+
+                return _out;
+            }
+            catch
+            {
+                return (new Opml());
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ParseElement">
+          <declaration><![CDATA[private static string ParseElement(XmlElement node, string attribute)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="541" sc="9" el="544" ec="10">OPML\Opml.cs</location>
+            <body hash="a15a9a8c8d72399d01a24f7dc5f52ad1"><![CDATA[{
+            string attrValue = node.GetAttribute(attribute);
+            return (!String.IsNullOrEmpty(attrValue) ? attrValue : string.Empty);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ParseXml">
+          <declaration><![CDATA[internal static OpmlOutline ParseXml(XmlElement node)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="480" sc="9" el="538" ec="10">OPML\Opml.cs</location>
+            <body hash="722274ac3f3ebf47dbcf5b0d185f7aff"><![CDATA[{
+            var newOutline = new OpmlOutline();
+
+            newOutline.Text = ParseElement(node, "text");
+            newOutline.Type = ParseElement(node, "type");
+            newOutline.IsComment = (ParseElement(node, "isComment") == "true" ? true : false);
+            newOutline.IsBreakpoint = (ParseElement(node, "isBreakpoint") == "true" ? true : false);
+            try
+            {
+                newOutline.Created = DateTime.Parse(ParseElement(node, "created"));
+            }
+			catch (Exception ex)
+			{
+				Logger.Error(ex);
+			}
+
+            newOutline.Category = ParseElement(node, "category");
+            try
+            {
+                newOutline.XmlUrl = new Uri(ParseElement(node, "xmlUrl"));
+            }
+			catch (Exception ex)
+			{
+				Logger.Error(ex);
+			}
+
+            try
+            {
+                newOutline.HtmlUrl = new Uri(ParseElement(node, "htmlUrl"));
+            }
+			catch (Exception ex)
+			{
+				Logger.Error(ex);
+			}
+
+            newOutline.Language = ParseElement(node, "language");
+            newOutline.Title = ParseElement(node, "title");
+
+            try
+            {
+                newOutline.Url = new Uri(ParseElement(node, "url"));
+            }
+			catch (Exception ex)
+			{
+				Logger.Error(ex);
+			}
+
+            newOutline.Description = ParseElement(node, "description");
+
+            if (node.HasChildNodes)
+            {
+                foreach (XmlElement childNode in node.SelectNodes("./outline"))
+                {
+                    newOutline.Outlines.Add(ParseXml(childNode));
+                }
+            }
+
+            return newOutline;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Save">
+          <declaration><![CDATA[public void Save(string fileName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="270" sc="9" el="355" ec="10">OPML\Opml.cs</location>
+            <body hash="fec6c00c92659ca4db3bda705c8a3c98"><![CDATA[{
+            opmlDoc = new XmlDocument();
+            XmlElement opml = opmlDoc.CreateElement("opml");
+            opml.SetAttribute("version", "2.0");
+            opmlDoc.AppendChild(opml);
+
+            // create head    
+            XmlElement head = opmlDoc.CreateElement("head");
+            opml.AppendChild(head);
+
+            // set Title
+            XmlElement title = opmlDoc.CreateElement("title");
+            title.InnerText = Title;
+            head.AppendChild(title);
+
+            // set date created
+            XmlElement dateCreated = opmlDoc.CreateElement("dateCreated");
+            dateCreated.InnerText = DateCreated != DateTime.MinValue ? DateCreated.ToString("r", null) : DateTime.Now.ToString("r", null);
+            head.AppendChild(dateCreated);
+
+            // set date modified
+            XmlElement dateModified = opmlDoc.CreateElement("dateModified");
+            dateCreated.InnerText = DateModified != DateTime.MinValue ? DateModified.ToString("r", null) : DateTime.Now.ToString("r", null);
+            head.AppendChild(dateModified);
+
+            // set owner email
+            XmlElement ownerEmail = opmlDoc.CreateElement("ownerEmail");
+            ownerEmail.InnerText = OwnerEmail;
+            head.AppendChild(ownerEmail);
+
+            // set owner name
+            XmlElement ownerName = opmlDoc.CreateElement("ownerName");
+            ownerName.InnerText = OwnerName;
+            head.AppendChild(ownerName);
+
+            // set owner id
+            XmlElement ownerId = opmlDoc.CreateElement("ownerId");
+            ownerId.InnerText = OwnerId;
+            head.AppendChild(ownerId);
+
+            // set docs
+            XmlElement docs = opmlDoc.CreateElement("docs");
+            docs.InnerText = Docs;
+            head.AppendChild(docs);
+
+            // set expansionState
+            XmlElement expansionState = opmlDoc.CreateElement("expansionState");
+            expansionState.InnerText = ExpansionState;
+            head.AppendChild(expansionState);
+
+            // set vertScrollState
+            XmlElement vertScrollState = opmlDoc.CreateElement("vertScrollState");
+            vertScrollState.InnerText = VertScrollState;
+            head.AppendChild(vertScrollState);
+
+            // set windowTop
+            XmlElement windowTop = opmlDoc.CreateElement("windowTop");
+            windowTop.InnerText = WindowTop;
+            head.AppendChild(windowTop);
+
+            // set windowLeft
+            XmlElement windowLeft = opmlDoc.CreateElement("windowLeft");
+            windowLeft.InnerText = WindowLeft;
+            head.AppendChild(windowLeft);
+
+            // set windowBottom
+            XmlElement windowBottom = opmlDoc.CreateElement("windowBottom");
+            windowBottom.InnerText = WindowBottom;
+            head.AppendChild(windowBottom);
+
+            // set windowRight
+            XmlElement windowRight = opmlDoc.CreateElement("windowRight");
+            windowRight.InnerText = WindowRight;
+            head.AppendChild(windowRight);
+
+            // create body
+            XmlElement opmlBody = opmlDoc.CreateElement("body");
+            opml.AppendChild(opmlBody);
+
+            foreach (OpmlOutline outline in _outlines)
+            {
+                opmlBody.AppendChild(outline.ToXml);
+            }
+
+            opmlDoc.Save(fileName);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_dateCreated">
+          <declaration><![CDATA[private DateTime _dateCreated = DateTime.MinValue;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_dateModified">
+          <declaration><![CDATA[private DateTime _dateModified = DateTime.MinValue;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_docs">
+          <declaration><![CDATA[private string _docs = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_expansionState">
+          <declaration><![CDATA[private string _expansionState = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_outlines">
+          <declaration><![CDATA[private OpmlOutlines _outlines;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_ownerEmail">
+          <declaration><![CDATA[private string _ownerEmail = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_ownerId">
+          <declaration><![CDATA[private string _ownerId = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_ownerName">
+          <declaration><![CDATA[private string _ownerName = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_title">
+          <declaration><![CDATA[private string _title = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_utcExpiry">
+          <declaration><![CDATA[private DateTime _utcExpiry = DateTime.Now.AddMinutes(180.0);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_vertScrollState">
+          <declaration><![CDATA[private string _vertScrollState = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_windowBottom">
+          <declaration><![CDATA[private string _windowBottom = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_windowLeft">
+          <declaration><![CDATA[private string _windowLeft = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_windowRight">
+          <declaration><![CDATA[private string _windowRight = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_windowTop">
+          <declaration><![CDATA[private string _windowTop = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(Opml));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="opmlDoc">
+          <declaration><![CDATA[private XmlDocument opmlDoc;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="DateCreated">
+          <declaration><![CDATA[public DateTime DateCreated]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="90" sc="13" el="92" ec="14">OPML\Opml.cs</location>
+            <body hash="ea749fcae619b622ce1837ac8519b5ec"><![CDATA[{
+                return _dateCreated;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="94" sc="13" el="96" ec="14">OPML\Opml.cs</location>
+            <body hash="f1c937538fc12546b9f7e59f9b52d856"><![CDATA[{
+                _dateCreated = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DateModified">
+          <declaration><![CDATA[public DateTime DateModified]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="102" sc="13" el="104" ec="14">OPML\Opml.cs</location>
+            <body hash="7e8c67dddbbfe49312d1eb2ffdb82985"><![CDATA[{
+                return _dateModified;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="106" sc="13" el="108" ec="14">OPML\Opml.cs</location>
+            <body hash="37542edd5d29d14e49996e9dce33e5af"><![CDATA[{
+                _dateModified = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Docs">
+          <declaration><![CDATA[public string Docs]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="150" sc="13" el="152" ec="14">OPML\Opml.cs</location>
+            <body hash="355be9cab24b77f62a84b57796df9565"><![CDATA[{
+                return _docs;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="154" sc="13" el="156" ec="14">OPML\Opml.cs</location>
+            <body hash="a6d3399a82d3bc80aba1440236608c71"><![CDATA[{
+                _docs = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ExpansionState">
+          <declaration><![CDATA[public string ExpansionState]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="162" sc="13" el="164" ec="14">OPML\Opml.cs</location>
+            <body hash="fddfa03ce32e0acef810426dc63b53fd"><![CDATA[{
+                return _expansionState;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="166" sc="13" el="168" ec="14">OPML\Opml.cs</location>
+            <body hash="259e84da54c1dbfc2d5303cce7988b22"><![CDATA[{
+                _expansionState = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Outlines">
+          <declaration><![CDATA[public OpmlOutlines Outlines]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="234" sc="13" el="236" ec="14">OPML\Opml.cs</location>
+            <body hash="0c79aa9a4619052184301d95b5e4ef46"><![CDATA[{
+                return _outlines;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="238" sc="13" el="240" ec="14">OPML\Opml.cs</location>
+            <body hash="3a63e1cef8cf0ea1d79c30b2ec7e4e44"><![CDATA[{
+                _outlines = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="OwnerEmail">
+          <declaration><![CDATA[public string OwnerEmail]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="126" sc="13" el="128" ec="14">OPML\Opml.cs</location>
+            <body hash="fa211614ecda538c65af0a2ff3c778b4"><![CDATA[{
+                return _ownerEmail;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="130" sc="13" el="132" ec="14">OPML\Opml.cs</location>
+            <body hash="f88e3eb4fd650ed9060a95547163be58"><![CDATA[{
+                _ownerEmail = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="OwnerId">
+          <declaration><![CDATA[public string OwnerId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="138" sc="13" el="140" ec="14">OPML\Opml.cs</location>
+            <body hash="a1b144f6f99c1a26d249849f551b7488"><![CDATA[{
+                return _ownerId;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="142" sc="13" el="144" ec="14">OPML\Opml.cs</location>
+            <body hash="73799e18ff60ed181118d5eea630fc34"><![CDATA[{
+                _ownerId = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="OwnerName">
+          <declaration><![CDATA[public string OwnerName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="114" sc="13" el="116" ec="14">OPML\Opml.cs</location>
+            <body hash="4e1567285fe38b239b5d3af32c7ec233"><![CDATA[{
+                return _ownerName;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="118" sc="13" el="120" ec="14">OPML\Opml.cs</location>
+            <body hash="f96bcd7c2b92cc700922653124b94878"><![CDATA[{
+                _ownerName = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Title">
+          <declaration><![CDATA[public string Title]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="13" el="80" ec="14">OPML\Opml.cs</location>
+            <body hash="4252d03f2fe4c0691efe197884ad141e"><![CDATA[{
+                return _title;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="82" sc="13" el="84" ec="14">OPML\Opml.cs</location>
+            <body hash="160345eb9c4da885ad1a949666db1dc8"><![CDATA[{
+                _title = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="UtcExpiry">
+          <declaration><![CDATA[public DateTime UtcExpiry]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="13" el="68" ec="14">OPML\Opml.cs</location>
+            <body hash="26bc5954df78d055130a6e92836769e6"><![CDATA[{
+                return _utcExpiry;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="70" sc="13" el="72" ec="14">OPML\Opml.cs</location>
+            <body hash="ed8052eb2efa51c4fd4f004b77b837f5"><![CDATA[{
+                _utcExpiry = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="VertScrollState">
+          <declaration><![CDATA[public string VertScrollState]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="174" sc="13" el="176" ec="14">OPML\Opml.cs</location>
+            <body hash="7d5f1d73b7523fd91f751f3125325839"><![CDATA[{
+                return _vertScrollState;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="178" sc="13" el="180" ec="14">OPML\Opml.cs</location>
+            <body hash="a55bfdcb9d3ddfe9fde8241dc7b5fa27"><![CDATA[{
+                _vertScrollState = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="WindowBottom">
+          <declaration><![CDATA[public string WindowBottom]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="210" sc="13" el="212" ec="14">OPML\Opml.cs</location>
+            <body hash="c0cca3ee20b88ea99859dc4d23854953"><![CDATA[{
+                return _windowBottom;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="214" sc="13" el="216" ec="14">OPML\Opml.cs</location>
+            <body hash="d1d6b7470a0c1de511cbc766e5193f02"><![CDATA[{
+                _windowBottom = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="WindowLeft">
+          <declaration><![CDATA[public string WindowLeft]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="198" sc="13" el="200" ec="14">OPML\Opml.cs</location>
+            <body hash="5f708bb54c238432bf0d19f9afbb1081"><![CDATA[{
+                return _windowLeft;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="202" sc="13" el="204" ec="14">OPML\Opml.cs</location>
+            <body hash="e2be0481588ca2ec9b364e73f9be170f"><![CDATA[{
+                _windowLeft = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="WindowRight">
+          <declaration><![CDATA[public string WindowRight]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="222" sc="13" el="224" ec="14">OPML\Opml.cs</location>
+            <body hash="62eca98fc6433a560b63d1dbb7c68200"><![CDATA[{
+                return _windowRight;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="226" sc="13" el="228" ec="14">OPML\Opml.cs</location>
+            <body hash="0354a9899e41fb21a42594a28dce6858"><![CDATA[{
+                _windowRight = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="WindowTop">
+          <declaration><![CDATA[public string WindowTop]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="186" sc="13" el="188" ec="14">OPML\Opml.cs</location>
+            <body hash="78e7622e876533cf298337107aced86a"><![CDATA[{
+                return _windowTop;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="190" sc="13" el="192" ec="14">OPML\Opml.cs</location>
+            <body hash="1e3dd1bdd4d097f79a94e23b9507601b"><![CDATA[{
+                _windowTop = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="OpmlDownloadManager">
+      <declaration><![CDATA[internal class OpmlDownloadManager]]></declaration>
+      <documentation>
+        <summary>
+   Helper class that provides memory and disk caching of the downloaded feeds
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private OpmlDownloadManager()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="58" ec="10">OPML\OpmlDownloadManager.cs</location>
+            <body hash="2a540d70e415f3af912a7a3fece85534"><![CDATA[private OpmlDownloadManager()
+        {
+            // create in-memory cache
+            _cache = new Dictionary<string, Opml>();
+
+            _defaultTtlMinutes = 60;
+
+            // prepare disk directory
+            _directoryOnDisk = PrepareTempDir();
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static OpmlDownloadManager()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="6" el="43" ec="93">OPML\OpmlDownloadManager.cs</location>
+            <body hash="e24d7296ecb76b443a31e9ed4f77dbc3"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (OpmlDownloadManager));
+        private const string OPML_Dir = "/OPML/";
+        private static readonly OpmlDownloadManager _theManager = new OpmlDownloadManager();]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="DownloadOpmlFeed">
+          <declaration><![CDATA[private Opml DownloadOpmlFeed(Uri uri)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="95" sc="9" el="124" ec="10">OPML\OpmlDownloadManager.cs</location>
+            <body hash="c54c67ae76b810bac3258126047e18f6"><![CDATA[{
+            // look for disk cache first
+            Opml opmlFeed = TryLoadFromDisk(uri);
+
+            if (opmlFeed != null)
+            {
+                return (opmlFeed);
+            }
+
+            // May fail under partial trust
+            try
+            {
+                byte[] feed = new WebClient().DownloadData(uri.AbsoluteUri);
+
+                var opmlDoc = new XmlDocument();
+                opmlDoc.Load(new MemoryStream(feed));
+                opmlFeed = Opml.LoadFromXml(opmlDoc);
+
+                opmlFeed.UtcExpiry = DateTime.UtcNow.AddMinutes(_defaultTtlMinutes);
+
+                // save to disk
+                TrySaveToDisk(opmlDoc, uri, opmlFeed.UtcExpiry);
+            }
+            catch
+            {
+                return (new Opml());
+            }
+
+            return (opmlFeed);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFeed">
+          <declaration><![CDATA[internal Opml GetFeed(Uri uri)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="9" el="92" ec="10">OPML\OpmlDownloadManager.cs</location>
+            <body hash="7188fa1e79caaaafd3c27e99b0627c5d"><![CDATA[{
+            Opml opmlFeed = null;
+
+            lock (_cache)
+            {
+                if (_cache.TryGetValue(uri.AbsoluteUri, out opmlFeed))
+                {
+                    if (DateTime.UtcNow > opmlFeed.UtcExpiry)
+                    {
+                        _cache.Remove(uri.AbsoluteUri);
+                        opmlFeed = null;
+                    }
+                }
+            }
+
+            if (opmlFeed == null)
+            {
+                opmlFeed = DownloadOpmlFeed(uri);
+
+                lock (_cache)
+                {
+                    _cache[uri.AbsoluteUri] = opmlFeed;
+                }
+            }
+
+            return opmlFeed;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetOpmlFeed">
+          <declaration><![CDATA[public static Opml GetOpmlFeed(Uri uri)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="9" el="63" ec="10">OPML\OpmlDownloadManager.cs</location>
+            <body hash="3a06a6886518c0421e760e2ad7d1baec"><![CDATA[{
+            return _theManager.GetFeed(uri);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTempFileNamePrefixFromUrl">
+          <declaration><![CDATA[private static string GetTempFileNamePrefixFromUrl(Uri uri)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="250" sc="9" el="259" ec="10">OPML\OpmlDownloadManager.cs</location>
+            <body hash="529bca2801a3bf409859f666496d6d3b"><![CDATA[{
+            try
+            {
+                return string.Format("{0}_{1:x8}", uri.Host.Replace('.', '_'), uri.AbsolutePath.GetHashCode());
+            }
+            catch
+            {
+                return "opml";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PrepareTempDir">
+          <declaration><![CDATA[private static string PrepareTempDir()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="227" sc="9" el="247" ec="10">OPML\OpmlDownloadManager.cs</location>
+            <body hash="3fc6a09d069802a5485ccca4b9ad6f21"><![CDATA[{
+            string tempDir = null;
+
+            try
+            {
+                string d = HttpContext.Current.Server.MapPath(Settings.CacheRoot + OPML_Dir);
+
+                if (!Directory.Exists(d))
+                {
+                    Directory.CreateDirectory(d);
+                }
+
+                tempDir = d;
+            }
+            catch
+            {
+                // don't cache on disk if can't do it
+            }
+
+            return tempDir;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TryLoadFromDisk">
+          <declaration><![CDATA[private Opml TryLoadFromDisk(Uri uri)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="127" sc="9" el="202" ec="10">OPML\OpmlDownloadManager.cs</location>
+            <body hash="65f2d1e842f02267eb70fd9180436ec9"><![CDATA[{
+            if (_directoryOnDisk == null)
+            {
+                return (null); // no place to cache
+            }
+
+            // look for all files matching the prefix
+            // looking for the one matching url that is not expired
+            // removing expired (or invalid) ones
+            string pattern = GetTempFileNamePrefixFromUrl(uri) + "_*.opml.resources";
+            string[] files = Directory.GetFiles(_directoryOnDisk, pattern, SearchOption.TopDirectoryOnly);
+
+            foreach (string opmlFilename in files)
+            {
+                XmlDocument opmlDoc = null;
+                bool isOpmlFileValid = false;
+                DateTime utcExpiryFromOpmlFile = DateTime.MinValue;
+                string urlFromOpmlFile = null;
+
+                try
+                {
+                    opmlDoc = new XmlDocument();
+                    opmlDoc.Load(opmlFilename);
+
+                    // look for special XML comment (before the root tag)'
+                    // containing expiration and url
+                    var comment = opmlDoc.DocumentElement.PreviousSibling as XmlComment;
+
+                    if (comment != null)
+                    {
+                        string c = comment.Value;
+                        int i = c.IndexOf('@');
+                        long expiry;
+
+                        if (long.TryParse(c.Substring(0, i), out expiry))
+                        {
+                            utcExpiryFromOpmlFile = DateTime.FromBinary(expiry);
+                            urlFromOpmlFile = c.Substring(i + 1);
+                            isOpmlFileValid = true;
+                        }
+                    }
+                }
+                catch
+                {
+                    // error processing one file shouldn't stop processing other files
+                }
+
+                // remove invalid or expired file
+                if (!isOpmlFileValid || utcExpiryFromOpmlFile < DateTime.UtcNow)
+                {
+                    try
+                    {
+                        File.Delete(opmlFilename);
+                    }
+					catch (Exception ex)
+					{
+						Logger.Error(ex);
+					}
+
+                    // try next file
+                    continue;
+                }
+
+                // match url
+                if (urlFromOpmlFile.ToLower() == uri.AbsoluteUri.ToLower())
+                {
+                    // found a good one - create DOM and set expiry (as found on disk)
+                    Opml opmlFeed = Opml.LoadFromXml(opmlDoc);
+                    opmlFeed.UtcExpiry = utcExpiryFromOpmlFile;
+                    return opmlFeed;
+                }
+            }
+
+            // not found
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TrySaveToDisk">
+          <declaration><![CDATA[private void TrySaveToDisk(XmlDocument doc, Uri uri, DateTime utcExpiry)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="205" sc="9" el="223" ec="10">OPML\OpmlDownloadManager.cs</location>
+            <body hash="b9edd36627f581f56e5465eb3e2ebbe5"><![CDATA[{
+            if (_directoryOnDisk == null)
+            {
+                return;
+            }
+
+            doc.InsertBefore(doc.CreateComment(string.Format("{0}@{1}", utcExpiry.ToBinary(), uri.AbsoluteUri)), doc.DocumentElement);
+
+            string fileName = string.Format("{0}_{1:x8}.opml.resources", GetTempFileNamePrefixFromUrl(uri), Guid.NewGuid().ToString().GetHashCode());
+
+            try
+            {
+                doc.Save(Path.Combine(_directoryOnDisk, fileName));
+            }
+            catch
+            {
+                // can't save to disk - not a problem
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_cache">
+          <declaration><![CDATA[private readonly Dictionary<string, Opml> _cache;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultTtlMinutes">
+          <declaration><![CDATA[private readonly int _defaultTtlMinutes;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_directoryOnDisk">
+          <declaration><![CDATA[private readonly string _directoryOnDisk;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_theManager">
+          <declaration><![CDATA[private static readonly OpmlDownloadManager _theManager = new OpmlDownloadManager();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(OpmlDownloadManager));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="OPML_Dir">
+          <declaration><![CDATA[private const string OPML_Dir = "/OPML/";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="OpmlOutline">
+      <declaration><![CDATA[public class OpmlOutline]]></declaration>
+      <documentation>
+        <summary>
+   Class for managing an OPML feed outline
+   <history>
+     Created     Nik Kalyani     3/1/2007
+   </history>
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private string _category = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="50" ec="10">OPML\OpmlOutline.cs</location>
+            <body hash="aa1d301c305615bb3f4a1844e23997fb"><![CDATA[private string _category = string.Empty;
+        private DateTime _created = DateTime.MinValue;
+        private string _description = string.Empty;
+        private string _language = string.Empty;
+        private string _text = string.Empty;
+        private string _title = string.Empty;
+        private string _type = "rss";
+
+        public OpmlOutline()
+        {
+            Outlines = new OpmlOutlines();
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="_category">
+          <declaration><![CDATA[private string _category = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_created">
+          <declaration><![CDATA[private DateTime _created = DateTime.MinValue;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_description">
+          <declaration><![CDATA[private string _description = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_language">
+          <declaration><![CDATA[private string _language = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_text">
+          <declaration><![CDATA[private string _text = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_title">
+          <declaration><![CDATA[private string _title = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_type">
+          <declaration><![CDATA[private string _type = "rss";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Category">
+          <declaration><![CDATA[public string Category]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="125" sc="13" el="127" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="debff2547be12ae4e0faa7c02bb5c8ec"><![CDATA[{
+                return _category;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="129" sc="13" el="131" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="2e2b936f30801ddd5fa9aa1469cb2129"><![CDATA[{
+                _category = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Created">
+          <declaration><![CDATA[public DateTime Created]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="109" sc="13" el="111" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="c8c6ca440ea674156c39aba2fe4ca293"><![CDATA[{
+                return _created;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="113" sc="13" el="115" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="da0b1ec0efac333374d0695735469a2e"><![CDATA[{
+                _created = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Description">
+          <declaration><![CDATA[public string Description]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="13" el="57" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="23308f82ffebfd91d60414c0035cd375"><![CDATA[{
+                return _description;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="59" sc="13" el="61" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="bd4eb3ce39ab43e6893574805e78beeb"><![CDATA[{
+                _description = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="HtmlUrl">
+          <declaration><![CDATA[public Uri HtmlUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="IsBreakpoint">
+          <declaration><![CDATA[public bool IsBreakpoint]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="IsComment">
+          <declaration><![CDATA[public bool IsComment]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Language">
+          <declaration><![CDATA[public string Language]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="137" sc="13" el="139" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="63941dcac0a7b96d2724aab4be1b129f"><![CDATA[{
+                return _language;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="141" sc="13" el="143" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="ea8e317924aa12aaee03bf22faa7440f"><![CDATA[{
+                _language = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Outlines">
+          <declaration><![CDATA[public OpmlOutlines Outlines]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Text">
+          <declaration><![CDATA[public string Text]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="91" sc="13" el="93" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="9b122ae565ffe56ee3bd04dd13b8eb7b"><![CDATA[{
+                return _text;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="95" sc="13" el="97" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="d660045de1eca7297197b2fc09a51d0a"><![CDATA[{
+                _text = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Title">
+          <declaration><![CDATA[public string Title]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="13" el="69" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="4252d03f2fe4c0691efe197884ad141e"><![CDATA[{
+                return _title;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="71" sc="13" el="73" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="160345eb9c4da885ad1a949666db1dc8"><![CDATA[{
+                _title = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ToXml">
+          <declaration><![CDATA[public XmlElement ToXml]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="160" sc="13" el="223" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="98f520da8e50c94ced234e8c8cbc0f5e"><![CDATA[{
+                var opmlDoc = new XmlDocument();
+                XmlElement outlineNode = opmlDoc.CreateElement("outline");
+
+                if (!String.IsNullOrEmpty(Title))
+                {
+                    outlineNode.SetAttribute("title", Title);
+                }
+
+                if (!String.IsNullOrEmpty(Description))
+                {
+                    outlineNode.SetAttribute("description", Description);
+                }
+
+                if (!String.IsNullOrEmpty(Text))
+                {
+                    outlineNode.SetAttribute("text", Text);
+                }
+
+                if (!String.IsNullOrEmpty(Type))
+                {
+                    outlineNode.SetAttribute("type", Type);
+                }
+
+                if (!String.IsNullOrEmpty(Language))
+                {
+                    outlineNode.SetAttribute("language", Language);
+                }
+
+                if (!String.IsNullOrEmpty(Category))
+                {
+                    outlineNode.SetAttribute("category", Category);
+                }
+
+                if (Created > DateTime.MinValue)
+                {
+                    outlineNode.SetAttribute("created", Created.ToString("r", null));
+                }
+
+                if (HtmlUrl != null)
+                {
+                    outlineNode.SetAttribute("htmlUrl", HtmlUrl.ToString());
+                }
+
+                if (XmlUrl != null)
+                {
+                    outlineNode.SetAttribute("xmlUrl", XmlUrl.ToString());
+                }
+
+                if (Url != null)
+                {
+                    outlineNode.SetAttribute("url", Url.ToString());
+                }
+
+                outlineNode.SetAttribute("isComment", (IsComment ? "true" : "false"));
+                outlineNode.SetAttribute("isBreakpoint", (IsBreakpoint ? "true" : "false"));
+
+                foreach (OpmlOutline childOutline in Outlines)
+                {
+                    outlineNode.AppendChild(childOutline.ToXml);
+                }
+
+                return outlineNode;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Type">
+          <declaration><![CDATA[public string Type]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="13" el="81" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="d379d58326135357d08530aa96bdbb5b"><![CDATA[{
+                return _type;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="83" sc="13" el="85" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="ee5a050aebcdae204e2247113d7906f5"><![CDATA[{
+                _type = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Url">
+          <declaration><![CDATA[public Uri Url]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Version">
+          <declaration><![CDATA[public string Version]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="149" sc="13" el="151" ec="14">OPML\OpmlOutline.cs</location>
+            <body hash="23856ce81735521688313711af75272f"><![CDATA[{
+                return "2.0";
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="XmlUrl">
+          <declaration><![CDATA[public Uri XmlUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="OpmlOutlines">
+      <declaration><![CDATA[public class OpmlOutlines : List<OpmlOutline>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public OpmlOutlines()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="e);">
+      <declaration><![CDATA[public delegate void PreRenderEventHandler(object source, EventArgs e);]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public extern PreRenderEventHandler(object @object, IntPtr method);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BeginInvoke">
+          <declaration><![CDATA[public virtual extern IAsyncResult BeginInvoke(object source, EventArgs e, AsyncCallback callback, object @object);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="EndInvoke">
+          <declaration><![CDATA[public virtual extern void EndInvoke(IAsyncResult result);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="Invoke">
+          <declaration><![CDATA[public virtual extern void Invoke(object source, EventArgs e);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RssImageType&gt;">
+      <declaration><![CDATA[public abstract class RssChannelBase<RssItemType, RssImageType> : RssElementBase where RssItemType : RssElementBase, new() where RssImageType : RssElementBase, new()]]></declaration>
+      <documentation>
+        <summary>
+   Base class for RSS channel (for strongly-typed and late-bound channel types)
+ </summary>
+ <typeparam name="RssItemType"></typeparam>
+ <typeparam name="RssImageType"></typeparam></documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly List<RssItemType> _items = new List<RssItemType>();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="9" el="37" ec="77">RSS\RssChannelBase.cs</location>
+            <body hash="06d8646bd30048192d7bf30e34bb6efc"><![CDATA[private readonly List<RssItemType> _items = new List<RssItemType>()]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetImage">
+          <declaration><![CDATA[protected RssImageType GetImage()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="124" sc="9" el="131" ec="10">RSS\RssChannelBase.cs</location>
+            <body hash="3e1237095ffcb6cc774fced8f9bafb72"><![CDATA[{
+            if (_image == null)
+            {
+                _image = new RssImageType();
+            }
+
+            return _image;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadFromDom">
+          <declaration><![CDATA[internal void LoadFromDom(RssChannelDom dom)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="9" el="98" ec="10">RSS\RssChannelBase.cs</location>
+            <body hash="d6b317d767c4857e0f14f0b1762d8ec6"><![CDATA[{
+            // channel attributes
+            SetAttributes(dom.Channel);
+
+            // image attributes
+            if (dom.Image != null)
+            {
+                var image = new RssImageType();
+                image.SetAttributes(dom.Image);
+                _image = image;
+            }
+
+            // items
+            foreach (Dictionary<string, string> i in dom.Items)
+            {
+                var item = new RssItemType();
+                item.SetAttributes(i);
+                _items.Add(item);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadFromUrl">
+          <declaration><![CDATA[protected void LoadFromUrl(string url)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="9" el="67" ec="10">RSS\RssChannelBase.cs</location>
+            <body hash="2c5b1f0a8f589faa4ee2c57879affd7d"><![CDATA[{
+            // download the feed
+            RssChannelDom dom = RssDownloadManager.GetChannel(url);
+
+            // create the channel
+            LoadFromDom(dom);
+
+            // remember the url
+            _url = url;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadFromXml">
+          <declaration><![CDATA[protected void LoadFromXml(XmlDocument doc)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="76" ec="10">RSS\RssChannelBase.cs</location>
+            <body hash="aa64b972094cb6b2ced69435ea1193af"><![CDATA[{
+            // parse XML
+            RssChannelDom dom = RssXmlHelper.ParseChannelXml(doc);
+
+            // create the channel
+            LoadFromDom(dom);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveAsXml">
+          <declaration><![CDATA[public XmlDocument SaveAsXml()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="101" sc="9" el="103" ec="10">RSS\RssChannelBase.cs</location>
+            <body hash="752280d27d2f52cb8529c1d97ac3fbbc"><![CDATA[{
+            return SaveAsXml(RssXmlHelper.CreateEmptyRssXml());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveAsXml">
+          <declaration><![CDATA[public XmlDocument SaveAsXml(XmlDocument EmptyRssXml)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="106" sc="9" el="121" ec="10">RSS\RssChannelBase.cs</location>
+            <body hash="0276da560824d48caeaffe758869eeb0"><![CDATA[{
+            XmlDocument doc = EmptyRssXml;
+            XmlNode channelNode = RssXmlHelper.SaveRssElementAsXml(doc.DocumentElement, this, "channel");
+
+            if (_image != null)
+            {
+                RssXmlHelper.SaveRssElementAsXml(channelNode, _image, "image");
+            }
+
+            foreach (RssItemType item in _items)
+            {
+                RssXmlHelper.SaveRssElementAsXml(channelNode, item, "item");
+            }
+
+            return doc;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_image">
+          <declaration><![CDATA[private RssImageType _image;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_items">
+          <declaration><![CDATA[private readonly List<RssItemType> _items = new List<RssItemType>();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_url">
+          <declaration><![CDATA[private string _url;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Items">
+          <declaration><![CDATA[public List<RssItemType> Items]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="13" el="46" ec="14">RSS\RssChannelBase.cs</location>
+            <body hash="da35c3b39e0e52b9a1216be63c9c074f"><![CDATA[{
+                return _items;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Url">
+          <declaration><![CDATA[internal string Url]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="13" el="54" ec="14">RSS\RssChannelBase.cs</location>
+            <body hash="b1bf90dff9a84953b2cc8a5eb58056eb"><![CDATA[{
+                return _url;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RssChannelDom">
+      <declaration><![CDATA[internal class RssChannelDom]]></declaration>
+      <documentation>
+        <summary>
+   Internal representation of parsed RSS channel
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[internal RssChannelDom(Dictionary<string, string> channel, Dictionary<string, string> image, List<Dictionary<string, string>> items)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="46" ec="10">RSS\RssChannelDom.cs</location>
+            <body hash="d95c8ec297a46ecb44348d334d6a42c9"><![CDATA[internal RssChannelDom(Dictionary<string, string> channel, Dictionary<string, string> image, List<Dictionary<string, string>> items)
+        {
+            _channel = channel;
+            _image = image;
+            _items = items;
+            _utcExpiry = DateTime.MaxValue;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="SetExpiry">
+          <declaration><![CDATA[internal void SetExpiry(DateTime utcExpiry)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="81" sc="9" el="83" ec="10">RSS\RssChannelDom.cs</location>
+            <body hash="183e34661dcad6866213c9fbd45816e9"><![CDATA[{
+            _utcExpiry = utcExpiry;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_channel">
+          <declaration><![CDATA[private readonly Dictionary<string, string> _channel;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_image">
+          <declaration><![CDATA[private readonly Dictionary<string, string> _image;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_items">
+          <declaration><![CDATA[private readonly List<Dictionary<string, string>> _items;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_utcExpiry">
+          <declaration><![CDATA[private DateTime _utcExpiry;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Channel">
+          <declaration><![CDATA[internal Dictionary<string, string> Channel]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="13" el="53" ec="14">RSS\RssChannelDom.cs</location>
+            <body hash="c945afca7e9f0a6375d997b73fcc91ec"><![CDATA[{
+                return _channel;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Image">
+          <declaration><![CDATA[internal Dictionary<string, string> Image]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="13" el="61" ec="14">RSS\RssChannelDom.cs</location>
+            <body hash="be7d09a49c7f9b560a552073deb17933"><![CDATA[{
+                return _image;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Items">
+          <declaration><![CDATA[internal List<Dictionary<string, string>> Items]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="13" el="69" ec="14">RSS\RssChannelDom.cs</location>
+            <body hash="da35c3b39e0e52b9a1216be63c9c074f"><![CDATA[{
+                return _items;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="UtcExpiry">
+          <declaration><![CDATA[internal DateTime UtcExpiry]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="75" sc="13" el="77" ec="14">RSS\RssChannelDom.cs</location>
+            <body hash="26bc5954df78d055130a6e92836769e6"><![CDATA[{
+                return _utcExpiry;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RssDataSource">
+      <declaration><![CDATA[public class RssDataSource : DataSourceControl]]></declaration>
+      <documentation>
+        <summary>
+   RSS data source control implementation, including the designer
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RssDataSource()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetView">
+          <declaration><![CDATA[protected override DataSourceView GetView(string viewName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="85" ec="10">RSS\RssDataSource.cs</location>
+            <body hash="c5f96b65a6d12af4eaa909f94161410c"><![CDATA[{
+            if (_itemsView == null)
+            {
+                _itemsView = new RssDataSourceView(this, viewName);
+            }
+
+            return _itemsView;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_channel">
+          <declaration><![CDATA[private GenericRssChannel _channel;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_itemsView">
+          <declaration><![CDATA[private RssDataSourceView _itemsView;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_url">
+          <declaration><![CDATA[private string _url;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Channel">
+          <declaration><![CDATA[public GenericRssChannel Channel]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="13" el="58" ec="14">RSS\RssDataSource.cs</location>
+            <body hash="0c5d6db3a2e730fdeace4f45e053e232"><![CDATA[{
+                if (_channel == null)
+                {
+                    if (string.IsNullOrEmpty(_url))
+                    {
+                        _channel = new GenericRssChannel();
+                    }
+                    else
+                    {
+                        _channel = GenericRssChannel.LoadChannel(_url);
+                    }
+                }
+
+                return _channel;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="MaxItems">
+          <declaration><![CDATA[public int MaxItems]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Url">
+          <declaration><![CDATA[public string Url]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="13" el="68" ec="14">RSS\RssDataSource.cs</location>
+            <body hash="b1bf90dff9a84953b2cc8a5eb58056eb"><![CDATA[{
+                return _url;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="71" sc="13" el="74" ec="14">RSS\RssDataSource.cs</location>
+            <body hash="5aefcd4beeea5d89db926027c1d2d7da"><![CDATA[{
+                _channel = null;
+                _url = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RssDataSourceView">
+      <declaration><![CDATA[public class RssDataSourceView : DataSourceView]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[internal RssDataSourceView(RssDataSource owner, string viewName) : base(owner, viewName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="95" ec="10">RSS\RssDataSource.cs</location>
+            <body hash="8bfdd733f89223d4011d4ea35c98941a"><![CDATA[internal RssDataSourceView(RssDataSource owner, string viewName) : base(owner, viewName)
+        {
+            _owner = owner;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ExecuteSelect">
+          <declaration><![CDATA[protected override IEnumerable ExecuteSelect(DataSourceSelectArguments arguments)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="103" sc="9" el="105" ec="10">RSS\RssDataSource.cs</location>
+            <body hash="6adc39e2345bace160cb92da805cfb6c"><![CDATA[{
+            return _owner.Channel.SelectItems(_owner.MaxItems);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Select">
+          <declaration><![CDATA[public override void Select(DataSourceSelectArguments arguments, DataSourceViewSelectCallback callback)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="98" sc="9" el="100" ec="10">RSS\RssDataSource.cs</location>
+            <body hash="e4de43e74c923afe8acdf0a77dc4821b"><![CDATA[{
+            callback(ExecuteSelect(arguments));
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_owner">
+          <declaration><![CDATA[private readonly RssDataSource _owner;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RssDownloadManager">
+      <declaration><![CDATA[internal class RssDownloadManager]]></declaration>
+      <documentation>
+        <summary>
+   Helper class that provides memory and disk caching of the downloaded feeds
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private RssDownloadManager()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="58" ec="10">RSS\RssDownloadManager.cs</location>
+            <body hash="0154a2cd7d4d4bb41bc4ba9d5328a5ca"><![CDATA[private RssDownloadManager()
+        {
+            // create in-memory cache
+            _cache = new Dictionary<string, RssChannelDom>();
+
+            _defaultTtlMinutes = 2;
+
+            // prepare disk directory
+            _directoryOnDisk = PrepareTempDir();
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static RssDownloadManager()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="6" el="43" ec="91">RSS\RssDownloadManager.cs</location>
+            <body hash="2e1b7fcf21882c1f585d9947d7f61764"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (RssDownloadManager));
+        private const string RSS_Dir = "/RSS/";
+        private static readonly RssDownloadManager _theManager = new RssDownloadManager();]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="DownloadChannelDom">
+          <declaration><![CDATA[private RssChannelDom DownloadChannelDom(string url)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="9" el="91" ec="10">RSS\RssDownloadManager.cs</location>
+            <body hash="9aac56f0a0ba17a448d50e526cc3265f"><![CDATA[{
+            // look for disk cache first
+            RssChannelDom dom = TryLoadFromDisk(url);
+
+            if (dom != null)
+            {
+                return dom;
+            }
+
+            // download the feed
+            byte[] feed = new WebClient().DownloadData(url);
+
+            // parse it as XML
+            var doc = new XmlDocument();
+            doc.Load(new MemoryStream(feed));
+
+            // parse into DOM
+            dom = RssXmlHelper.ParseChannelXml(doc);
+
+            // set expiry
+            string ttlString = null;
+            dom.Channel.TryGetValue("ttl", out ttlString);
+            int ttlMinutes = GetTtlFromString(ttlString, _defaultTtlMinutes);
+            DateTime utcExpiry = DateTime.UtcNow.AddMinutes(ttlMinutes);
+            dom.SetExpiry(utcExpiry);
+
+            // save to disk
+            TrySaveToDisk(doc, url, utcExpiry);
+
+            return dom;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetChannel">
+          <declaration><![CDATA[public static RssChannelDom GetChannel(string url)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="222" sc="9" el="224" ec="10">RSS\RssDownloadManager.cs</location>
+            <body hash="7339416f5a34cbc68af36c948c9f82c0"><![CDATA[{
+            return _theManager.GetChannelDom(url);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetChannelDom">
+          <declaration><![CDATA[private RssChannelDom GetChannelDom(string url)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="193" sc="9" el="219" ec="10">RSS\RssDownloadManager.cs</location>
+            <body hash="f861b087e6078f2512fbb9a7255edb17"><![CDATA[{
+            RssChannelDom dom = null;
+
+            lock (_cache)
+            {
+                if (_cache.TryGetValue(url, out dom))
+                {
+                    if (DateTime.UtcNow > dom.UtcExpiry)
+                    {
+                        _cache.Remove(url);
+                        dom = null;
+                    }
+                }
+            }
+
+            if (dom == null)
+            {
+                dom = DownloadChannelDom(url);
+
+                lock (_cache)
+                {
+                    _cache[url] = dom;
+                }
+            }
+
+            return dom;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTempFileNamePrefixFromUrl">
+          <declaration><![CDATA[private static string GetTempFileNamePrefixFromUrl(string url)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="267" sc="9" el="277" ec="10">RSS\RssDownloadManager.cs</location>
+            <body hash="8f2c308ec6f5d17f1ae150c97f7fae87"><![CDATA[{
+            try
+            {
+                var uri = new Uri(url);
+                return string.Format("{0}_{1:x8}", uri.Host.Replace('.', '_'), uri.AbsolutePath.GetHashCode());
+            }
+            catch
+            {
+                return "rss";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTtlFromString">
+          <declaration><![CDATA[private static int GetTtlFromString(string ttlString, int defaultTtlMinutes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="227" sc="9" el="241" ec="10">RSS\RssDownloadManager.cs</location>
+            <body hash="95a5b5618b0e28e01babb7fb663d1063"><![CDATA[{
+            if (!string.IsNullOrEmpty(ttlString))
+            {
+                int ttlMinutes;
+                if (int.TryParse(ttlString, out ttlMinutes))
+                {
+                    if (ttlMinutes >= 0)
+                    {
+                        return ttlMinutes;
+                    }
+                }
+            }
+
+            return defaultTtlMinutes;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PrepareTempDir">
+          <declaration><![CDATA[private static string PrepareTempDir()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="244" sc="9" el="264" ec="10">RSS\RssDownloadManager.cs</location>
+            <body hash="11b2ed885cbe18f60a28cbdb826f9a83"><![CDATA[{
+            string tempDir = null;
+
+            try
+            {
+                string d = HttpContext.Current.Server.MapPath(Settings.CacheRoot + RSS_Dir);
+
+                if (!Directory.Exists(d))
+                {
+                    Directory.CreateDirectory(d);
+                }
+
+                tempDir = d;
+            }
+            catch
+            {
+                // don't cache on disk if can't do it
+            }
+
+            return tempDir;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TryLoadFromDisk">
+          <declaration><![CDATA[private RssChannelDom TryLoadFromDisk(string url)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="94" sc="9" el="169" ec="10">RSS\RssDownloadManager.cs</location>
+            <body hash="99dca5e630212834e4df3360d215aab7"><![CDATA[{
+            if (_directoryOnDisk == null)
+            {
+                return null; // no place to cache
+            }
+
+            // look for all files matching the prefix
+            // looking for the one matching url that is not expired
+            // removing expired (or invalid) ones
+            string pattern = GetTempFileNamePrefixFromUrl(url) + "_*.rss.resources";
+            string[] files = Directory.GetFiles(_directoryOnDisk, pattern, SearchOption.TopDirectoryOnly);
+
+            foreach (string rssFilename in files)
+            {
+                XmlDocument rssDoc = null;
+                bool isRssFileValid = false;
+                DateTime utcExpiryFromRssFile = DateTime.MinValue;
+                string urlFromRssFile = null;
+
+                try
+                {
+                    rssDoc = new XmlDocument();
+                    rssDoc.Load(rssFilename);
+
+                    // look for special XML comment (before the root tag)'
+                    // containing expiration and url
+                    var comment = rssDoc.DocumentElement.PreviousSibling as XmlComment;
+
+                    if (comment != null)
+                    {
+                        string c = comment.Value;
+                        int i = c.IndexOf('@');
+                        long expiry;
+
+                        if (long.TryParse(c.Substring(0, i), out expiry))
+                        {
+                            utcExpiryFromRssFile = DateTime.FromBinary(expiry);
+                            urlFromRssFile = c.Substring(i + 1);
+                            isRssFileValid = true;
+                        }
+                    }
+                }
+                catch
+                {
+                    // error processing one file shouldn't stop processing other files
+                }
+
+                // remove invalid or expired file
+                if (!isRssFileValid || utcExpiryFromRssFile < DateTime.UtcNow)
+                {
+                    try
+                    {
+                        File.Delete(rssFilename);
+                    }
+					catch (Exception ex)
+					{
+						Logger.Error(ex);
+					}
+
+                    // try next file
+                    continue;
+                }
+
+                // match url
+                if (urlFromRssFile == url)
+                {
+                    // found a good one - create DOM and set expiry (as found on disk)
+                    RssChannelDom dom = RssXmlHelper.ParseChannelXml(rssDoc);
+                    dom.SetExpiry(utcExpiryFromRssFile);
+                    return dom;
+                }
+            }
+
+            // not found
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TrySaveToDisk">
+          <declaration><![CDATA[private void TrySaveToDisk(XmlDocument doc, string url, DateTime utcExpiry)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="172" sc="9" el="190" ec="10">RSS\RssDownloadManager.cs</location>
+            <body hash="0a699b5d21766aa81fec40c49a8222a7"><![CDATA[{
+            if (_directoryOnDisk == null)
+            {
+                return;
+            }
+
+            doc.InsertBefore(doc.CreateComment(string.Format("{0}@{1}", utcExpiry.ToBinary(), url)), doc.DocumentElement);
+
+            string fileName = string.Format("{0}_{1:x8}.rss.resources", GetTempFileNamePrefixFromUrl(url), Guid.NewGuid().ToString().GetHashCode());
+
+            try
+            {
+                doc.Save(Path.Combine(_directoryOnDisk, fileName));
+            }
+            catch
+            {
+                // can't save to disk - not a problem
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_cache">
+          <declaration><![CDATA[private readonly Dictionary<string, RssChannelDom> _cache;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultTtlMinutes">
+          <declaration><![CDATA[private readonly int _defaultTtlMinutes;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_directoryOnDisk">
+          <declaration><![CDATA[private readonly string _directoryOnDisk;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_theManager">
+          <declaration><![CDATA[private static readonly RssDownloadManager _theManager = new RssDownloadManager();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(RssDownloadManager));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="RSS_Dir">
+          <declaration><![CDATA[private const string RSS_Dir = "/RSS/";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RssElementBase">
+      <declaration><![CDATA[public abstract class RssElementBase]]></declaration>
+      <documentation>
+        <summary>
+   The base class for all RSS elements (item, image, channel)
+   has collection of attributes
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private Dictionary<string, string> _attributes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="9" el="36" ec="123">RSS\RssElementBase.cs</location>
+            <body hash="0ac82fddce1e110c61947c07486f24ea"><![CDATA[private Dictionary<string, string> _attributes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetAttributeValue">
+          <declaration><![CDATA[protected string GetAttributeValue(string attributeName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="9" el="65" ec="10">RSS\RssElementBase.cs</location>
+            <body hash="1a69238787935f90a6ae23a7af339f6c"><![CDATA[{
+            string attributeValue;
+
+            if (!_attributes.TryGetValue(attributeName, out attributeValue))
+            {
+                attributeValue = string.Empty;
+            }
+
+            return attributeValue;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetAttributes">
+          <declaration><![CDATA[internal void SetAttributes(Dictionary<string, string> attributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="53" ec="10">RSS\RssElementBase.cs</location>
+            <body hash="a8822e48ac50fb4f8d2920f62607ccf9"><![CDATA[{
+            _attributes = attributes;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetAttributeValue">
+          <declaration><![CDATA[protected void SetAttributeValue(string attributeName, string attributeValue)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="9" el="70" ec="10">RSS\RssElementBase.cs</location>
+            <body hash="b8e43c0e414758ad41a0b361693519d9"><![CDATA[{
+            _attributes[attributeName] = attributeValue;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetDefaults">
+          <declaration><![CDATA[public virtual void SetDefaults()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="9" el="48" ec="10">RSS\RssElementBase.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_attributes">
+          <declaration><![CDATA[private Dictionary<string, string> _attributes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Attributes">
+          <declaration><![CDATA[protected internal Dictionary<string, string> Attributes]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="13" el="43" ec="14">RSS\RssElementBase.cs</location>
+            <body hash="d356c9e78b49494396e5f4b7e6a47cdc"><![CDATA[{
+                return _attributes;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RssElementCustomTypeDescriptor">
+      <declaration><![CDATA[internal class RssElementCustomTypeDescriptor : ICustomTypeDescriptor]]></declaration>
+      <documentation>
+        <summary>
+   Helper class to enable the data binding logic generate column names at runtime
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RssElementCustomTypeDescriptor(Dictionary<string, string> attributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="9" el="41" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="3d7332f9571c3684b8bc0fe88b9e1c0a"><![CDATA[public RssElementCustomTypeDescriptor(Dictionary<string, string> attributes)
+        {
+            _attributes = attributes;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetPropertyDescriptors">
+          <declaration><![CDATA[private PropertyDescriptorCollection GetPropertyDescriptors()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="108" sc="9" el="118" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="55f0672ae33957822953f354301d8607"><![CDATA[{
+            var propertyDescriptors = new PropertyDescriptor[_attributes.Count];
+            int i = 0;
+
+            foreach (KeyValuePair<string, string> a in _attributes)
+            {
+                propertyDescriptors[i++] = new RssElementCustomPropertyDescriptor(a.Key);
+            }
+
+            return new PropertyDescriptorCollection(propertyDescriptors);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.ComponentModel.ICustomTypeDescriptor.GetAttributes">
+          <declaration><![CDATA[AttributeCollection ICustomTypeDescriptor.GetAttributes()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="9" el="48" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="4c2445e8bf9f47e8ed84fb09221dd9f2"><![CDATA[{
+            return AttributeCollection.Empty;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.ComponentModel.ICustomTypeDescriptor.GetClassName">
+          <declaration><![CDATA[string ICustomTypeDescriptor.GetClassName()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="53" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="b0b476afed98eae14cf2785b39f235cf"><![CDATA[{
+            return GetType().Name;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.ComponentModel.ICustomTypeDescriptor.GetComponentName">
+          <declaration><![CDATA[string ICustomTypeDescriptor.GetComponentName()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="9" el="58" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.ComponentModel.ICustomTypeDescriptor.GetConverter">
+          <declaration><![CDATA[TypeConverter ICustomTypeDescriptor.GetConverter()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="9" el="63" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.ComponentModel.ICustomTypeDescriptor.GetDefaultEvent">
+          <declaration><![CDATA[EventDescriptor ICustomTypeDescriptor.GetDefaultEvent()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="9" el="68" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.ComponentModel.ICustomTypeDescriptor.GetDefaultProperty">
+          <declaration><![CDATA[PropertyDescriptor ICustomTypeDescriptor.GetDefaultProperty()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="9" el="73" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.ComponentModel.ICustomTypeDescriptor.GetEditor">
+          <declaration><![CDATA[object ICustomTypeDescriptor.GetEditor(Type editorBaseType)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="9" el="78" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.ComponentModel.ICustomTypeDescriptor.GetEvents">
+          <declaration><![CDATA[EventDescriptorCollection ICustomTypeDescriptor.GetEvents(Attribute[] attributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="81" sc="9" el="83" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.ComponentModel.ICustomTypeDescriptor.GetEvents">
+          <declaration><![CDATA[EventDescriptorCollection ICustomTypeDescriptor.GetEvents()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="9" el="88" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.ComponentModel.ICustomTypeDescriptor.GetProperties">
+          <declaration><![CDATA[PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties(Attribute[] attributes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="91" sc="9" el="93" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="de870917a0aac83b01e00331c3e5309a"><![CDATA[{
+            return GetPropertyDescriptors();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.ComponentModel.ICustomTypeDescriptor.GetProperties">
+          <declaration><![CDATA[PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="96" sc="9" el="98" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="de870917a0aac83b01e00331c3e5309a"><![CDATA[{
+            return GetPropertyDescriptors();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.ComponentModel.ICustomTypeDescriptor.GetPropertyOwner">
+          <declaration><![CDATA[object ICustomTypeDescriptor.GetPropertyOwner(PropertyDescriptor pd)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="101" sc="9" el="103" ec="10">RSS\RssElementCustomTypeDescriptor.cs</location>
+            <body hash="d2f6af543a68b171c0861a7ccd915d5d"><![CDATA[{
+            return (pd is RssElementCustomPropertyDescriptor) ? this : null;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_attributes">
+          <declaration><![CDATA[private readonly Dictionary<string, string> _attributes;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RssImageType&gt;">
+      <declaration><![CDATA[public abstract class RssHttpHandlerBase<RssChannelType, RssItemType, RssImageType> : IHttpHandler where RssChannelType : RssChannelBase<RssItemType, RssImageType>, new() where RssItemType : RssElementBase, new() where RssImageType : RssElementBase, new()]]></declaration>
+      <documentation>
+        <summary>
+   Base class for RssHttpHandler - Generic handler and strongly typed ones are derived from it
+ </summary>
+ <typeparam name="RssChannelType"></typeparam>
+ <typeparam name="RssItemType"></typeparam>
+ <typeparam name="RssImageType"></typeparam></documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[protected RssHttpHandlerBase()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="add_Init">
+          <declaration><![CDATA[public void add_Init(InitEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_PreRender">
+          <declaration><![CDATA[public void add_PreRender(PreRenderEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="InternalInit">
+          <declaration><![CDATA[private void InternalInit(HttpContext context)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="122" sc="9" el="130" ec="10">RSS\RssHttpHandlerBase.cs</location>
+            <body hash="5f2804ca570f3f647485921d44a770b3"><![CDATA[{
+            _context = context;
+
+            // create the channel
+            _channel = new RssChannelType();
+            _channel.SetDefaults();
+
+            Context.Response.ContentType = "text/xml";
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected virtual void OnInit(EventArgs ea)]]></declaration>
+          <documentation>
+            <summary>
+   Triggers the Init event.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="103" sc="9" el="108" ec="10">RSS\RssHttpHandlerBase.cs</location>
+            <body hash="517076b1ff7fdd8ed80048d76fa325b1"><![CDATA[{
+            if (Init != null)
+            {
+                Init(this, ea);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnPreRender">
+          <declaration><![CDATA[protected virtual void OnPreRender(EventArgs ea)]]></declaration>
+          <documentation>
+            <summary>
+   Triggers the PreRender event.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="114" sc="9" el="119" ec="10">RSS\RssHttpHandlerBase.cs</location>
+            <body hash="1828f84d95a34023546ebab81587c6bf"><![CDATA[{
+            if (PreRender != null)
+            {
+                PreRender(this, ea);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PopulateChannel">
+          <declaration><![CDATA[protected virtual void PopulateChannel(string channelName, string userName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="133" sc="9" el="134" ec="10">RSS\RssHttpHandlerBase.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_Init">
+          <declaration><![CDATA[public void remove_Init(InitEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_PreRender">
+          <declaration><![CDATA[public void remove_PreRender(PreRenderEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="Render">
+          <declaration><![CDATA[protected virtual void Render(XmlTextWriter writer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="137" sc="9" el="140" ec="10">RSS\RssHttpHandlerBase.cs</location>
+            <body hash="8352c84579eed953f74728f1cd1c5300"><![CDATA[{
+            XmlDocument doc = _channel.SaveAsXml();
+            doc.Save(writer);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="System.Web.IHttpHandler.ProcessRequest">
+          <declaration><![CDATA[void IHttpHandler.ProcessRequest(HttpContext context)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="84" ec="10">RSS\RssHttpHandlerBase.cs</location>
+            <body hash="3472e63187bab6f01abf8f8d5052627d"><![CDATA[{
+            InternalInit(context);
+
+            // let inherited handlers setup any special handling
+            OnInit(EventArgs.Empty);
+
+            // parse the channel name and the user name from the query string
+            string userName;
+            string channelName;
+            RssHttpHandlerHelper.ParseChannelQueryString(context.Request, out channelName, out userName);
+
+            // populate items (call the derived class)
+            PopulateChannel(channelName, userName);
+
+            OnPreRender(EventArgs.Empty);
+
+            Render(new XmlTextWriter(Context.Response.OutputStream, null));
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_channel">
+          <declaration><![CDATA[private RssChannelType _channel;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_context">
+          <declaration><![CDATA[private HttpContext _context;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Init">
+          <declaration><![CDATA[private InitEventHandler Init;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="PreRender">
+          <declaration><![CDATA[private PreRenderEventHandler PreRender;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Channel">
+          <declaration><![CDATA[protected RssChannelType Channel]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="13" el="53" ec="14">RSS\RssHttpHandlerBase.cs</location>
+            <body hash="c945afca7e9f0a6375d997b73fcc91ec"><![CDATA[{
+                return _channel;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Context">
+          <declaration><![CDATA[protected HttpContext Context]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="13" el="61" ec="14">RSS\RssHttpHandlerBase.cs</location>
+            <body hash="897f70f2c7dd88e6ddeff4970455f717"><![CDATA[{
+                return _context;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="System.Web.IHttpHandler.IsReusable">
+          <declaration><![CDATA[bool IHttpHandler.IsReusable]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="13" el="91" ec="14">RSS\RssHttpHandlerBase.cs</location>
+            <body hash="479cced518a49e9e626d5350fca9bbad"><![CDATA[{
+                return false;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+        <event name="Init">
+          <declaration><![CDATA[public event InitEventHandler Init;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="PreRender">
+          <declaration><![CDATA[public event PreRenderEventHandler PreRender;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="RssHttpHandlerHelper">
+      <declaration><![CDATA[public class RssHttpHandlerHelper]]></declaration>
+      <documentation>
+        <summary>
+   Helper class (for RssHtppHandler) to pack and unpack user name and channel to from/to query string
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private RssHttpHandlerHelper()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="9" el="38" ec="10">RSS\RssHttpHandlerHelper.cs</location>
+            <body hash="53af50a7d0c8f43e063819560962182b"><![CDATA[private RssHttpHandlerHelper()
+        {
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GenerateChannelLink">
+          <declaration><![CDATA[public static string GenerateChannelLink(string handlerPath, string channelName, string userName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="9" el="68" ec="10">RSS\RssHttpHandlerHelper.cs</location>
+            <body hash="d50c852f305f281c7ef8028342881b5f"><![CDATA[{
+            string link = VirtualPathUtility.ToAbsolute(handlerPath);
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                if (!string.IsNullOrEmpty(channelName))
+                {
+                    link += "?c=" + HttpUtility.UrlEncodeUnicode(channelName);
+                }
+            }
+            else
+            {
+                if (channelName == null)
+                {
+                    channelName = string.Empty;
+                }
+
+                userName = "." + userName; // not to confuse the encrypted string with real auth ticket for real user
+                DateTime ticketDate = DateTime.Now.AddDays(-100); // already expried
+
+                var t = new FormsAuthenticationTicket(2, userName, ticketDate, ticketDate.AddDays(2), false, channelName, "/");
+
+                link += "?t=" + FormsAuthentication.Encrypt(t);
+            }
+
+            return link;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ParseChannelQueryString">
+          <declaration><![CDATA[internal static void ParseChannelQueryString(HttpRequest request, out string channelName, out string userName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="9" el="87" ec="10">RSS\RssHttpHandlerHelper.cs</location>
+            <body hash="42fdf00c708923a4edce3bc7afe577bd"><![CDATA[{
+            string ticket = request.QueryString["t"];
+
+            if (string.IsNullOrEmpty(ticket))
+            {
+                userName = string.Empty;
+                // optional unencrypted channel name
+                channelName = request.QueryString["c"];
+            }
+            else
+            {
+                // encrypted user name and channel name
+                FormsAuthenticationTicket t = FormsAuthentication.Decrypt(ticket);
+                userName = t.Name.Substring(1); // remove extra prepended '.'
+                channelName = t.UserData;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RssHyperLink">
+      <declaration><![CDATA[public class RssHyperLink : HyperLink]]></declaration>
+      <documentation>
+        <summary>
+   RssHyperLink control - works with RssHttpHandler
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RssHyperLink()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="42" ec="10">RSS\RssHyperLink.cs</location>
+            <body hash="19af18ffc4aec598ef3043c04df55b23"><![CDATA[public RssHyperLink()
+        {
+            Text = "RSS";
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnPreRender">
+          <declaration><![CDATA[protected override void OnPreRender(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="9" el="86" ec="10">RSS\RssHyperLink.cs</location>
+            <body hash="8602e0a2bd640912af631660026df417"><![CDATA[{
+            // modify the NavigateUrl to include optional user name and channel name
+            string channel = _channelName != null ? _channelName : string.Empty;
+            string user = _includeUserName ? Context.User.Identity.Name : string.Empty;
+            NavigateUrl = RssHttpHandlerHelper.GenerateChannelLink(NavigateUrl, channel, user);
+
+            // add <link> to <head> tag (if <head runat=server> is present)
+            if (Page.Header != null)
+            {
+                string title = string.IsNullOrEmpty(channel) ? Text : channel;
+
+                Page.Header.Controls.Add(new LiteralControl(string.Format("\r\n<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{0}\" href=\"{1}\" />", title, NavigateUrl)));
+            }
+
+            base.OnPreRender(e);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_channelName">
+          <declaration><![CDATA[private string _channelName;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_includeUserName">
+          <declaration><![CDATA[private bool _includeUserName;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ChannelName">
+          <declaration><![CDATA[public string ChannelName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="13" el="50" ec="14">RSS\RssHyperLink.cs</location>
+            <body hash="f22c8403d3526671e897a7012a44373a"><![CDATA[{
+                return _channelName;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="52" sc="13" el="54" ec="14">RSS\RssHyperLink.cs</location>
+            <body hash="3a51334d206213ff6121218928d3d713"><![CDATA[{
+                _channelName = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IncludeUserName">
+          <declaration><![CDATA[public bool IncludeUserName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="13" el="63" ec="14">RSS\RssHyperLink.cs</location>
+            <body hash="e94b584e864d23ffa930cc5d4079894a"><![CDATA[{
+                return _includeUserName;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="65" sc="13" el="67" ec="14">RSS\RssHyperLink.cs</location>
+            <body hash="885b386f06904abb901700f3a8d05463"><![CDATA[{
+                _includeUserName = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RssXmlHelper">
+      <declaration><![CDATA[internal class RssXmlHelper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RssXmlHelper()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CreateEmptyRssXml">
+          <declaration><![CDATA[internal static XmlDocument CreateEmptyRssXml()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="116" sc="9" el="122" ec="10">RSS\RssXmlHelper.cs</location>
+            <body hash="735973bdefe9d718d6062fae4994d4d9"><![CDATA[{
+            var doc = new XmlDocument();
+            doc.LoadXml(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<rss version=""2.0"">
+</rss>");
+            return doc;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="NodeHasSubElements">
+          <declaration><![CDATA[private static bool NodeHasSubElements(XmlNode node)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="163" sc="9" el="173" ec="10">RSS\RssXmlHelper.cs</location>
+            <body hash="fd3ef834819e7883ec47d62d54bd022b"><![CDATA[{
+            for (XmlNode n = node.FirstChild; n != null; n = n.NextSibling)
+            {
+                if (n.NodeType == XmlNodeType.Element)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ParseAttributesFromXml">
+          <declaration><![CDATA[private static Dictionary<string, string> ParseAttributesFromXml(XmlNode node)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="141" sc="9" el="160" ec="10">RSS\RssXmlHelper.cs</location>
+            <body hash="7cf3d832143f89c9fba4ef224b22472b"><![CDATA[{
+            var attributes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            for (XmlNode n = node.FirstChild; n != null; n = n.NextSibling)
+            {
+                if (n.NodeType == XmlNodeType.Element && !NodeHasSubElements(n))
+                {
+                    if (attributes.ContainsKey(n.Name))
+                    {
+                        attributes[n.Name] = attributes[n.Name] + ", " + n.InnerText.Trim();
+                    }
+                    else
+                    {
+                        attributes.Add(n.Name, n.InnerText.Trim());
+                    }
+                }
+            }
+
+            return attributes;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ParseChannelXml">
+          <declaration><![CDATA[internal static RssChannelDom ParseChannelXml(XmlDocument doc)]]></declaration>
+          <documentation>
+            <summary>
+   Internal helper class for XML to RSS conversion (and for generating XML from RSS)
+ </summary>
+ <param name="doc"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="113" ec="10">RSS\RssXmlHelper.cs</location>
+            <body hash="74d3b8e4aa91fd405150541a72fec377"><![CDATA[{
+            Dictionary<string, string> channelAttributes = null;
+            Dictionary<string, string> imageAttributes = null;
+            var itemsAttributesList = new List<Dictionary<string, string>>();
+
+            try
+            {
+                XmlNode root = doc.DocumentElement;
+                if (root.Name == "rss")
+                {
+                    // RSS
+                    for (XmlNode c = root.FirstChild; c != null; c = c.NextSibling)
+                    {
+                        if (c.NodeType == XmlNodeType.Element && c.Name == "channel")
+                        {
+                            for (XmlNode n = c.FirstChild; n != null; n = n.NextSibling)
+                            {
+                                if (n.NodeType == XmlNodeType.Element)
+                                {
+                                    if (n.Name == "item")
+                                    {
+                                        itemsAttributesList.Add(ParseAttributesFromXml(n));
+                                    }
+                                    else if (n.Name == "image")
+                                    {
+                                        imageAttributes = ParseAttributesFromXml(n);
+                                    }
+                                }
+                            }
+
+                            channelAttributes = ParseAttributesFromXml(c);
+                            break;
+                        }
+                    }
+                }
+                else if (root.Name == "rdf:RDF")
+                {
+                    // RDF
+                    for (XmlNode n = root.FirstChild; n != null; n = n.NextSibling)
+                    {
+                        if (n.NodeType == XmlNodeType.Element)
+                        {
+                            if (n.Name == "channel")
+                            {
+                                channelAttributes = ParseAttributesFromXml(n);
+                            }
+                            if (n.Name == "image")
+                            {
+                                imageAttributes = ParseAttributesFromXml(n);
+                            }
+                            if (n.Name == "item")
+                            {
+                                itemsAttributesList.Add(ParseAttributesFromXml(n));
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("Unexpected root node");
+                }
+
+                if (channelAttributes == null)
+                {
+                    throw new InvalidOperationException("Cannot find channel node");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Failed to parse RSS channel", ex);
+            }
+
+            return new RssChannelDom(channelAttributes, imageAttributes, itemsAttributesList);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ResolveAppRelativeLinkToUrl">
+          <declaration><![CDATA[private static string ResolveAppRelativeLinkToUrl(string link)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="176" sc="9" el="203" ec="10">RSS\RssXmlHelper.cs</location>
+            <body hash="085e4885f38b469af1cb2eb6729b6a91"><![CDATA[{
+            if (!string.IsNullOrEmpty(link) && link.StartsWith("~/"))
+            {
+                HttpContext context = HttpContext.Current;
+
+                if (context != null)
+                {
+                    string query = null;
+                    int iquery = link.IndexOf('?');
+
+                    if (iquery >= 0)
+                    {
+                        query = link.Substring(iquery);
+                        link = link.Substring(0, iquery);
+                    }
+
+                    link = VirtualPathUtility.ToAbsolute(link);
+                    link = new Uri(context.Request.Url, link).ToString();
+
+                    if (iquery >= 0)
+                    {
+                        link += query;
+                    }
+                }
+            }
+
+            return link;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveRssElementAsXml">
+          <declaration><![CDATA[internal static XmlNode SaveRssElementAsXml(XmlNode parentNode, RssElementBase element, string elementName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="125" sc="9" el="138" ec="10">RSS\RssXmlHelper.cs</location>
+            <body hash="ba4b9860b85c01b2be29742cd2d7cd56"><![CDATA[{
+            XmlDocument doc = parentNode.OwnerDocument;
+            XmlNode node = doc.CreateElement(elementName);
+            parentNode.AppendChild(node);
+
+            foreach (KeyValuePair<string, string> attr in element.Attributes)
+            {
+                XmlNode attrNode = doc.CreateElement(attr.Key);
+                attrNode.InnerText = ResolveAppRelativeLinkToUrl(attr.Value);
+                node.AppendChild(attrNode);
+            }
+
+            return node;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Settings">
+      <declaration><![CDATA[internal static class Settings]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static Settings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="25" sc="9" el="25" ec="69">Settings.cs</location>
+            <body hash="8af64d9dee838137068d68c275cde232"><![CDATA[internal static string CacheRoot = "Portals/_default/Cache"]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="CacheRoot">
+          <declaration><![CDATA[internal static string CacheRoot = "Portals/_default/Cache";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

@@ -1,0 +1,1534 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.DNNScheduler.dll" version="06.01.01" generated="2017-06-18 21:20:40Z" generationTime="3.0935069">
+  <namespace name="DotNetNuke.Services.Scheduling.DNNScheduling">
+    <class name="DataProvider">
+      <declaration><![CDATA[public abstract class DataProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[protected DataProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddSchedule">
+          <declaration><![CDATA[public abstract int AddSchedule(string TypeFullName, int TimeLapse, string TimeLapseMeasurement, int RetryTimeLapse, string RetryTimeLapseMeasurement, int RetainHistoryNum, string AttachToEvent, bool CatchUpEnabled, bool Enabled, string ObjectDependencies, string Servers, int CreatedByUserID, string FriendlyName);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="AddScheduleHistory">
+          <declaration><![CDATA[public abstract int AddScheduleHistory(int ScheduleID, DateTime StartDate, string Server);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="AddScheduleItemSetting">
+          <declaration><![CDATA[public abstract void AddScheduleItemSetting(int ScheduleID, string Name, string Value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteSchedule">
+          <declaration><![CDATA[public abstract void DeleteSchedule(int ScheduleID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNextScheduledTask">
+          <declaration><![CDATA[public abstract IDataReader GetNextScheduledTask(string Server);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public abstract IDataReader GetSchedule();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public abstract IDataReader GetSchedule(string Server);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public abstract IDataReader GetSchedule(int ScheduleID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public abstract IDataReader GetSchedule(string TypeFullName, string Server);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleByEvent">
+          <declaration><![CDATA[public abstract IDataReader GetScheduleByEvent(string EventName, string Server);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleHistory">
+          <declaration><![CDATA[public abstract IDataReader GetScheduleHistory(int ScheduleID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleItemSettings">
+          <declaration><![CDATA[public abstract IDataReader GetScheduleItemSettings(int ScheduleID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="Instance">
+          <declaration><![CDATA[public static DataProvider Instance()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="43" ec="10">DataProvider.cs</location>
+            <body hash="701f2fc6864bad5aedc27bc491a46cbf"><![CDATA[{
+            return ComponentFactory.GetComponent<DataProvider>();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeScheduleHistory">
+          <declaration><![CDATA[public abstract void PurgeScheduleHistory();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSchedule">
+          <declaration><![CDATA[public abstract void UpdateSchedule(int ScheduleID, string TypeFullName, int TimeLapse, string TimeLapseMeasurement, int RetryTimeLapse, string RetryTimeLapseMeasurement, int RetainHistoryNum, string AttachToEvent, bool CatchUpEnabled, bool Enabled, string ObjectDependencies, string Servers, int LastModifiedByUserID, string FriendlyName);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateScheduleHistory">
+          <declaration><![CDATA[public abstract void UpdateScheduleHistory(int ScheduleHistoryID, DateTime EndDate, bool Succeeded, string LogNotes, DateTime NextStart);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DNNScheduler">
+      <declaration><![CDATA[public class DNNScheduler : SchedulingProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DNNScheduler()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="9" el="65" ec="10">SchedulingProvider.cs</location>
+            <body hash="9e45be8b2325064ea7b0198d9fac64c8"><![CDATA[public DNNScheduler()
+        {
+            if (DataProvider.Instance() == null)
+            {
+                //get the provider configuration based on the type
+                DataProvider dataProvider;
+                string defaultprovider = Data.DataProvider.Instance().DefaultProviderName;
+                if (defaultprovider == "SqlDataProvider")
+                {
+                    dataProvider = new SqlDataProvider();
+                }
+                else
+                {
+                    string providerType = "DotNetNuke.Services.Scheduling.DNNScheduling." + defaultprovider;
+                    dataProvider = (DataProvider)Reflection.CreateObject(providerType, providerType, true);
+                }
+                ComponentFactory.RegisterComponentInstance<DataProvider>(dataProvider);
+            }
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddSchedule">
+          <declaration><![CDATA[public override int AddSchedule(ScheduleItem scheduleItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="103" sc="9" el="124" ec="10">SchedulingProvider.cs</location>
+            <body hash="d017de9015d4e5f8295bc7dd147b62f1"><![CDATA[{
+            //Remove item from queue
+            Scheduler.CoreScheduler.RemoveFromScheduleQueue(scheduleItem);
+            //save item
+            scheduleItem.ScheduleID = SchedulingController.AddSchedule(scheduleItem.TypeFullName,
+                                                                          scheduleItem.TimeLapse,
+                                                                          scheduleItem.TimeLapseMeasurement,
+                                                                          scheduleItem.RetryTimeLapse,
+                                                                          scheduleItem.RetryTimeLapseMeasurement,
+                                                                          scheduleItem.RetainHistoryNum,
+                                                                          scheduleItem.AttachToEvent,
+                                                                          scheduleItem.CatchUpEnabled,
+                                                                          scheduleItem.Enabled,
+                                                                          scheduleItem.ObjectDependencies,
+                                                                          scheduleItem.Servers,
+                                                                          scheduleItem.FriendlyName);
+            //Add schedule to queue
+            RunScheduleItemNow(scheduleItem);
+
+            //Return Id
+            return scheduleItem.ScheduleID;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddScheduleItemSetting">
+          <declaration><![CDATA[public override void AddScheduleItemSetting(int scheduleID, string name, string value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="127" sc="9" el="129" ec="10">SchedulingProvider.cs</location>
+            <body hash="d4faf99ebf70145e245d443c11b54d62"><![CDATA[{
+            SchedulingController.AddScheduleItemSetting(scheduleID, name, value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CanRunOnThisServer">
+          <declaration><![CDATA[private bool CanRunOnThisServer(string servers)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="84" sc="9" el="96" ec="10">SchedulingProvider.cs</location>
+            <body hash="da1edd4c7b087248b9a9544fc3469b94"><![CDATA[{
+            string lwrServers = "";
+            if (servers != null)
+            {
+                lwrServers = servers.ToLower();
+            }
+            if (String.IsNullOrEmpty(lwrServers) || lwrServers.Contains(Globals.ServerName.ToLower()))
+            {
+                return true;
+            }
+
+            return false;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteSchedule">
+          <declaration><![CDATA[public override void DeleteSchedule(ScheduleItem scheduleItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="132" sc="9" el="136" ec="10">SchedulingProvider.cs</location>
+            <body hash="7c6e1321258ebcd50ff99845c2bde267"><![CDATA[{
+            SchedulingController.DeleteSchedule(scheduleItem.ScheduleID);
+            Scheduler.CoreScheduler.RemoveFromScheduleQueue(scheduleItem);
+            DataCache.RemoveCache("ScheduleLastPolled");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ExecuteTasks">
+          <declaration><![CDATA[public override void ExecuteTasks()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="139" sc="9" el="147" ec="10">SchedulingProvider.cs</location>
+            <body hash="331683179953b0bd7c61a0a7f61ef528"><![CDATA[{
+            if (Enabled)
+            {
+                new Scheduler.CoreScheduler(Debug, MaxThreads);
+                Scheduler.CoreScheduler.KeepRunning = true;
+                Scheduler.CoreScheduler.KeepThreadAlive = false;
+                Scheduler.CoreScheduler.Start();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetActiveThreadCount">
+          <declaration><![CDATA[public override int GetActiveThreadCount()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="150" sc="9" el="152" ec="10">SchedulingProvider.cs</location>
+            <body hash="8f7dc0f2a5386ddc9bbd00ec461d753b"><![CDATA[{
+            return SchedulingController.GetActiveThreadCount();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFreeThreadCount">
+          <declaration><![CDATA[public override int GetFreeThreadCount()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="155" sc="9" el="157" ec="10">SchedulingProvider.cs</location>
+            <body hash="891effe793c3f86e888d083ce42c02df"><![CDATA[{
+            return SchedulingController.GetFreeThreadCount();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetMaxThreadCount">
+          <declaration><![CDATA[public override int GetMaxThreadCount()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="160" sc="9" el="162" ec="10">SchedulingProvider.cs</location>
+            <body hash="52391cd289d616319be5b837d63e9a61"><![CDATA[{
+            return SchedulingController.GetMaxThreadCount();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNextScheduledTask">
+          <declaration><![CDATA[public override ScheduleItem GetNextScheduledTask(string server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="165" sc="9" el="167" ec="10">SchedulingProvider.cs</location>
+            <body hash="bd750ae60aa140ae1baa86dc069b78d5"><![CDATA[{
+            return SchedulingController.GetNextScheduledTask(server);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public override ArrayList GetSchedule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="170" sc="9" el="172" ec="10">SchedulingProvider.cs</location>
+            <body hash="7a056041039e9f9baabe07a97b7ade2b"><![CDATA[{
+            return new ArrayList(SchedulingController.GetSchedule().ToArray());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public override ArrayList GetSchedule(string server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="175" sc="9" el="177" ec="10">SchedulingProvider.cs</location>
+            <body hash="338b8c6a86c2ae5d712a83821faca978"><![CDATA[{
+            return new ArrayList(SchedulingController.GetSchedule(server).ToArray());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public override ScheduleItem GetSchedule(int scheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="180" sc="9" el="182" ec="10">SchedulingProvider.cs</location>
+            <body hash="02ac4f3e4b75ae6f56d251cbf346d063"><![CDATA[{
+            return SchedulingController.GetSchedule(scheduleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public override ScheduleItem GetSchedule(string typeFullName, string server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="185" sc="9" el="187" ec="10">SchedulingProvider.cs</location>
+            <body hash="a7af1ac876e7cb8626d015d4959dbba6"><![CDATA[{
+            return SchedulingController.GetSchedule(typeFullName, server);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleHistory">
+          <declaration><![CDATA[public override ArrayList GetScheduleHistory(int scheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="190" sc="9" el="192" ec="10">SchedulingProvider.cs</location>
+            <body hash="c5cb92dcf9e8c2fc0c9f18e29e8cbe11"><![CDATA[{
+            return new ArrayList(SchedulingController.GetScheduleHistory(scheduleID).ToArray());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleItemSettings">
+          <declaration><![CDATA[public override Hashtable GetScheduleItemSettings(int scheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="195" sc="9" el="197" ec="10">SchedulingProvider.cs</location>
+            <body hash="749770a0b2fda4ddbe36ce13e5204e0e"><![CDATA[{
+            return SchedulingController.GetScheduleItemSettings(scheduleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleProcessing">
+          <declaration><![CDATA[public override Collection GetScheduleProcessing()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="200" sc="9" el="202" ec="10">SchedulingProvider.cs</location>
+            <body hash="5bc95d05355700474494a211c6b8d277"><![CDATA[{
+            return SchedulingController.GetScheduleProcessing();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleQueue">
+          <declaration><![CDATA[public override Collection GetScheduleQueue()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="205" sc="9" el="207" ec="10">SchedulingProvider.cs</location>
+            <body hash="e2975d86bcb7b7fb1184477ddef15b2a"><![CDATA[{
+            return SchedulingController.GetScheduleQueue();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleStatus">
+          <declaration><![CDATA[public override ScheduleStatus GetScheduleStatus()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="210" sc="9" el="212" ec="10">SchedulingProvider.cs</location>
+            <body hash="22118e032f2fe833ea469796458103f5"><![CDATA[{
+            return SchedulingController.GetScheduleStatus();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Halt">
+          <declaration><![CDATA[public override void Halt(string sourceOfHalt)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="215" sc="9" el="219" ec="10">SchedulingProvider.cs</location>
+            <body hash="cb1654ff0cb313a6f5e1c7045a68cac7"><![CDATA[{
+            new Scheduler.CoreScheduler(Debug, MaxThreads);
+            Scheduler.CoreScheduler.Halt(sourceOfHalt);
+            Scheduler.CoreScheduler.KeepRunning = false;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeScheduleHistory">
+          <declaration><![CDATA[public override void PurgeScheduleHistory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="222" sc="9" el="225" ec="10">SchedulingProvider.cs</location>
+            <body hash="580ecd710695fcc1f10413e61685aabd"><![CDATA[{
+            new Scheduler.CoreScheduler(MaxThreads);
+            Scheduler.CoreScheduler.PurgeScheduleHistory();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ReStart">
+          <declaration><![CDATA[public override void ReStart(string sourceOfRestart)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="228" sc="9" el="231" ec="10">SchedulingProvider.cs</location>
+            <body hash="28a2c6f39ccd3b0a9143c0b2f4162892"><![CDATA[{
+            Halt(sourceOfRestart);
+            StartAndWaitForResponse();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RunEventSchedule">
+          <declaration><![CDATA[public override void RunEventSchedule(EventName eventName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="234" sc="9" el="240" ec="10">SchedulingProvider.cs</location>
+            <body hash="ec84e49ce77245434612838327f0a340"><![CDATA[{
+            if (Enabled)
+            {
+                new Scheduler.CoreScheduler(Debug, MaxThreads);
+                Scheduler.CoreScheduler.RunEventSchedule(eventName);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RunScheduleItemNow">
+          <declaration><![CDATA[public override void RunScheduleItemNow(ScheduleItem scheduleItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="243" sc="9" el="255" ec="10">SchedulingProvider.cs</location>
+            <body hash="3ab6622891ba842a24419fbfecad09b1"><![CDATA[{
+            //Remove item from queue
+            Scheduler.CoreScheduler.RemoveFromScheduleQueue(scheduleItem);
+            var scheduleHistoryItem = new ScheduleHistoryItem(scheduleItem);
+            scheduleHistoryItem.NextStart = DateTime.Now;
+            if (scheduleHistoryItem.TimeLapse != Null.NullInteger && scheduleHistoryItem.TimeLapseMeasurement != Null.NullString && scheduleHistoryItem.Enabled &&
+                CanRunOnThisServer(scheduleItem.Servers))
+            {
+                scheduleHistoryItem.ScheduleSource = ScheduleSource.STARTED_FROM_SCHEDULE_CHANGE;
+                Scheduler.CoreScheduler.AddToScheduleQueue(scheduleHistoryItem);
+            }
+            DataCache.RemoveCache("ScheduleLastPolled");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Start">
+          <declaration><![CDATA[public override void Start()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="258" sc="9" el="266" ec="10">SchedulingProvider.cs</location>
+            <body hash="b15c8b97588e24a9cc1065661cda28a6"><![CDATA[{
+            if (Enabled)
+            {
+                new Scheduler.CoreScheduler(Debug, MaxThreads);
+                Scheduler.CoreScheduler.KeepRunning = true;
+                Scheduler.CoreScheduler.KeepThreadAlive = true;
+                Scheduler.CoreScheduler.Start();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="StartAndWaitForResponse">
+          <declaration><![CDATA[public override void StartAndWaitForResponse()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="269" sc="9" el="286" ec="10">SchedulingProvider.cs</location>
+            <body hash="84cf25fabba5fd9baf448449904a41fd"><![CDATA[{
+            if (Enabled)
+            {
+                var newThread = new Thread(Start) {IsBackground = true};
+                newThread.Start();
+
+                //wait for up to 30 seconds for thread
+                //to start up
+                for (int i = 0; i <= 30; i++)
+                {
+                    if (GetScheduleStatus() != ScheduleStatus.STOPPED)
+                    {
+                        return;
+                    }
+                    Thread.Sleep(1000);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSchedule">
+          <declaration><![CDATA[public override void UpdateSchedule(ScheduleItem scheduleItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="289" sc="9" el="318" ec="10">SchedulingProvider.cs</location>
+            <body hash="118eb184871bf858779f0068f0af32b5"><![CDATA[{
+            //Remove item from queue
+            Scheduler.CoreScheduler.RemoveFromScheduleQueue(scheduleItem);
+            //save item
+            SchedulingController.UpdateSchedule(scheduleItem.ScheduleID,
+                                                scheduleItem.TypeFullName,
+                                                scheduleItem.TimeLapse,
+                                                scheduleItem.TimeLapseMeasurement,
+                                                scheduleItem.RetryTimeLapse,
+                                                scheduleItem.RetryTimeLapseMeasurement,
+                                                scheduleItem.RetainHistoryNum,
+                                                scheduleItem.AttachToEvent,
+                                                scheduleItem.CatchUpEnabled,
+                                                scheduleItem.Enabled,
+                                                scheduleItem.ObjectDependencies,
+                                                scheduleItem.Servers,
+                                                scheduleItem.FriendlyName);
+            //Update items that are already scheduled
+            var futureHistory = GetScheduleHistory(scheduleItem.ScheduleID).Cast<ScheduleHistoryItem>().Where(h => h.NextStart > DateTime.Now);
+
+            foreach (var scheduleHistoryItem in futureHistory)
+            {
+                scheduleHistoryItem.NextStart = scheduleItem.NextStart;
+                SchedulingController.UpdateScheduleHistory(scheduleHistoryItem);
+            }
+
+
+            //Add schedule to queue
+            RunScheduleItemNow(scheduleItem);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Settings">
+          <declaration><![CDATA[public override Dictionary<string, string> Settings]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="13" el="76" ec="14">SchedulingProvider.cs</location>
+            <body hash="37ef4fb9006e9234d887533d1906ca4c"><![CDATA[{
+                return ComponentFactory.GetComponentSettings<DNNScheduler>() as Dictionary<string, string>;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ProcessGroup">
+      <declaration><![CDATA[public class ProcessGroup]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ProcessGroup()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="add_Completed">
+          <declaration><![CDATA[public void add_Completed(ProcessGroup.CompletedEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="AddQueueUserWorkItem">
+          <declaration><![CDATA[public void AddQueueUserWorkItem(ScheduleItem s)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="194" sc="9" el="210" ec="10">ProcessGroup.cs</location>
+            <body hash="47c7cb487ccc86a612727309fd9b959c"><![CDATA[{
+            numberOfProcessesInQueue += 1;
+            numberOfProcesses += 1;
+            var obj = new ScheduleHistoryItem(s);
+            try
+            {
+                //Create a callback to subroutine RunPooledThread
+                WaitCallback callback = RunPooledThread;
+                //And put in a request to ThreadPool to run the process.
+                ThreadPool.QueueUserWorkItem(callback, obj);
+                Thread.Sleep(1000);
+            }
+            catch (Exception exc)
+            {
+                Exceptions.Exceptions.ProcessSchedulerException(exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedulerClient">
+          <declaration><![CDATA[private SchedulerClient GetSchedulerClient(string strProcess, ScheduleHistoryItem objScheduleHistoryItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="166" sc="9" el="181" ec="10">ProcessGroup.cs</location>
+            <body hash="68ed0d7b423fc6406a3542b300c5725c"><![CDATA[{
+            //This is a method to encapsulate returning
+            //an object whose class inherits SchedulerClient.
+            Type t = BuildManager.GetType(strProcess, true, true);
+            var param = new ScheduleHistoryItem[1];
+            param[0] = objScheduleHistoryItem;
+            var types = new Type[1];
+            
+			//Get the constructor for the Class
+            types[0] = typeof (ScheduleHistoryItem);
+            ConstructorInfo objConstructor;
+            objConstructor = t.GetConstructor(types);
+            
+			//Return an instance of the class as an object
+            return (SchedulerClient) objConstructor.Invoke(param);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_Completed">
+          <declaration><![CDATA[public void remove_Completed(ProcessGroup.CompletedEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="Run">
+          <declaration><![CDATA[public void Run(ScheduleHistoryItem objScheduleHistoryItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="9" el="163" ec="10">ProcessGroup.cs</location>
+            <body hash="fa8c7fba9ac19f39062fe4642602893d"><![CDATA[{
+            SchedulerClient Process = null;
+            try
+            {
+                //This is called from RunPooledThread()
+                ticksElapsed = Environment.TickCount - ticksElapsed;
+                Process = GetSchedulerClient(objScheduleHistoryItem.TypeFullName, objScheduleHistoryItem);
+                Process.ScheduleHistoryItem = objScheduleHistoryItem;
+                
+				//Set up the handlers for the CoreScheduler
+               Process.ProcessStarted += Scheduler.CoreScheduler.WorkStarted;
+                Process.ProcessProgressing += Scheduler.CoreScheduler.WorkProgressing;
+                Process.ProcessCompleted += Scheduler.CoreScheduler.WorkCompleted;
+                Process.ProcessErrored += Scheduler.CoreScheduler.WorkErrored;
+                //This kicks off the DoWork method of the class
+                //type specified in the configuration.
+
+				Process.Started();
+                try
+                {
+                    Process.ScheduleHistoryItem.Succeeded = false;
+                    Process.DoWork();
+                }
+                catch (Exception exc)
+                {
+                    //in case the scheduler client
+                    //didn't have proper exception handling
+                    //make sure we fire the Errored event
+                    Instrumentation.DnnLog.Error(exc);
+
+                    if (Process != null)
+                    {
+                        if (Process.ScheduleHistoryItem != null)
+                        {
+                            Process.ScheduleHistoryItem.Succeeded = false;
+                        }
+                        Process.Errored(ref exc);
+                    }
+                }
+                if (Process.ScheduleHistoryItem.Succeeded)
+                {
+                    Process.Completed();
+                }
+                
+				//If all processes in this ProcessGroup have
+                //completed, set the ticksElapsed and raise
+                //the Completed event.
+                //I don't think this is necessary with the
+                //other events.  I'll leave it for now and
+                //will probably take it out later.
+
+				if (processesCompleted == numberOfProcesses)
+                {
+                    if (processesCompleted == numberOfProcesses)
+                    {
+                        ticksElapsed = Environment.TickCount - ticksElapsed;
+                        if (Completed != null)
+                        {
+                            Completed();
+                        }
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                //in case the scheduler client
+                //didn't have proper exception handling
+                //make sure we fire the Errored event
+                if (Process != null)
+                {
+                    if (Process.ScheduleHistoryItem != null)
+                    {
+                        Process.ScheduleHistoryItem.Succeeded = false;
+                    }
+                    Process.Errored(ref exc);
+                }
+            }
+            finally
+            {
+                //Track how many processes have completed for
+                //this instanciation of the ProcessGroup
+                numberOfProcessesInQueue -= 1;
+                processesCompleted += 1;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RunPooledThread">
+          <declaration><![CDATA[private void RunPooledThread(object objScheduleHistoryItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="187" sc="9" el="189" ec="10">ProcessGroup.cs</location>
+            <body hash="1cba99c7e7a63237f2cb6d05ad88855b"><![CDATA[{
+            Run((ScheduleHistoryItem) objScheduleHistoryItem);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Completed">
+          <declaration><![CDATA[private ProcessGroup.CompletedEventHandler Completed;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="numberOfProcesses">
+          <declaration><![CDATA[private static int numberOfProcesses;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="numberOfProcessesInQueue">
+          <declaration><![CDATA[private static int numberOfProcessesInQueue;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="processesCompleted">
+          <declaration><![CDATA[private static int processesCompleted;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ticksElapsed">
+          <declaration><![CDATA[private static int ticksElapsed;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="GetProcessesCompleted">
+          <declaration><![CDATA[private static int GetProcessesCompleted]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="13" el="65" ec="14">ProcessGroup.cs</location>
+            <body hash="9e7dfbd26618afa47ccd132210e722ef"><![CDATA[{
+                return processesCompleted;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GetProcessesInQueue">
+          <declaration><![CDATA[private static int GetProcessesInQueue]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="13" el="73" ec="14">ProcessGroup.cs</location>
+            <body hash="f83d55a5d5db75f67ca6bc8964de7287"><![CDATA[{
+                return numberOfProcessesInQueue;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GetTicksElapsed">
+          <declaration><![CDATA[private static int GetTicksElapsed]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="13" el="57" ec="14">ProcessGroup.cs</location>
+            <body hash="71a21c624b6d7e0ba7797de4903a4d62"><![CDATA[{
+                return ticksElapsed;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+        <event name="Completed">
+          <declaration><![CDATA[public event ProcessGroup.CompletedEventHandler Completed;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="Scheduler">
+      <declaration><![CDATA[internal static class Scheduler]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SchedulingController">
+      <declaration><![CDATA[public class SchedulingController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SchedulingController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddSchedule">
+          <deprecation>Obsoleted in 5.2.1 - use overload that pass's a FriendlyName</deprecation>
+          <declaration><![CDATA[public static int AddSchedule(string TypeFullName, int TimeLapse, string TimeLapseMeasurement, int RetryTimeLapse, string RetryTimeLapseMeasurement, int RetainHistoryNum, string AttachToEvent, bool CatchUpEnabled, bool Enabled, string ObjectDependencies, string Servers)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="61" ec="10">SchedulingController.cs</location>
+            <body hash="25e530d082001d79e5a11300d47a2c2b"><![CDATA[{
+            return AddSchedule(TypeFullName,
+                               TimeLapse,
+                               TimeLapseMeasurement,
+                               RetryTimeLapse,
+                               RetryTimeLapseMeasurement,
+                               RetainHistoryNum,
+                               AttachToEvent,
+                               CatchUpEnabled,
+                               Enabled,
+                               ObjectDependencies,
+                               Servers,
+                               TypeFullName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddSchedule">
+          <declaration><![CDATA[public static int AddSchedule(string TypeFullName, int TimeLapse, string TimeLapseMeasurement, int RetryTimeLapse, string RetryTimeLapseMeasurement, int RetainHistoryNum, string AttachToEvent, bool CatchUpEnabled, bool Enabled, string ObjectDependencies, string Servers, string FriendlyName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="81" ec="10">SchedulingController.cs</location>
+            <body hash="888d41b1d7e51945fbf314fc374e3fad"><![CDATA[{
+            var objEventLog = new EventLogController();
+            objEventLog.AddLog("TypeFullName", TypeFullName, PortalController.GetCurrentPortalSettings(), UserController.GetCurrentUserInfo().UserID, EventLogController.EventLogType.SCHEDULE_CREATED);
+            return DataProvider.Instance().AddSchedule(TypeFullName,
+                                                       TimeLapse,
+                                                       TimeLapseMeasurement,
+                                                       RetryTimeLapse,
+                                                       RetryTimeLapseMeasurement,
+                                                       RetainHistoryNum,
+                                                       AttachToEvent,
+                                                       CatchUpEnabled,
+                                                       Enabled,
+                                                       ObjectDependencies,
+                                                       Servers,
+                                                       UserController.GetCurrentUserInfo().UserID,
+                                                       FriendlyName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddScheduleHistory">
+          <declaration><![CDATA[public static int AddScheduleHistory(ScheduleHistoryItem objScheduleHistoryItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="84" sc="9" el="86" ec="10">SchedulingController.cs</location>
+            <body hash="19ae3edff1cfea047594a3e616430546"><![CDATA[{
+            return DataProvider.Instance().AddScheduleHistory(objScheduleHistoryItem.ScheduleID, objScheduleHistoryItem.StartDate, ServerController.GetExecutingServerName());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddScheduleItemSetting">
+          <declaration><![CDATA[public static void AddScheduleItemSetting(int ScheduleID, string Name, string Value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="9" el="91" ec="10">SchedulingController.cs</location>
+            <body hash="092633990cc580cfc110e373c981689d"><![CDATA[{
+            DataProvider.Instance().AddScheduleItemSetting(ScheduleID, Name, Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteSchedule">
+          <declaration><![CDATA[public static void DeleteSchedule(int ScheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="94" sc="9" el="102" ec="10">SchedulingController.cs</location>
+            <body hash="9130f2aa9521662399874cc895eaa691"><![CDATA[{
+            DataProvider.Instance().DeleteSchedule(ScheduleID);
+            var objEventLog = new EventLogController();
+            objEventLog.AddLog("ScheduleID",
+                               ScheduleID.ToString(),
+                               PortalController.GetCurrentPortalSettings(),
+                               UserController.GetCurrentUserInfo().UserID,
+                               EventLogController.EventLogType.SCHEDULE_DELETED);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetActiveThreadCount">
+          <declaration><![CDATA[public static int GetActiveThreadCount()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="105" sc="9" el="107" ec="10">SchedulingController.cs</location>
+            <body hash="0a2a3d801bf34a6592d1c37a8ed149a9"><![CDATA[{
+            return Scheduler.CoreScheduler.GetActiveThreadCount();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFreeThreadCount">
+          <declaration><![CDATA[public static int GetFreeThreadCount()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="110" sc="9" el="112" ec="10">SchedulingController.cs</location>
+            <body hash="674a4067cbef136a5c93833af6860fde"><![CDATA[{
+            return Scheduler.CoreScheduler.GetFreeThreadCount();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetMaxThreadCount">
+          <declaration><![CDATA[public static int GetMaxThreadCount()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="115" sc="9" el="117" ec="10">SchedulingController.cs</location>
+            <body hash="ef9de5a4f1d716a07e8d6b1e6f3c8bd9"><![CDATA[{
+            return Scheduler.CoreScheduler.GetMaxThreadCount();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNextScheduledTask">
+          <declaration><![CDATA[public static ScheduleItem GetNextScheduledTask(string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="120" sc="9" el="122" ec="10">SchedulingController.cs</location>
+            <body hash="89bd7fa3c14480f0cccd38e7c46290a7"><![CDATA[{
+            return CBO.FillObject<ScheduleItem>(DataProvider.Instance().GetNextScheduledTask(Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public static List<ScheduleItem> GetSchedule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="125" sc="9" el="127" ec="10">SchedulingController.cs</location>
+            <body hash="1f771670f6ffae0fae9702081b6428bd"><![CDATA[{
+            return CBO.FillCollection<ScheduleItem>(DataProvider.Instance().GetSchedule());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public static List<ScheduleItem> GetSchedule(string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="130" sc="9" el="132" ec="10">SchedulingController.cs</location>
+            <body hash="a6382b4077d261f23e8724c5d498d963"><![CDATA[{
+            return CBO.FillCollection<ScheduleItem>(DataProvider.Instance().GetSchedule(Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public static ScheduleItem GetSchedule(string TypeFullName, string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="135" sc="9" el="137" ec="10">SchedulingController.cs</location>
+            <body hash="a6e9c126ff5b5acb6a02ba4a4468c466"><![CDATA[{
+            return CBO.FillObject<ScheduleItem>(DataProvider.Instance().GetSchedule(TypeFullName, Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public static ScheduleItem GetSchedule(int ScheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="140" sc="9" el="142" ec="10">SchedulingController.cs</location>
+            <body hash="4ed6a57684c66020ca46e10dc28c7d02"><![CDATA[{
+            return CBO.FillObject<ScheduleItem>(DataProvider.Instance().GetSchedule(ScheduleID));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleByEvent">
+          <declaration><![CDATA[public static List<ScheduleItem> GetScheduleByEvent(string EventName, string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="145" sc="9" el="147" ec="10">SchedulingController.cs</location>
+            <body hash="d8483ada972068e1c3c2cf46662d55b1"><![CDATA[{
+            return CBO.FillCollection<ScheduleItem>(DataProvider.Instance().GetScheduleByEvent(EventName, Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleHistory">
+          <declaration><![CDATA[public static List<ScheduleHistoryItem> GetScheduleHistory(int ScheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="150" sc="9" el="152" ec="10">SchedulingController.cs</location>
+            <body hash="95eb45fd665471515e0aa5fb831edb3a"><![CDATA[{
+            return CBO.FillCollection<ScheduleHistoryItem>(DataProvider.Instance().GetScheduleHistory(ScheduleID));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleItemSettings">
+          <declaration><![CDATA[public static Hashtable GetScheduleItemSettings(int ScheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="155" sc="9" el="168" ec="10">SchedulingController.cs</location>
+            <body hash="5ca167150318542f132b18fed705de58"><![CDATA[{
+            var h = new Hashtable();
+            IDataReader r = DataProvider.Instance().GetScheduleItemSettings(ScheduleID);
+            while (r.Read())
+            {
+                h.Add(r["SettingName"], r["SettingValue"]);
+            }
+			//close datareader
+            if (r != null)
+            {
+                r.Close();
+            }
+            return h;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleProcessing">
+          <declaration><![CDATA[public static Collection GetScheduleProcessing()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="171" sc="9" el="173" ec="10">SchedulingController.cs</location>
+            <body hash="a2e675f77897d089b7a4784dee483bde"><![CDATA[{
+            return Scheduler.CoreScheduler.GetScheduleInProgress();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleQueue">
+          <declaration><![CDATA[public static Collection GetScheduleQueue()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="176" sc="9" el="178" ec="10">SchedulingController.cs</location>
+            <body hash="aae17481066200aecd51cc2201d13c5a"><![CDATA[{
+            return Scheduler.CoreScheduler.GetScheduleQueue();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleStatus">
+          <declaration><![CDATA[public static ScheduleStatus GetScheduleStatus()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="181" sc="9" el="183" ec="10">SchedulingController.cs</location>
+            <body hash="5397ecf79e5e2e302273ee2fa33f8ce5"><![CDATA[{
+            return Scheduler.CoreScheduler.GetScheduleStatus();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeScheduleHistory">
+          <declaration><![CDATA[public static void PurgeScheduleHistory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="186" sc="9" el="188" ec="10">SchedulingController.cs</location>
+            <body hash="4f3f7ac0637cb8123f25880e5e556dc2"><![CDATA[{
+            DataProvider.Instance().PurgeScheduleHistory();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ReloadSchedule">
+          <declaration><![CDATA[public static void ReloadSchedule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="191" sc="9" el="193" ec="10">SchedulingController.cs</location>
+            <body hash="6e49c2cd61fd4fc3c68f611789b3d0af"><![CDATA[{
+            Scheduler.CoreScheduler.ReloadSchedule();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSchedule">
+          <declaration><![CDATA[public static void UpdateSchedule(int ScheduleID, string TypeFullName, int TimeLapse, string TimeLapseMeasurement, int RetryTimeLapse, string RetryTimeLapseMeasurement, int RetainHistoryNum, string AttachToEvent, bool CatchUpEnabled, bool Enabled, string ObjectDependencies, string Servers, string FriendlyName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="197" sc="9" el="214" ec="10">SchedulingController.cs</location>
+            <body hash="3c63c43c91fe216e9f3f3df95519bf61"><![CDATA[{
+            DataProvider.Instance().UpdateSchedule(ScheduleID,
+                                                   TypeFullName,
+                                                   TimeLapse,
+                                                   TimeLapseMeasurement,
+                                                   RetryTimeLapse,
+                                                   RetryTimeLapseMeasurement,
+                                                   RetainHistoryNum,
+                                                   AttachToEvent,
+                                                   CatchUpEnabled,
+                                                   Enabled,
+                                                   ObjectDependencies,
+                                                   Servers,
+                                                   UserController.GetCurrentUserInfo().UserID,
+                                                   FriendlyName);
+            var objEventLog = new EventLogController();
+            objEventLog.AddLog("TypeFullName", TypeFullName, PortalController.GetCurrentPortalSettings(), UserController.GetCurrentUserInfo().UserID, EventLogController.EventLogType.SCHEDULE_UPDATED);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateScheduleHistory">
+          <declaration><![CDATA[public static void UpdateScheduleHistory(ScheduleHistoryItem objScheduleHistoryItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="217" sc="9" el="223" ec="10">SchedulingController.cs</location>
+            <body hash="e305c57718ccd565da6939fc11070a20"><![CDATA[{
+            DataProvider.Instance().UpdateScheduleHistory(objScheduleHistoryItem.ScheduleHistoryID,
+                                                          objScheduleHistoryItem.EndDate,
+                                                          objScheduleHistoryItem.Succeeded,
+                                                          objScheduleHistoryItem.LogNotes,
+                                                          objScheduleHistoryItem.NextStart);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SqlDataProvider">
+      <declaration><![CDATA[public class SqlDataProvider : DataProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SqlDataProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddSchedule">
+          <declaration><![CDATA[public override int AddSchedule(string TypeFullName, int TimeLapse, string TimeLapseMeasurement, int RetryTimeLapse, string RetryTimeLapseMeasurement, int RetainHistoryNum, string AttachToEvent, bool CatchUpEnabled, bool Enabled, string ObjectDependencies, string Servers, int CreatedByUserID, string FriendlyName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="9" el="103" ec="10">SqlDataProvider.cs</location>
+            <body hash="12d2ce6897cd1c7c14107f5a989313d9"><![CDATA[{
+            return
+                Convert.ToInt32(SqlHelper.ExecuteScalar(ConnectionString,
+                                                        DatabaseOwner + ObjectQualifier + "AddSchedule",
+                                                        TypeFullName,
+                                                        TimeLapse,
+                                                        TimeLapseMeasurement,
+                                                        RetryTimeLapse,
+                                                        RetryTimeLapseMeasurement,
+                                                        RetainHistoryNum,
+                                                        AttachToEvent,
+                                                        CatchUpEnabled,
+                                                        Enabled,
+                                                        ObjectDependencies,
+                                                        GetNull(Servers),
+                                                        CreatedByUserID,
+                                                        FriendlyName));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddScheduleHistory">
+          <declaration><![CDATA[public override int AddScheduleHistory(int ScheduleID, DateTime StartDate, string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="106" sc="9" el="108" ec="10">SqlDataProvider.cs</location>
+            <body hash="1e9875bf13da1078fee36595adc2d761"><![CDATA[{
+            return Convert.ToInt32(SqlHelper.ExecuteScalar(ConnectionString, DatabaseOwner + ObjectQualifier + "AddScheduleHistory", ScheduleID, FixDate(StartDate), Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddScheduleItemSetting">
+          <declaration><![CDATA[public override void AddScheduleItemSetting(int ScheduleID, string Name, string Value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="111" sc="9" el="113" ec="10">SqlDataProvider.cs</location>
+            <body hash="02b3bb77917d0cf0e99d33d79e2b86d3"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "AddScheduleItemSetting", ScheduleID, Name, Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteSchedule">
+          <declaration><![CDATA[public override void DeleteSchedule(int ScheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="116" sc="9" el="118" ec="10">SqlDataProvider.cs</location>
+            <body hash="7fc78247933ecc8c0df1e90bd375c244"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "DeleteSchedule", ScheduleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FixDate">
+          <declaration><![CDATA[private DateTime FixDate(DateTime dateToFix)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="72" ec="10">SqlDataProvider.cs</location>
+            <body hash="b8ca9d59a181798b6c5bf97bc069626c"><![CDATA[{
+			//Fix for Sql Dates having a minimum value of 1/1/1753
+            if (dateToFix < SqlDateTime.MinValue.Value)
+            {
+                dateToFix = SqlDateTime.MinValue.Value;
+            }
+            return dateToFix;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNextScheduledTask">
+          <declaration><![CDATA[public override IDataReader GetNextScheduledTask(string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="121" sc="9" el="123" ec="10">SqlDataProvider.cs</location>
+            <body hash="f396fd77b168fc90bf7a32d29badda38"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetScheduleNextTask", GetNull(Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNull">
+          <declaration><![CDATA[private object GetNull(object Field)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="75" sc="9" el="82" ec="10">SqlDataProvider.cs</location>
+            <body hash="a6309ddc58819ffad9dbc732a4e3b0ed"><![CDATA[{
+            object nullValue = Null.GetNull(Field, DBNull.Value);
+            if (nullValue is DateTime)
+            {
+                nullValue = FixDate((DateTime) nullValue);
+            }
+            return nullValue;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public override IDataReader GetSchedule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="126" sc="9" el="128" ec="10">SqlDataProvider.cs</location>
+            <body hash="5456b00ca40d9d45ae21ea2ecf3539c0"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetSchedule", DBNull.Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public override IDataReader GetSchedule(string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="131" sc="9" el="133" ec="10">SqlDataProvider.cs</location>
+            <body hash="7608ae178a52fb2219b432fbd348f306"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetSchedule", GetNull(Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public override IDataReader GetSchedule(int ScheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="136" sc="9" el="138" ec="10">SqlDataProvider.cs</location>
+            <body hash="9eafb2e24886f0e8a5e0cdc16798c71c"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetScheduleByScheduleID", ScheduleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public override IDataReader GetSchedule(string TypeFullName, string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="141" sc="9" el="143" ec="10">SqlDataProvider.cs</location>
+            <body hash="b9fd1aff18ae18bde110044dfa3cdded"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetScheduleByTypeFullName", TypeFullName, GetNull(Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleByEvent">
+          <declaration><![CDATA[public override IDataReader GetScheduleByEvent(string EventName, string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="146" sc="9" el="148" ec="10">SqlDataProvider.cs</location>
+            <body hash="2fdd5ae8f2da6d1a331acc90a3aad309"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetScheduleByEvent", EventName, GetNull(Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleHistory">
+          <declaration><![CDATA[public override IDataReader GetScheduleHistory(int ScheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="151" sc="9" el="153" ec="10">SqlDataProvider.cs</location>
+            <body hash="d5ecf064000238f4233a03c041d7de10"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetScheduleHistory", ScheduleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleItemSettings">
+          <declaration><![CDATA[public override IDataReader GetScheduleItemSettings(int ScheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="156" sc="9" el="158" ec="10">SqlDataProvider.cs</location>
+            <body hash="14a018f5406f6f5be0245a02de1a5011"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetScheduleItemSettings", ScheduleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeScheduleHistory">
+          <declaration><![CDATA[public override void PurgeScheduleHistory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="161" sc="9" el="163" ec="10">SqlDataProvider.cs</location>
+            <body hash="896c0de81839da7dbb7f407da7e9e8ed"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "PurgeScheduleHistory");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSchedule">
+          <declaration><![CDATA[public override void UpdateSchedule(int ScheduleID, string TypeFullName, int TimeLapse, string TimeLapseMeasurement, int RetryTimeLapse, string RetryTimeLapseMeasurement, int RetainHistoryNum, string AttachToEvent, bool CatchUpEnabled, bool Enabled, string ObjectDependencies, string Servers, int LastModifiedByUserID, string FriendlyName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="167" sc="9" el="184" ec="10">SqlDataProvider.cs</location>
+            <body hash="edae3f15a540753504ee8fb96aefdfaf"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                                      DatabaseOwner + ObjectQualifier + "UpdateSchedule",
+                                      ScheduleID,
+                                      TypeFullName,
+                                      TimeLapse,
+                                      TimeLapseMeasurement,
+                                      RetryTimeLapse,
+                                      RetryTimeLapseMeasurement,
+                                      RetainHistoryNum,
+                                      AttachToEvent,
+                                      CatchUpEnabled,
+                                      Enabled,
+                                      ObjectDependencies,
+                                      GetNull(Servers),
+                                      LastModifiedByUserID,
+                                      FriendlyName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateScheduleHistory">
+          <declaration><![CDATA[public override void UpdateScheduleHistory(int ScheduleHistoryID, DateTime EndDate, bool Succeeded, string LogNotes, DateTime NextStart)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="187" sc="9" el="189" ec="10">SqlDataProvider.cs</location>
+            <body hash="2dac13e1e1cf7b01e4aecb0b1cedac16"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "UpdateScheduleHistory", ScheduleHistoryID, GetNull(EndDate), GetNull(Succeeded), LogNotes, GetNull(NextStart));
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ConnectionString">
+          <declaration><![CDATA[public string ConnectionString]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="13" el="45" ec="14">SqlDataProvider.cs</location>
+            <body hash="61151ce45d4793ebf981479d49e758f7"><![CDATA[{
+                return Data.DataProvider.Instance().ConnectionString;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DatabaseOwner">
+          <declaration><![CDATA[public string DatabaseOwner]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="13" el="53" ec="14">SqlDataProvider.cs</location>
+            <body hash="bd934314ce26dbfaf12e2df8b461cfb5"><![CDATA[{
+                return Data.DataProvider.Instance().DatabaseOwner;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ObjectQualifier">
+          <declaration><![CDATA[public string ObjectQualifier]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="13" el="61" ec="14">SqlDataProvider.cs</location>
+            <body hash="ac915bd13f657a9577e9d532c24a42b4"><![CDATA[{
+                return Data.DataProvider.Instance().ObjectQualifier;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

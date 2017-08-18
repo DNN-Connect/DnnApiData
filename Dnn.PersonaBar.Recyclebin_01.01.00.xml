@@ -1,0 +1,1450 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.Recyclebin.dll" version="01.01.00" generated="2017-08-10 12:33:59Z" generationTime="3.1047679">
+  <namespace name="Dnn.PersonaBar.Recyclebin.Components">
+    <class name="IRecyclebinController">
+      <declaration><![CDATA[public interface IRecyclebinController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="DeleteModules">
+          <declaration><![CDATA[void DeleteModules(IEnumerable<ModuleItem> modules, StringBuilder errors);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteModules">
+          <declaration><![CDATA[void DeleteModules(IEnumerable<ModuleInfo> modules, StringBuilder errors);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteTabs">
+          <declaration><![CDATA[void DeleteTabs(IEnumerable<PageItem> tabs, StringBuilder errors, bool deleteDescendants = false);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteTabs">
+          <declaration><![CDATA[void DeleteTabs(IEnumerable<TabInfo> tabs, StringBuilder errors, bool deleteDescendants = false);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUsers">
+          <declaration><![CDATA[void DeleteUsers(IEnumerable<UserItem> users);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUsers">
+          <declaration><![CDATA[void DeleteUsers(IEnumerable<UserInfo> users);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDeletedModules">
+          <declaration><![CDATA[List<ModuleInfo> GetDeletedModules();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDeletedTabs">
+          <declaration><![CDATA[List<TabInfo> GetDeletedTabs();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDeletedUsers">
+          <declaration><![CDATA[List<UserInfo> GetDeletedUsers();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTabStatus">
+          <declaration><![CDATA[string GetTabStatus(TabInfo tab);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="LocalizeString">
+          <declaration><![CDATA[string LocalizeString(string key);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreModule">
+          <declaration><![CDATA[bool RestoreModule(int moduleId, int tabId, out string errorMessage);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreTab">
+          <declaration><![CDATA[bool RestoreTab(TabInfo tab, out string resultmessage);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreUser">
+          <declaration><![CDATA[bool RestoreUser(UserInfo user, out string resultmessage);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RecyclebinController">
+      <declaration><![CDATA[public class RecyclebinController : ServiceLocator<IRecyclebinController, RecyclebinController>, IRecyclebinController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RecyclebinController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="9" el="51" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="88e1642dd88f85a53b7dc5b0d56f7b28"><![CDATA[public RecyclebinController()
+        {
+            _tabController = TabController.Instance;
+            _tabVersionSettings = TabVersionSettings.Instance;
+            _tabWorkflowSettings = TabWorkflowSettings.Instance;
+            _moduleController = ModuleController.Instance;
+            _tabChangeSettings = TabChangeSettings.Instance;
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static RecyclebinController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="32" ec="110">Components\RecyclebinController.cs</location>
+            <body hash="ea2324ba11705c8a233b8d27b2d28c5f"><![CDATA[public static string PageDateTimeFormat = "yyyy-MM-dd hh:mm tt";
+        private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (RecyclebinController));]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="DeleteModules">
+          <declaration><![CDATA[public void DeleteModules(IEnumerable<ModuleItem> modules, StringBuilder errors)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="142" sc="9" el="158" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="8f4ec0ad7206908866b7505f6c7eb4a1"><![CDATA[{
+            if (modules != null && modules.Any())
+            {
+                foreach (
+                    var module in modules.Select(mod => ModuleController.Instance.GetModule(mod.Id, mod.TabID, true)))
+                {
+                    if (module == null)
+                    {
+                        continue;
+                    }
+                    if (ModulePermissionController.CanDeleteModule(module) && module.IsDeleted)
+                    {
+                        HardDeleteModule(module);
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteModules">
+          <declaration><![CDATA[public void DeleteModules(IEnumerable<ModuleInfo> modules, StringBuilder errors)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="161" sc="9" el="178" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="960688d6ca34ad1e1548cebe170b2e08"><![CDATA[{
+            if (modules != null && modules.Any())
+            {
+                foreach (
+                    var module in
+                        modules.Select(mod => ModuleController.Instance.GetModule(mod.ModuleID, mod.TabID, true)))
+                {
+                    if (module == null)
+                    {
+                        continue;
+                    }
+                    if (ModulePermissionController.CanDeleteModule(module) && module.IsDeleted)
+                    {
+                        HardDeleteModule(module);
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteTabs">
+          <declaration><![CDATA[public void DeleteTabs(IEnumerable<PageItem> tabs, StringBuilder errors, bool deleteDescendants = false)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="9" el="108" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="4dd48d9cf53ca9688342bb021c58b997"><![CDATA[{
+            if (tabs == null || !tabs.Any())
+            {
+                return;
+            }
+
+            foreach (
+                var tab in
+                    tabs.OrderByDescending(t => t.Level)
+                        .Select(page => _tabController.GetTab(page.Id, PortalSettings.PortalId)))
+            {
+                if (tab == null)
+                {
+                    continue;
+                }
+
+                if (TabPermissionController.CanDeletePage(tab) && tab.IsDeleted)
+                {
+                    if (tab.HasChildren)
+                    {
+                        errors.Append(string.Format(LocalizeString("Service_RemoveTabError"), tab.TabName));
+                    }
+                    else
+                    {
+                        HardDeleteTab(tab, deleteDescendants);
+                    }
+                }
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteTabs">
+          <declaration><![CDATA[public void DeleteTabs(IEnumerable<TabInfo> tabs, StringBuilder errors, bool deleteDescendants = false)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="111" sc="9" el="139" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="402cbea3c8a3128bd652ec116eefb085"><![CDATA[{
+            if (tabs == null || !tabs.Any())
+            {
+                return;
+            }
+
+            foreach (
+                var tab in
+                    tabs.OrderByDescending(t => t.Level)
+                        .Select(page => _tabController.GetTab(page.TabID, PortalSettings.PortalId)))
+            {
+                if (tab == null)
+                {
+                    continue;
+                }
+
+                if (TabPermissionController.CanDeletePage(tab) && tab.IsDeleted)
+                {
+                    if (tab.HasChildren)
+                    {
+                        errors.Append(string.Format(LocalizeString("Service_RemoveTabError"), tab.TabName));
+                    }
+                    else
+                    {
+                        HardDeleteTab(tab, deleteDescendants);
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUsers">
+          <declaration><![CDATA[public void DeleteUsers(IEnumerable<UserInfo> users)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="332" sc="9" el="339" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="85beefca149caf789c2330f3a41b805d"><![CDATA[{
+            var userInfos = users as IList<UserInfo> ?? users.ToList();
+            if (users == null || !userInfos.Any()) return;
+            foreach (var user in userInfos.Select(u => UserController.GetUserById(u.PortalID, u.UserID)).Where(user => user != null).Where(user => user.IsDeleted))
+            {
+                UserController.RemoveUser(user);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUsers">
+          <declaration><![CDATA[public void DeleteUsers(IEnumerable<UserItem> users)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="342" sc="9" el="349" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="c020924d4f86e05c28a3d800993a7d64"><![CDATA[{
+            var userInfos = users as IList<UserItem> ?? users.ToList();
+            if (users == null || !userInfos.Any()) return;
+            foreach (var user in userInfos.Select(u => UserController.GetUserById(u.PortalId, u.Id)).Where(user => user != null).Where(user => user.IsDeleted))
+            {
+                UserController.RemoveUser(user);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDeletedModules">
+          <declaration><![CDATA[public List<ModuleInfo> GetDeletedModules()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="304" sc="9" el="313" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="3473cc66085b32410abeac70c6fb5e25"><![CDATA[{
+            var deletedModules = _moduleController.GetModules(PortalSettings.PortalId)
+                .Cast<ModuleInfo>()
+                .Where(module => module.IsDeleted && (
+                    TabPermissionController.CanAddContentToPage(TabController.Instance.GetTab(module.TabID, module.PortalID)) || 
+                    ModulePermissionController.CanDeleteModule(module))
+                )
+                .ToList();
+            return deletedModules;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDeletedTabs">
+          <declaration><![CDATA[public List<TabInfo> GetDeletedTabs()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="294" sc="9" el="301" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="624660fd5d9aa28f8621fcaf5346d0e2"><![CDATA[{
+            var adminTabId = PortalSettings.AdminTabId;
+            var tabs = TabController.GetPortalTabs(PortalSettings.PortalId, adminTabId, true, true, true, true);
+            var deletedtabs =
+                tabs.Where(t => t.ParentId != adminTabId && t.IsDeleted && TabPermissionController.CanDeletePage(t))
+                    .ToList();
+            return deletedtabs;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDeletedUsers">
+          <declaration><![CDATA[public List<UserInfo> GetDeletedUsers()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="326" sc="9" el="329" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="5449eaa8d212cd793b4c962c3a08f402"><![CDATA[{
+            var deletedusers = UserController.GetDeletedUsers(PortalSettings.PortalId).Cast<UserInfo>().ToList();
+            return deletedusers;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFactory">
+          <declaration><![CDATA[protected override Func<IRecyclebinController> GetFactory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="67" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="f833e040af6668d1f53d6f4ea3285deb"><![CDATA[{
+            return () => new RecyclebinController();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTabStatus">
+          <declaration><![CDATA[public string GetTabStatus(TabInfo tab)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="316" sc="9" el="323" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="4dcbd9c76ad5ef00ba181d6d48ec9124"><![CDATA[{
+            if (tab.DisableLink)
+            {
+                return "Disabled";
+            }
+
+            return tab.IsVisible ? "Visible" : "Hidden";
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="HardDeleteModule">
+          <declaration><![CDATA[private void HardDeleteModule(ModuleInfo module)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="208" sc="9" el="218" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="0c15a82aabd1a95e1d9d2b032ac47170"><![CDATA[{
+            try
+            {
+                _moduleController.DeleteTabModule(module.TabID, module.ModuleID, false);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+            }
+            //hard-delete Tab Module Instance
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="HardDeleteTab">
+          <declaration><![CDATA[private void HardDeleteTab(TabInfo tab, bool deleteDescendants)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="181" sc="9" el="205" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="cd1529aed1ef474d2a9bf566f728ddce"><![CDATA[{
+            //get tab modules before deleting page
+            var tabModules = _moduleController.GetTabModules(tab.TabID);
+
+            //hard delete the tab
+            _tabController.DeleteTab(tab.TabID, tab.PortalID, deleteDescendants);
+
+            //delete modules that do not have other instances
+            foreach (var kvp in tabModules)
+            {
+                //check if all modules instances have been deleted
+                var delModule = _moduleController.GetModule(kvp.Value.ModuleID, Null.NullInteger, false);
+                if (delModule == null || delModule.TabID == Null.NullInteger)
+                {
+                    try
+                    {
+                        _moduleController.DeleteModule(kvp.Value.ModuleID);
+                    }
+                    catch (Exception exc)
+                    {
+                        Logger.Error(exc);
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LocalizeString">
+          <declaration><![CDATA[public string LocalizeString(string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="9" el="76" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="77d79a8b8e7e2a1c3c5c0fdaedfc0735"><![CDATA[{
+            return Localization.GetString(key, LocalResourcesFile);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreModule">
+          <declaration><![CDATA[public bool RestoreModule(int moduleId, int tabId, out string errorMessage)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="263" sc="9" el="284" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="e1b3910a5a1b016f9fab2e579513e417"><![CDATA[{
+            errorMessage = null;
+            // restore module
+            var module = _moduleController.GetModule(moduleId, tabId, false);
+            if ((module != null))
+            {
+                var deletedTabs = GetDeletedTabs().Where(t => t.TabID == module.TabID);
+                if (deletedTabs.Any())
+                {
+                    var title = !string.IsNullOrEmpty(module.ModuleTitle)
+                        ? module.ModuleTitle
+                        : module.DesktopModule.FriendlyName;
+                    errorMessage = string.Format(LocalizeString("Service_RestoreModuleError"), title,
+                        deletedTabs.SingleOrDefault().TabName);
+                    return false;
+                }
+                _moduleController.RestoreModule(module);
+
+                TrackRestoreModuleAction(module);
+            }
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreTab">
+          <declaration><![CDATA[public bool RestoreTab(TabInfo tab, out string resultmessage)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="221" sc="9" el="260" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="65e9cceb932db5a5e3a4cdc97e00102a"><![CDATA[{
+            var changeControlStateForTab = _tabChangeSettings.GetChangeControlState(tab.PortalID, tab.TabID);
+            if (changeControlStateForTab.IsChangeControlEnabledForTab)
+            {
+                _tabVersionSettings.SetEnabledVersioningForTab(tab.TabID, false);
+                _tabWorkflowSettings.SetWorkflowEnabled(tab.PortalID, tab.TabID, false);
+            }
+
+            var success = true;
+            resultmessage = null;
+
+            //if parent of the page is deleted, then can't restore - parent should be restored first
+            var deletedTabs = GetDeletedTabs();
+            if (!Null.IsNull(tab.ParentId) && deletedTabs.Any(t => t.TabID == tab.ParentId))
+            {
+                resultmessage = string.Format(LocalizeString("Service_RestoreTabError"), tab.TabName);
+                success = false;
+            }
+            else
+            {
+                _tabController.RestoreTab(tab, PortalSettings);
+
+                //restore modules in this tab
+                var tabdeletedModules = GetDeletedModules().Where(m => m.TabID == tab.TabID);
+
+                foreach (var m in tabdeletedModules)
+                {
+                    success = RestoreModule(m.ModuleID, m.TabID, out resultmessage);
+                }
+
+                if (changeControlStateForTab.IsChangeControlEnabledForTab)
+                {
+                    _tabVersionSettings.SetEnabledVersioningForTab(tab.TabID,
+                        changeControlStateForTab.IsVersioningEnabledForTab);
+                    _tabWorkflowSettings.SetWorkflowEnabled(tab.PortalID, tab.TabID,
+                        changeControlStateForTab.IsWorkflowEnabledForTab);
+                }
+            }
+            return success;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreUser">
+          <declaration><![CDATA[public bool RestoreUser(UserInfo user, out string errorMessage)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="352" sc="9" el="365" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="d75f45e959e53793e592bbc93faad658"><![CDATA[{
+            errorMessage = null;
+            var deletedusers = UserController.GetDeletedUsers(PortalSettings.PortalId).Cast<UserInfo>().ToList();
+            if ((user != null) && deletedusers.Any(u => u.UserID == user.UserID))
+            {
+                UserController.RestoreUser(ref user);
+                return true;
+            }
+            else
+            {
+                errorMessage = string.Format(LocalizeString("Service_RestoreUserError"));
+                return false;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TrackRestoreModuleAction">
+          <declaration><![CDATA[private void TrackRestoreModuleAction(ModuleInfo module)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="287" sc="9" el="291" ec="10">Components\RecyclebinController.cs</location>
+            <body hash="f736579e2c41ba579d356e7f515aa387"><![CDATA[{
+            var currentUser = UserController.Instance.GetCurrentUserInfo();
+            var currentModuleVersion = TabVersionBuilder.Instance.GetModuleContentLatestVersion(module);
+            TabChangeTracker.Instance.TrackModuleAddition(module, currentModuleVersion, currentUser.UserID);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_moduleController">
+          <declaration><![CDATA[private readonly IModuleController _moduleController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_tabChangeSettings">
+          <declaration><![CDATA[private readonly ITabChangeSettings _tabChangeSettings;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_tabController">
+          <declaration><![CDATA[private readonly ITabController _tabController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_tabVersionSettings">
+          <declaration><![CDATA[private readonly ITabVersionSettings _tabVersionSettings;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_tabWorkflowSettings">
+          <declaration><![CDATA[private readonly ITabWorkflowSettings _tabWorkflowSettings;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(RecyclebinController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="PageDateTimeFormat">
+          <declaration><![CDATA[public static string PageDateTimeFormat = "yyyy-MM-dd hh:mm tt";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="LocalResourcesFile">
+          <declaration><![CDATA[private static string LocalResourcesFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="13" el="56" ec="120">Components\RecyclebinController.cs</location>
+            <body hash="5ec9a7408ecacab090e82fa3bccc232e"><![CDATA[Path.Combine(Constants.PersonaBarRelativePath, "Modules/Dnn.Recyclebin/App_LocalResources/Recyclebin.resx"]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalSettings">
+          <declaration><![CDATA[private static PortalSettings PortalSettings]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="57" el="58" ec="79">Components\RecyclebinController.cs</location>
+            <body hash="b2c12c2cab6af5622f6becdbe50c2eb8"><![CDATA[PortalSettings.Curren]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Recyclebin.Components.Dto">
+    <class name="ModuleItem">
+      <declaration><![CDATA[public class ModuleItem]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ModuleItem()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="FriendlyLastModifiedOnDate">
+          <declaration><![CDATA[public string FriendlyLastModifiedOnDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="52" el="29" ec="56">Components\Dto\ModuleItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="29" sc="57" el="29" ec="61">Components\Dto\ModuleItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Id">
+          <declaration><![CDATA[public int Id]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="25" el="13" ec="29">Components\Dto\ModuleItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="13" sc="30" el="13" ec="34">Components\Dto\ModuleItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LastModifiedOnDate">
+          <declaration><![CDATA[public string LastModifiedOnDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="44" el="27" ec="48">Components\Dto\ModuleItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="27" sc="49" el="27" ec="53">Components\Dto\ModuleItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalId">
+          <declaration><![CDATA[public int PortalId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="31" el="19" ec="35">Components\Dto\ModuleItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="19" sc="36" el="19" ec="40">Components\Dto\ModuleItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TabDeleted">
+          <declaration><![CDATA[public bool TabDeleted]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="25" sc="34" el="25" ec="38">Components\Dto\ModuleItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="25" sc="39" el="25" ec="43">Components\Dto\ModuleItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TabID">
+          <declaration><![CDATA[public int TabID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="28" el="23" ec="32">Components\Dto\ModuleItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="23" sc="33" el="23" ec="37">Components\Dto\ModuleItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TabModuleId">
+          <declaration><![CDATA[public int TabModuleId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="15" sc="34" el="15" ec="38">Components\Dto\ModuleItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="15" sc="39" el="15" ec="43">Components\Dto\ModuleItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TabName">
+          <declaration><![CDATA[public string TabName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="33" el="21" ec="37">Components\Dto\ModuleItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="21" sc="38" el="21" ec="42">Components\Dto\ModuleItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Title">
+          <declaration><![CDATA[public string Title]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="31" el="17" ec="35">Components\Dto\ModuleItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="17" sc="36" el="17" ec="40">Components\Dto\ModuleItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="PageItem">
+      <declaration><![CDATA[public class PageItem]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public PageItem()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ChildrenCount">
+          <declaration><![CDATA[public int ChildrenCount]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="22" sc="36" el="22" ec="40">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="22" sc="41" el="22" ec="45">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="FriendlyLastModifiedOnDate">
+          <declaration><![CDATA[public string FriendlyLastModifiedOnDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="52" el="52" ec="56">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="52" sc="57" el="52" ec="61">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Id">
+          <declaration><![CDATA[public int Id]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="25" el="16" ec="29">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="16" sc="30" el="16" ec="34">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="IsSpecial">
+          <declaration><![CDATA[public bool IsSpecial]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="33" el="43" ec="37">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="38" el="43" ec="42">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LastModifiedOnDate">
+          <declaration><![CDATA[public string LastModifiedOnDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="44" el="49" ec="48">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="49" sc="49" el="49" ec="53">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Level">
+          <declaration><![CDATA[public int Level]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="28" el="37" ec="32">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="33" el="37" ec="37">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="30" el="19" ec="34">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="19" sc="35" el="19" ec="39">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ParentId">
+          <declaration><![CDATA[public int ParentId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="31" el="34" ec="35">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="34" sc="36" el="34" ec="40">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PublishDate">
+          <declaration><![CDATA[public string PublishDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="37" el="28" ec="41">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="28" sc="42" el="28" ec="46">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Status">
+          <declaration><![CDATA[public string Status]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="32" el="31" ec="36">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="31" sc="37" el="31" ec="41">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TabPath">
+          <declaration><![CDATA[public string TabPath]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="33" el="40" ec="37">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="40" sc="38" el="40" ec="42">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Url">
+          <declaration><![CDATA[public string Url]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="25" sc="29" el="25" ec="33">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="25" sc="34" el="25" ec="38">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UseDefaultSkin">
+          <declaration><![CDATA[public bool UseDefaultSkin]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="38" el="46" ec="42">Components\Dto\PageItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="46" sc="43" el="46" ec="47">Components\Dto\PageItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UserItem">
+      <declaration><![CDATA[public class UserItem]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UserItem()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="DisplayName">
+          <declaration><![CDATA[public string DisplayName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="37" el="19" ec="41">Components\Dto\UserItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="19" sc="42" el="19" ec="46">Components\Dto\UserItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Email">
+          <declaration><![CDATA[public string Email]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="31" el="21" ec="35">Components\Dto\UserItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="21" sc="36" el="21" ec="40">Components\Dto\UserItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="FriendlyLastModifiedOnDate">
+          <declaration><![CDATA[public string FriendlyLastModifiedOnDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="25" sc="52" el="25" ec="56">Components\Dto\UserItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="25" sc="57" el="25" ec="61">Components\Dto\UserItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Id">
+          <declaration><![CDATA[public int Id]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="25" el="13" ec="29">Components\Dto\UserItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="13" sc="30" el="13" ec="34">Components\Dto\UserItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LastModifiedOnDate">
+          <declaration><![CDATA[public string LastModifiedOnDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="44" el="23" ec="48">Components\Dto\UserItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="23" sc="49" el="23" ec="53">Components\Dto\UserItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalId">
+          <declaration><![CDATA[public int PortalId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="15" sc="31" el="15" ec="35">Components\Dto\UserItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="15" sc="36" el="15" ec="40">Components\Dto\UserItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Username">
+          <declaration><![CDATA[public string Username]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="34" el="17" ec="38">Components\Dto\UserItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="17" sc="39" el="17" ec="43">Components\Dto\UserItem.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Recyclebin.Services">
+    <class name="RecyclebinController">
+      <declaration><![CDATA[public class RecyclebinController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RecyclebinController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ConvertToModuleItem">
+          <declaration><![CDATA[private ModuleItem ConvertToModuleItem(ModuleInfo mod)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="259" sc="9" el="273" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="1ea2824e177e5a9325ded287b899dbb2"><![CDATA[{
+            var tab = TabController.Instance.GetTab(mod.TabID, PortalSettings.PortalId);
+            return new ModuleItem
+            {
+                Id = mod.ModuleID,
+                Title = mod.ModuleTitle,
+                TabModuleId = mod.TabModuleID,
+                PortalId = mod.PortalID,
+                TabName = tab.TabName,
+                TabID = tab.TabID,
+                TabDeleted = tab.IsDeleted,
+                LastModifiedOnDate = mod.LastModifiedOnDate.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.CreateSpecificCulture(mod.CultureCode ?? "en-US")),
+                FriendlyLastModifiedOnDate = mod.LastModifiedOnDate.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.CreateSpecificCulture(mod.CultureCode ?? "en-US"))
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ConvertToPageItem">
+          <declaration><![CDATA[private PageItem ConvertToPageItem(TabInfo tab, IEnumerable<TabInfo> portalTabs)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="234" sc="9" el="251" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="4120e6569586b5d3dee9e08449924848"><![CDATA[{
+            return new PageItem
+            {
+                       Id = tab.TabID,
+                       Name = tab.LocalizedTabName,
+                       Url = tab.FullUrl,
+                       ChildrenCount = portalTabs != null ? portalTabs.Count(ct => ct.ParentId == tab.TabID) : 0,
+                       PublishDate = tab.CreatedOnDate.ToString("MM/dd/yyyy"),
+                       Status = Components.RecyclebinController.Instance.GetTabStatus(tab),
+                       ParentId = tab.ParentId,
+                       Level = tab.Level,
+                       IsSpecial = TabController.IsSpecialTab(tab.TabID, PortalSettings),
+                       TabPath = tab.TabPath.Replace("//","/"),
+                       LastModifiedOnDate = tab.LastModifiedOnDate.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.CreateSpecificCulture(tab.CultureCode ?? "en-US")),
+                       FriendlyLastModifiedOnDate = tab.LastModifiedOnDate.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.CreateSpecificCulture(tab.CultureCode ?? "en-US")),
+                       UseDefaultSkin = UseDefaultSkin(tab)
+                   };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ConvertToUserItem">
+          <declaration><![CDATA[private UserItem ConvertToUserItem(UserInfo user)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="276" sc="9" el="287" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="2693e4c876380723c83d83a73f478615"><![CDATA[{
+            return new UserItem
+            {
+                Id = user.UserID,
+                Username = user.Username,
+                PortalId = user.PortalID,
+                DisplayName = user.DisplayName,
+                Email = user.Email,
+                LastModifiedOnDate = user.LastModifiedOnDate.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.CreateSpecificCulture(user.Profile.PreferredLocale ?? "en-US")),
+                FriendlyLastModifiedOnDate = user.LastModifiedOnDate.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.CreateSpecificCulture(user.Profile.PreferredLocale ?? "en-US"))
+            };
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="EmptyRecycleBin">
+          <declaration><![CDATA[public HttpResponseMessage EmptyRecycleBin()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="204" sc="9" el="229" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="7692366ee5fb83b883e8297b7afd71f7"><![CDATA[{
+            var deletedTabs = Components.RecyclebinController.Instance.GetDeletedTabs();
+            var deletedModules = Components.RecyclebinController.Instance.GetDeletedModules();
+            var deletedUsers = Components.RecyclebinController.Instance.GetDeletedUsers();
+            var errors = new StringBuilder();
+
+            Components.RecyclebinController.Instance.DeleteModules(deletedModules, errors);
+
+            Components.RecyclebinController.Instance.DeleteTabs(deletedTabs, errors, true);
+
+            Components.RecyclebinController.Instance.DeleteUsers(deletedUsers);
+
+            if (errors.Length > 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    Status = 1,
+                    Message =
+                        string.Format(
+                            Components.RecyclebinController.Instance.LocalizeString("Service_EmptyRecycleBinError"),
+                            errors)
+                });
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new {Status = 0});
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDeletedModuleList">
+          <declaration><![CDATA[public HttpResponseMessage GetDeletedModuleList()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="188" sc="9" el="192" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="7fc1bc70d79a0f901497b69339d42e34"><![CDATA[{
+            var mods = Components.RecyclebinController.Instance.GetDeletedModules();
+            var deletedmodules = from t in mods select ConvertToModuleItem(t);
+            return Request.CreateResponse(HttpStatusCode.OK, deletedmodules);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDeletedPageList">
+          <declaration><![CDATA[public HttpResponseMessage GetDeletedPageList()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="54" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="f2e9ecf9467a5b30d8d2b70e9da6aa10"><![CDATA[{
+            var tabs = Components.RecyclebinController.Instance.GetDeletedTabs();
+            var deletedtabs = from t in tabs
+                select ConvertToPageItem(t, tabs);
+            return Request.CreateResponse(HttpStatusCode.OK, deletedtabs);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDeletedUserList">
+          <declaration><![CDATA[public HttpResponseMessage GetDeletedUserList()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="196" sc="9" el="200" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="b727c40514fbe0509ed5fef8b02f5e06"><![CDATA[{
+            var users = Components.RecyclebinController.Instance.GetDeletedUsers();
+            var deletedusers = from t in users select ConvertToUserItem(t);
+            return Request.CreateResponse(HttpStatusCode.OK, deletedusers);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveModule">
+          <declaration><![CDATA[public HttpResponseMessage RemoveModule(List<ModuleItem> modules)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="9" el="91" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="f4a0fb56c45af2c0d10f0673ae46f144"><![CDATA[{
+            var errors = new StringBuilder();
+
+            Components.RecyclebinController.Instance.DeleteModules(modules, errors);
+
+            if (errors.Length > 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    Status = 1,
+                    Message = string.Format(Components.RecyclebinController.Instance.LocalizeString("Service_RemoveTabModuleError"), errors)
+                });
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { Status = 0 });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemovePage">
+          <declaration><![CDATA[public HttpResponseMessage RemovePage(List<PageItem> pages)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="9" el="71" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="191698aa4733d10562b482daf41c69fb"><![CDATA[{
+            var errors = new StringBuilder();
+
+            Components.RecyclebinController.Instance.DeleteTabs(pages, errors);
+            
+            if (errors.Length > 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { Status = 1, 
+                    Message = string.Format(Components.RecyclebinController.Instance.LocalizeString("Service_RemoveTabModuleError"), errors) });
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { Status = 0 });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveUser">
+          <declaration><![CDATA[public HttpResponseMessage RemoveUser(List<UserItem> users)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="96" sc="9" el="111" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="705446b0d01d53f134604341c89d8dae"><![CDATA[{
+            var errors = new StringBuilder();
+
+            Components.RecyclebinController.Instance.DeleteUsers(users);
+
+            if (errors.Length > 0)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    Status = 1,
+                    Message = string.Format(Components.RecyclebinController.Instance.LocalizeString("Service_RemoveUserError"), errors)
+                });
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { Status = 0 });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreModule">
+          <declaration><![CDATA[public HttpResponseMessage RestoreModule(List<ModuleItem> modules)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="138" sc="9" el="162" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="c113f9dc35ad516d85402ecc8cf3b0ff"><![CDATA[{   
+            //modules dic stores module.Key=moduleId, module.Value=pageId;
+            var result = true;
+            var errors = new StringBuilder();
+            if (modules != null && modules.Any())
+            {
+                foreach (var module in modules)
+                {
+                    var tab = TabController.Instance.GetTab(module.TabID, PortalSettings.PortalId);
+                    if (tab == null)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound);
+                    }
+                    string resultmessage;
+                    result = Components.RecyclebinController.Instance.RestoreModule(module.Id, module.TabID, out resultmessage);
+                    errors.Append(resultmessage);
+
+                }
+            }
+            if (!result)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { Status = 1, Message = errors });
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, new { Status = 0 });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RestorePage">
+          <declaration><![CDATA[public HttpResponseMessage RestorePage(List<PageItem> pages)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="116" sc="9" el="133" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="a86589c61924f07ccaf3ad12ebb979ef"><![CDATA[{
+            var errors = new StringBuilder();
+            if (pages != null && pages.Any())
+            {
+                foreach (var tab in pages.Select(page => TabController.Instance.GetTab(page.Id, PortalSettings.PortalId)))
+                {
+                    if (tab == null)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound);
+                    }
+                    string resultmessage;
+                    Components.RecyclebinController.Instance.RestoreTab(tab, out resultmessage);
+                    errors.Append(resultmessage);
+                }
+            }
+            return errors.Length > 0 ? Request.CreateResponse(HttpStatusCode.OK, new { Status = 1, Message = string.Format(Components.RecyclebinController.Instance.LocalizeString("Service_RestoreTabModuleError"), errors) }) 
+                : Request.CreateResponse(HttpStatusCode.OK, new { Status = 0 });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreUser">
+          <declaration><![CDATA[public HttpResponseMessage RestoreUser(List<UserItem> users)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="167" sc="9" el="184" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="f16107b59e48d1540b6f1626f14f95cf"><![CDATA[{
+            var errors = new StringBuilder();
+            if (users != null && users.Any())
+            {
+                foreach (var user in users.Select(u => UserController.Instance.GetUserById(PortalSettings.PortalId, u.Id)))
+                {
+                    if (user == null)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound);
+                    }
+                    string resultmessage;
+                    Components.RecyclebinController.Instance.RestoreUser(user, out resultmessage);
+                    errors.Append(resultmessage);
+                }
+            }
+            return errors.Length > 0 ? Request.CreateResponse(HttpStatusCode.OK, new { Status = 1, Message = string.Format(Components.RecyclebinController.Instance.LocalizeString("Service_RestoreTabModuleError"), errors) })
+                : Request.CreateResponse(HttpStatusCode.OK, new { Status = 0 });
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UseDefaultSkin">
+          <declaration><![CDATA[private bool UseDefaultSkin(TabInfo tab)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="254" sc="9" el="256" ec="10">Services\RecyclebinController.cs</location>
+            <body hash="b8cbc129de2fbf34f659d488210780fe"><![CDATA[{
+            return !string.IsNullOrEmpty(tab.SkinSrc) && tab.SkinSrc.Equals(PortalSettings.DefaultPortalSkin, StringComparison.InvariantCultureIgnoreCase);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

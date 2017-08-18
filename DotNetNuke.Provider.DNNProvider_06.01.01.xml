@@ -1,0 +1,956 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Provider.DNNProvider.dll" version="06.01.01" generated="2017-06-18 21:20:12Z" generationTime="1.5160717">
+  <namespace name="DotNetNuke.Security.Membership">
+    <class name="DNNRoleProvider">
+      <declaration><![CDATA[public class DNNRoleProvider : RoleProvider]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ Project:    DotNetNuke
+ Namespace:  DotNetNuke.Security.Membership
+ Class:      DNNRoleProvider
+ -----------------------------------------------------------------------------
+ <summary>
+ The DNNRoleProvider overrides the default MembershipProvider to provide
+ a purely DNN Membership Component implementation
+ </summary>
+ <remarks>
+ </remarks>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DNNRoleProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="9" el="82" ec="10">DNNRoleProvider.cs</location>
+            <body hash="3ff31fab9a7255de7f753914884c1f05"><![CDATA[public DNNRoleProvider()
+        {
+            dataProvider = DataProvider.Instance();
+            if (dataProvider == null)
+            {
+				//get the provider configuration based on the type
+                string defaultprovider = DotNetNuke.Data.DataProvider.Instance().DefaultProviderName;
+                string dataProviderNamespace = "DotNetNuke.Security.Membership.Data";
+                if (defaultprovider == "SqlDataProvider")
+                {
+                    dataProvider = new SqlDataProvider();
+                }
+                else
+                {
+                    string providerType = dataProviderNamespace + "." + defaultprovider;
+                    dataProvider = (DataProvider) Reflection.CreateObject(providerType, providerType, true);
+                }
+                ComponentFactory.RegisterComponentInstance<DataProvider>(dataProvider);
+            }
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddDNNUserRole">
+          <declaration><![CDATA[private void AddDNNUserRole(UserRoleInfo userRole)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="87" sc="9" el="91" ec="10">DNNRoleProvider.cs</location>
+            <body hash="d63e641cb2912ee5242a142aef507463"><![CDATA[{
+            //Add UserRole to DNN
+            userRole.UserRoleID =
+                Convert.ToInt32(dataProvider.AddUserRole(userRole.PortalID, userRole.UserID, userRole.RoleID, userRole.EffectiveDate, userRole.ExpiryDate, UserController.GetCurrentUserInfo().UserID));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddUserToRole">
+          <declaration><![CDATA[public override bool AddUserToRole(int portalId, UserInfo user, UserRoleInfo userRole)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ AddUserToRole adds a User to a Role
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="portalId">Id of the portal</param>
+ <param name="user">The user to add.</param>
+ <param name="userRole">The role to add the user to.</param>
+ <returns>A Boolean indicating success or failure.</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="500" sc="9" el="515" ec="10">DNNRoleProvider.cs</location>
+            <body hash="5cd41e2a2422ef9f2170a865489a93c9"><![CDATA[{
+            bool createStatus = true;
+            try
+            {
+				//Add UserRole to DNN
+                AddDNNUserRole(userRole);
+            }
+            catch (Exception exc)
+            {
+				//Clear User (duplicate User information)
+                DnnLog.Error(exc);
+
+                createStatus = false;
+            }
+            return createStatus;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateRole">
+          <declaration><![CDATA[public override bool CreateRole(int portalId, ref RoleInfo role)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ CreateRole persists a Role to the Data Store
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="portalId">Id of the portal</param>
+ <param name="role">The role to persist to the Data Store.</param>
+ <returns>A Boolean indicating success or failure.</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+     [jlucarino]	02/23/2006	added CreatedByUserID parameter
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="190" sc="9" el="216" ec="10">DNNRoleProvider.cs</location>
+            <body hash="d98de117edff9f090fe2f009eea5f922"><![CDATA[{
+            try
+            {
+                role.RoleID =
+                    Convert.ToInt32(dataProvider.AddRole(role.PortalID,
+                                                         role.RoleGroupID,
+                                                         role.RoleName,
+                                                         role.Description,
+                                                         role.ServiceFee,
+                                                         role.BillingPeriod.ToString(),
+                                                         role.BillingFrequency,
+                                                         role.TrialFee,
+                                                         role.TrialPeriod,
+                                                         role.TrialFrequency,
+                                                         role.IsPublic,
+                                                         role.AutoAssignment,
+                                                         role.RSVPCode,
+                                                         role.IconFile,
+                                                         UserController.GetCurrentUserInfo().UserID));
+            }
+            catch (SqlException e)
+            {
+                throw new ArgumentException(e.ToString());
+            }
+
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateRoleGroup">
+          <declaration><![CDATA[public override int CreateRoleGroup(RoleGroupInfo roleGroup)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ CreateRoleGroup persists a RoleGroup to the Data Store
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="roleGroup">The RoleGroup to persist to the Data Store.</param>
+ <returns>The Id of the new role.</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+     [jlucarino]	02/26/2009	added CreatedByUserID parameter
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="412" sc="9" el="414" ec="10">DNNRoleProvider.cs</location>
+            <body hash="32e2be153960a5490fbfbba58bd7f01d"><![CDATA[{
+            return Convert.ToInt32(dataProvider.AddRoleGroup(roleGroup.PortalID, roleGroup.RoleGroupName, roleGroup.Description, UserController.GetCurrentUserInfo().UserID));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteRole">
+          <declaration><![CDATA[public override void DeleteRole(int portalId, ref RoleInfo role)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ DeleteRole deletes a Role from the Data Store
+ </summary>
+ <param name="portalId">Id of the portal</param>
+ <param name="role">The role to delete from the Data Store.</param>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="229" sc="9" el="231" ec="10">DNNRoleProvider.cs</location>
+            <body hash="374e4faea2eaea0fe64f943d55cf62ea"><![CDATA[{
+            dataProvider.DeleteRole(role.RoleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteRoleGroup">
+          <declaration><![CDATA[public override void DeleteRoleGroup(RoleGroupInfo roleGroup)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ DeleteRoleGroup deletes a RoleGroup from the Data Store
+ </summary>
+ <param name="roleGroup">The RoleGroup to delete from the Data Store.</param>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="426" sc="9" el="428" ec="10">DNNRoleProvider.cs</location>
+            <body hash="c6a5366cec0b8ba21656002b18c99ef8"><![CDATA[{
+            dataProvider.DeleteRoleGroup(roleGroup.RoleGroupID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FillUserCollection">
+          <declaration><![CDATA[private static ArrayList FillUserCollection(int portalId, IDataReader dr)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="94" sc="9" el="119" ec="10">DNNRoleProvider.cs</location>
+            <body hash="0ecd46535519990d080092649e01bf54"><![CDATA[{
+            //Note:  the DataReader returned from this method should contain 2 result sets.  The first set
+            //       contains the TotalRecords, that satisfy the filter, the second contains the page
+            //       of data
+            var arrUsers = new ArrayList();
+            try
+            {
+                while (dr.Read())
+                {
+                    //fill business object
+                    UserInfo user = FillUserInfo(portalId, dr, false);
+                    //add to collection
+                    arrUsers.Add(user);
+                }
+            }
+            catch (Exception exc)
+            {
+                Exceptions.LogException(exc);
+            }
+            finally
+            {
+                //close datareader
+                CBO.CloseDataReader(dr, true);
+            }
+            return arrUsers;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FillUserInfo">
+          <declaration><![CDATA[private static UserInfo FillUserInfo(int portalId, IDataReader dr, bool closeDataReader)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="122" sc="9" el="169" ec="10">DNNRoleProvider.cs</location>
+            <body hash="4fa0ac77b264733ced4933b59694c970"><![CDATA[{
+            UserInfo objUserInfo = null;
+            try
+            {
+                //read datareader
+                var bContinue = true;
+                if (closeDataReader)
+                {
+                    bContinue = false;
+                    if (dr.Read())
+                    {
+                        //Ensure the data reader returned is valid
+                        if (string.Equals(dr.GetName(0), "UserID", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            bContinue = true;
+                        }
+                    }
+                }
+                if (bContinue)
+                {
+                    objUserInfo = new UserInfo
+                    {
+                        PortalID = portalId,
+                        IsSuperUser = Null.SetNullBoolean(dr["IsSuperUser"]),
+                        IsDeleted = Null.SetNullBoolean(dr["IsDeleted"]),
+                        UserID = Null.SetNullInteger(dr["UserID"]),
+                        FirstName = Null.SetNullString(dr["FirstName"]),
+                        LastName = Null.SetNullString(dr["LastName"]),
+                        RefreshRoles = Null.SetNullBoolean(dr["RefreshRoles"]),
+                        DisplayName = Null.SetNullString(dr["DisplayName"])
+                    };
+                    objUserInfo.AffiliateID = Null.SetNullInteger(Null.SetNull(dr["AffiliateID"], objUserInfo.AffiliateID));
+                    objUserInfo.Username = Null.SetNullString(dr["Username"]);
+                    UserController.GetUserMembership(objUserInfo);
+                    objUserInfo.Email = Null.SetNullString(dr["Email"]);
+                    objUserInfo.Membership.UpdatePassword = Null.SetNullBoolean(dr["UpdatePassword"]);
+                    if (!objUserInfo.IsSuperUser)
+                    {
+                        objUserInfo.Membership.Approved = Null.SetNullBoolean(dr["Authorised"]);
+                    }
+                }
+            }
+            finally
+            {
+                CBO.CloseDataReader(dr, closeDataReader);
+            }
+            return objUserInfo;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRole">
+          <declaration><![CDATA[public override RoleInfo GetRole(int portalId, int roleId)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetRole gets a role from the Data Store
+ </summary>
+ <remarks>This overload gets the role by its ID</remarks>
+ <param name="portalId">Id of the portal</param>
+ <param name="roleId">The Id of the role to retrieve.</param>
+ <returns>A RoleInfo object</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="246" sc="9" el="248" ec="10">DNNRoleProvider.cs</location>
+            <body hash="b93c8f9876c2e6346c9b4b3da33f6e72"><![CDATA[{
+            return CBO.FillObject<RoleInfo>(dataProvider.GetRole(roleId, portalId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRole">
+          <declaration><![CDATA[public override RoleInfo GetRole(int portalId, string roleName)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetRole gets a role from the Data Store
+ </summary>
+ <remarks>This overload gets the role by its name</remarks>
+ <param name="portalId">Id of the portal</param>
+ <param name="roleName">The name of the role to retrieve.</param>
+ <returns>A RoleInfo object</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="263" sc="9" el="265" ec="10">DNNRoleProvider.cs</location>
+            <body hash="79dfe0fc371f80e627b34a710a219a38"><![CDATA[{
+            return CBO.FillObject<RoleInfo>(dataProvider.GetRoleByName(portalId, roleName));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleGroup">
+          <declaration><![CDATA[public override RoleGroupInfo GetRoleGroup(int portalId, int roleGroupId)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetRoleGroup gets a RoleGroup from the Data Store
+ </summary>
+ <param name="portalId">Id of the portal</param>
+ <param name="roleGroupId">The Id of the RoleGroup to retrieve.</param>
+ <returns>A RoleGroupInfo object</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="442" sc="9" el="444" ec="10">DNNRoleProvider.cs</location>
+            <body hash="c28021571c7239e477cf89da6122e924"><![CDATA[{
+            return CBO.FillObject<RoleGroupInfo>(dataProvider.GetRoleGroup(portalId, roleGroupId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleGroupByName">
+          <declaration><![CDATA[public override RoleGroupInfo GetRoleGroupByName(int PortalID, string RoleGroupName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="447" sc="9" el="449" ec="10">DNNRoleProvider.cs</location>
+            <body hash="d0e152e207db0e0ca27fce4e579cb3aa"><![CDATA[{
+            return CBO.FillObject<RoleGroupInfo>(dataProvider.GetRoleGroupByName(PortalID, RoleGroupName));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleGroups">
+          <declaration><![CDATA[public override ArrayList GetRoleGroups(int portalId)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Get the RoleGroups for a portal
+ </summary>
+ <param name="portalId">Id of the portal.</param>
+ <returns>An ArrayList of RoleGroupInfo objects</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="462" sc="9" el="464" ec="10">DNNRoleProvider.cs</location>
+            <body hash="62217ebe8d067ebfaf09baa9e6d8da56"><![CDATA[{
+            return CBO.FillCollection(dataProvider.GetRoleGroups(portalId), typeof (RoleGroupInfo));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleNames">
+          <declaration><![CDATA[public override string[] GetRoleNames(int portalId)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetRoleNames gets an array of roles for a portal
+ </summary>
+ <param name="portalId">Id of the portal</param>
+ <returns>A RoleInfo object</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="278" sc="9" el="291" ec="10">DNNRoleProvider.cs</location>
+            <body hash="e10c9d207830e018152e8e9398fcc8d8"><![CDATA[{
+            string[] roles = {};
+            string strRoles = "";
+            ArrayList arrRoles = GetRoles(portalId);
+            foreach (RoleInfo role in arrRoles)
+            {
+                strRoles += role.RoleName + "|";
+            }
+            if (strRoles.IndexOf("|") > 0)
+            {
+                roles = strRoles.Substring(0, strRoles.Length - 1).Split('|');
+            }
+            return roles;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleNames">
+          <declaration><![CDATA[public override string[] GetRoleNames(int portalId, int userId)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetRoleNames gets an array of roles
+ </summary>
+ <param name="portalId">Id of the portal</param>
+ <param name="userId">The Id of the user whose roles are required. (If -1 then all
+ rolenames in a portal are retrieved.</param>
+ <returns>A RoleInfo object</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="306" sc="9" el="326" ec="10">DNNRoleProvider.cs</location>
+            <body hash="3d0fe43e261dca22e849cc4b9e1d5c06"><![CDATA[{
+            string[] roles = {};
+            string strRoles = "";
+            IDataReader dr = dataProvider.GetRolesByUser(userId, portalId);
+            try
+            {
+                while (dr.Read())
+                {
+                    strRoles += Convert.ToString(dr["RoleName"]) + "|";
+                }
+            }
+            finally
+            {
+                CBO.CloseDataReader(dr, true);
+            }
+            if (strRoles.IndexOf("|") > 0)
+            {
+                roles = strRoles.Substring(0, strRoles.Length - 1).Split('|');
+            }
+            return roles;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoles">
+          <declaration><![CDATA[public override ArrayList GetRoles(int portalId)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Get the roles for a portal
+ </summary>
+ <param name="portalId">Id of the portal (If -1 all roles for all portals are
+ retrieved.</param>
+ <returns>An ArrayList of RoleInfo objects</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="340" sc="9" el="351" ec="10">DNNRoleProvider.cs</location>
+            <body hash="300a72f453a0bb78b0eba7408464108c"><![CDATA[{
+            ArrayList arrRoles;
+            if (portalId == Null.NullInteger)
+            {
+                arrRoles = CBO.FillCollection(dataProvider.GetRoles(), typeof (RoleInfo));
+            }
+            else
+            {
+                arrRoles = CBO.FillCollection(dataProvider.GetPortalRoles(portalId), typeof (RoleInfo));
+            }
+            return arrRoles;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRolesByGroup">
+          <declaration><![CDATA[public override ArrayList GetRolesByGroup(int portalId, int roleGroupId)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Get the roles for a Role Group
+ </summary>
+ <param name="portalId">Id of the portal</param>
+ <param name="roleGroupId">Id of the Role Group (If -1 all roles for the portal are
+ retrieved).</param>
+ <returns>An ArrayList of RoleInfo objects</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="366" sc="9" el="368" ec="10">DNNRoleProvider.cs</location>
+            <body hash="c7686cf8cdff01f8d7e05e5d1207e517"><![CDATA[{
+            return CBO.FillCollection(dataProvider.GetRolesByGroup(roleGroupId, portalId), typeof (RoleInfo));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserRole">
+          <declaration><![CDATA[public override UserRoleInfo GetUserRole(int portalId, int userId, int roleId)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetUserRole gets a User/Role object from the Data Store
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="portalId">Id of the portal</param>
+ <param name="userId">The Id of the User</param>
+ <param name="roleId">The Id of the Role.</param>
+ <returns>The UserRoleInfo object</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="532" sc="9" el="534" ec="10">DNNRoleProvider.cs</location>
+            <body hash="dbc5514a7999066191f81b11389f66a0"><![CDATA[{
+            return CBO.FillObject<UserRoleInfo>(dataProvider.GetUserRole(portalId, userId, roleId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserRoles">
+          <declaration><![CDATA[public override ArrayList GetUserRoles(int portalId, int userId, bool includePrivate)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetUserRoles gets a collection of User/Role objects from the Data Store
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="portalId">Id of the portal</param>
+ <param name="userId">The user to fetch roles for</param>
+ <param name="includePrivate">Include private roles.</param>
+ <returns>An ArrayList of UserRoleInfo objects</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="551" sc="9" el="560" ec="10">DNNRoleProvider.cs</location>
+            <body hash="8936f32f0300681680e0470e9c290455"><![CDATA[{
+            if (includePrivate)
+            {
+                return CBO.FillCollection(dataProvider.GetUserRoles(portalId, userId), typeof (UserRoleInfo));
+            }
+            else
+            {
+                return CBO.FillCollection(dataProvider.GetServices(portalId, userId), typeof (UserRoleInfo));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserRoles">
+          <declaration><![CDATA[public override ArrayList GetUserRoles(int portalId, string userName, string roleName)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetUserRoles gets a collection of User/Role objects from the Data Store
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="portalId">Id of the portal</param>
+ <param name="userName">The user to fetch roles for</param>
+ <param name="roleName">The role to fetch users for</param>
+ <returns>An ArrayList of UserRoleInfo objects</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="577" sc="9" el="579" ec="10">DNNRoleProvider.cs</location>
+            <body hash="90b07bcf84229bcdd57a23480f072038"><![CDATA[{
+            return CBO.FillCollection(dataProvider.GetUserRolesByUsername(portalId, userName, roleName), typeof (UserRoleInfo));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserRolesByRoleName">
+          <declaration><![CDATA[public override ArrayList GetUserRolesByRoleName(int portalId, string roleName)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Get the users in a role (as UserRole objects)
+ </summary>
+ <param name="portalId">Id of the portal (If -1 all roles for all portals are
+ retrieved.</param>
+ <param name="roleName">The role to fetch users for</param>
+ <returns>An ArrayList of UserRoleInfo objects</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="594" sc="9" el="596" ec="10">DNNRoleProvider.cs</location>
+            <body hash="77e4be9ad6a43b5ec54353196e1c6779"><![CDATA[{
+            return GetUserRoles(portalId, null, roleName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByRoleName">
+          <declaration><![CDATA[public override ArrayList GetUsersByRoleName(int portalId, string roleName)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Get the users in a role (as User objects)
+ </summary>
+ <param name="portalId">Id of the portal (If -1 all roles for all portals are
+ retrieved.</param>
+ <param name="roleName">The role to fetch users for</param>
+ <returns>An ArrayList of UserInfo objects</returns>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="611" sc="9" el="613" ec="10">DNNRoleProvider.cs</location>
+            <body hash="5ea0922a217977017624052e0477a7e5"><![CDATA[{
+            return FillUserCollection(portalId, dataProvider.GetUsersByRolename(portalId, roleName));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveUserFromRole">
+          <declaration><![CDATA[public override void RemoveUserFromRole(int portalId, UserInfo user, UserRoleInfo userRole)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Remove a User from a Role
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="portalId">Id of the portal</param>
+ <param name="user">The user to remove.</param>
+ <param name="userRole">The role to remove the user from.</param>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="629" sc="9" el="631" ec="10">DNNRoleProvider.cs</location>
+            <body hash="90df7580956e2fdb8f55abb4ff1a3320"><![CDATA[{
+            dataProvider.DeleteUserRole(userRole.UserID, userRole.RoleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateRole">
+          <declaration><![CDATA[public override void UpdateRole(RoleInfo role)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Update a role
+ </summary>
+ <param name="role">The role to update</param>
+ <history>
+     [cnurse]	03/28/2006	created
+     [jlucarino]	02/23/2006	added LastModifiedByUserID parameter
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="381" sc="9" el="396" ec="10">DNNRoleProvider.cs</location>
+            <body hash="44e011767427d9d9747aff164175d207"><![CDATA[{
+            dataProvider.UpdateRole(role.RoleID,
+                                    role.RoleGroupID,
+                                    role.Description,
+                                    role.ServiceFee,
+                                    role.BillingPeriod.ToString(),
+                                    role.BillingFrequency,
+                                    role.TrialFee,
+                                    role.TrialPeriod,
+                                    role.TrialFrequency,
+                                    role.IsPublic,
+                                    role.AutoAssignment,
+                                    role.RSVPCode,
+                                    role.IconFile,
+                                    UserController.GetCurrentUserInfo().UserID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateRoleGroup">
+          <declaration><![CDATA[public override void UpdateRoleGroup(RoleGroupInfo roleGroup)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Update a RoleGroup
+ </summary>
+ <param name="roleGroup">The RoleGroup to update</param>
+ <history>
+     [cnurse]	03/28/2006	created
+     [jlucarino]	02/26/2009	added LastModifiedByUserID parameter
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="477" sc="9" el="479" ec="10">DNNRoleProvider.cs</location>
+            <body hash="b44ad695de448a22297ec02afdfcec75"><![CDATA[{
+            dataProvider.UpdateRoleGroup(roleGroup.RoleGroupID, roleGroup.RoleGroupName, roleGroup.Description, UserController.GetCurrentUserInfo().UserID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateUserRole">
+          <declaration><![CDATA[public override void UpdateUserRole(UserRoleInfo userRole)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Updates a User/Role
+ </summary>
+ <param name="userRole">The User/Role to update</param>
+ <history>
+     [cnurse]	12/15/2005	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="643" sc="9" el="645" ec="4">DNNRoleProvider.cs</location>
+            <body hash="40aa281581448ab1f66f40892121d10e"><![CDATA[{
+            dataProvider.UpdateUserRole(userRole.UserRoleID, userRole.EffectiveDate, userRole.ExpiryDate, UserController.GetCurrentUserInfo().UserID);
+		}]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="dataProvider">
+          <declaration><![CDATA[private readonly DotNetNuke.Security.Membership.Data.DataProvider dataProvider;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Security.Profile">
+    <class name="DNNProfileProvider">
+      <declaration><![CDATA[public class DNNProfileProvider : ProfileProvider]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ Project:    DotNetNuke
+ Namespace:  DotNetNuke.Security.Profile
+ Class:      DNNProfileProvider
+ -----------------------------------------------------------------------------
+ <summary>
+ The DNNProfileProvider overrides the default ProfileProvider to provide
+ a purely DotNetNuke implementation
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DNNProfileProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="9" el="87" ec="10">DNNProfileProvider.cs</location>
+            <body hash="0af7b90d12bc16555f86fe08a4fd1dbe"><![CDATA[public DNNProfileProvider()
+        {
+            _dataProvider = DataProvider.Instance();
+            if (_dataProvider == null)
+            {
+				//get the provider configuration based on the type
+                string defaultprovider = Data.DataProvider.Instance().DefaultProviderName;
+                string dataProviderNamespace = "DotNetNuke.Security.Membership.Data";
+                if (defaultprovider == "SqlDataProvider")
+                {
+                    _dataProvider = new SqlDataProvider();
+                }
+                else
+                {
+                    string providerType = dataProviderNamespace + "." + defaultprovider;
+                    _dataProvider = (DataProvider) Reflection.CreateObject(providerType, providerType, true);
+                }
+                ComponentFactory.RegisterComponentInstance<DataProvider>(_dataProvider);
+            }
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetUserProfile">
+          <declaration><![CDATA[public override void GetUserProfile(ref UserInfo user)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetUserProfile retrieves the UserProfile information from the Data Store
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="user">The user whose Profile information we are retrieving.</param>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="147" sc="9" el="200" ec="10">DNNProfileProvider.cs</location>
+            <body hash="414bb01ca3235ac194829eab40432f79"><![CDATA[{
+            ProfilePropertyDefinition profProperty;
+
+            int portalId = user.IsSuperUser ? Globals.glbSuperUserAppName : user.PortalID;
+            var properties = ProfileController.GetPropertyDefinitionsByPortal(portalId, true);
+
+            //Load the Profile properties
+            if (user.UserID > Null.NullInteger)
+            {
+                IDataReader dr = _dataProvider.GetUserProfile(user.UserID);
+                try
+                {
+                    while (dr.Read())
+                    {
+						//Ensure the data reader returned is valid
+                        if (!string.Equals(dr.GetName(0), "ProfileID", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            break;
+                        }
+                        int definitionId = Convert.ToInt32(dr["PropertyDefinitionId"]);
+                        profProperty = properties.GetById(definitionId);
+                        if (profProperty != null)
+                        {
+                            profProperty.PropertyValue = Convert.ToString(dr["PropertyValue"]);
+                            profProperty.Visibility = (UserVisibilityMode) dr["Visibility"];
+                        }
+                    }
+                }
+                finally
+                {
+                    CBO.CloseDataReader(dr, true);
+                }
+            }
+                      
+            //Clear the profile
+            user.Profile.ProfileProperties.Clear();
+            
+			//Add the properties to the profile
+			foreach (ProfilePropertyDefinition property in properties)
+            {
+                profProperty = property;
+                if (string.IsNullOrEmpty(profProperty.PropertyValue) && !string.IsNullOrEmpty(profProperty.DefaultValue))
+                {
+                    profProperty.PropertyValue = profProperty.DefaultValue;
+                }
+                user.Profile.ProfileProperties.Add(profProperty);
+            }
+
+            //Clear IsDirty Flag
+            user.Profile.ClearIsDirty();
+
+            //Ensure old and new TimeZone properties are in synch
+            UpdateTimeZoneInfo(user, properties);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateTimeZoneInfo">
+          <declaration><![CDATA[private void UpdateTimeZoneInfo(UserInfo user, ProfilePropertyDefinitionCollection properties)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="94" sc="9" el="118" ec="10">DNNProfileProvider.cs</location>
+            <body hash="6670ead9c702ceb2aaed143f68811a8d"><![CDATA[{
+            ProfilePropertyDefinition newTimeZone = properties["PreferredTimeZone"];
+            ProfilePropertyDefinition oldTimeZone = properties["TimeZone"];
+            if (newTimeZone != null && oldTimeZone != null)
+            {
+                //Old timezone is present but new is not...we will set that up.
+                if (!string.IsNullOrEmpty(oldTimeZone.PropertyValue) && string.IsNullOrEmpty(newTimeZone.PropertyValue))
+                {
+                    int oldOffset;
+                    int.TryParse(oldTimeZone.PropertyValue, out oldOffset);
+                    TimeZoneInfo timeZoneInfo = Localization.ConvertLegacyTimeZoneOffsetToTimeZoneInfo(oldOffset);
+                    newTimeZone.PropertyValue = timeZoneInfo.Id;
+                    UpdateUserProfile(user);
+                }
+                //It's also possible that the new value is set but not the old value. We need to make them backwards compatible
+                else if (!string.IsNullOrEmpty(newTimeZone.PropertyValue) && string.IsNullOrEmpty(oldTimeZone.PropertyValue))
+                {
+                    TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(newTimeZone.PropertyValue);
+                    if (timeZoneInfo != null)
+                    {
+                        oldTimeZone.PropertyValue = timeZoneInfo.BaseUtcOffset.TotalMinutes.ToString();
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateUserProfile">
+          <declaration><![CDATA[public override void UpdateUserProfile(UserInfo user)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ UpdateUserProfile persists a user's Profile to the Data Store
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="user">The user to persist to the Data Store.</param>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="211" sc="9" el="245" ec="10">DNNProfileProvider.cs</location>
+            <body hash="a2fc1e20816db8ebf5d87a63e3b4be99"><![CDATA[{
+            ProfilePropertyDefinitionCollection properties = user.Profile.ProfileProperties;
+
+            //Ensure old and new TimeZone properties are in synch
+            ProfilePropertyDefinition newTimeZone = properties["PreferredTimeZone"];
+            ProfilePropertyDefinition oldTimeZone = properties["TimeZone"];
+            if (oldTimeZone != null && newTimeZone != null)
+            {   //preference given to new property, if new is changed then old should be updated as well.
+                if (newTimeZone.IsDirty && !string.IsNullOrEmpty(newTimeZone.PropertyValue))
+                {
+                    TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(newTimeZone.PropertyValue);
+                    if (timeZoneInfo != null)
+                        oldTimeZone.PropertyValue = timeZoneInfo.BaseUtcOffset.TotalMinutes.ToString();
+                }
+                //however if old is changed, we need to update new as well
+                else if (oldTimeZone.IsDirty)
+                {
+                    int oldOffset;
+                    int.TryParse(oldTimeZone.PropertyValue, out oldOffset);
+                    newTimeZone.PropertyValue = Localization.ConvertLegacyTimeZoneOffsetToTimeZoneInfo(oldOffset).Id;                    
+                }
+            }
+            
+            foreach (ProfilePropertyDefinition profProperty in properties)
+            {
+                if ((profProperty.PropertyValue != null) && (profProperty.IsDirty))
+                {
+                    var objSecurity = new PortalSecurity();
+                    string propertyValue = objSecurity.InputFilter(profProperty.PropertyValue, PortalSecurity.FilterFlag.NoScripting);
+                    _dataProvider.UpdateProfileProperty(Null.NullInteger, user.UserID, profProperty.PropertyDefinitionId, propertyValue, (int) profProperty.Visibility, DateTime.Now);
+                    var objEventLog = new EventLogController();
+                    objEventLog.AddLog(user, PortalController.GetCurrentPortalSettings(), UserController.GetCurrentUserInfo().UserID, "", "USERPROFILE_UPDATED");
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_dataProvider">
+          <declaration><![CDATA[private readonly DotNetNuke.Security.Membership.Data.DataProvider _dataProvider;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="CanEditProviderProperties">
+          <declaration><![CDATA[public override bool CanEditProviderProperties]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Gets whether the Provider Properties can be edited
+ </summary>
+ <returns>A Boolean</returns>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="133" sc="13" el="135" ec="14">DNNProfileProvider.cs</location>
+            <body hash="f5368e81f663038061ec388beff126aa"><![CDATA[{
+                return true;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

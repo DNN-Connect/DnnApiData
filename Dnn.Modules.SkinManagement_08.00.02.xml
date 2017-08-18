@@ -1,0 +1,2046 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.Modules.SkinManagement.dll" version="08.00.02" generated="2017-06-19 23:14:36Z" generationTime="3.0297602">
+  <namespace name="Dnn.Modules.SkinManagement">
+    <class name="Attributes">
+      <declaration><![CDATA[public class Attributes : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Attributes()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static Attributes()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="43" ec="99">Attributes.ascx.cs</location>
+            <body hash="873b6b8970983a872ae4afa464162e20"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(Attributes))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="LoadContainers">
+          <declaration><![CDATA[private void LoadContainers()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="197" sc="9" el="237" ec="10">Attributes.ascx.cs</location>
+            <body hash="8ab79b02d73d32c4a0b3a37067c9eaba"><![CDATA[{
+            string strRoot;
+            string[] arrFolders;
+            string strName;
+            string strSkin;
+
+            cboContainers.Items.Clear();
+            cboContainers.AddItem("<" + Localization.GetString("Not_Specified") + ">", "");
+
+            //load host containers
+            if (UserInfo.IsSuperUser)
+            {
+                strRoot = Request.MapPath(Globals.HostPath + SkinController.RootContainer);
+                if (Directory.Exists(strRoot))
+                {
+                    arrFolders = Directory.GetDirectories(strRoot);
+                    foreach (string strFolder in arrFolders)
+                    {
+                        strName = strFolder.Substring(strFolder.LastIndexOf("\\") + 1);
+                        strSkin = strFolder.Replace(Globals.ApplicationMapPath, "");
+                        if (strName != "_default")
+                        {
+                            cboContainers.AddItem(strName, strSkin.ToLower());
+                        }
+                    }
+                }
+            }
+
+            //load portal containers
+            strRoot = PortalSettings.HomeSystemDirectoryMapPath + SkinController.RootContainer;
+            if (Directory.Exists(strRoot))
+            {
+                arrFolders = Directory.GetDirectories(strRoot);
+                foreach (var strFolder in arrFolders)
+                {
+                    strName = strFolder.Substring(strFolder.LastIndexOf("\\") + 1);
+                    strSkin = strFolder.Replace(Globals.ApplicationMapPath, "");
+                    cboContainers.AddItem(strName, strSkin.ToLower());
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadFiles">
+          <declaration><![CDATA[private void LoadFiles(string strFolderPath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="240" sc="9" el="251" ec="10">Attributes.ascx.cs</location>
+            <body hash="9f2c96a2d04497c183db3de08caba493"><![CDATA[{
+            cboFiles.Items.Clear();
+            if (Directory.Exists(strFolderPath))
+            {
+                var arrFiles = Directory.GetFiles(strFolderPath, "*.ascx");
+                foreach (var strFile in arrFiles)
+                {
+                    cboFiles.AddItem(Path.GetFileNameWithoutExtension(strFile), strFile);
+                }
+            }
+            cboFiles.InsertItem(0, "<" + Localization.GetString("Not_Specified") + ">", "");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadSettings">
+          <declaration><![CDATA[private void LoadSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="262" sc="9" el="287" ec="10">Attributes.ascx.cs</location>
+            <body hash="e4b75e51ee260db08667877035eeef8d"><![CDATA[{
+            cboSettings.Items.Clear();
+
+            var strFile = Globals.ApplicationMapPath + "\\" + cboTokens.SelectedItem.Value.ToLower().Replace("/", "\\").Replace(".ascx", ".xml");
+            if (File.Exists(strFile))
+            {
+                try
+                {
+                    var xmlDoc = new XmlDocument();
+                    xmlDoc.Load(strFile);
+                    foreach (XmlNode xmlSetting in xmlDoc.SelectNodes("//Settings/Setting"))
+                    {
+                        cboSettings.AddItem(xmlSetting.SelectSingleNode("Name").InnerText, xmlSetting.SelectSingleNode("Name").InnerText);
+                    }
+                }
+                catch
+                {
+                    Skin.AddModuleMessage(this, "Error Loading Settings File For Object", ModuleMessage.ModuleMessageType.RedError);
+                }
+            }
+            else
+            {
+                Skin.AddModuleMessage(this, "Object Selected Does Not Have Settings Defined", ModuleMessage.ModuleMessageType.YellowWarning);
+            }
+            cboSettings.InsertItem(0, "<" + Localization.GetString("Not_Specified") + ">", "");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadSkins">
+          <declaration><![CDATA[private void LoadSkins()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="154" sc="9" el="194" ec="10">Attributes.ascx.cs</location>
+            <body hash="cecd4425be25b00a6c1b2a77fc8c1332"><![CDATA[{
+            string strRoot;
+            string[] arrFolders;
+            string strName;
+            string strSkin;
+
+            cboSkins.Items.Clear();
+            cboSkins.AddItem("<" + Localization.GetString("Not_Specified") + ">", "");
+
+            //load host skins
+            if (UserInfo.IsSuperUser)
+            {
+                strRoot = Request.MapPath(Globals.HostPath + SkinController.RootSkin);
+                if (Directory.Exists(strRoot))
+                {
+                    arrFolders = Directory.GetDirectories(strRoot);
+                    foreach (var strFolder in arrFolders)
+                    {
+                        strName = strFolder.Substring(strFolder.LastIndexOf("\\") + 1);
+                        strSkin = strFolder.Replace(Globals.ApplicationMapPath, "");
+                        if (strName != "_default")
+                        {
+                            cboSkins.AddItem(strName, strSkin.ToLower());
+                        }
+                    }
+                }
+            }
+
+            //load portal skins
+            strRoot = PortalSettings.HomeSystemDirectoryMapPath + SkinController.RootSkin;
+            if (Directory.Exists(strRoot))
+            {
+                arrFolders = Directory.GetDirectories(strRoot);
+                foreach (var strFolder in arrFolders)
+                {
+                    strName = strFolder.Substring(strFolder.LastIndexOf("\\") + 1);
+                    strSkin = strFolder.Replace(Globals.ApplicationMapPath, "");
+                    cboSkins.AddItem(strName, strSkin.ToLower());
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadTokens">
+          <declaration><![CDATA[private void LoadTokens()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="254" sc="9" el="259" ec="10">Attributes.ascx.cs</location>
+            <body hash="9d0de53f321e0f90becdecebd12a7e9f"><![CDATA[{
+            cboTokens.DataSource = SkinControlController.GetSkinControls().Values;
+            cboTokens.DataBind();
+
+            cboTokens.InsertItem(0, "<" + Localization.GetString("Not_Specified") + ">", "");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadValues">
+          <declaration><![CDATA[private void LoadValues()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="290" sc="9" el="350" ec="10">Attributes.ascx.cs</location>
+            <body hash="83b16f0aa9b3fc2afe3205a45cd5fb79"><![CDATA[{
+            cboValue.Items.Clear();
+            txtValue.Text = "";
+
+            var strFile = Globals.ApplicationMapPath + "\\" + cboTokens.SelectedItem.Value.ToLower().Replace("/", "\\").Replace(".ascx", ".xml");
+            if (File.Exists(strFile))
+            {
+                try
+                {
+                    var xmlDoc = new XmlDocument();
+                    xmlDoc.Load(strFile);
+                    foreach (XmlNode xmlSetting in xmlDoc.SelectNodes("//Settings/Setting"))
+                    {
+                        if (xmlSetting.SelectSingleNode("Name").InnerText == cboSettings.SelectedItem.Value)
+                        {
+                            string strValue = xmlSetting.SelectSingleNode("Value").InnerText;
+                            switch (strValue)
+                            {
+                                case "":
+                                    txtValue.Visible = true;
+                                    cboValue.Visible = false;
+                                    break;
+                                case "[TABID]":
+                                    foreach (var objTab in TabController.Instance.GetTabsByPortal(PortalId).Values)
+                                    {
+                                        cboValue.AddItem(objTab.TabName, objTab.TabID.ToString());
+                                    }
+
+                                    cboValue.InsertItem(0, "<" + Localization.GetString("Not_Specified") + ">", "");
+                                    cboValue.Visible = true;
+                                    txtValue.Visible = false;
+                                    break;
+                                default:
+                                    var arrValues = (strValue + ",").Split(',');
+                                    foreach (var value in arrValues)
+                                    {
+                                        if (!String.IsNullOrEmpty(value))
+                                        {
+                                            cboValue.AddItem(value, value);
+                                        }
+                                    }
+
+                                    cboValue.InsertItem(0, "<" + Localization.GetString("Not_Specified") + ">", "");
+                                    cboValue.Visible = true;
+                                    txtValue.Visible = false;
+                                    break;
+                            }
+                            lblHelp.Text = xmlSetting.SelectSingleNode("Help").InnerText;
+                        }
+                    }
+                }
+                catch
+                {
+                    Skin.AddModuleMessage(this, "Error Loading Settings File For Object", ModuleMessage.ModuleMessageType.RedError);
+                }
+            }
+            else
+            {
+                Skin.AddModuleMessage(this, "Object Selected Does Not Have Settings Defined", ModuleMessage.ModuleMessageType.YellowWarning);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnContainerSelectedIndexChanged">
+          <declaration><![CDATA[protected void OnContainerSelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="80" ec="10">Attributes.ascx.cs</location>
+            <body hash="8bc349410d73d680f1e8a056e1e98212"><![CDATA[{
+            ShowContainers();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnFilesSelectedIndexChanged">
+          <declaration><![CDATA[protected void OnFilesSelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="9" el="85" ec="10">Attributes.ascx.cs</location>
+            <body hash="b1ad199338bf2ae754e3526fdf5b7a0b"><![CDATA[{
+            LoadTokens();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="70" ec="10">Attributes.ascx.cs</location>
+            <body hash="f488f43cf2eb2d85d03b333b1970aa90"><![CDATA[{
+            base.OnLoad(e);
+
+            cboContainers.SelectedIndexChanged += OnContainerSelectedIndexChanged;
+            cboFiles.SelectedIndexChanged += OnFilesSelectedIndexChanged;
+            cboSettings.SelectedIndexChanged += OnSettingsSelectedIndexChanged;
+            cboSkins.SelectedIndexChanged += OnSkinSelectedIndexChanged;
+            cboTokens.SelectedIndexChanged += OnTokenSelectedIndexChanged;
+            cmdUpdate.Click += OnUpdateClick;
+
+            try
+            {
+                if (!Page.IsPostBack)
+                {
+                    LoadSkins();
+                    LoadContainers();
+                }
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSettingsSelectedIndexChanged">
+          <declaration><![CDATA[protected void OnSettingsSelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="93" sc="9" el="95" ec="10">Attributes.ascx.cs</location>
+            <body hash="ca9316035da5ed0de9df0558788eeb25"><![CDATA[{
+            LoadValues();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSkinSelectedIndexChanged">
+          <declaration><![CDATA[protected void OnSkinSelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="9" el="75" ec="10">Attributes.ascx.cs</location>
+            <body hash="5400eee738760e17cb80527085e10df4"><![CDATA[{
+            ShowSkins();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnTokenSelectedIndexChanged">
+          <declaration><![CDATA[protected void OnTokenSelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="88" sc="9" el="90" ec="10">Attributes.ascx.cs</location>
+            <body hash="2ee4cda03956f12db850c1de7e348e27"><![CDATA[{
+            LoadSettings();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnUpdateClick">
+          <declaration><![CDATA[protected void OnUpdateClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="98" sc="9" el="107" ec="10">Attributes.ascx.cs</location>
+            <body hash="55abc59fb9532f62a4de362e3a1e5009"><![CDATA[{
+            try
+            {
+                Update();
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ShowContainers">
+          <declaration><![CDATA[private void ShowContainers()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="143" sc="9" el="151" ec="10">Attributes.ascx.cs</location>
+            <body hash="2090392bef26348b52a6e1d9837268e7"><![CDATA[{
+            var strContainerPath = Globals.ApplicationMapPath.ToLower() + cboContainers.SelectedItem.Value;
+            cboSkins.ClearSelection();
+
+            if (cboContainers.SelectedIndex > 0)
+            {
+                LoadFiles(strContainerPath);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ShowSkins">
+          <declaration><![CDATA[private void ShowSkins()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="132" sc="9" el="140" ec="10">Attributes.ascx.cs</location>
+            <body hash="ff86d4895c26d08f11790b3f5d3c4853"><![CDATA[{
+            var strSkinPath = Globals.ApplicationMapPath.ToLower() + cboSkins.SelectedItem.Value;
+            cboContainers.ClearSelection();
+
+            if (cboSkins.SelectedIndex > 0)
+            {
+                LoadFiles(strSkinPath);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Update">
+          <declaration><![CDATA[public void Update()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="113" sc="9" el="118" ec="10">Attributes.ascx.cs</location>
+            <body hash="b723aa8225e5074d7163ab06ab25270e"><![CDATA[{
+            if (Page.IsValid)
+            {
+                UpdateSkin();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateManifest">
+          <declaration><![CDATA[private void UpdateManifest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="410" sc="9" el="474" ec="10">Attributes.ascx.cs</location>
+            <body hash="0fd94a15d9cfae3816b149cb99247cc7"><![CDATA[{
+            if (File.Exists(cboFiles.SelectedItem.Value.Replace(".ascx", ".htm")))
+            {
+                var strFile = cboFiles.SelectedItem.Value.Replace(".ascx", ".xml");
+                if (File.Exists(strFile) == false)
+                {
+                    strFile = strFile.Replace(Path.GetFileName(strFile), "skin.xml");
+                }
+                XmlDocument xmlDoc = null;
+                try
+                {
+                    xmlDoc = new XmlDocument();
+                    xmlDoc.Load(strFile);
+                }
+                catch
+                {
+                    xmlDoc.InnerXml = "<Objects></Objects>";
+                }
+                var xmlToken = xmlDoc.DocumentElement.SelectSingleNode("descendant::Object[Token='[" + cboTokens.SelectedItem.Text + "]']");
+                if (xmlToken == null)
+                {
+                    //add token
+                    string strToken = "<Token>[" + cboTokens.SelectedItem.Text + "]</Token><Settings></Settings>";
+                    xmlToken = xmlDoc.CreateElement("Object");
+                    xmlToken.InnerXml = strToken;
+                    xmlDoc.SelectSingleNode("Objects").AppendChild(xmlToken);
+                    xmlToken = xmlDoc.DocumentElement.SelectSingleNode("descendant::Object[Token='[" + cboTokens.SelectedItem.Text + "]']");
+                }
+                var strValue = cboValue.Visible ? cboValue.SelectedItem.Value : txtValue.Text;
+
+                var blnUpdate = false;
+                foreach (XmlNode xmlSetting in xmlToken.SelectNodes(".//Settings/Setting"))
+                {
+                    if (xmlSetting.SelectSingleNode("Name").InnerText == cboSettings.SelectedItem.Value)
+                    {
+                        xmlSetting.SelectSingleNode("Value").InnerText = strValue;
+                        blnUpdate = true;
+                    }
+                }
+                if (blnUpdate == false)
+                {
+                    var strSetting = "<Name>" + cboSettings.SelectedItem.Value + "</Name><Value>" + strValue + "</Value>";
+                    XmlNode xmlSetting = xmlDoc.CreateElement("Setting");
+                    xmlSetting.InnerXml = strSetting;
+                    xmlToken.SelectSingleNode("Settings").AppendChild(xmlSetting);
+                }
+                try
+                {
+                    if (File.Exists(strFile))
+                    {
+                        File.SetAttributes(strFile, FileAttributes.Normal);
+                    }
+                    var objStream = File.CreateText(strFile);
+                    var strXML = xmlDoc.InnerXml;
+                    strXML = strXML.Replace("><", ">" + Environment.NewLine + "<");
+                    objStream.WriteLine(strXML);
+                    objStream.Close();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex);
+                }
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSkin">
+          <declaration><![CDATA[private void UpdateSkin()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="353" sc="9" el="407" ec="10">Attributes.ascx.cs</location>
+            <body hash="01de7ee713e900ba0bd973c562532e46"><![CDATA[{
+            if (cboSettings.SelectedIndex > 0)
+            {
+                if ((cboValue.SelectedItem != null) || !String.IsNullOrEmpty(txtValue.Text))
+                {
+                    var objStreamReader = File.OpenText(cboFiles.SelectedItem.Value);
+                    var strSkin = objStreamReader.ReadToEnd();
+                    objStreamReader.Close();
+                    var strTag = "<dnn:" + cboTokens.SelectedItem.Text + " runat=\"server\" id=\"dnn" + cboTokens.SelectedItem.Text + "\"";
+                    var intOpenTag = strSkin.IndexOf(strTag);
+                    if (intOpenTag != -1)
+                    {
+                        var intCloseTag = strSkin.IndexOf(" />", intOpenTag);
+                        var strAttribute = cboSettings.SelectedItem.Value;
+                        var intStartAttribute = strSkin.IndexOf(strAttribute, intOpenTag);
+                        string strValue = cboValue.Visible ? cboValue.SelectedItem.Value : txtValue.Text;
+                        if (intStartAttribute != -1 && intStartAttribute < intCloseTag)
+                        {
+                            //remove attribute
+                            var intEndAttribute = strSkin.IndexOf("\" ", intStartAttribute);
+                            strSkin = strSkin.Substring(0, intStartAttribute) + strSkin.Substring(intEndAttribute + 2);
+                        }
+                        //add attribute
+                        strSkin = strSkin.Insert(intOpenTag + strTag.Length, " " + strAttribute + "=\"" + strValue + "\"");
+                        try
+                        {
+                            File.SetAttributes(cboFiles.SelectedItem.Value, FileAttributes.Normal);
+                            var objStream = File.CreateText(cboFiles.SelectedItem.Value);
+                            objStream.WriteLine(strSkin);
+                            objStream.Close();
+
+                            UpdateManifest();
+
+                            Skin.AddModuleMessage(this, "Skin Successfully Updated", ModuleMessage.ModuleMessageType.GreenSuccess);
+                        }
+                        catch
+                        {
+                            Skin.AddModuleMessage(this, "Error Updating Skin File", ModuleMessage.ModuleMessageType.RedError);
+                        }
+                    }
+                    else
+                    {
+                        Skin.AddModuleMessage(this, "Selected File Does Not Contain Token", ModuleMessage.ModuleMessageType.YellowWarning);
+                    }
+                }
+                else
+                {
+                    Skin.AddModuleMessage(this, "You Must Specify A Value For The Setting", ModuleMessage.ModuleMessageType.YellowWarning);
+                }
+            }
+            else
+            {
+                Skin.AddModuleMessage(this, "You Must Select A Token Setting", ModuleMessage.ModuleMessageType.YellowWarning);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cboContainers">
+          <declaration><![CDATA[protected DnnComboBox cboContainers;]]></declaration>
+          <documentation>
+            <summary>
+ cboContainers control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboFiles">
+          <declaration><![CDATA[protected DnnComboBox cboFiles;]]></declaration>
+          <documentation>
+            <summary>
+ cboFiles control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboSettings">
+          <declaration><![CDATA[protected DnnComboBox cboSettings;]]></declaration>
+          <documentation>
+            <summary>
+ cboSettings control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboSkins">
+          <declaration><![CDATA[protected DnnComboBox cboSkins;]]></declaration>
+          <documentation>
+            <summary>
+ cboSkins control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboTokens">
+          <declaration><![CDATA[protected DnnComboBox cboTokens;]]></declaration>
+          <documentation>
+            <summary>
+ cboTokens control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboValue">
+          <declaration><![CDATA[protected DnnComboBox cboValue;]]></declaration>
+          <documentation>
+            <summary>
+ cboValue control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdUpdate">
+          <declaration><![CDATA[protected LinkButton cmdUpdate;]]></declaration>
+          <documentation>
+            <summary>
+ cmdUpdate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblHelp">
+          <declaration><![CDATA[protected Label lblHelp;]]></declaration>
+          <documentation>
+            <summary>
+ lblHelp control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(Attributes));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="plContainer">
+          <declaration><![CDATA[protected UserControl plContainer;]]></declaration>
+          <documentation>
+            <summary>
+ plContainer control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plFile">
+          <declaration><![CDATA[protected UserControl plFile;]]></declaration>
+          <documentation>
+            <summary>
+ plFile control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plSetting">
+          <declaration><![CDATA[protected UserControl plSetting;]]></declaration>
+          <documentation>
+            <summary>
+ plSetting control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plSkin">
+          <declaration><![CDATA[protected UserControl plSkin;]]></declaration>
+          <documentation>
+            <summary>
+ plSkin control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plToken">
+          <declaration><![CDATA[protected UserControl plToken;]]></declaration>
+          <documentation>
+            <summary>
+ plToken control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plValue">
+          <declaration><![CDATA[protected UserControl plValue;]]></declaration>
+          <documentation>
+            <summary>
+ plValue control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtValue">
+          <declaration><![CDATA[protected TextBox txtValue;]]></declaration>
+          <documentation>
+            <summary>
+ txtValue control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="HideUpdateButton">
+          <declaration><![CDATA[public bool HideUpdateButton]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="123" sc="13" el="125" ec="14">Attributes.ascx.cs</location>
+            <body hash="c8af6192e01a211ea7cf99fd5c1bae0e"><![CDATA[{
+                this.cmdUpdate.Visible = !value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="EditSkins">
+      <declaration><![CDATA[public class EditSkins : PortalModuleBase]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+ The EditSkins PortalModuleBase is used to manage the Available Skins
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly string _notSpecified = "<" + Localization.GetString("Not_Specified") + ">";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="3" el="58" ec="95">EditSkins.ascx.cs</location>
+            <body hash="e2e5752f0213469cb68249ccc6130ace"><![CDATA[private readonly string _notSpecified = "<" + Localization.GetString("Not_Specified") + ">"]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static EditSkins()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="3" el="54" ec="93">EditSkins.ascx.cs</location>
+            <body hash="2988c4891b49e85aa0e532b590bea826"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (EditSkins))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddSkinstoCombo">
+          <declaration><![CDATA[private static void AddSkinstoCombo(DnnComboBox combo, string strRoot)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="99" sc="3" el="111" ec="4">EditSkins.ascx.cs</location>
+            <body hash="f67109aea8a7255a1e317ca857c78561"><![CDATA[{
+			if (Directory.Exists(strRoot))
+			{
+				foreach (var strFolder in Directory.GetDirectories(strRoot))
+				{
+					var strName = strFolder.Substring(strFolder.LastIndexOf("\\") + 1);
+					if (strName != "_default")
+					{
+						combo.AddItem(strName, strFolder.Replace(Globals.ApplicationMapPath, "").ToLower());
+					}
+				}
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="AddThumbnail">
+          <declaration><![CDATA[private bool AddThumbnail(string file, string extension, Control cell)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="469" sc="6" el="485" ec="7">EditSkins.ascx.cs</location>
+            <body hash="608056148e6e991fecfbf969725334c5"><![CDATA[{
+	        if (!File.Exists(Path.ChangeExtension(file, extension)))
+	        {
+	            return false;
+	        }
+
+	        var imgLink = new HyperLink();
+	        var strURL = file.Substring(file.LastIndexOf("\\portals\\", StringComparison.OrdinalIgnoreCase));
+	        imgLink.NavigateUrl = this.ResolveUrl("~" + strURL.Replace(".ascx", extension));
+	        imgLink.Target = "_blank";
+
+	        var img = new System.Web.UI.WebControls.Image { ImageUrl = CreateThumbnail(file.Replace(".ascx", extension)), BorderWidth = new Unit(1) };
+
+	        imgLink.Controls.Add(img);
+	        cell.Controls.Add(imgLink);
+	        return true;
+	    }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateThumbnail">
+          <declaration><![CDATA[private static string CreateThumbnail(string strImage)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="114" sc="3" el="185" ec="4">EditSkins.ascx.cs</location>
+            <body hash="417b7b852fa6357b5c96278764978843"><![CDATA[{
+			var blnCreate = true;
+
+			var strThumbnail = strImage.Replace(Path.GetFileName(strImage), "thumbnail_" + Path.GetFileName(strImage));
+
+			//check if image has changed
+			if (File.Exists(strThumbnail))
+			{
+				if (File.GetLastWriteTime(strThumbnail) == File.GetLastWriteTime(strImage))
+				{
+					blnCreate = false;
+				}
+			}
+			if (blnCreate)
+			{
+				const int intSize = 150; //size of the thumbnail 
+				Image objImage;
+				try
+				{
+					objImage = Image.FromFile(strImage);
+					
+					//scale the image to prevent distortion
+					int intHeight;
+					int intWidth;
+					double dblScale;
+					if (objImage.Height > objImage.Width)
+					{
+						//The height was larger, so scale the width 
+						dblScale = (double) intSize/objImage.Height;
+						intHeight = intSize;
+						intWidth = Convert.ToInt32(objImage.Width*dblScale);
+					}
+					else
+					{
+						//The width was larger, so scale the height 
+						dblScale = (double) intSize/objImage.Width;
+						intWidth = intSize;
+						intHeight = Convert.ToInt32(objImage.Height*dblScale);
+					}
+					
+					//create the thumbnail image
+					var objThumbnail = objImage.GetThumbnailImage(intWidth, intHeight, null, IntPtr.Zero);
+
+					//delete the old file ( if it exists )
+					if (File.Exists(strThumbnail))
+					{
+						File.Delete(strThumbnail);
+					}
+					
+					//save the thumbnail image 
+					objThumbnail.Save(strThumbnail, objImage.RawFormat);
+
+					//set the file attributes
+					File.SetAttributes(strThumbnail, FileAttributes.Normal);
+					File.SetLastWriteTime(strThumbnail, File.GetLastWriteTime(strImage));
+
+					//tidy up
+					objImage.Dispose();
+					objThumbnail.Dispose();
+				}
+				catch (Exception ex) //problem creating thumbnail
+				{
+					Logger.Error(ex);
+				}
+			}
+
+			strThumbnail = Globals.ApplicationPath + "/" + strThumbnail.Substring(strThumbnail.IndexOf("portals\\"));
+			strThumbnail = strThumbnail.Replace("\\", "/");
+
+			//return thumbnail filename
+			return strThumbnail;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="getReducedFileName">
+          <declaration><![CDATA[private string getReducedFileName(string fileName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="488" sc="9" el="496" ec="10">EditSkins.ascx.cs</location>
+            <body hash="fd3684b382f7ee2d7e35342554bc29fc"><![CDATA[{
+            const int kMaxLength = 13;
+            string result = fileName;
+            if(fileName.Length > kMaxLength)
+            {
+                result = fileName.Substring(0, kMaxLength - 2) + "...";
+            }
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSkinPath">
+          <declaration><![CDATA[private string GetSkinPath(string type, string root, string name)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="188" sc="3" el="200" ec="4">EditSkins.ascx.cs</location>
+            <body hash="57d28a90f0d569cfe5e6b129552c7280"><![CDATA[{
+			var strPath = Null.NullString;
+			switch (type)
+			{
+				case "G":  //global
+					strPath = Globals.HostPath + root + "/" + name;
+					break;
+				case "L": //local
+					strPath = PortalSettings.HomeDirectory + root + "/" + name;
+					break;
+			}
+			return strPath;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="IsFallbackContainer">
+          <declaration><![CDATA[private static bool IsFallbackContainer(string skinPath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="203" sc="3" el="210" ec="4">EditSkins.ascx.cs</location>
+            <body hash="cf62470756a2d75e5027e82b216d2235"><![CDATA[{
+			var strDefaultContainerPath = (Globals.HostMapPath + SkinController.RootContainer + SkinDefaults.GetSkinDefaults(SkinDefaultType.SkinInfo).Folder).Replace("/", "\\");
+			if (strDefaultContainerPath.EndsWith("\\"))
+			{
+				strDefaultContainerPath = strDefaultContainerPath.Substring(0, strDefaultContainerPath.Length - 1);
+			}
+			return skinPath.IndexOf(strDefaultContainerPath, StringComparison.CurrentCultureIgnoreCase) != -1;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="IsFallbackSkin">
+          <declaration><![CDATA[private static bool IsFallbackSkin(string skinPath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="213" sc="3" el="220" ec="4">EditSkins.ascx.cs</location>
+            <body hash="dd99115f804b8bef04e517cdc604d5f1"><![CDATA[{
+			var strDefaultSkinPath = (Globals.HostMapPath + SkinController.RootSkin + SkinDefaults.GetSkinDefaults(SkinDefaultType.SkinInfo).Folder).Replace("/", "\\");
+			if (strDefaultSkinPath.EndsWith("\\"))
+			{
+				strDefaultSkinPath = strDefaultSkinPath.Substring(0, strDefaultSkinPath.Length - 1);
+			}
+			return skinPath.ToLowerInvariant() == strDefaultSkinPath.ToLowerInvariant();
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadCombos">
+          <declaration><![CDATA[private void LoadCombos()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="223" sc="3" el="255" ec="4">EditSkins.ascx.cs</location>
+            <body hash="9d9b07374fdcf5ee272ab13b1732d648"><![CDATA[{
+			cboSkins.Items.Clear();
+			CurrentSkin = _notSpecified;
+            cboSkins.AddItem(CurrentSkin, CurrentSkin);
+
+			//load host skins
+			if (chkHost.Checked)
+			{
+				AddSkinstoCombo(cboSkins, Request.MapPath(Globals.HostPath + SkinController.RootSkin));
+			}
+			
+			//load portal skins
+			if (chkSite.Checked)
+			{
+				AddSkinstoCombo(cboSkins, PortalSettings.HomeSystemDirectoryMapPath + SkinController.RootSkin);
+			}
+
+			cboContainers.Items.Clear();
+			CurrentContainer = _notSpecified;
+            cboContainers.AddItem(CurrentContainer,CurrentContainer);
+
+			//load host containers
+			if (chkHost.Checked)
+			{
+				AddSkinstoCombo(cboContainers, Request.MapPath(Globals.HostPath + SkinController.RootContainer));
+			}
+			
+			//load portal containers
+			if (chkSite.Checked)
+			{
+				AddSkinstoCombo(cboContainers, PortalSettings.HomeSystemDirectoryMapPath + SkinController.RootContainer);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnCommand">
+          <declaration><![CDATA[protected void OnCommand(object sender, CommandEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="699" sc="3" el="747" ec="4">EditSkins.ascx.cs</location>
+            <body hash="b4874f9ccc4a31384911832b0274ba89"><![CDATA[{
+			try
+			{
+				var strSrc = e.CommandArgument.ToString();
+				var redirectUrl = Globals.NavigateURL(TabId);
+				switch (e.CommandName)
+				{
+					case "ApplyContainer":
+						if (chkPortal.Checked)
+						{
+							SkinController.SetSkin(SkinController.RootContainer, PortalId, SkinType.Portal, strSrc);
+						}
+						if (chkAdmin.Checked)
+						{
+							SkinController.SetSkin(SkinController.RootContainer, PortalId, SkinType.Admin, strSrc);
+						}
+						break;
+					case "ApplySkin":
+						if (chkPortal.Checked)
+						{
+							SkinController.SetSkin(SkinController.RootSkin, PortalId, SkinType.Portal, strSrc);
+						}
+						if (chkAdmin.Checked)
+						{
+							SkinController.SetSkin(SkinController.RootSkin, PortalId, SkinType.Admin, strSrc);
+						}
+						DataCache.ClearPortalCache(PortalId, true);
+						break;
+					case "Delete":
+						File.Delete(Request.MapPath(SkinController.FormatSkinSrc(strSrc, PortalSettings)));
+						DataCache.ClearPortalCache(PortalId, true);
+						var strType = "G";
+						if (strSrc.StartsWith("[L]"))
+						{
+							strType = "L";
+						}
+						var strRoot = strSrc.Substring(3, strSrc.IndexOf("/") - 3);
+
+						var strFolder = strSrc.Substring(strSrc.IndexOf("/") + 1, strSrc.LastIndexOf("/") - strSrc.IndexOf("/") - 2);
+						redirectUrl = Globals.NavigateURL(TabId, "", "Type=" + strType, "Root=" + strRoot, "Name=" + strFolder);
+						break;
+				}
+				Response.Redirect(redirectUrl, true);
+			}
+			catch (Exception exc) //Module failed to load
+			{
+				Exceptions.ProcessModuleLoadException(this, exc);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDeleteClick">
+          <declaration><![CDATA[protected void OnDeleteClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="750" sc="3" el="804" ec="4">EditSkins.ascx.cs</location>
+            <body hash="e2a02e5d56b2314d74c3b34511b4dc15"><![CDATA[{
+			var failure = false;
+			var strSkinPath = Globals.ApplicationMapPath.ToLower() + cboSkins.SelectedItem.Value;
+			var strContainerPath = Globals.ApplicationMapPath.ToLower() + cboContainers.SelectedItem.Value;
+
+			string strMessage;
+
+			if (UserInfo.IsSuperUser == false && cboSkins.SelectedItem.Value.IndexOf("\\portals\\_default\\", 0) != -1)
+			{
+				strMessage = Localization.GetString("SkinDeleteFailure", LocalResourceFile);
+				Skin.AddModuleMessage(this, strMessage, ModuleMessage.ModuleMessageType.RedError);
+				failure = true;
+			}
+			else
+			{
+				if (cboSkins.SelectedIndex > 0)
+				{
+					SkinPackageInfo skinPackage = SkinController.GetSkinPackage(PortalId, cboSkins.SelectedItem.Text, "Skin");
+					if (skinPackage != null)
+					{
+						strMessage = Localization.GetString("UsePackageUnInstall", LocalResourceFile);
+						Skin.AddModuleMessage(this, strMessage, ModuleMessage.ModuleMessageType.RedError);
+						return;
+					}
+					if (Directory.Exists(strSkinPath))
+					{
+						Globals.DeleteFolderRecursive(strSkinPath);
+					}
+					if (Directory.Exists(strSkinPath.Replace("\\" + SkinController.RootSkin.ToLower() + "\\", "\\" + SkinController.RootContainer + "\\")))
+					{
+						Globals.DeleteFolderRecursive(strSkinPath.Replace("\\" + SkinController.RootSkin.ToLower() + "\\", "\\" + SkinController.RootContainer + "\\"));
+					}
+				}
+				else if (cboContainers.SelectedIndex > 0)
+				{
+					var skinPackage = SkinController.GetSkinPackage(PortalId, cboContainers.SelectedItem.Text, "Container");
+					if (skinPackage != null)
+					{
+						strMessage = Localization.GetString("UsePackageUnInstall", LocalResourceFile);
+						Skin.AddModuleMessage(this, strMessage, ModuleMessage.ModuleMessageType.RedError);
+						return;
+					}
+					if (Directory.Exists(strContainerPath))
+					{
+						Globals.DeleteFolderRecursive(strContainerPath);
+					}
+				}
+			}
+			if (!failure)
+			{
+				LoadCombos();
+				ShowSkins();
+				ShowContainers();
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnHostCheckChanged">
+          <declaration><![CDATA[protected void OnHostCheckChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="683" sc="3" el="688" ec="4">EditSkins.ascx.cs</location>
+            <body hash="1c8cb07f44bac71d5c1ea67cee2a0baf"><![CDATA[{
+			LoadCombos();
+
+			ShowSkins();
+			ShowContainers();
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="611" sc="3" el="680" ec="4">EditSkins.ascx.cs</location>
+            <body hash="35f5b5394708e96f37a7513b3ede5920"><![CDATA[{
+			base.OnLoad(e);
+
+			chkHost.CheckedChanged += OnHostCheckChanged;
+			chkSite.CheckedChanged += OnSiteCheckChanged;
+			cmdDelete.Click += OnDeleteClick;
+			cmdParse.Click += OnParseClick;
+			cmdRestore.Click += OnRestoreClick;
+		    lblLegacy.Visible = false;
+
+			string strSkin;
+			var strContainer = Null.NullString;
+			try
+			{
+				cmdDelete.Visible = true;
+
+				if (Page.IsPostBack == false)
+				{
+					LoadCombos();
+				}
+				typeRow.Visible = !PortalSettings.ActiveTab.IsSuperTab;
+
+				if (!Page.IsPostBack)
+				{
+					string strURL;
+
+					if (Request.QueryString["Name"] != null)
+					{
+						strURL = Request.MapPath(GetSkinPath(Convert.ToString(Request.QueryString["Type"]), Convert.ToString(Request.QueryString["Root"]), Convert.ToString(Request.QueryString["Name"])));
+						strSkin = strURL.Replace(Globals.ApplicationMapPath, "").ToLowerInvariant();
+					}
+					else
+					{
+						//Get the current portal skin
+						var skinSrc = !string.IsNullOrEmpty(PortalSettings.DefaultPortalSkin) ? PortalSettings.DefaultPortalSkin : SkinController.GetDefaultPortalSkin();
+						strURL = Request.MapPath(SkinController.FormatSkinPath(SkinController.FormatSkinSrc(skinSrc, PortalSettings)));
+						strURL = strURL.Substring(0, strURL.LastIndexOf("\\"));
+						strSkin = strURL.Replace(Globals.ApplicationMapPath, "").ToLowerInvariant();
+					}
+					if (!string.IsNullOrEmpty(strSkin))
+					{
+						strContainer = strSkin.Replace("\\" + SkinController.RootSkin.ToLowerInvariant() + "\\", "\\" + SkinController.RootContainer.ToLowerInvariant() + "\\");
+					}
+					SetSkin(strSkin);
+					SetContainer(strContainer);
+				}
+				else
+				{
+					strSkin = cboSkins.SelectedValue;
+					strContainer = cboContainers.SelectedValue;
+					if (strSkin != CurrentSkin)
+					{
+						strContainer = strSkin.Replace("\\" + SkinController.RootSkin.ToLowerInvariant() + "\\", "\\" + SkinController.RootContainer.ToLowerInvariant() + "\\");
+						SetSkin(strSkin);
+						SetContainer(strContainer);
+					}
+					else if (strContainer != CurrentContainer)
+					{
+						SetSkin(_notSpecified);
+						SetContainer(strContainer);
+					}
+				}
+				ShowSkins();
+				ShowContainers();
+			}
+			catch (Exception exc) //Module failed to load
+			{
+				Exceptions.ProcessModuleLoadException(this, exc);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnParseClick">
+          <declaration><![CDATA[protected void OnParseClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="807" sc="3" el="847" ec="4">EditSkins.ascx.cs</location>
+            <body hash="18be4c124736f249ebbb638bc90be0ce"><![CDATA[{
+			string strFolder;
+			string strType;
+			string strRoot;
+			string strName;
+			var strSkinPath = Globals.ApplicationMapPath.ToLower() + cboSkins.SelectedItem.Value;
+			var strContainerPath = Globals.ApplicationMapPath.ToLower() + cboContainers.SelectedItem.Value;
+			var strParse = "";
+			if (cboSkins.SelectedIndex > 0)
+			{
+				strFolder = strSkinPath;
+				strType = strFolder.IndexOf(Globals.HostMapPath.ToLower()) != -1 ? "G" : "L";
+				strRoot = SkinController.RootSkin;
+				strName = cboSkins.SelectedItem.Text;
+				strParse += ParseSkinPackage(strType, strRoot, strName, strFolder, optParse.SelectedItem.Value);
+
+				strFolder = strSkinPath.Replace("\\" + SkinController.RootSkin.ToLower() + "\\", "\\" + SkinController.RootContainer.ToLower() + "\\");
+				strRoot = SkinController.RootContainer;
+				strParse += ParseSkinPackage(strType, strRoot, strName, strFolder, optParse.SelectedItem.Value);
+				DataCache.ClearPortalCache(PortalId, true);
+			}
+			if (cboContainers.SelectedIndex > 0)
+			{
+				strFolder = strContainerPath;
+				strType = strFolder.IndexOf(Globals.HostMapPath.ToLower()) != -1 ? "G" : "L";
+				strRoot = SkinController.RootContainer;
+				strName = cboContainers.SelectedItem.Text;
+				strParse += ParseSkinPackage(strType, strRoot, strName, strFolder, optParse.SelectedItem.Value);
+				DataCache.ClearPortalCache(PortalId, true);
+			}
+			lblOutput.Text = strParse;
+
+			if (cboSkins.SelectedIndex > 0)
+			{
+				ShowSkins();
+			}
+			else if (cboContainers.SelectedIndex > 0)
+			{
+				ShowContainers();
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnRestoreClick">
+          <declaration><![CDATA[protected void OnRestoreClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="850" sc="3" el="863" ec="4">EditSkins.ascx.cs</location>
+            <body hash="3a65697a96727fd8a1cc414147d38f9e"><![CDATA[{
+			if (chkPortal.Checked)
+			{
+				SkinController.SetSkin(SkinController.RootSkin, PortalId, SkinType.Portal, "");
+				SkinController.SetSkin(SkinController.RootContainer, PortalId, SkinType.Portal, "");
+			}
+			if (chkAdmin.Checked)
+			{
+				SkinController.SetSkin(SkinController.RootSkin, PortalId, SkinType.Admin, "");
+				SkinController.SetSkin(SkinController.RootContainer, PortalId, SkinType.Admin, "");
+			}
+			DataCache.ClearPortalCache(PortalId, true);
+			Response.Redirect(Request.RawUrl);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSiteCheckChanged">
+          <declaration><![CDATA[protected void OnSiteCheckChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="691" sc="3" el="696" ec="4">EditSkins.ascx.cs</location>
+            <body hash="1c8cb07f44bac71d5c1ea67cee2a0baf"><![CDATA[{
+			LoadCombos();
+
+			ShowSkins();
+			ShowContainers();
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="ParseSkinPackage">
+          <declaration><![CDATA[private string ParseSkinPackage(string strType, string strRoot, string strName, string strFolder, string strParse)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="258" sc="3" el="304" ec="4">EditSkins.ascx.cs</location>
+            <body hash="705cae8f5c800e8258fc2c791ece86a5"><![CDATA[{
+			var strRootPath = Null.NullString;
+			switch (strType)
+			{
+				case "G": //global
+					strRootPath = Request.MapPath(Globals.HostPath);
+					break;
+				case "L": //local
+					strRootPath = Request.MapPath(PortalSettings.HomeDirectory);
+					break;
+			}
+			var objSkinFiles = new SkinFileProcessor(strRootPath, strRoot, strName);
+			var arrSkinFiles = new ArrayList();
+
+			if (Directory.Exists(strFolder))
+			{
+				var arrFiles = Directory.GetFiles(strFolder);
+				foreach (var strFile in arrFiles)
+				{
+					switch (Path.GetExtension(strFile))
+					{
+						case ".htm":
+						case ".html":
+						case ".css":
+							if (strFile.ToLower().IndexOf(Globals.glbAboutPage.ToLower()) < 0)
+							{
+								arrSkinFiles.Add(strFile);
+							}
+							break;
+						case ".ascx":
+							if (File.Exists(strFile.Replace(".ascx", ".htm")) == false && File.Exists(strFile.Replace(".ascx", ".html")) == false)
+							{
+								arrSkinFiles.Add(strFile);
+							}
+							break;
+					}
+				}
+			}
+			switch (strParse)
+			{
+				case "L": //localized
+					return objSkinFiles.ProcessList(arrSkinFiles, SkinParser.Localized);
+				case "P": //portable
+					return objSkinFiles.ProcessList(arrSkinFiles, SkinParser.Portable);
+			}
+			return Null.NullString;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="ProcessSkins">
+          <declaration><![CDATA[private void ProcessSkins(string strFolderPath, string type)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="307" sc="3" el="466" ec="4">EditSkins.ascx.cs</location>
+            <body hash="46dbc6a99e08d9e4e38de4b1636872cc"><![CDATA[{
+		    const int kColSpan = 5;
+
+			HtmlTable tbl;
+			HtmlTableRow row = null;
+			HtmlTableCell cell;
+		    Panel pnlMsg;
+
+			string[] arrFiles;
+			string strURL;
+			var intIndex = 0;
+
+			if (Directory.Exists(strFolderPath))
+			{
+				bool fallbackSkin;
+				string strRootSkin;
+				if (type == "Skin")
+				{
+					tbl = tblSkins;
+					strRootSkin = SkinController.RootSkin.ToLower();
+					fallbackSkin = IsFallbackSkin(strFolderPath);
+				    pnlMsg = pnlMsgSkins;
+				}
+				else
+				{
+					tbl = tblContainers;
+					strRootSkin = SkinController.RootContainer.ToLower();
+					fallbackSkin = IsFallbackContainer(strFolderPath);
+				    pnlMsg = pnlMsgContainers;
+				}
+                pnlMsg.Controls.Clear();
+
+				var strSkinType = strFolderPath.ToLower().IndexOf(Globals.HostMapPath.ToLower()) != -1 ? "G" : "L";
+
+				var canDeleteSkin = SkinController.CanDeleteSkin(strFolderPath, PortalSettings.HomeDirectoryMapPath);
+                arrFiles = Directory.GetFiles(strFolderPath, "*.ascx");
+                int colSpan = arrFiles.Length ==0 ? 1: arrFiles.Length;
+			    tbl.Width = "auto";
+				if (fallbackSkin || !canDeleteSkin)
+                {                
+					var pnl = new Panel {CssClass = "dnnFormMessage dnnFormWarning"};
+				    var lbl = new Label {Text = Localization.GetString(type == "Skin" ? "CannotDeleteSkin.ErrorMessage" : "CannotDeleteContainer.ErrorMessage", LocalResourceFile)};
+				    pnl.Controls.Add(lbl);
+                    pnlMsg.Controls.Add(pnl);
+                 
+					cmdDelete.Visible = false;
+				}
+				if (arrFiles.Length == 0)
+				{
+                 	var pnl = new Panel {CssClass = "dnnFormMessage dnnFormWarning"};
+				    var lbl = new Label {Text = Localization.GetString(type == "Skin" ? "NoSkin.ErrorMessage" : "NoContainer.ErrorMessage", LocalResourceFile)};
+				    pnl.Controls.Add(lbl);
+                    pnlMsg.Controls.Add(pnl);
+                }
+                
+				var strFolder = strFolderPath.Substring(strFolderPath.LastIndexOf("\\") + 1);
+				foreach (var strFile in arrFiles)
+				{
+					var file = strFile.ToLower();
+                    intIndex += 1;
+                    if (intIndex == kColSpan+ 1)
+                    {
+                        intIndex = 1;
+                    }
+                    if (intIndex == 1)
+                    {
+                        //Create new row
+                        row = new HtmlTableRow();
+                        tbl.Rows.Add(row);
+                    }
+					cell = new HtmlTableCell {Align = "center", VAlign = "bottom"};
+					cell.Attributes["class"] = "NormalBold";
+
+					
+					//thumbnail
+					if (!this.AddThumbnail(file, ".jpg", cell) && !this.AddThumbnail(file, ".png", cell))
+					{
+						var img = new System.Web.UI.WebControls.Image {ImageUrl = ResolveUrl("~/images/thumbnail_black.png"), BorderWidth = new Unit(1)};
+						cell.Controls.Add(img);
+					}
+					cell.Controls.Add(new LiteralControl("<br />"));
+
+					strURL = file.Substring(strFile.IndexOf("\\" + strRootSkin + "\\"));
+					strURL.Replace(".ascx", "");
+
+                    //name
+                    var label = new Label { Text = getReducedFileName(Path.GetFileNameWithoutExtension(file)), ToolTip = Path.GetFileNameWithoutExtension(file) ,CssClass = "skinTitle"};
+                    cell.Controls.Add(label);
+                    cell.Controls.Add(new LiteralControl("<br />"));
+
+                    //Actions
+					var previewLink = new HyperLink();
+					
+					if (type == "Skin")
+					{
+						previewLink.NavigateUrl = Globals.NavigateURL(PortalSettings.HomeTabId,
+																	  Null.NullString,
+																	  "SkinSrc=" + "[" + strSkinType + "]" + Globals.QueryStringEncode(strURL.Replace(".ascx", "").Replace("\\", "/")));
+					}
+					else
+					{
+						previewLink.NavigateUrl = Globals.NavigateURL(PortalSettings.HomeTabId,
+																	  Null.NullString,
+																	  "ContainerSrc=" + "[" + strSkinType + "]" + Globals.QueryStringEncode(strURL.Replace(".ascx", "").Replace("\\", "/")));
+					}
+
+				    previewLink.CssClass = "dnnSecondaryAction";
+					previewLink.Target = "_blank";
+					previewLink.Text = Localization.GetString("cmdPreview", LocalResourceFile);
+					cell.Controls.Add(previewLink);
+
+					cell.Controls.Add(new LiteralControl("&nbsp;"));
+
+					var applyButton = new LinkButton
+										  {
+											  Text = Localization.GetString("cmdApply", LocalResourceFile),
+											  CommandName = "Apply" + type,
+											  CommandArgument = "[" + strSkinType + "]" + strRootSkin + "/" + strFolder + "/" + Path.GetFileName(strFile),
+											  CssClass = "dnnSecondaryAction applyAction"
+										  };
+					applyButton.Command += OnCommand;
+					cell.Controls.Add(applyButton);
+
+					if ((UserInfo.IsSuperUser || strSkinType == "L") && (!fallbackSkin && canDeleteSkin))
+					{
+						cell.Controls.Add(new LiteralControl("&nbsp;"));
+
+						var deleteButton = new LinkButton
+											   {
+												   Text = Localization.GetString("cmdDelete"),
+												   CommandName = "Delete",
+												   CommandArgument = "[" + strSkinType + "]" + strRootSkin + "/" + strFolder + "/" + Path.GetFileName(strFile),
+												   CssClass = "dnnSecondaryAction"
+											   };
+						deleteButton.Command += OnCommand;
+						cell.Controls.Add(deleteButton);
+					}
+					row.Cells.Add(cell);
+				}
+				if (File.Exists(strFolderPath + "/" + Globals.glbAboutPage))
+				{
+					row = new HtmlTableRow();
+					cell = new HtmlTableCell {ColSpan = colSpan, Align = "center"};
+					var strFile = strFolderPath + "/" + Globals.glbAboutPage;
+					strURL = strFile.Substring(strFile.IndexOf("\\portals\\"));
+
+					var copyrightLink = new HyperLink
+											{
+												NavigateUrl = ResolveUrl("~" + strURL),
+												CssClass = "dnnSecondaryAction",
+												Target = "_blank",
+												Text = string.Format(Localization.GetString("About", LocalResourceFile), strFolder)
+											};
+					cell.Controls.Add(copyrightLink);
+
+					row.Cells.Add(cell);
+					tbl.Rows.Add(row);
+				}
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="SetContainer">
+          <declaration><![CDATA[private void SetContainer(string strContainer)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="499" sc="3" el="513" ec="4">EditSkins.ascx.cs</location>
+            <body hash="3087e36a7b2e50b2a87b2d5365ae3e51"><![CDATA[{
+			if (cboContainers.FindItemByValue(CurrentContainer) != null)
+			{
+				cboContainers.FindItemByValue(CurrentContainer).Selected = false;
+			}
+			if (cboContainers.FindItemByValue(strContainer) != null)
+			{
+				cboContainers.FindItemByValue(strContainer).Selected = true;
+				CurrentContainer = strContainer;
+			}
+			else
+			{
+				CurrentContainer = _notSpecified;
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="SetSkin">
+          <declaration><![CDATA[private void SetSkin(string strSkin)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="516" sc="3" el="530" ec="4">EditSkins.ascx.cs</location>
+            <body hash="b2b09711e1bd22389c1a835e4fcdc536"><![CDATA[{
+			if (cboSkins.FindItemByValue(CurrentSkin) != null)
+			{
+				cboSkins.FindItemByValue(CurrentSkin).Selected = false;
+			}
+			if (cboSkins.FindItemByValue(strSkin) != null)
+			{
+				cboSkins.FindItemByValue(strSkin).Selected = true;
+				CurrentSkin = strSkin;
+			}
+			else
+			{
+				CurrentSkin = _notSpecified;
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="ShowContainers">
+          <declaration><![CDATA[private void ShowContainers()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="533" sc="3" el="567" ec="4">EditSkins.ascx.cs</location>
+            <body hash="84a2d5b92ea81e76fc4fe20a71805748"><![CDATA[{
+			tblContainers.Rows.Clear();
+			var intPortalId = PortalId;
+
+			var strContainerPath = Globals.ApplicationMapPath.ToLower() + cboContainers.SelectedItem.Value;
+			if (strContainerPath.ToLowerInvariant().Contains(Globals.HostMapPath.ToLowerInvariant()))
+			{
+				intPortalId = Null.NullInteger;
+			}
+			var skinPackage = SkinController.GetSkinPackage(intPortalId, cboContainers.SelectedItem.Text, "Container");
+			if (skinPackage == null && !lblLegacy.Visible)
+			{
+				lblLegacy.Visible = (cboContainers.SelectedIndex > 0);
+			}
+			if (cboContainers.SelectedIndex > 0)
+			{
+				ProcessSkins(strContainerPath, "Container");
+				pnlSkin.Visible = true;
+				if (UserInfo.IsSuperUser || strContainerPath.IndexOf(Globals.HostMapPath.ToLower()) == -1)
+				{
+					cmdParse.Visible = true;
+					pnlParse.Visible = true;
+				}
+				else
+				{
+					cmdParse.Visible = false;
+					pnlParse.Visible = false;
+				}
+			}
+			else
+			{
+				pnlSkin.Visible = false;
+				pnlParse.Visible = false;
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="ShowSkins">
+          <declaration><![CDATA[private void ShowSkins()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="570" sc="3" el="604" ec="4">EditSkins.ascx.cs</location>
+            <body hash="ccad397d26c24a7bed67dce7518ccd38"><![CDATA[{
+			tblSkins.Rows.Clear();
+			var intPortalId = PortalId;
+
+			var strSkinPath = Globals.ApplicationMapPath.ToLower() + cboSkins.SelectedItem.Value;
+			if (strSkinPath.ToLowerInvariant().Contains(Globals.HostMapPath.ToLowerInvariant()))
+			{
+				intPortalId = Null.NullInteger;
+			}
+			var skinPackage = SkinController.GetSkinPackage(intPortalId, cboSkins.SelectedItem.Text, "Skin");
+			if (skinPackage == null)
+			{
+				lblLegacy.Visible = (cboSkins.SelectedIndex > 0);
+			}
+			if (cboSkins.SelectedIndex > 0)
+			{
+				ProcessSkins(strSkinPath, "Skin");
+				pnlSkin.Visible = true;
+				if (UserInfo.IsSuperUser || strSkinPath.IndexOf(Globals.HostMapPath.ToLower()) == -1)
+				{
+					cmdParse.Visible = true;
+					pnlParse.Visible = true;
+				}
+				else
+				{
+					cmdParse.Visible = false;
+					pnlParse.Visible = false;
+				}
+			}
+			else
+			{
+				pnlSkin.Visible = false;
+				pnlParse.Visible = false;
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_notSpecified">
+          <declaration><![CDATA[private readonly string _notSpecified = "<" + Localization.GetString("Not_Specified") + ">";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="cboContainers">
+          <declaration><![CDATA[protected DnnComboBox cboContainers;]]></declaration>
+          <documentation>
+            <summary>
+ cboContainers control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cboSkins">
+          <declaration><![CDATA[protected DnnComboBox cboSkins;]]></declaration>
+          <documentation>
+            <summary>
+ cboSkins control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkAdmin">
+          <declaration><![CDATA[protected CheckBox chkAdmin;]]></declaration>
+          <documentation>
+            <summary>
+ chkAdmin control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkHost">
+          <declaration><![CDATA[protected CheckBox chkHost;]]></declaration>
+          <documentation>
+            <summary>
+ chkHost control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkPortal">
+          <declaration><![CDATA[protected CheckBox chkPortal;]]></declaration>
+          <documentation>
+            <summary>
+ chkPortal control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkSite">
+          <declaration><![CDATA[protected CheckBox chkSite;]]></declaration>
+          <documentation>
+            <summary>
+ chkSite control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdDelete">
+          <declaration><![CDATA[protected LinkButton cmdDelete;]]></declaration>
+          <documentation>
+            <summary>
+ cmdDelete control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdParse">
+          <declaration><![CDATA[protected LinkButton cmdParse;]]></declaration>
+          <documentation>
+            <summary>
+ cmdParse control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdRestore">
+          <declaration><![CDATA[protected LinkButton cmdRestore;]]></declaration>
+          <documentation>
+            <summary>
+ cmdRestore control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblApply">
+          <declaration><![CDATA[protected UserControl lblApply;]]></declaration>
+          <documentation>
+            <summary>
+ lblApply control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblLegacy">
+          <declaration><![CDATA[protected Label lblLegacy;]]></declaration>
+          <documentation>
+            <summary>
+ lblLegacy control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblOutput">
+          <declaration><![CDATA[protected Label lblOutput;]]></declaration>
+          <documentation>
+            <summary>
+ lblOutput control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblParseOptions">
+          <declaration><![CDATA[protected UserControl lblParseOptions;]]></declaration>
+          <documentation>
+            <summary>
+ lblParseOptions control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(EditSkins));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="optParse">
+          <declaration><![CDATA[protected RadioButtonList optParse;]]></declaration>
+          <documentation>
+            <summary>
+ optParse control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plContainers">
+          <declaration><![CDATA[protected UserControl plContainers;]]></declaration>
+          <documentation>
+            <summary>
+ plContainers control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plSkins">
+          <declaration><![CDATA[protected UserControl plSkins;]]></declaration>
+          <documentation>
+            <summary>
+ plSkins control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plType">
+          <declaration><![CDATA[protected UserControl plType;]]></declaration>
+          <documentation>
+            <summary>
+ plType control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="pnlMsgContainers">
+          <declaration><![CDATA[protected Panel pnlMsgContainers;]]></declaration>
+          <documentation>
+            <summary>
+ pnlMsgContainers control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="pnlMsgSkins">
+          <declaration><![CDATA[protected Panel pnlMsgSkins;]]></declaration>
+          <documentation>
+            <summary>
+ pnlMsgSkins control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="pnlParse">
+          <declaration><![CDATA[protected HtmlGenericControl pnlParse;]]></declaration>
+          <documentation>
+            <summary>
+ pnlParse control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="pnlSkin">
+          <declaration><![CDATA[protected Panel pnlSkin;]]></declaration>
+          <documentation>
+            <summary>
+ pnlSkin control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="tblContainers">
+          <declaration><![CDATA[protected HtmlTable tblContainers;]]></declaration>
+          <documentation>
+            <summary>
+ tblContainers control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="tblSkins">
+          <declaration><![CDATA[protected HtmlTable tblSkins;]]></declaration>
+          <documentation>
+            <summary>
+ tblSkins control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="typeRow">
+          <declaration><![CDATA[protected HtmlGenericControl typeRow;]]></declaration>
+          <documentation>
+            <summary>
+ typeRow control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="CurrentContainer">
+          <declaration><![CDATA[protected string CurrentContainer]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="4" el="74" ec="5">EditSkins.ascx.cs</location>
+            <body hash="5141d4f64b4d1032ce779f1c4a9c5898"><![CDATA[{
+				var currentContainer = Null.NullString;
+				if (ViewState["CurrentContainer"] != null)
+				{
+					currentContainer = Convert.ToString(ViewState["CurrentContainer"]);
+				}
+				return currentContainer;
+			}]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="76" sc="4" el="78" ec="5">EditSkins.ascx.cs</location>
+            <body hash="53ea52e41a4c40d47b85d340f12773ed"><![CDATA[{
+				ViewState["CurrentContainer"] = value;
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="CurrentSkin">
+          <declaration><![CDATA[protected string CurrentSkin]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="84" sc="4" el="91" ec="5">EditSkins.ascx.cs</location>
+            <body hash="228fe6698006f68f52bd7f43ba5318b3"><![CDATA[{
+				var currentSkin = Null.NullString;
+				if (ViewState["CurrentSkin"] != null)
+				{
+					currentSkin = Convert.ToString(ViewState["CurrentSkin"]);
+				}
+				return currentSkin;
+			}]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="93" sc="4" el="95" ec="5">EditSkins.ascx.cs</location>
+            <body hash="93183023c9e96a0d0799448ddc247e37"><![CDATA[{
+				ViewState["CurrentSkin"] = value;
+			}]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.SkinManagement.Components">
+    <class name="BusinessController">
+      <declaration><![CDATA[public class BusinessController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="58" ec="10">Components\BusinessController.cs</location>
+            <body hash="812ebf37b45cc461cdc8883760875d17"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "08.00.00":
+                        Upgrade.RemoveAdminPages("//Admin//Skins");
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

@@ -1,0 +1,1119 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Search.DataStore.dll" version="06.01.01" generated="2017-06-18 21:20:47Z" generationTime="1.7466198">
+  <namespace name="DotNetNuke.Services.Search">
+    <class name="SearchCriteria">
+      <declaration><![CDATA[public class SearchCriteria]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ Namespace:  DotNetNuke.Services.Search
+ Project:    DotNetNuke.Search.DataStore
+ Class:      SearchCriteria
+ -----------------------------------------------------------------------------
+ <summary>
+ The SearchCriteria represents a search criterion
+ </summary>
+ <remarks>
+ </remarks>
+ <history>
+ 	[cnurse]	11/15/2004	documented
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SearchCriteria()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Criteria">
+          <declaration><![CDATA[public string Criteria]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="MustExclude">
+          <declaration><![CDATA[public bool MustExclude]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="MustInclude">
+          <declaration><![CDATA[public bool MustInclude]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SearchCriteriaCollection">
+      <declaration><![CDATA[public class SearchCriteriaCollection : CollectionBase]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ Namespace:  DotNetNuke.Services.Search
+ Project:    DotNetNuke.Search.DataStore
+ Class:      SearchCriteria
+ -----------------------------------------------------------------------------
+ <summary>
+ Represents a collection of <see cref="T:DotNetNuke.Services.Search.SearchCriteria">SearchCriteria</see> objects.
+ </summary>
+ <remarks>
+ </remarks>
+ <history>
+ 	[cnurse]	11/15/2004	documented
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SearchCriteriaCollection()]]></declaration>
+          <documentation>
+            <summary>
+ Initializes a new instance of the <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see> class.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="9" el="56" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="43c495b04b01b11fb3caa85ec12d08ea"><![CDATA[public SearchCriteriaCollection()
+        {
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SearchCriteriaCollection(SearchCriteriaCollection value)]]></declaration>
+          <documentation>
+            <summary>
+ Initializes a new instance of the <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see> class containing the elements of the specified source collection.
+ </summary>
+ <param name="value">A <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see> with which to initialize the collection.</param></documentation>
+          <codeblock>
+            <location sl="62" sc="9" el="65" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="e36e7eaadd33b722a410dae100f7aa5c"><![CDATA[public SearchCriteriaCollection(SearchCriteriaCollection value)
+        {
+            AddRange(value);
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SearchCriteriaCollection(SearchCriteria[] value)]]></declaration>
+          <documentation>
+            <summary>
+ Initializes a new instance of the <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see> class containing the specified array of <see cref="T:DotNetNuke.Services.Search.SearchCriteria">SearchCriteria</see> objects.
+ </summary>
+ <param name="value">An array of <see cref="T:DotNetNuke.Services.Search.SearchCriteria">SearchCriteria</see> objects with which to initialize the collection. </param></documentation>
+          <codeblock>
+            <location sl="71" sc="9" el="74" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="014d5c2cf3654de42dd9e2fa779895ad"><![CDATA[public SearchCriteriaCollection(SearchCriteria[] value)
+        {
+            AddRange(value);
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SearchCriteriaCollection(string value)]]></declaration>
+          <documentation>
+            <summary>
+ Initializes a new instance of the <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see> class containing the elements of the specified source collection.
+ </summary>
+ <param name="value">A criteria string with which to initialize the collection</param></documentation>
+          <codeblock>
+            <location sl="80" sc="9" el="120" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="c5111f115c79a008ca2a89b4b3e0d7ec"><![CDATA[public SearchCriteriaCollection(string value)
+        {
+            //split search criteria into words
+            string[] Words = value.Split(' ');
+            //Add all criteria without modifiers
+            foreach (string word in Words)
+            {
+                var criterion = new SearchCriteria();
+                if ((!word.StartsWith("+")) && (!word.StartsWith("-")))
+                {
+                    criterion.MustInclude = false;
+                    criterion.MustExclude = false;
+                    criterion.Criteria = word;
+                    Add(criterion);
+                }
+            }
+            //Add all mandatory criteria
+            foreach (string word in Words)
+            {
+                var criterion = new SearchCriteria();
+                if (word.StartsWith("+"))
+                {
+                    criterion.MustInclude = true;
+                    criterion.MustExclude = false;
+                    criterion.Criteria = word.Remove(0, 1);
+                    Add(criterion);
+                }
+            }
+            //Add all excluded criteria
+            foreach (string word in Words)
+            {
+                var criterion = new SearchCriteria();
+                if (word.StartsWith("-"))
+                {
+                    criterion.MustInclude = false;
+                    criterion.MustExclude = true;
+                    criterion.Criteria = word.Remove(0, 1);
+                    Add(criterion);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Add">
+          <declaration><![CDATA[public int Add(SearchCriteria value)]]></declaration>
+          <documentation>
+            <summary>
+ Add an element of the specified <see cref="T:DotNetNuke.Services.Search.SearchCriteria">SearchCriteria</see> to the end of the collection.
+ </summary>
+ <param name="value">An object of type <see cref="T:DotNetNuke.Services.Search.SearchCriteria">SearchCriteria</see> to add to the collection.</param></documentation>
+          <codeblock>
+            <location sl="153" sc="9" el="155" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="159c8b2f05fc30858504bc9b38381129"><![CDATA[{
+            return List.Add(value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddRange">
+          <declaration><![CDATA[public void AddRange(SearchCriteria[] value)]]></declaration>
+          <documentation>
+            <summary>
+ Copies the elements of the specified <see cref="T:DotNetNuke.Services.Search.SearchCriteria">SearchCriteria</see> array to the end of the collection.
+ </summary>
+ <param name="value">An array of type <see cref="T:DotNetNuke.Services.Search.SearchCriteria">SearchCriteria</see> containing the objects to add to the collection.</param></documentation>
+          <codeblock>
+            <location sl="201" sc="9" el="206" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="04f605741ccc1b21932801fc54fb4c9d"><![CDATA[{
+            for (int i = 0; i <= value.Length - 1; i++)
+            {
+                Add(value[i]);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddRange">
+          <declaration><![CDATA[public void AddRange(SearchCriteriaCollection value)]]></declaration>
+          <documentation>
+            <summary>
+ Adds the contents of another <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see> to the end of the collection.
+ </summary>
+ <param name="value">A <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see> containing the objects to add to the collection. </param></documentation>
+          <codeblock>
+            <location sl="213" sc="9" el="218" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="efc0ce4f7c595bbbb8301a45257ec1e1"><![CDATA[{
+            for (int i = 0; i <= value.Count - 1; i++)
+            {
+                Add((SearchCriteria) value.List[i]);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Contains">
+          <declaration><![CDATA[public bool Contains(SearchCriteria value)]]></declaration>
+          <documentation>
+            <summary>
+ Gets a value indicating whether the collection contains the specified <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see>.
+ </summary>
+ <param name="value">The <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see> to search for in the collection.</param>
+ <returns><b>true</b> if the collection contains the specified object; otherwise, <b>false</b>.</returns></documentation>
+          <codeblock>
+            <location sl="192" sc="9" el="194" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="d20c32a5e63365068d301ea922657cde"><![CDATA[{
+            return List.Contains(value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CopyTo">
+          <declaration><![CDATA[public void CopyTo(SearchCriteria[] array, int index)]]></declaration>
+          <documentation>
+            <summary>
+ Copies the collection objects to a one-dimensional <see cref="T:System.Array">Array</see> instance beginning at the specified index.
+ </summary>
+ <param name="array">The one-dimensional <see cref="T:System.Array">Array</see> that is the destination of the values copied from the collection.</param>
+ <param name="index">The index of the array at which to begin inserting.</param></documentation>
+          <codeblock>
+            <location sl="226" sc="9" el="228" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="3e3aa19131b5327903c6596b619020b4"><![CDATA[{
+            List.CopyTo(array, index);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IndexOf">
+          <declaration><![CDATA[public int IndexOf(SearchCriteria value)]]></declaration>
+          <documentation>
+            <summary>
+ Gets the index in the collection of the specified <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see>, if it exists in the collection.
+ </summary>
+ <param name="value">The <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see> to locate in the collection.</param>
+ <returns>The index in the collection of the specified object, if found; otherwise, -1.</returns></documentation>
+          <codeblock>
+            <location sl="163" sc="9" el="165" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="f4423ee35eb0ad36d01cb102b34e7dd2"><![CDATA[{
+            return List.IndexOf(value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Insert">
+          <declaration><![CDATA[public void Insert(int index, SearchCriteria value)]]></declaration>
+          <documentation>
+            <summary>
+ Add an element of the specified <see cref="T:DotNetNuke.Services.Search.SearchCriteria">SearchCriteria</see> to the collection at the designated index.
+ </summary>
+ <param name="index">An <see cref="T:System.Int32">Integer</see> to indicate the location to add the object to the collection.</param>
+ <param name="value">An object of type <see cref="T:DotNetNuke.Services.Search.SearchCriteria">SearchCriteria</see> to add to the collection.</param></documentation>
+          <codeblock>
+            <location sl="173" sc="9" el="175" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="29d857179ece5d364c408e998bc9afb6"><![CDATA[{
+            List.Insert(index, value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Remove">
+          <declaration><![CDATA[public void Remove(SearchCriteria value)]]></declaration>
+          <documentation>
+            <summary>
+ Remove the specified object of type <see cref="T:DotNetNuke.Services.Search.SearchCriteria">SearchCriteria</see> from the collection.
+ </summary>
+ <param name="value">An object of type <see cref="T:DotNetNuke.Services.Search.SearchCriteria">SearchCriteria</see> to remove to the collection.</param></documentation>
+          <codeblock>
+            <location sl="182" sc="9" el="184" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="5f06fe14d0312ed42ccd87d3bd3fa13e"><![CDATA[{
+            List.Remove(value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ToArray">
+          <declaration><![CDATA[public SearchCriteria[] ToArray()]]></declaration>
+          <documentation>
+            <summary>
+ Creates a one-dimensional <see cref="T:System.Array">Array</see> instance containing the collection items.
+ </summary>
+ <returns>Array of type SearchCriteria</returns></documentation>
+          <codeblock>
+            <location sl="235" sc="9" el="239" ec="10">SearchCriteriaCollection.cs</location>
+            <body hash="528490ecb791f53e7e98cb3e47d6eebf"><![CDATA[{
+            var arr = new SearchCriteria[Count];
+            CopyTo(arr, 0);
+            return arr;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Item">
+          <declaration><![CDATA[public SearchCriteria this[int index]]]></declaration>
+          <documentation>
+            <summary>
+ Gets the <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see> at the specified index in the collection.
+ <para>
+ In VB.Net, this property is the indexer for the <see cref="T:DotNetNuke.Services.Search.SearchCriteriaCollection">SearchCriteriaCollection</see> class.
+ </para>
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="135" sc="13" el="137" ec="14">SearchCriteriaCollection.cs</location>
+            <body hash="f9bf7a038cf9fc58daff2a5494c5feef"><![CDATA[{
+                return (SearchCriteria) List[index];
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="139" sc="13" el="141" ec="14">SearchCriteriaCollection.cs</location>
+            <body hash="317ffc941817052353a1a004fbfa9af4"><![CDATA[{
+                List[index] = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SearchDataStore">
+      <declaration><![CDATA[public class SearchDataStore : SearchDataStoreProvider]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ Namespace:  DotNetNuke.Services.Search
+ Project:    DotNetNuke.Search.DataStore
+ Class:      SearchDataStore
+ -----------------------------------------------------------------------------
+ <summary>
+ The SearchDataStore is an implementation of the abstract SearchDataStoreProvider
+ class
+ </summary>
+ <remarks>
+ </remarks>
+ <history>
+ 	[cnurse]	11/15/2004	documented
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SearchDataStore()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddIndexWords">
+          <declaration><![CDATA[private void AddIndexWords(int indexId, SearchItemInfo searchItem, string language)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ AddIndexWords adds the Index Words to the Data Store
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="indexId">The Id of the SearchItem</param>
+ <param name="searchItem">The SearchItem</param>
+ <param name="language">The Language of the current Item</param>
+ <history>
+ 	[cnurse]	11/15/2004	documented
+     [cnurse]    11/16/2004  replaced calls to separate content clean-up
+                             functions with new call to HtmlUtils.Clean().
+                             replaced logic to determine whether word should
+                             be indexed by call to CanIndexWord()
+     [vnguyen]   09/03/2010  added searchitem title to the content and
+                             also tab title, description, keywords where the
+                             content resides for indexed searching
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="85" sc="9" el="159" ec="10">SearchDataStore.cs</location>
+            <body hash="624ece7c3941c4e9f7c601b57220d6cc"><![CDATA[{
+			//Get the Search Settings for this Portal
+            var settings = new SearchConfig(SearchDataStoreController.GetSearchSettings(searchItem.ModuleId));
+            var IndexWords = new Dictionary<string, int>();
+            var IndexPositions = new Dictionary<string, List<int>>();
+            string Content = GetSearchContent(searchItem);
+
+            string title = HtmlUtils.StripPunctuation(searchItem.Title, true);
+
+            // Tab and Module Metadata
+            // Retreive module and page names
+            ModuleInfo objModule = new ModuleController().GetModule(searchItem.ModuleId);
+            TabInfo objTab = new TabController().GetTab(objModule.TabID, objModule.PortalID, false);
+            string tabName = HtmlUtils.StripPunctuation(objTab.TabName, true);
+            string tabTitle = HtmlUtils.StripPunctuation(objTab.Title, true);
+            string tabDescription = HtmlUtils.StripPunctuation(objTab.Description, true);
+            string tabKeywords = HtmlUtils.StripPunctuation(objTab.KeyWords, true);
+            string tagfilter = PortalController.GetPortalSetting("SearchIncludedTagInfoFilter", objModule.PortalID, Host.SearchIncludedTagInfoFilter);
+
+            // clean content
+            Content = HtmlUtils.CleanWithTagInfo(Content, tagfilter, true);
+            // append tab and module metadata
+            Content = Content.ToLower() + title.ToLower() + " " + tabName.ToLower() + " " + tabTitle.ToLower() + " " + tabDescription.ToLower() + " " + tabKeywords.ToLower();
+            
+            // split content into words
+            string[] ContentWords = Content.Split(' ');
+            
+            //process each word
+            int intWord = 0;
+            foreach (string strWord in ContentWords)
+            {
+                if (CanIndexWord(strWord, language, settings))
+                {
+                    intWord = intWord + 1;
+                    if (IndexWords.ContainsKey(strWord) == false)
+                    {
+                        IndexWords.Add(strWord, 0);
+                        IndexPositions.Add(strWord, new List<int>());
+                    }
+                    //track number of occurrences of word in content
+                    IndexWords[strWord] = IndexWords[strWord] + 1;
+                    //track positions of word in content
+                    IndexPositions[strWord].Add(intWord);
+                }
+            }
+			
+            //get list of words ( non-common )
+            Hashtable Words = GetSearchWords(); //this could be cached
+            int WordId;
+
+            //iterate through each indexed word
+            foreach (object objWord in IndexWords.Keys)
+            {
+                string strWord = Convert.ToString(objWord);
+                if (Words.ContainsKey(strWord))
+                {
+					//word is in the DataStore
+                    WordId = Convert.ToInt32(Words[strWord]);
+                }
+                else
+                {
+					//add the word to the DataStore
+                    WordId = DataProvider.Instance().AddSearchWord(strWord);
+                    Words.Add(strWord, WordId);
+                }
+                //add the indexword
+                int SearchItemWordID = DataProvider.Instance().AddSearchItemWord(indexId, WordId, IndexWords[strWord]);
+                string strPositions = Null.NullString;
+                foreach (int position in IndexPositions[strWord])
+                {
+                    strPositions += position + ",";
+                }
+                DataProvider.Instance().AddSearchItemWordPosition(SearchItemWordID, strPositions);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CanIndexWord">
+          <declaration><![CDATA[private bool CanIndexWord(string strWord, string Locale, SearchConfig settings)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ CanIndexWord determines whether the Word should be indexed
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="strWord">The Word to validate</param>
+ <param name="Locale"></param>
+ <param name="settings"></param>
+ <returns>True if indexable, otherwise false</returns>
+ <history>
+ 	[cnurse]	11/16/2004	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="176" sc="9" el="207" ec="10">SearchDataStore.cs</location>
+            <body hash="c6ea68b4c1181ff14c6b8fcebe6697d1"><![CDATA[{
+			//Create Boolean to hold return value
+            bool retValue = true;
+
+            //get common words for exclusion
+            Hashtable CommonWords = GetCommonWords(Locale);
+            
+			//Determine if Word is actually a number
+			if (Regex.IsMatch(strWord, "^\\d+$"))
+            {
+                //Word is Numeric
+                if (!settings.SearchIncludeNumeric)
+                {
+                    retValue = false;
+                }
+            }
+            else
+            {
+				//Word is Non-Numeric
+                //Determine if Word satisfies Minimum/Maximum length
+                if (strWord.Length < settings.SearchMinWordlLength || strWord.Length > settings.SearchMaxWordlLength)
+                {
+                    retValue = false;
+                }
+                else if (CommonWords.ContainsKey(strWord) && !settings.SearchIncludeCommon)
+                {
+					//Determine if Word is a Common Word (and should be excluded)
+                    retValue = false;
+                }
+            }
+            return retValue;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCommonWords">
+          <declaration><![CDATA[private Hashtable GetCommonWords(string Locale)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetCommonWords gets a list of the Common Words for the locale
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="Locale">The locale string</param>
+ <returns>A hashtable of common words</returns>
+ <history>
+ 	[cnurse]	11/15/2004	documented
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="222" sc="9" el="244" ec="10">SearchDataStore.cs</location>
+            <body hash="90dee8259fdb2af0a432044acd096226"><![CDATA[{
+            string strCacheKey = "CommonWords" + Locale;
+            var objWords = (Hashtable) DataCache.GetCache(strCacheKey);
+            if (objWords == null)
+            {
+                objWords = new Hashtable();
+                IDataReader drWords = DataProvider.Instance().GetSearchCommonWordsByLocale(Locale);
+                try
+                {
+                    while (drWords.Read())
+                    {
+                        objWords.Add(drWords["CommonWord"].ToString(), drWords["CommonWord"].ToString());
+                    }
+                }
+                finally
+                {
+                    drWords.Close();
+                    drWords.Dispose();
+                }
+                DataCache.SetCache(strCacheKey, objWords);
+            }
+            return objWords;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSearchContent">
+          <declaration><![CDATA[protected virtual string GetSearchContent(SearchItemInfo SearchItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="287" sc="9" el="289" ec="10">SearchDataStore.cs</location>
+            <body hash="96317c02e9393b7ed87b91ac78e95ed5"><![CDATA[{
+            return SearchItem.Content;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSearchItems">
+          <declaration><![CDATA[public override SearchResultsInfoCollection GetSearchItems(int PortalID, int TabID, int ModuleID)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetSearchItems gets a collection of Search Items for a Module/Tab/Portal
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="PortalID">A Id of the Portal</param>
+ <param name="TabID">A Id of the Tab</param>
+ <param name="ModuleID">A Id of the Module</param>
+ <history>
+ 	[cnurse]	11/15/2004	documented
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="309" sc="9" el="311" ec="10">SearchDataStore.cs</location>
+            <body hash="79ecdb7f164a40b1ef8f141b7201a28d"><![CDATA[{
+            return SearchDataStoreController.GetSearchResults(PortalID, TabID, ModuleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSearchResults">
+          <declaration><![CDATA[public override SearchResultsInfoCollection GetSearchResults(int portalID, string criteria)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetSearchResults gets the search results for a passed in criteria string
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="portalID">A Id of the Portal</param>
+ <param name="criteria">The criteria string</param>
+ <history>
+ 	[cnurse]	11/15/2004	documented
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="326" sc="9" el="468" ec="10">SearchDataStore.cs</location>
+            <body hash="53fd2283105f3ec928e2fc0fc4162235"><![CDATA[{
+            SearchResultsInfo searchResult;
+            bool hasExcluded = Null.NullBoolean;
+            bool hasMandatory = Null.NullBoolean;
+
+            var objPortalController = new PortalController();
+            PortalInfo objPortal = objPortalController.GetPortal(portalID);
+
+            //Get the Settings for this Portal
+            var _PortalSettings = new PortalSettings(objPortal);
+
+            //We will assume that the content is in the locale of the Portal
+            Hashtable commonWords = GetCommonWords(_PortalSettings.DefaultLanguage);
+
+            //clean criteria
+            criteria = criteria.ToLower();
+
+            //split search criteria into words
+            var searchWords = new SearchCriteriaCollection(criteria);
+
+            var searchResults = new Dictionary<string, SearchResultsInfoCollection>();
+
+            //dicResults is a Dictionary(Of SearchItemID, Dictionary(Of TabID, SearchResultsInfo)
+            var dicResults = new Dictionary<int, Dictionary<int, SearchResultsInfo>>();
+
+            //iterate through search criteria words
+            foreach (SearchCriteria criterion in searchWords)
+            {
+                if (commonWords.ContainsKey(criterion.Criteria) == false || _PortalSettings.SearchIncludeCommon)
+                {
+                    if (!searchResults.ContainsKey(criterion.Criteria))
+                    {
+                        searchResults.Add(criterion.Criteria, SearchDataStoreController.GetSearchResults(portalID, criterion.Criteria));
+                    }
+                    if (searchResults.ContainsKey(criterion.Criteria))
+                    {
+                        foreach (SearchResultsInfo result in searchResults[criterion.Criteria])
+                        {
+							//Add results to dicResults
+                            if (!criterion.MustExclude)
+                            {
+                                if (dicResults.ContainsKey(result.SearchItemID))
+                                {
+                                    //The Dictionary exists for this SearchItemID already so look in the TabId keyed Sub-Dictionary
+                                    Dictionary<int, SearchResultsInfo> dic = dicResults[result.SearchItemID];
+                                    if (dic.ContainsKey(result.TabId))
+                                    {
+                                        //The sub-Dictionary contains the item already so update the relevance
+                                        searchResult = dic[result.TabId];
+                                        searchResult.Relevance += result.Relevance;
+                                    }
+                                    else
+                                    {
+										//Add Entry to Sub-Dictionary
+                                        dic.Add(result.TabId, result);
+                                    }
+                                }
+                                else
+                                {
+									//Create new TabId keyed Dictionary
+                                    var dic = new Dictionary<int, SearchResultsInfo>();
+                                    dic.Add(result.TabId, result);
+
+                                    //Add new Dictionary to SearchResults
+                                    dicResults.Add(result.SearchItemID, dic);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            foreach (SearchCriteria criterion in searchWords)
+            {
+                var mandatoryResults = new Dictionary<int, bool>();
+                var excludedResults = new Dictionary<int, bool>();
+                if (searchResults.ContainsKey(criterion.Criteria))
+                {
+                    foreach (SearchResultsInfo result in searchResults[criterion.Criteria])
+                    {
+                        if (criterion.MustInclude)
+                        {
+							//Add to mandatory results lookup
+                            mandatoryResults[result.SearchItemID] = true;
+                            hasMandatory = true;
+                        }
+                        else if (criterion.MustExclude)
+                        {
+							//Add to exclude results lookup
+                            excludedResults[result.SearchItemID] = true;
+                            hasExcluded = true;
+                        }
+                    }
+                }
+                foreach (KeyValuePair<int, Dictionary<int, SearchResultsInfo>> kvpResults in dicResults)
+                {
+                    //The key of this collection is the SearchItemID,  Check if the value of this collection should be processed
+                    if (hasMandatory && (!mandatoryResults.ContainsKey(kvpResults.Key)))
+                    {
+                        //1. If mandatoryResults exist then only process if in mandatoryResults Collection
+                        foreach (SearchResultsInfo result in kvpResults.Value.Values)
+                        {
+                            result.Delete = true;
+                        }
+                    }
+                    else if (hasExcluded && (excludedResults.ContainsKey(kvpResults.Key)))
+                    {
+                        //2. Do not process results in the excludedResults Collection
+                        foreach (SearchResultsInfo result in kvpResults.Value.Values)
+                        {
+                            result.Delete = true;
+                        }
+                    }
+                }
+            }
+			
+            //Process results against permissions and mandatory and excluded results
+            var results = new SearchResultsInfoCollection();
+            var objTabController = new TabController();
+            var dicTabsAllowed = new Dictionary<int, Dictionary<int, bool>>();
+            foreach (KeyValuePair<int, Dictionary<int, SearchResultsInfo>> kvpResults in dicResults)
+            {
+                foreach (SearchResultsInfo result in kvpResults.Value.Values)
+                {
+                    if (!result.Delete)
+                    {
+						//Check If authorised to View Tab
+                        TabInfo objTab = objTabController.GetTab(result.TabId, portalID, false);
+                        if (TabPermissionController.CanViewPage(objTab))
+                        {
+							//Check If authorised to View Module
+                            ModuleInfo objModule = new ModuleController().GetModule(result.ModuleId, result.TabId, false);
+                            if (ModulePermissionController.CanViewModule(objModule))
+                            {
+                                results.Add(result);
+                            }
+                        }
+                    }
+                }
+            }
+			
+            //Return Search Results Collection
+            return results;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSearchWords">
+          <declaration><![CDATA[private Hashtable GetSearchWords()]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetSearchWords gets a list of the current Words in the Database's Index
+ </summary>
+ <remarks>
+ </remarks>
+ <returns>A hashtable of words</returns>
+ <history>
+ 	[cnurse]	11/15/2004	documented
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="258" sc="9" el="280" ec="10">SearchDataStore.cs</location>
+            <body hash="9473ace713e17c8e412c9dd21582d423"><![CDATA[{
+            string strCacheKey = "SearchWords";
+            var objWords = (Hashtable) DataCache.GetCache(strCacheKey);
+            if (objWords == null)
+            {
+                objWords = new Hashtable();
+                IDataReader drWords = DataProvider.Instance().GetSearchWords();
+                try
+                {
+                    while (drWords.Read())
+                    {
+                        objWords.Add(drWords["Word"].ToString(), drWords["SearchWordsID"]);
+                    }
+                }
+                finally
+                {
+                    drWords.Close();
+                    drWords.Dispose();
+                }
+                DataCache.SetCache(strCacheKey, objWords, TimeSpan.FromMinutes(2));
+            }
+            return objWords;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="StoreSearchItems">
+          <declaration><![CDATA[public override void StoreSearchItems(SearchItemInfoCollection SearchItems)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ StoreSearchItems adds the Search Item to the Data Store
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="SearchItems">A Collection of SearchItems</param>
+ <history>
+ 	[cnurse]	11/15/2004	documented
+     [vnguyen]   09/07/2010  Modified: Added a date comparison for LastModifiedDate on the Tab
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="483" sc="9" el="576" ec="10">SearchDataStore.cs</location>
+            <body hash="74eef9dc032432d37aa2f8ecd8a686e9"><![CDATA[{
+            //For now as we don't support Localized content - set the locale to the default locale. This
+            //is to avoid the error in GetDefaultLanguageByModule which artificially limits the number
+            //of modules that can be indexed.  This will need to be addressed when we support localized content.
+            var Modules = new Dictionary<int, string>();
+            foreach (SearchItemInfo item in SearchItems)
+            {
+                if (!Modules.ContainsKey(item.ModuleId))
+                {
+                    Modules.Add(item.ModuleId, "en-US");
+                }
+            }
+
+            var objTabs = new TabController();
+            var objModule = new ModuleInfo();
+            var objTab = new TabInfo();
+
+            SearchItemInfo searchItem;
+            Dictionary<string, SearchItemInfo> indexedItems;
+            SearchItemInfoCollection moduleItems;
+
+            //Process the SearchItems by Module to reduce Database hits
+            foreach (KeyValuePair<int, string> kvp in Modules)
+            {
+                indexedItems = SearchDataStoreController.GetSearchItems(kvp.Key);
+
+                //Get the Module's SearchItems to compare
+                moduleItems = SearchItems.ModuleItems(kvp.Key);
+
+                //As we will be potentially removing items from the collection iterate backwards
+                for (int iSearch = moduleItems.Count - 1; iSearch >= 0; iSearch += -1)
+                {
+                    searchItem = moduleItems[iSearch];
+
+                    //Get item from Indexed collection
+                    SearchItemInfo indexedItem = null;
+                    if (indexedItems.TryGetValue(searchItem.SearchKey, out indexedItem))
+                    {
+                        //Get the tab where the search item resides -- used in date comparison
+                        objModule = new ModuleController().GetModule(searchItem.ModuleId);
+                        objTab = objTabs.GetTab(searchItem.TabId, objModule.PortalID, false);
+
+                        //Item exists so compare Dates to see if modified
+                        if (indexedItem.PubDate < searchItem.PubDate || indexedItem.PubDate < objModule.LastModifiedOnDate || indexedItem.PubDate < objTab.LastModifiedOnDate)
+                        {
+                            try
+                            {
+                                if (searchItem.PubDate < objModule.LastModifiedOnDate)
+                                {
+                                    searchItem.PubDate = objModule.LastModifiedOnDate;
+                                }
+                                if (searchItem.PubDate < objTab.LastModifiedOnDate)
+                                {
+                                    searchItem.PubDate = objTab.LastModifiedOnDate;
+                                }
+
+                                
+                                //Content modified so update SearchItem and delete item's Words Collection
+                                searchItem.SearchItemId = indexedItem.SearchItemId;
+                                SearchDataStoreController.UpdateSearchItem(searchItem);
+                                SearchDataStoreController.DeleteSearchItemWords(searchItem.SearchItemId);
+
+                                //re-index the content
+                                AddIndexWords(searchItem.SearchItemId, searchItem, kvp.Value);
+                            }
+                            catch (Exception ex)
+                            {
+								//Log Exception
+                                Exceptions.Exceptions.LogException(ex);
+                            }
+                        }
+						
+                        //Remove Items from both collections
+                        indexedItems.Remove(searchItem.SearchKey);
+                        SearchItems.Remove(searchItem);
+                    }
+                    else
+                    {
+                        try
+                        {
+							//Item doesn't exist so Add to Index
+                            int indexID = SearchDataStoreController.AddSearchItem(searchItem);
+							//index the content
+                            AddIndexWords(indexID, searchItem, kvp.Value);
+                        }
+                        catch (Exception ex)
+                        {
+                            //Exception is probably a duplicate key error which is probably due to bad module data
+                            Exceptions.Exceptions.LogSearchException(new SearchException(ex.Message, ex, searchItem));
+                        }
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SearchDataStoreController">
+      <declaration><![CDATA[public class SearchDataStoreController]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ Namespace:  DotNetNuke.Services.Search
+ Project:    DotNetNuke.Search.DataStore
+ Class:      SearchDataStoreController
+ -----------------------------------------------------------------------------
+ <summary>
+ The SearchDataStoreController is the Business Controller class for SearchDataStore
+ </summary>
+ <remarks>
+ </remarks>
+ <history>
+ 	[cnurse]	11/15/2004	documented
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SearchDataStoreController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddSearchItem">
+          <declaration><![CDATA[public static int AddSearchItem(SearchItemInfo item)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="9" el="57" ec="10">SearchDataStoreController.cs</location>
+            <body hash="1e7cf2abbcc5f7b4ceab32f6e6b1ed19"><![CDATA[{
+            return DataProvider.Instance().AddSearchItem(item.Title, item.Description, item.Author, item.PubDate, item.ModuleId, item.SearchKey, item.GUID, item.ImageFileId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteSearchItem">
+          <declaration><![CDATA[public static void DeleteSearchItem(int SearchItemId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="62" ec="10">SearchDataStoreController.cs</location>
+            <body hash="59459c748f65ac2c005606f6570e8081"><![CDATA[{
+            DataProvider.Instance().DeleteSearchItem(SearchItemId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteSearchItemWords">
+          <declaration><![CDATA[public static void DeleteSearchItemWords(int SearchItemId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="67" ec="10">SearchDataStoreController.cs</location>
+            <body hash="0e1d65f24047906d59d24cd9a4b042c4"><![CDATA[{
+            DataProvider.Instance().DeleteSearchItemWords(SearchItemId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSearchItem">
+          <declaration><![CDATA[public static SearchItemInfo GetSearchItem(int ModuleId, string SearchKey)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="72" ec="10">SearchDataStoreController.cs</location>
+            <body hash="24d621efe0ef9394cd75fd6212505ef4"><![CDATA[{
+            return (SearchItemInfo) CBO.FillObject(DataProvider.Instance().GetSearchItem(ModuleId, SearchKey), typeof (SearchItemInfo));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSearchItems">
+          <declaration><![CDATA[public static Dictionary<string, SearchItemInfo> GetSearchItems(int ModuleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="75" sc="9" el="77" ec="10">SearchDataStoreController.cs</location>
+            <body hash="c8cd02b9a30c92513808efe40f5ad36c"><![CDATA[{
+            return CBO.FillDictionary<string, SearchItemInfo>("SearchKey", DataProvider.Instance().GetSearchItems(Null.NullInteger, Null.NullInteger, ModuleId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSearchItems">
+          <declaration><![CDATA[public static ArrayList GetSearchItems(int PortalId, int TabId, int ModuleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="80" sc="9" el="82" ec="10">SearchDataStoreController.cs</location>
+            <body hash="1634125f0d8a0bf9d4a5ed741662a1a7"><![CDATA[{
+            return CBO.FillCollection(DataProvider.Instance().GetSearchItems(PortalId, TabId, ModuleId), typeof (SearchItemInfo));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSearchResults">
+          <declaration><![CDATA[public static SearchResultsInfoCollection GetSearchResults(int PortalID, string Word)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetSearchResults gets the search results for a single word
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="PortalID">A Id of the Portal</param>
+ <param name="Word">The word</param>
+ <history>
+ 	[cnurse]	11/15/2004	documented
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="97" sc="9" el="99" ec="10">SearchDataStoreController.cs</location>
+            <body hash="3f202024972d3c173c2b5b76dfeb8e13"><![CDATA[{
+            return new SearchResultsInfoCollection(CBO.FillCollection(DataProvider.Instance().GetSearchResults(PortalID, Word), typeof (SearchResultsInfo)));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSearchResults">
+          <declaration><![CDATA[public static SearchResultsInfoCollection GetSearchResults(int PortalId, int TabId, int ModuleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="102" sc="9" el="104" ec="10">SearchDataStoreController.cs</location>
+            <body hash="e9e8853ed0f84b0f529215a89a3b4df3"><![CDATA[{
+            return new SearchResultsInfoCollection(CBO.FillCollection(DataProvider.Instance().GetSearchResults(PortalId, TabId, ModuleId), typeof (SearchResultsInfo)));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSearchSettings">
+          <declaration><![CDATA[public static Dictionary<string, string> GetSearchSettings(int ModuleId)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetSearchSettings gets the search settings for a single module
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="ModuleId">The Id of the Module</param>
+ <history>
+ 	[cnurse]	11/15/2004	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="118" sc="9" el="145" ec="10">SearchDataStoreController.cs</location>
+            <body hash="ada1d8478a5349b98b3b6a5ae70f968a"><![CDATA[{
+            var dicSearchSettings = new Dictionary<string, string>();
+            IDataReader dr = null;
+            try
+            {
+                dr = DataProvider.Instance().GetSearchSettings(ModuleId);
+                while (dr.Read())
+                {
+                    if (!dr.IsDBNull(1))
+                    {
+                        dicSearchSettings[dr.GetString(0)] = dr.GetString(1);
+                    }
+                    else
+                    {
+                        dicSearchSettings[dr.GetString(0)] = "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Exceptions.Exceptions.LogException(ex);
+            }
+            finally
+            {
+                CBO.CloseDataReader(dr, true);
+            }
+            return dicSearchSettings;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSearchItem">
+          <declaration><![CDATA[public static void UpdateSearchItem(SearchItemInfo item)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="148" sc="9" el="159" ec="10">SearchDataStoreController.cs</location>
+            <body hash="2d5239e6cc4a411cf8e085e38276153c"><![CDATA[{
+            DataProvider.Instance().UpdateSearchItem(item.SearchItemId,
+                                                     item.Title,
+                                                     item.Description,
+                                                     item.Author,
+                                                     item.PubDate,
+                                                     item.ModuleId,
+                                                     item.SearchKey,
+                                                     item.GUID,
+                                                     item.HitCount,
+                                                     item.ImageFileId);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

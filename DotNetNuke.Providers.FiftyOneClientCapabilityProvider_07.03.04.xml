@@ -1,0 +1,1466 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Providers.FiftyOneClientCapabilityProvider.dll" version="07.03.04" generated="2017-06-19 14:14:52Z" generationTime="1.6859963">
+  <namespace name="DotNetNuke.Providers.FiftyOneClientCapabilityProvider">
+    <class name="Administration">
+      <declaration><![CDATA[public class Administration : PortalModuleBase]]></declaration>
+      <documentation>
+        <summary>
+ Administration control is used as the main control off the hosts
+ page to activate 51Degrees.mobi.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[protected bool IsPremium = DataProvider.IsPremium || DataProvider.IsCms;]]></declaration>
+          <documentation>
+            <summary>
+  Records if premium data is in use when the control is first loaded.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="49" ec="81">Administration.ascx.cs</location>
+            <body hash="1eefb195e9dfbe5f693d7bafe46112a8"><![CDATA[protected bool IsPremium = DataProvider.IsPremium || DataProvider.IsCms]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AutoUpdatesEnabledChanged">
+          <declaration><![CDATA[private void AutoUpdatesEnabledChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="242" sc="9" el="244" ec="10">Administration.ascx.cs</location>
+            <body hash="3f96ac3ad02d571a02be9f28c5e7f5a5"><![CDATA[{
+            UpdateDetectionConfig("autoUpdate", (sender as CheckBox).Checked);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DetectionEnabledChanged">
+          <declaration><![CDATA[private void DetectionEnabledChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="237" sc="9" el="239" ec="10">Administration.ascx.cs</location>
+            <body hash="9dd9b830220f85f38aa69956234a5f4b"><![CDATA[{
+            UpdateDetectionConfig("enabled", (sender as CheckBox).Checked);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDetectionConfig">
+          <declaration><![CDATA[private bool GetDetectionConfig(string attrName, bool defaultValue)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="270" sc="9" el="282" ec="10">Administration.ascx.cs</location>
+            <body hash="b5fbae76f15b5b5af9d91d79ecb3b9ee"><![CDATA[{
+            var section = Support.GetWebApplicationSection("fiftyOne/detection", false);
+            if (section != null)
+            {
+                var property = section.ElementInformation.Properties[attrName];
+                if (property != null)
+                {
+                    return bool.Parse(property.Value.ToString());
+                }
+            }
+
+            return defaultValue;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLicenseFormatString">
+          <declaration><![CDATA[protected string GetLicenseFormatString(string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="229" sc="3" el="234" ec="4">Administration.ascx.cs</location>
+            <body hash="5d6a6d6f075814024d436211c4a47840"><![CDATA[{
+			var content = LocalizeString(key);
+			var licenseType = DataProvider.IsPremium ? LocalizeString("LicenseType_Premium.Text") 
+				: (DataProvider.IsCms ? LocalizeString("LicenseType_CMS.Text") : LocalizeString("LicenseType_Lite.Text"));
+			return string.Format(content, licenseType);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="ListItemDataBound">
+          <declaration><![CDATA[private static void ListItemDataBound(object sender, RepeaterItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="180" sc="9" el="201" ec="10">Administration.ascx.cs</location>
+            <body hash="0b38ddcfc3ec8f35def0b408fec153f1"><![CDATA[{
+            if (e.Item.DataItem == null || !(e.Item.DataItem is Property))
+                return;
+
+            var property = (Property)e.Item.DataItem;
+            var premiumLabel = e.Item.FindControl("Premium") as HtmlGenericControl;
+            if (premiumLabel != null)
+            {
+                premiumLabel.Visible = DataProvider.GetIsPremium(property);
+            }
+
+            var values = e.Item.FindControl("Values") as HtmlGenericControl;
+            if (values == null)
+                return;
+
+            values.Visible = property.ShowValues;
+
+            if (property.ShowValues)
+            {
+                values.InnerText = string.Join(", ", property.Values.Select(item => item.Name).ToArray());
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+            <summary>
+ Executes the page initialization event.
+ </summary>
+ <param name="e">The event arguments.</param></documentation>
+          <codeblock>
+            <location sl="56" sc="9" el="151" ec="10">Administration.ascx.cs</location>
+            <body hash="248f7ff5d1bcc01b7cb635638c1f7016"><![CDATA[{
+            base.OnInit(e);
+
+            SearchButton.Click += SearchButtonClick;
+            HardwareList.ItemDataBound += ListItemDataBound;
+            PremiumUpload.UploadComplete += UploadComplete;
+            cbDetectionEnabled.CheckedChanged += DetectionEnabledChanged;
+            cbAutoUpdatesEnabled.CheckedChanged += AutoUpdatesEnabledChanged;
+            cbShareUsageEnabled.CheckedChanged += ShareUsageEnabledChanged;
+            cbDetectionEnabledPremium.CheckedChanged += DetectionEnabledChanged;
+            cbAutoUpdatesEnabledPremium.CheckedChanged += AutoUpdatesEnabledChanged;
+            cbShareUsageEnabledPremium.CheckedChanged += ShareUsageEnabledChanged;
+            
+            NoResultsMessage.Visible = false;
+            PremiumUploadSuccess.Visible = false;
+            PremiumUploadError.Visible = false;
+
+            jQuery.RequestDnnPluginsRegistration();
+
+            HardwareList.DataSource = DataProvider.HardwareProperties;
+            SoftwareList.DataSource = DataProvider.SoftwareProperties;
+            BrowserList.DataSource = DataProvider.BrowserProperties;
+            ContentList.DataSource = DataProvider.ContentProperties;
+
+            HardwareList.DataBind();
+            SoftwareList.DataBind();
+            BrowserList.DataBind();
+            ContentList.DataBind();
+
+            var refreshButtonText = LocalizeString("StatsRefreshButton.Text");
+            var statsHtml = LocalizeString("StatsHtml.Text");
+            PremiumStats.RefreshButtonText = refreshButtonText;
+            PremiumStats.Html = statsHtml;
+            PremiumUpload.UploadButtonText = LocalizeString("UploadData.Text");
+            LiteStats.RefreshButtonText = refreshButtonText;
+            LiteStats.Html = statsHtml;
+
+            if (!IsPremium)
+            {
+                // lite
+                Activate.ActivateButtonText = LocalizeString("ActivateButtonText.Text");
+                Activate.ActivatedMessageHtml = LocalizeString("ActivatedMessageHtml.Text");
+                Activate.ActivateInstructionsHtml = LocalizeString("ActivateInstructionsHtml.Text");
+                Activate.ActivationDataInvalidHtml = LocalizeString("ActivationDataInvalidHtml.Text");
+                Activate.ActivationFailureCouldNotUpdateConfigHtml = LocalizeString("ActivationFailureCouldNotUpdateConfigHtml.Text");
+                Activate.ActivationFailureCouldNotWriteDataFileHtml = LocalizeString("ActivationFailureCouldNotWriteDataFileHtml.Text");
+                Activate.ActivationFailureCouldNotWriteLicenceFileHtml = LocalizeString("ActivationFailureCouldNotWriteLicenceFileHtml.Text");
+                Activate.ActivationFailureGenericHtml = LocalizeString("ActivationFailureGenericHtml.Text");
+                Activate.ActivationFailureHttpHtml = LocalizeString("ActivationFailureHttpHtml.Text");
+                Activate.ActivationFailureInvalidHtml = LocalizeString("ActivationFailureInvalidHtml.Text");
+                Activate.ActivationStreamFailureHtml = LocalizeString("ActivationStreamFailureHtml.Text");
+                Activate.ActivationSuccessHtml = LocalizeString("ActivationSuccessHtml.Text");
+                Activate.ValidationFileErrorText = LocalizeString("ValidationFileErrorText.Text");
+                Activate.ValidationRequiredErrorText = LocalizeString("ValidationRequiredErrorText.Text");
+                Activate.ValidationRegExErrorText = LocalizeString("ValidationRegExErrorText.Text");
+                Activate.RefreshButtonText = LocalizeString("RefreshButtonText.Text");
+                Activate.UploadButtonText = LocalizeString("UploadButtonText.Text");
+                Activate.UploadInstructionsHtml = LocalizeString("UploadInstructionsHtml.Text");
+            }
+            else
+            {
+                // premium
+                DeviceExplorer.BackButtonDeviceText = LocalizeString("BackButtonDeviceText.Text");
+                DeviceExplorer.BackButtonDevicesText = LocalizeString("BackButtonDevicesText.Text");
+                DeviceExplorer.DeviceExplorerDeviceHtml = LocalizeString("DeviceExplorerDeviceInstructionsHtml.Text");
+                DeviceExplorer.DeviceExplorerModelsHtml = LocalizeString("DeviceExplorerModelsInstructionsHtml.Text");
+                DeviceExplorer.DeviceExplorerVendorsHtml = LocalizeString("DeviceExplorerVendorsHtml.Text");
+            }
+
+            if (IsPostBack)
+                return;
+
+            var vendor = Request.QueryString["Vendor"];
+            var model = Request.QueryString["Model"];
+            var deviceId = Request.QueryString["DeviceID"];
+            var searchQuery = Request.QueryString["Query"];
+
+            var hasVendor = !string.IsNullOrEmpty(vendor);
+            var hasModel = !string.IsNullOrEmpty(model);
+            var hasDeviceId = !string.IsNullOrEmpty(deviceId);
+            var hasSearchQuery = !string.IsNullOrEmpty(searchQuery);
+
+            if (hasVendor)
+                DeviceExplorer.Vendor = vendor;
+
+            if (hasModel)
+                DeviceExplorer.Model = model;
+            
+            if (hasDeviceId)
+                DeviceExplorer.DeviceID = deviceId;
+            
+            if (hasSearchQuery)
+                SearchTextBox.Text = Server.UrlDecode(searchQuery);
+
+            NoResultsMessage.Visible = hasSearchQuery && !hasDeviceId && !hasModel && !hasVendor;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="154" sc="5" el="164" ec="6">Administration.ascx.cs</location>
+            <body hash="647fe5535e5194e307987da63a44dff9"><![CDATA[{
+        base.OnLoad(e);
+
+        if (!IsPostBack)
+        {
+            cbDetectionEnabled.Checked = cbDetectionEnabledPremium.Checked = GetDetectionConfig("enabled", true);
+            cbAutoUpdatesEnabled.Checked = cbAutoUpdatesEnabledPremium.Checked = GetDetectionConfig("autoUpdate", true);
+            cbShareUsageEnabled.Checked = cbShareUsageEnabledPremium.Checked = GetDetectionConfig("shareUsage", true);
+
+        }
+    }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnPreRender">
+          <declaration><![CDATA[protected override void OnPreRender(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="167" sc="9" el="171" ec="10">Administration.ascx.cs</location>
+            <body hash="2f9643605d1a815cd0adab9e9651f97f"><![CDATA[{
+            base.OnPreRender(e);
+            PremiumUpload.Visible = DataProvider.IsPremium;
+            purchaseBox.Visible = !DataProvider.IsPremium;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SearchButtonClick">
+          <declaration><![CDATA[private void SearchButtonClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="204" sc="9" el="226" ec="10">Administration.ascx.cs</location>
+            <body hash="13f2aa4c42e2290db99d8d7985b3f737"><![CDATA[{
+
+            string additionalParams = string.Empty;
+            if (DataProvider.IsPremium)
+            {
+                var deviceList = DataProvider.FindDevices(this.SearchTextBox.Text);
+                if (deviceList != null && deviceList.Count > 0)
+                {
+                    additionalParams = "DeviceID=" + deviceList.First().DeviceID;
+                }
+            }
+            else
+            {
+                var deviceId = DataProvider.GetDeviceID(this.SearchTextBox.Text);
+                if (deviceId != null)
+                {
+                    additionalParams = "DeviceID=" + deviceId;
+                }
+            }
+            
+            var url = EditUrl(TabId, string.Empty, false, "Query=" + Server.UrlEncode(SearchTextBox.Text), additionalParams);
+            Response.Redirect(url);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ShareUsageEnabledChanged">
+          <declaration><![CDATA[private void ShareUsageEnabledChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="247" sc="9" el="249" ec="10">Administration.ascx.cs</location>
+            <body hash="c13ae647e123948a5427e8ffe84b3ccb"><![CDATA[{
+            UpdateDetectionConfig("shareUsage", (sender as CheckBox).Checked);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateDetectionConfig">
+          <declaration><![CDATA[private void UpdateDetectionConfig(string attrName, bool enabled)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="252" sc="9" el="267" ec="10">Administration.ascx.cs</location>
+            <body hash="e49b09153f1b9db99f04053fb3eab326"><![CDATA[{
+            var section = Support.GetWebApplicationSection("fiftyOne/detection", false);
+            if (section != null)
+            {
+                var document = new XmlDocument();
+                document.LoadXml(section.SectionInformation.GetRawXml());
+                document.DocumentElement.SetAttribute(attrName, enabled.ToString().ToLowerInvariant());
+
+                section.SectionInformation.SetRawXml(document.InnerXml);
+
+                section.CurrentConfiguration.Save(ConfigurationSaveMode.Modified);
+
+                Config.Touch();
+                Response.Redirect(Request.RawUrl);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UploadComplete">
+          <declaration><![CDATA[private void UploadComplete(object sender, ActivityResult e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="174" sc="9" el="177" ec="10">Administration.ascx.cs</location>
+            <body hash="e7eca1d6180ee34ea5df23602044462f"><![CDATA[{
+            PremiumUploadError.Visible = !e.Success;
+            PremiumUploadSuccess.Visible = e.Success;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Activate">
+          <declaration><![CDATA[protected Activate Activate;]]></declaration>
+          <documentation>
+            <summary>
+ Activate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="BrowserList">
+          <declaration><![CDATA[protected Repeater BrowserList;]]></declaration>
+          <documentation>
+            <summary>
+ BrowserList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cbAutoUpdatesEnabled">
+          <declaration><![CDATA[protected CheckBox cbAutoUpdatesEnabled;]]></declaration>
+          <documentation>
+            <summary>
+ cbAutoUpdatesEnabled control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cbAutoUpdatesEnabledPremium">
+          <declaration><![CDATA[protected CheckBox cbAutoUpdatesEnabledPremium;]]></declaration>
+          <documentation>
+            <summary>
+ cbAutoUpdatesEnabledPremium control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cbDetectionEnabled">
+          <declaration><![CDATA[protected CheckBox cbDetectionEnabled;]]></declaration>
+          <documentation>
+            <summary>
+ cbDetectionEnabled control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cbDetectionEnabledPremium">
+          <declaration><![CDATA[protected CheckBox cbDetectionEnabledPremium;]]></declaration>
+          <documentation>
+            <summary>
+ cbDetectionEnabledPremium control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cbShareUsageEnabled">
+          <declaration><![CDATA[protected CheckBox cbShareUsageEnabled;]]></declaration>
+          <documentation>
+            <summary>
+ cbShareUsageEnabled control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cbShareUsageEnabledPremium">
+          <declaration><![CDATA[protected CheckBox cbShareUsageEnabledPremium;]]></declaration>
+          <documentation>
+            <summary>
+ cbShareUsageEnabledPremium control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ContentList">
+          <declaration><![CDATA[protected Repeater ContentList;]]></declaration>
+          <documentation>
+            <summary>
+ ContentList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DeviceExplorer">
+          <declaration><![CDATA[protected DnnDeviceExplorer DeviceExplorer;]]></declaration>
+          <documentation>
+            <summary>
+ DeviceExplorer control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="HardwareList">
+          <declaration><![CDATA[protected Repeater HardwareList;]]></declaration>
+          <documentation>
+            <summary>
+ HardwareList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="IsPremium">
+          <declaration><![CDATA[protected bool IsPremium = DataProvider.IsPremium || DataProvider.IsCms;]]></declaration>
+          <documentation>
+            <summary>
+  Records if premium data is in use when the control is first loaded.
+ </summary>
+          </documentation>
+        </field>
+        <field name="LiteStats">
+          <declaration><![CDATA[protected Stats LiteStats;]]></declaration>
+          <documentation>
+            <summary>
+ LiteStats control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="NoResultsMessage">
+          <declaration><![CDATA[protected HtmlGenericControl NoResultsMessage;]]></declaration>
+          <documentation>
+            <summary>
+ NoResultsMessage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="PremiumStats">
+          <declaration><![CDATA[protected Stats PremiumStats;]]></declaration>
+          <documentation>
+            <summary>
+ PremiumStats control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="PremiumUpload">
+          <declaration><![CDATA[protected Upload PremiumUpload;]]></declaration>
+          <documentation>
+            <summary>
+ PremiumUpload control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="PremiumUploadError">
+          <declaration><![CDATA[protected HtmlGenericControl PremiumUploadError;]]></declaration>
+          <documentation>
+            <summary>
+ PremiumUploadError control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="PremiumUploadSuccess">
+          <declaration><![CDATA[protected HtmlGenericControl PremiumUploadSuccess;]]></declaration>
+          <documentation>
+            <summary>
+ PremiumUploadSuccess control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="purchaseBox">
+          <declaration><![CDATA[protected HtmlGenericControl purchaseBox;]]></declaration>
+          <documentation>
+            <summary>
+ purchaseBox control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="RequiredFieldValidator1">
+          <declaration><![CDATA[protected RequiredFieldValidator RequiredFieldValidator1;]]></declaration>
+          <documentation>
+            <summary>
+ RequiredFieldValidator1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="SearchButton">
+          <declaration><![CDATA[protected LinkButton SearchButton;]]></declaration>
+          <documentation>
+            <summary>
+ SearchButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="SearchTextBox">
+          <declaration><![CDATA[protected TextBox SearchTextBox;]]></declaration>
+          <documentation>
+            <summary>
+ SearchTextBox control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="SoftwareList">
+          <declaration><![CDATA[protected Repeater SoftwareList;]]></declaration>
+          <documentation>
+            <summary>
+ SoftwareList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="DnnDeviceExplorer">
+      <declaration><![CDATA[public class DnnDeviceExplorer : DeviceExplorer]]></declaration>
+      <documentation>
+        <summary>
+ Inherits from DeviceExplorer, overrides URL generation methods and UI building methods to add DNN specific functionality.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DnnDeviceExplorer()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddLabel">
+          <declaration><![CDATA[protected override void AddLabel(WebControl panel, string text, string tooltip, Uri url, string anchor)]]></declaration>
+          <documentation>
+            <summary>
+ Builds a label (conditionally using the dnnTooltip) and adds it to the provided panel.
+ </summary>
+ <param name="panel">The panel to add label to.</param>
+ <param name="text">The text of the label.</param>
+ <param name="tooltip">The value of the tooltip.</param>
+ <param name="url">The URL to be included in the tooltip. Presence dictates that the tooltip a link.</param>
+ <param name="anchor">The name of the anchor.</param></documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="96" ec="10">DnnDeviceExplorer.cs</location>
+            <body hash="9b32484e509ad3b008d1130b18553218"><![CDATA[{
+            var toolTip = new Literal {Text = string.Format("<span>{0}</span>", text)};
+
+            panel.Controls.Add(toolTip);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNewUrl">
+          <declaration><![CDATA[protected override string GetNewUrl(string key, string value)]]></declaration>
+          <documentation>
+            <summary>
+ Revises current page URL with a specific key/value parameter.
+ </summary>
+ <param name="key">The key to be added to the querystring.</param>
+ <param name="value">The value to be added to the querystring.</param>
+ <returns>The fully qualified URL.</returns></documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="43" ec="10">DnnDeviceExplorer.cs</location>
+            <body hash="c3be9e9b31662ada690332d4f43f6aea"><![CDATA[{
+            return GetNewUrl(new NameValueCollection(Request.QueryString), key, value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNewUrl">
+          <declaration><![CDATA[protected override string GetNewUrl(NameValueCollection parameters, string key, string value)]]></declaration>
+          <documentation>
+            <summary>
+ Revises current page URL with a specific key/value parameter.
+ </summary>
+ <param name="parameters">The current query string parameters. Used for </param>
+ <param name="key">The key to be added to the querystring.</param>
+ <param name="value">The value to be added to the querystring.</param>
+ <returns>The fully qualified URL.</returns></documentation>
+          <codeblock>
+            <location sl="53" sc="9" el="81" ec="10">DnnDeviceExplorer.cs</location>
+            <body hash="1efcfc185a1e78d1df63f562831b9a9f"><![CDATA[{
+            var tabIdSetting = parameters["TabID"];
+            int tabId;
+            
+            if (int.TryParse(tabIdSetting, out tabId))
+            {
+                if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(value))
+                {
+                    return Globals.NavigateURL(tabId);
+                }
+
+                var deviceIdKey = parameters["DeviceID"] != null && key != "DeviceID" ? "DeviceID=" + parameters["DeviceID"] : string.Empty;
+                string vendorKey = string.Empty;
+                string modelKey = string.Empty;
+
+                // only set vendor key and model if device ID is not set
+                if (deviceIdKey == string.Empty && key != "DeviceID")
+                {
+                    vendorKey = parameters["Vendor"] != null && key != "Vendor" ? "Vendor=" + parameters["Vendor"] : string.Empty;
+                    modelKey = parameters["Model"] != null && key != "Model" ? "Model=" + parameters["Model"] : string.Empty;
+                }
+
+                var queryKey = parameters["Query"] != null ? "Query=" + parameters["Query"] : string.Empty;
+
+                return Globals.NavigateURL(tabId, string.Empty, queryKey, key + "=" + value, deviceIdKey, modelKey, vendorKey);
+            }
+
+            return string.Empty;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="FiftyOneClientCapability">
+      <declaration><![CDATA[public class FiftyOneClientCapability : ClientCapability]]></declaration>
+      <documentation>
+        <summary>
+ 51Degrees.mobi Implementation of IClientCapability
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FiftyOneClientCapability(Device device)]]></declaration>
+          <documentation>
+            <summary>
+ Constructs a new instance of ClientCapability.
+ See http://51degrees.mobi/Products/DeviceData/PropertyDictionary.aspx
+ for a full list of available properties.
+ All the properties used are non-lists and therefore the first
+ item contained in the values list contains the only available value.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="53" ec="10">FiftyOneClientCapability.cs</location>
+            <body hash="692d10e4d87284eefa55c3a63d92fc7a"><![CDATA[public FiftyOneClientCapability(Device device)
+        {
+            Initialise(device.GetPropertyValuesAsStrings().ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToArray()));
+            UserAgent = device.UserAgent;
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FiftyOneClientCapability(HttpBrowserCapabilities browserCaps)]]></declaration>
+          <documentation>
+            <summary>
+ Constructs a new instance of ClientCapability.
+ See http://51degrees.mobi/Products/DeviceData/PropertyDictionary.aspx
+ for a full list of available properties.
+ All the properties used are non-lists and therefore the first
+ item contained in the values list contains the only available value.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="62" sc="9" el="68" ec="10">FiftyOneClientCapability.cs</location>
+            <body hash="fc05c444fe92543a01f3f21a91fbba98"><![CDATA[public FiftyOneClientCapability(HttpBrowserCapabilities browserCaps)
+        {
+            if (browserCaps != null)
+            {
+                Initialise(browserCaps.Capabilities[Constants.FiftyOneDegreesProperties] as SortedList<string, string[]>);
+            }
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FiftyOneClientCapability(SortedList<string, string[]> properties)]]></declaration>
+          <documentation>
+            <summary>
+ Constructs a new instance of ClientCapability.
+ See http://51degrees.mobi/Products/DeviceData/PropertyDictionary.aspx
+ for a full list of available properties.
+ All the properties used are non-lists and therefore the first
+ item contained in the values list contains the only available value.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="77" sc="9" el="80" ec="10">FiftyOneClientCapability.cs</location>
+            <body hash="6a41f31f08833ab0c104ed52a02515bc"><![CDATA[public FiftyOneClientCapability(SortedList<string, string[]> properties)
+        {
+            Initialise(properties);
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FiftyOneClientCapability(Match match)]]></declaration>
+          <documentation>
+            <summary>
+ Constructs a new instance of ClientCapability.
+ See http://51degrees.mobi/Products/DeviceData/PropertyDictionary.aspx
+ for a full list of available properties.
+ All the properties used are non-lists and therefore the first
+ item contained in the values list contains the only available value.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="9" el="93" ec="10">FiftyOneClientCapability.cs</location>
+            <body hash="6f1dcf92835a2bea4d02871040a4b430"><![CDATA[public FiftyOneClientCapability(Match match)
+        {
+            Initialise(match.Results);
+            UserAgent = match.TargetUserAgent;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetBoolValue">
+          <declaration><![CDATA[private static bool GetBoolValue(IDictionary<string, string[]> properties, string property)]]></declaration>
+          <documentation>
+            <summary>
+ Returns the property of the HttpBrowserCapabilities collection
+ as an boolean.
+ </summary>
+ <param name="properties">A collection of device related capabilities.</param>
+ <param name="property">The name of the property to return as a boolean.</param>
+ <returns>The boolean value of the property, or false if the property is not found or it's value is not an boolean.</returns></documentation>
+          <codeblock>
+            <location sl="145" sc="9" el="151" ec="10">FiftyOneClientCapability.cs</location>
+            <body hash="1e308ac2197f117eb11f19ead53d0732"><![CDATA[{
+            bool value;
+            if (properties.ContainsKey(property) &&
+                bool.TryParse(properties[property][0], out value))
+                return value;
+            return false;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCapabilities">
+          <declaration><![CDATA[private static IDictionary<string, string> GetCapabilities(IDictionary<string, string[]> properties)]]></declaration>
+          <documentation>
+            <summary>
+ Returns a dictionary of capability names and values as strings based on the object
+ keys and values held in the browser capabilities provided. The value string may
+ contains pipe (|) seperated lists of values.
+ </summary>
+ <param name="properties">A collection of device related capabilities.</param>
+ <returns>Device related capabilities with property names and values converted to strings.</returns></documentation>
+          <codeblock>
+            <location sl="133" sc="9" el="135" ec="10">FiftyOneClientCapability.cs</location>
+            <body hash="69cc70257197f8fbdf403bb91922dd67"><![CDATA[{
+            return properties.Keys.ToDictionary(key => key, key => String.Join(Constants.ValueSeperator, properties[key].ToArray()));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetIntValue">
+          <declaration><![CDATA[private static int GetIntValue(IDictionary<string, string[]> properties, string property)]]></declaration>
+          <documentation>
+            <summary>
+ Returns the property of the HttpBrowserCapabilities collection
+ as an integer.
+ </summary>
+ <param name="properties">A collection of device related capabilities.</param>
+ <param name="property">The name of the property to return as a integer.</param>
+ <returns>The integer value of the property, or 0 if the property is not found or it's value is not an integer.</returns></documentation>
+          <codeblock>
+            <location sl="161" sc="9" el="167" ec="10">FiftyOneClientCapability.cs</location>
+            <body hash="b9aa6e4b83dc59474a39d5739c394aaa"><![CDATA[{
+            int value;
+            if (properties.ContainsKey(property) &&
+                int.TryParse(properties[property][0], out value))
+                return value;
+            return 0;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetStringValue">
+          <declaration><![CDATA[private static string GetStringValue(IDictionary<string, string[]> properties, string property)]]></declaration>
+          <documentation>
+            <summary>
+ Returns the property of the HttpBrowserCapabilities collection
+ as a string.
+ </summary>
+ <param name="properties">A collection of device related properties.</param>
+ <param name="property">The name of the property to return as a string.</param>
+ <returns>The string value of the property, or null if the property is not found.</returns></documentation>
+          <codeblock>
+            <location sl="177" sc="9" el="181" ec="10">FiftyOneClientCapability.cs</location>
+            <body hash="d66cd14f759ef3c71cb661c992cb7b89"><![CDATA[{
+            if (properties.ContainsKey(property))
+                return properties[property][0];
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Initialise">
+          <declaration><![CDATA[private void Initialise(IDictionary<string, string[]> properties)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="96" sc="9" el="119" ec="10">FiftyOneClientCapability.cs</location>
+            <body hash="2279c4d7ecc04bd9ebb3a39d66d19e19"><![CDATA[{
+            if (properties != null)
+            {
+                // Set Lite properties
+                ID = GetStringValue(properties, "Id");
+                IsMobile = GetBoolValue(properties, "IsMobile");
+                ScreenResolutionWidthInPixels = GetIntValue(properties, "ScreenPixelsWidth");
+                ScreenResolutionHeightInPixels = GetIntValue(properties, "ScreenPixelsHeight");
+                // Set Premium properties
+                IsTablet = GetBoolValue(properties, "IsTablet");
+                IsTouchScreen = GetBoolValue(properties, "HasTouchScreen");
+                BrowserName = GetStringValue(properties, "BrowserName");
+                Capabilities = GetCapabilities(properties);
+
+                // The following properties are not provided by 51Degrees.mobi and
+                // are therefore set to default values.
+                SupportsFlash = false;
+                HtmlPreferedDTD = null;
+
+                //set IsMobile to false when IsTablet is true.
+                if (IsTablet)
+                    IsMobile = false;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="FiftyOneClientCapabilityProvider">
+      <declaration><![CDATA[public class FiftyOneClientCapabilityProvider : ClientCapabilityProvider]]></declaration>
+      <documentation>
+        <summary>
+ 51Degrees.mobi implementation of ClientCapabilityProvider
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FiftyOneClientCapabilityProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static FiftyOneClientCapabilityProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="9" el="53" ec="78">FiftyOneClientCapabilityProvider.cs</location>
+            <body hash="c457f88afb6db2588d80e92f3e34b8d7"><![CDATA[static readonly object _allCapabilitiesLock = new object();
+        static IQueryable<IClientCapability> _allCapabilities;
+
+        static readonly object _allClientCapabilityValuesLock = new object();]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetAllClientCapabilities">
+          <declaration><![CDATA[public override IQueryable<IClientCapability> GetAllClientCapabilities()]]></declaration>
+          <documentation>
+            <summary>
+ Returns All available Client Capabilities present
+ </summary>
+ <returns>
+ List of IClientCapability present
+ </returns></documentation>
+          <codeblock>
+            <location sl="201" sc="9" el="203" ec="10">FiftyOneClientCapabilityProvider.cs</location>
+            <body hash="8560791d79490b13b8cbac445c90a46a"><![CDATA[{
+            return AllCapabilities;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAllClientCapabilityValues">
+          <declaration><![CDATA[public override IDictionary<string, List<string>> GetAllClientCapabilityValues()]]></declaration>
+          <documentation>
+            <summary>
+ Returns available Capability Values for every Capability Name
+ </summary>
+ <returns>
+ Dictionary of Capability Name along with List of possible values of the Capability
+ </returns>
+ <example>Capability Name = mobile_browser, value = Safari, Andriod Webkit </example></documentation>
+          <codeblock>
+            <location sl="190" sc="9" el="192" ec="10">FiftyOneClientCapabilityProvider.cs</location>
+            <body hash="a98810acfead5be9bb7e4c67137b34b8"><![CDATA[{
+            return ClientCapabilityValues;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetClientCapability">
+          <declaration><![CDATA[public override IClientCapability GetClientCapability(string userAgent)]]></declaration>
+          <documentation>
+            <summary>
+ Returns ClientCapability based on the user agent provided.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="145" sc="9" el="163" ec="10">FiftyOneClientCapabilityProvider.cs</location>
+            <body hash="a40dbccafe2f3c6fca494cf2e4475bbd"><![CDATA[{
+            var request = HttpContext.Current != null ? HttpContext.Current.Request : null;
+            if (request != null && request.UserAgent == userAgent &&
+                request.Browser.Capabilities.Contains(Constants.FiftyOneDegreesProperties))
+            {
+                // The useragent has already been processed by 51Degrees.mobi when the request
+                // was processed by the detector module. Uses the values obtained then.
+                var clientCapability = new FiftyOneClientCapability(request.Browser) {UserAgent = request.UserAgent};
+                return clientCapability;
+            }
+            // The useragent has not already been processed. Therefore process it now
+            // and then set the properties.
+            var match = WebProvider.ActiveProvider.Match(userAgent);
+            if (match != null)
+            {
+                return new FiftyOneClientCapability(match);
+            }
+            return new FiftyOneClientCapability(null as SortedList<string, string[]>);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetClientCapabilityById">
+          <declaration><![CDATA[public override IClientCapability GetClientCapabilityById(string deviceId)]]></declaration>
+          <documentation>
+            <summary>
+ Returns ClientCapability based on device Id provided.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="169" sc="9" el="180" ec="10">FiftyOneClientCapabilityProvider.cs</location>
+            <body hash="ccf45694ec0e886c87b999d12dd79a33"><![CDATA[{
+            Requires.NotNullOrEmpty("deviceId", deviceId);
+
+            var device = DataProvider.GetDeviceFromDeviceID(deviceId);
+            
+			if(device == null)
+			{
+                throw new MobileException(string.Format("Can't get device capability for the id '{0}'", deviceId));
+			}
+
+            return new FiftyOneClientCapability(device);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_allCapabilities">
+          <declaration><![CDATA[private static IQueryable<IClientCapability> _allCapabilities;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_allCapabilitiesLock">
+          <declaration><![CDATA[private static readonly object _allCapabilitiesLock = new object();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_allClientCapabilityValues">
+          <declaration><![CDATA[private static Dictionary<string, List<string>> _allClientCapabilityValues;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_allClientCapabilityValuesLock">
+          <declaration><![CDATA[private static readonly object _allClientCapabilityValuesLock = new object();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_highPiorityCapabilityValues">
+          <declaration><![CDATA[private static IDictionary<string, int> _highPiorityCapabilityValues;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="AllCapabilities">
+          <declaration><![CDATA[private static IQueryable<IClientCapability> AllCapabilities]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="13" el="75" ec="14">FiftyOneClientCapabilityProvider.cs</location>
+            <body hash="ef29eacf7b3d011b3f90fe46e370dbdf"><![CDATA[{
+                if (_allCapabilities == null)
+                {
+                    lock (_allCapabilitiesLock)
+                    {
+                        if (_allCapabilities == null)
+                        {
+                            var capabilities = DataProvider.Devices.Select(device => new FiftyOneClientCapability(device)).Cast<IClientCapability>().ToList();
+
+                            _allCapabilities = capabilities.AsQueryable();
+                        }
+                    }
+                }
+                return _allCapabilities;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ClientCapabilityValues">
+          <declaration><![CDATA[private static Dictionary<string, List<string>> ClientCapabilityValues]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="81" sc="13" el="109" ec="14">FiftyOneClientCapabilityProvider.cs</location>
+            <body hash="a6d7d36b85f2d6be10967376c5a81d65"><![CDATA[{
+                if (_allClientCapabilityValues == null)
+                {
+                    lock (_allClientCapabilityValuesLock)
+                    {
+                        if (_allClientCapabilityValues == null)
+                        {
+                            _allClientCapabilityValues = new Dictionary<string, List<string>>();
+
+                            foreach (var property in DataProvider.Properties)
+                            {
+                                var values = property.Values.Select(value => value.Name).ToList();
+                                _allClientCapabilityValues.Add(property.Name, values);
+                            }
+                        }
+                    }
+
+                    _allClientCapabilityValues = _allClientCapabilityValues.OrderByDescending(kvp =>
+                                                                {
+                                                                    if (HighPiorityCapabilityValues.ContainsKey(kvp.Key))
+                                                                    {
+                                                                        return HighPiorityCapabilityValues[kvp.Key];
+                                                                    }
+                                                                    return 0;
+                                                                }).ThenBy(kvp => kvp.Key).ToDictionary(pair => pair.Key, pair => pair.Value);
+                }
+
+                return _allClientCapabilityValues;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="HighPiorityCapabilityValues">
+          <declaration><![CDATA[private static IDictionary<string, int> HighPiorityCapabilityValues]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="115" sc="13" el="134" ec="14">FiftyOneClientCapabilityProvider.cs</location>
+            <body hash="71aad1483ebc448e79f8be0f46129723"><![CDATA[{
+                if (_highPiorityCapabilityValues == null)
+                {
+                    //add some common capability as high piority capability values, it will appear at the top of capability values list.
+                    _highPiorityCapabilityValues = new Dictionary<string, int>();
+
+                    _highPiorityCapabilityValues.Add("IsMobile", 100);
+                    _highPiorityCapabilityValues.Add("IsTablet", 95);
+                    _highPiorityCapabilityValues.Add("PlatformName", 90);
+                    _highPiorityCapabilityValues.Add("BrowserName", 85);
+                    _highPiorityCapabilityValues.Add("BrowserVersion", 80);
+                    _highPiorityCapabilityValues.Add("HasTouchScreen", 75);
+                    _highPiorityCapabilityValues.Add("PlatformVersion", 70);
+                    _highPiorityCapabilityValues.Add("ScreenPixelsWidth", 65);
+                    _highPiorityCapabilityValues.Add("ScreenPixelsHeight", 60);
+                    _highPiorityCapabilityValues.Add("HardwareVendor", 55);
+                }
+
+                return _highPiorityCapabilityValues;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SupportsTabletDetection">
+          <declaration><![CDATA[public override bool SupportsTabletDetection]]></declaration>
+          <documentation>
+            <summary>
+ Indicates whether tablet detection is supported in the available data set.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="215" sc="13" el="217" ec="14">FiftyOneClientCapabilityProvider.cs</location>
+            <body hash="e29d51732df0d5f3eee8c19df9ffea82"><![CDATA[{
+                return ClientCapabilityValues.ContainsKey("IsTablet");
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Providers.FiftyOneClientCapabilityProvider.Components">
+    <class name="FeatureController">
+      <declaration><![CDATA[public class FeatureController : ModuleController, IUpgradeable]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+             <summary>
+ The FeatureController class for the modules.
+ </summary>
+ <remarks>
+ </remarks>
+ <history>
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FeatureController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddClientResourceAdminHostPage">
+          <declaration><![CDATA[private static void AddClientResourceAdminHostPage()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="252" sc="9" el="273" ec="10">Components\FeatureController.cs</location>
+            <body hash="dab60494d3e20fdae01b1469637b15d6"><![CDATA[{
+            DesktopModuleInfo desktopModule = DesktopModuleController.GetDesktopModuleByModuleName(Constants.ModuleName, Null.NullInteger);
+            ModuleDefinitionInfo moduleDefinition = desktopModule.ModuleDefinitions[Constants.ModuleDefinitionName];
+
+            // Remove the page if it already exists to ensure the page can be added.
+            // Handles cases where the page has been removed by the user.
+            try
+            {
+                Upgrade.RemoveHostPage(Localization.GetString("PageName", ResourceFileRelativePath));
+            }
+            catch
+            {
+                // Do nothing.
+            }
+
+            TabInfo hostPage = Upgrade.AddHostPage(Localization.GetString("PageName", ResourceFileRelativePath),
+                                                   Localization.GetString("PageDescription", ResourceFileRelativePath),
+                                                   Constants.ConfigIconFileThumbNail,
+                                                   Constants.ConfigIconFileLarge, true);
+
+            Upgrade.AddModuleToPage(hostPage, moduleDefinition.ModuleDefID, Localization.GetString("ModuleTitle", ResourceFileRelativePath), Constants.ConfigIconFileLarge, true);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateMappedCapabilities">
+          <declaration><![CDATA[private IDictionary<string, string> CreateMappedCapabilities()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="230" sc="9" el="249" ec="10">Components\FeatureController.cs</location>
+            <body hash="3b8b5caf4befc2e2d748221e3699d1e6"><![CDATA[{
+            var mappingCapabilites = new Dictionary<string, string>();
+            mappingCapabilites.Add("is_wireless_device", "IsMobile");
+            mappingCapabilites.Add("resolution_width", "ScreenPixelsWidth");
+            mappingCapabilites.Add("resolution_height", "ScreenPixelsHeight");
+            if (DotNetNukeContext.Current.Application.Name != "DNNCORP.CE")
+            {
+                mappingCapabilites.Add("is_tablet", "IsTablet");
+                mappingCapabilites.Add("device_os", "PlatformName");
+                mappingCapabilites.Add("mobile_browser", "BrowserName");
+                mappingCapabilites.Add("mobile_browser_version", "BrowserVersion");
+                mappingCapabilites.Add("device_os_version", "PlatformVersion");
+                mappingCapabilites.Add("brand_name", "HardwareVendor");
+                mappingCapabilites.Add("cookie_support", "CookiesCapable");
+                mappingCapabilites.Add("model_name", "HardwareModel");
+                mappingCapabilites.Add("physical_screen_height", "ScreenMMHeight");
+                mappingCapabilites.Add("physical_screen_width", "ScreenMMWidth");
+            }
+            return mappingCapabilites;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveWurflProvider">
+          <declaration><![CDATA[private void RemoveWurflProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="156" sc="9" el="165" ec="10">Components\FeatureController.cs</location>
+            <body hash="c202879b63e7dceca9daa8cf5be2add0"><![CDATA[{
+            var package = PackageController.Instance.GetExtensionPackage(Null.NullInteger, p => p.Name =="DotNetNuke.WURFLClientCapabilityProvider");
+            if(package != null)
+            {
+                var installer = new Installer(package, Globals.ApplicationMapPath);
+                installer.UnInstall(true);
+            }
+
+            UpdateRules();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateRules">
+          <declaration><![CDATA[private void UpdateRules()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="168" sc="9" el="227" ec="10">Components\FeatureController.cs</location>
+            <body hash="189e0f965fff88d3f5dc6401296a1b90"><![CDATA[{
+            var mapCapabilites = CreateMappedCapabilities();
+            IRedirectionController controller = new RedirectionController();
+            var redirections = controller.GetAllRedirections();
+            foreach (var redirection in redirections.Where(redirection => redirection.MatchRules.Count > 0))
+            {
+                var deletedRules = new List<IMatchRule>();
+                foreach (var rule in redirection.MatchRules)
+                {
+                    if (rule.Capability == "pointing_method")
+                    {
+                        switch (rule.Expression)
+                        {
+                            case "clickwheel":
+                                rule.Capability = "HasClickWheel";
+                                rule.Expression = "True";
+                                break;
+                            case "touchscreen":
+                                rule.Capability = "HasTouchScreen";
+                                rule.Expression = "True";
+                                break;
+                            default:
+                                deletedRules.Add(rule);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        if (mapCapabilites.ContainsKey(rule.Capability))
+                        {
+                            rule.Capability = mapCapabilites[rule.Capability];
+                            switch (rule.Expression)
+                            {
+                                case "true":
+                                    rule.Expression = "True";
+                                    break;
+                                case "false":
+                                    rule.Expression = "False";
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            deletedRules.Add(rule);
+                        }
+                    }
+                    
+                }
+
+                //remove the deleted rules
+                foreach (var deletedRule in deletedRules)
+                {
+                    controller.DeleteRule(redirection.PortalId, redirection.Id, deletedRule.Id);
+                    redirection.MatchRules.Remove(deletedRule);
+                }
+
+                controller.Save(redirection);
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+ Handles upgrading the module and adding the module to the hosts menu.
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="136" sc="9" el="153" ec="10">Components\FeatureController.cs</location>
+            <body hash="f970c75ba8d1a493bffb0520d3cf26a3"><![CDATA[{
+            switch (version)
+            {
+                case "06.01.05":
+                    PackageInfo package = PackageController.Instance.GetExtensionPackage(Null.NullInteger, p => p.Name == Constants.PackageName);
+                    IDictionary<int, TabInfo> moduleTabs = TabController.Instance.GetTabsByPackageID(-1, package.PackageID, false);
+
+                    if (moduleTabs.Count > 0)
+                        return string.Empty;
+
+                    AddClientResourceAdminHostPage();
+
+                    RemoveWurflProvider();
+                    break;
+            }
+
+            return Localization.GetString("SuccessMessage", ResourceFileRelativePath);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="ResourceFileRelativePath">
+          <declaration><![CDATA[private const string ResourceFileRelativePath = "~/DesktopModules/Admin/FiftyOneClientCapabilityProvider/App_LocalResources/SharedResources.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Providers.FiftyOneClientCapabilityProvider.Properties">
+    <class name="Constants">
+      <declaration><![CDATA[public static class Constants]]></declaration>
+      <documentation>
+        <summary>
+ A list of constants used to configure the package.
+ </summary>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="ConfigIconFileLarge">
+          <declaration><![CDATA[public const string ConfigIconFileLarge = "~/DesktopModules/Admin/FiftyOneClientCapabilityProvider/Images/mobiledevicedet_32X32.png";]]></declaration>
+          <documentation>
+            <summary>
+ Larger image used to indicate 51Degrees.mobi.
+ </summary>
+          </documentation>
+        </field>
+        <field name="ConfigIconFileThumbNail">
+          <declaration><![CDATA[public const string ConfigIconFileThumbNail = "~/DesktopModules/Admin/FiftyOneClientCapabilityProvider/Images/mobiledevicedet_16X16.png";]]></declaration>
+          <documentation>
+            <summary>
+ Thumb nail image used to indicate 51Degrees.mobi.
+ </summary>
+          </documentation>
+        </field>
+        <field name="ModuleDefinitionName">
+          <declaration><![CDATA[public const string ModuleDefinitionName = "Administration";]]></declaration>
+          <documentation>
+            <summary>
+ The name of the module definition.
+ </summary>
+          </documentation>
+        </field>
+        <field name="ModuleName">
+          <declaration><![CDATA[public const string ModuleName = "51Degrees.mobi";]]></declaration>
+          <documentation>
+            <summary>
+ The name of the module.
+ </summary>
+          </documentation>
+        </field>
+        <field name="PackageName">
+          <declaration><![CDATA[public const string PackageName = "FiftyOneClientCapabilityProvider";]]></declaration>
+          <documentation>
+            <summary>
+ The package name.
+ </summary>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="RetailerConstants">
+      <declaration><![CDATA[public static class RetailerConstants]]></declaration>
+      <documentation>
+        <summary>
+ A list of constants to use with the purchase solution.
+ </summary>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="RETAILER_NAME">
+          <declaration><![CDATA[public const string RETAILER_NAME = "DotNetNuke Store";]]></declaration>
+          <documentation>
+            <summary>
+ The name of the retailer.
+ </summary>
+          </documentation>
+        </field>
+        <field name="RETAILER_URL">
+          <declaration><![CDATA[public const string RETAILER_URL = "http://store.dotnetnuke.com/";]]></declaration>
+          <documentation>
+            <summary>
+ The url to send purchasers to.
+ </summary>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

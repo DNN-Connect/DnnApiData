@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Authentication.Facebook.dll" version="07.03.01" generated="2017-06-19 11:53:06Z" generationTime="1.4037997">
+  <namespace name="DotNetNuke.Authentication.Facebook">
+    <class name="Login">
+      <declaration><![CDATA[public class Login : OAuthLoginBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Login()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddCustomProperties">
+          <declaration><![CDATA[protected override void AddCustomProperties(NameValueCollection properties)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="71" ec="10">Login.ascx.cs</location>
+            <body hash="887db6525fa9f102a72d30aeea011b9c"><![CDATA[{
+            base.AddCustomProperties(properties);
+
+            properties.Add("Facebook", OAuthClient.GetCurrentUser<FacebookUserData>().Link.ToString());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCurrentUser">
+          <declaration><![CDATA[protected override UserData GetCurrentUser()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="51" ec="10">Login.ascx.cs</location>
+            <body hash="e473bb7ad85b218ebe5a0406b5df3f8e"><![CDATA[{
+            return OAuthClient.GetCurrentUser<FacebookUserData>();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="loginButton_Click">
+          <declaration><![CDATA[private void loginButton_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="9" el="76" ec="10">Login.ascx.cs</location>
+            <body hash="e50729ef0f83fbbb9a23efdc40a7b8a1"><![CDATA[{
+            OAuthClient.Authorize();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="9" el="64" ec="10">Login.ascx.cs</location>
+            <body hash="09b968c2f7fadbfc2b44bf52052d291d"><![CDATA[{
+            base.OnInit(e);
+
+            loginButton.Click += loginButton_Click;
+            registerButton.Click += loginButton_Click;
+
+            OAuthClient = new FacebookClient(PortalId, Mode);
+
+            loginItem.Visible = (Mode == AuthMode.Login);
+            registerItem.Visible = (Mode == AuthMode.Register);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="loginButton">
+          <declaration><![CDATA[protected LinkButton loginButton;]]></declaration>
+          <documentation>
+            <summary>
+ loginButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="loginItem">
+          <declaration><![CDATA[protected HtmlGenericControl loginItem;]]></declaration>
+          <documentation>
+            <summary>
+ loginItem control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="registerButton">
+          <declaration><![CDATA[protected LinkButton registerButton;]]></declaration>
+          <documentation>
+            <summary>
+ registerButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="registerItem">
+          <declaration><![CDATA[protected HtmlGenericControl registerItem;]]></declaration>
+          <documentation>
+            <summary>
+ registerItem control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="AuthSystemApplicationName">
+          <declaration><![CDATA[protected override string AuthSystemApplicationName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SupportsRegistration">
+          <declaration><![CDATA[public override bool SupportsRegistration]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Settings">
+      <declaration><![CDATA[public class Settings : OAuthSettingsBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Settings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AuthSystemApplicationName">
+          <declaration><![CDATA[protected override string AuthSystemApplicationName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Authentication.Facebook.Components">
+    <class name="FacebookClient">
+      <declaration><![CDATA[public class FacebookClient : OAuthClientBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FacebookClient(int portalId, AuthMode mode) : base(portalId, mode, "Facebook")]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="54" ec="10">Components\FacebookClient.cs</location>
+            <body hash="adb1a212c8e3ae56e9b7584c10c9f74e"><![CDATA[public FacebookClient(int portalId, AuthMode mode) 
+            : base(portalId, mode, "Facebook")
+        {
+            TokenEndpoint = new Uri("https://graph.facebook.com/oauth/access_token");
+            TokenMethod = HttpMethod.GET;
+            AuthorizationEndpoint = new Uri("https://graph.facebook.com/oauth/authorize");
+            MeGraphEndpoint = new Uri("https://graph.facebook.com/me");
+
+            Scope = "email";
+
+            AuthTokenName = "FacebookUserToken";
+
+            OAuthVersion = "2.0";
+
+            LoadTokenCookie(String.Empty);
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetExpiry">
+          <declaration><![CDATA[protected override TimeSpan GetExpiry(string responseText)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="9" el="69" ec="10">Components\FacebookClient.cs</location>
+            <body hash="5a37c3bd7b63626b4f32d7d2ad1d25d5"><![CDATA[{
+            TimeSpan expiry = TimeSpan.MinValue;
+            foreach (string token in responseText.Split('&'))
+            {
+                if (token.StartsWith("expires"))
+                {
+                    expiry = new TimeSpan(0, 0, Convert.ToInt32(token.Replace("expires=", "")));
+                }
+            }
+            return expiry;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetToken">
+          <declaration><![CDATA[protected override string GetToken(string responseText)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="82" ec="10">Components\FacebookClient.cs</location>
+            <body hash="12193ca6f93c8559525ae9e50a77202e"><![CDATA[{
+            string authToken = String.Empty;
+            foreach (string token in responseText.Split('&'))
+            {
+                if (token.StartsWith("access_token"))
+                {
+                    authToken = token.Replace("access_token=", "");
+                }
+            }
+            return authToken;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="FacebookUserData">
+      <declaration><![CDATA[public class FacebookUserData : UserData]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FacebookUserData()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Birthday">
+          <declaration><![CDATA[public string Birthday]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="FacebookFirstName">
+          <declaration><![CDATA[public string FacebookFirstName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="FacebookLastName">
+          <declaration><![CDATA[public string FacebookLastName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="FirstName">
+          <declaration><![CDATA[public override string FirstName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LastName">
+          <declaration><![CDATA[public override string LastName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Link">
+          <declaration><![CDATA[public Uri Link]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

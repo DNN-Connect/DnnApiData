@@ -1,0 +1,278 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Authentication.Google.dll" version="07.03.02" generated="2017-06-19 12:17:11Z" generationTime="1.0649385">
+  <namespace name="DotNetNuke.Authentication.Google">
+    <class name="Login">
+      <declaration><![CDATA[public class Login : OAuthLoginBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Login()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetCurrentUser">
+          <declaration><![CDATA[protected override UserData GetCurrentUser()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="51" ec="10">Login.ascx.cs</location>
+            <body hash="548d7035d5959bf47fc9407ce82a16bf"><![CDATA[{
+            return OAuthClient.GetCurrentUser<GoogleUserData>();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="loginButton_Click">
+          <declaration><![CDATA[private void loginButton_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="9" el="69" ec="10">Login.ascx.cs</location>
+            <body hash="e50729ef0f83fbbb9a23efdc40a7b8a1"><![CDATA[{
+            OAuthClient.Authorize();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="9" el="64" ec="10">Login.ascx.cs</location>
+            <body hash="06ebed96332ea8ed1e8f78dbde271043"><![CDATA[{
+            base.OnInit(e);
+
+            loginButton.Click += loginButton_Click;
+            registerButton.Click += loginButton_Click;
+
+            OAuthClient = new GoogleClient(PortalId, Mode);
+
+            loginItem.Visible = (Mode == AuthMode.Login);
+            registerItem.Visible = (Mode == AuthMode.Register);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="loginButton">
+          <declaration><![CDATA[protected LinkButton loginButton;]]></declaration>
+          <documentation>
+            <summary>
+ loginButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="loginItem">
+          <declaration><![CDATA[protected HtmlGenericControl loginItem;]]></declaration>
+          <documentation>
+            <summary>
+ loginItem control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="registerButton">
+          <declaration><![CDATA[protected LinkButton registerButton;]]></declaration>
+          <documentation>
+            <summary>
+ registerButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="registerItem">
+          <declaration><![CDATA[protected HtmlGenericControl registerItem;]]></declaration>
+          <documentation>
+            <summary>
+ registerItem control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="AuthSystemApplicationName">
+          <declaration><![CDATA[protected override string AuthSystemApplicationName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SupportsRegistration">
+          <declaration><![CDATA[public override bool SupportsRegistration]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Settings">
+      <declaration><![CDATA[public class Settings : OAuthSettingsBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Settings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AuthSystemApplicationName">
+          <declaration><![CDATA[protected override string AuthSystemApplicationName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Authentication.Google.Components">
+    <class name="GoogleClient">
+      <declaration><![CDATA[public class GoogleClient : OAuthClientBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GoogleClient(int portalId, AuthMode mode) : base(portalId, mode, "Google")]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="9" el="57" ec="10">Components\GoogleClient.cs</location>
+            <body hash="940b06b5456ddbfaca5e3694ea6fe7d1"><![CDATA[public GoogleClient(int portalId, AuthMode mode) 
+            : base(portalId, mode, "Google")
+        {
+            TokenEndpoint = new Uri("https://accounts.google.com/o/oauth2/token");
+            TokenMethod = HttpMethod.POST;
+            AuthorizationEndpoint = new Uri("https://accounts.google.com/o/oauth2/auth");
+            MeGraphEndpoint = new Uri("https://www.googleapis.com/oauth2/v1/userinfo");
+
+            Scope = HttpUtility.UrlEncode("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email");
+
+            AuthTokenName = "GoogleUserToken";
+
+            OAuthVersion = "2.0";
+
+            LoadTokenCookie(String.Empty);
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetExpiry">
+          <declaration><![CDATA[protected override TimeSpan GetExpiry(string responseText)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="62" sc="9" el="67" ec="10">Components\GoogleClient.cs</location>
+            <body hash="4bd54d36127996a8fc1f54bcef0fe4ae"><![CDATA[{
+            var jsonSerializer = new JavaScriptSerializer();
+            var tokenDictionary = jsonSerializer.DeserializeObject(responseText) as Dictionary<string, object>;
+
+            return new TimeSpan(0, 0, Convert.ToInt32(tokenDictionary["expires_in"]));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetToken">
+          <declaration><![CDATA[protected override string GetToken(string responseText)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="74" ec="10">Components\GoogleClient.cs</location>
+            <body hash="d0baf35f1038f159ff97a9332cd44ba4"><![CDATA[{
+            var jsonSerializer = new JavaScriptSerializer();
+            var tokenDictionary = jsonSerializer.DeserializeObject(responseText) as Dictionary<string, object>;
+            return Convert.ToString(tokenDictionary["access_token"]);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GoogleUserData">
+      <declaration><![CDATA[public class GoogleUserData : UserData]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GoogleUserData()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="FamilyName">
+          <declaration><![CDATA[public string FamilyName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="FirstName">
+          <declaration><![CDATA[public override string FirstName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="GivenName">
+          <declaration><![CDATA[public string GivenName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LastName">
+          <declaration><![CDATA[public override string LastName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Picture">
+          <declaration><![CDATA[public string Picture]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ProfileImage">
+          <declaration><![CDATA[public override string ProfileImage]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

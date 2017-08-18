@@ -1,0 +1,1399 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Membership.DataProvider.dll" version="06.02.00" generated="2017-06-18 21:57:08Z" generationTime="1.5927653">
+  <namespace name="DotNetNuke.Security.Membership.Data">
+    <class name="DataProvider">
+      <declaration><![CDATA[public abstract class DataProvider]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ Project:    DotNetNuke
+ Namespace:  DotNetNuke.Security.Membership
+ Class:      DataProvider
+ -----------------------------------------------------------------------------
+ <summary>
+ The DataProvider provides the abstract Data Access Layer for the project
+ </summary>
+ <remarks>
+ </remarks>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[protected DataProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddRole">
+          <declaration><![CDATA[public abstract int AddRole(int portalId, int roleGroupId, string roleName, string description, float serviceFee, string billingPeriod, string billingFrequency, float trialFee, int trialPeriod, string trialFrequency, bool isPublic, bool autoAssignment, string rsvpCode, string iconFile, int createdByUserID, int status, int securityMode);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="AddRoleGroup">
+          <declaration><![CDATA[public abstract int AddRoleGroup(int portalId, string groupName, string description, int createdByUserID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="AddUser">
+          <declaration><![CDATA[public abstract int AddUser(int portalID, string username, string firstName, string lastName, int affiliateId, bool isSuperUser, string email, string displayName, bool updatePassword, bool isApproved, int createdByUserID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="AddUserRole">
+          <declaration><![CDATA[public abstract int AddUserRole(int portalID, int userId, int roleId, int status, bool isOwner, DateTime effectiveDate, DateTime expiryDate, int createdByUserID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteRole">
+          <declaration><![CDATA[public abstract void DeleteRole(int roleId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteRoleGroup">
+          <declaration><![CDATA[public abstract void DeleteRoleGroup(int roleGroupId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUserPortal">
+          <declaration><![CDATA[public abstract void DeleteUserPortal(int userId, int portalId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUserRole">
+          <declaration><![CDATA[public abstract void DeleteUserRole(int userId, int roleId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUsersOnline">
+          <declaration><![CDATA[public abstract void DeleteUsersOnline(int timeWindow);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAllUsers">
+          <declaration><![CDATA[public abstract IDataReader GetAllUsers(int portalID, int pageIndex, int pageSize);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAllUsers">
+          <declaration><![CDATA[public abstract IDataReader GetAllUsers(int portalID, int pageIndex, int pageSize, bool includeDeleted, bool superUsersOnly);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAuthRoles">
+          <declaration><![CDATA[public abstract IDataReader GetAuthRoles(int portalId, int moduleId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDeletedUsers">
+          <declaration><![CDATA[public abstract IDataReader GetDeletedUsers(int portalId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetOnlineUser">
+          <declaration><![CDATA[public abstract IDataReader GetOnlineUser(int userId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetOnlineUsers">
+          <declaration><![CDATA[public abstract IDataReader GetOnlineUsers(int portalId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalRoles">
+          <declaration><![CDATA[public abstract IDataReader GetPortalRoles(int portalId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleGroup">
+          <declaration><![CDATA[public abstract IDataReader GetRoleGroup(int portalId, int roleGroupId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleGroupByName">
+          <declaration><![CDATA[public abstract IDataReader GetRoleGroupByName(int portalID, string roleGroupName);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleGroups">
+          <declaration><![CDATA[public abstract IDataReader GetRoleGroups(int portalId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoles">
+          <declaration><![CDATA[public abstract IDataReader GetRoles();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRolesBasicSearch">
+          <declaration><![CDATA[public abstract IDataReader GetRolesBasicSearch(int portalID, int pageSize, string filterBy);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleSettings">
+          <declaration><![CDATA[public abstract IDataReader GetRoleSettings(int roleId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetServices">
+          <declaration><![CDATA[public abstract IDataReader GetServices(int portalId, int userId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSuperUsers">
+          <declaration><![CDATA[public abstract IDataReader GetSuperUsers();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUnAuthorizedUsers">
+          <declaration><![CDATA[public abstract IDataReader GetUnAuthorizedUsers(int portalId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUnAuthorizedUsers">
+          <declaration><![CDATA[public abstract IDataReader GetUnAuthorizedUsers(int portalId, bool includeDeleted, bool superUsersOnly);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUser">
+          <declaration><![CDATA[public abstract IDataReader GetUser(int portalId, int userId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserByAuthToken">
+          <declaration><![CDATA[public abstract IDataReader GetUserByAuthToken(int portalID, string userToken, string authType);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserByDisplayName">
+          <declaration><![CDATA[public abstract IDataReader GetUserByDisplayName(int portalID, string displayName);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserByUsername">
+          <declaration><![CDATA[public abstract IDataReader GetUserByUsername(int portalID, string username);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserCountByPortal">
+          <declaration><![CDATA[public abstract int GetUserCountByPortal(int portalId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserProfile">
+          <declaration><![CDATA[public abstract IDataReader GetUserProfile(int userId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserRole">
+          <declaration><![CDATA[public abstract IDataReader GetUserRole(int portalID, int userId, int roleId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserRoles">
+          <declaration><![CDATA[public abstract IDataReader GetUserRoles(int portalID, int userId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserRolesByUsername">
+          <declaration><![CDATA[public abstract IDataReader GetUserRolesByUsername(int portalID, string username, string rolename);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsers">
+          <declaration><![CDATA[public abstract IDataReader GetUsers(int portalId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersAdvancedSearch">
+          <declaration><![CDATA[public abstract IDataReader GetUsersAdvancedSearch(int portalId, int userId, int filterUserId, int filterRoleId, int relationTypeId, bool isAdmin, int pageIndex, int pageSize, string sortColumn, bool sortAscending, string propertyNames, string propertyValues);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersBasicSearch">
+          <declaration><![CDATA[public abstract IDataReader GetUsersBasicSearch(int portalId, int pageIndex, int pageSize, string sortColumn, bool sortAscending, string propertyName, string propertyValue);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByEmail">
+          <declaration><![CDATA[public abstract IDataReader GetUsersByEmail(int portalID, string email, int pageIndex, int pageSize);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByEmail">
+          <declaration><![CDATA[public abstract IDataReader GetUsersByEmail(int portalID, string email, int pageIndex, int pageSize, bool includeDeleted, bool superUsersOnly);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByProfileProperty">
+          <declaration><![CDATA[public abstract IDataReader GetUsersByProfileProperty(int portalID, string propertyName, string propertyValue, int pageIndex, int pageSize);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByProfileProperty">
+          <declaration><![CDATA[public abstract IDataReader GetUsersByProfileProperty(int portalID, string propertyName, string propertyValue, int pageIndex, int pageSize, bool includeDeleted, bool superUsersOnly);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByRolename">
+          <declaration><![CDATA[public abstract IDataReader GetUsersByRolename(int portalID, string rolename);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByUsername">
+          <declaration><![CDATA[public abstract IDataReader GetUsersByUsername(int portalID, string username, int pageIndex, int pageSize);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByUsername">
+          <declaration><![CDATA[public abstract IDataReader GetUsersByUsername(int portalID, string username, int pageIndex, int pageSize, bool includeDeleted, bool superUsersOnly);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="Instance">
+          <declaration><![CDATA[public static DataProvider Instance()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="53" ec="10">DataProvider.cs</location>
+            <body hash="701f2fc6864bad5aedc27bc491a46cbf"><![CDATA[{
+            return ComponentFactory.GetComponent<DataProvider>();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveUser">
+          <declaration><![CDATA[public abstract void RemoveUser(int userId, int portalId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreUser">
+          <declaration><![CDATA[public abstract void RestoreUser(int userId, int portalId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateProfileProperty">
+          <declaration><![CDATA[public abstract void UpdateProfileProperty(int profileId, int userId, int propertyDefinitionID, string propertyValue, int visibility, string extendedVisibility, DateTime lastUpdatedDate);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateRole">
+          <declaration><![CDATA[public abstract void UpdateRole(int roleId, int roleGroupId, string description, float serviceFee, string billingPeriod, string billingFrequency, float trialFee, int trialPeriod, string trialFrequency, bool isPublic, bool autoAssignment, string rsvpCode, string iconFile, int lastModifiedByUserID, int status, int securityMode);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateRoleGroup">
+          <declaration><![CDATA[public abstract void UpdateRoleGroup(int roleGroupId, string groupName, string description, int lastModifiedByUserID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateRoleSetting">
+          <declaration><![CDATA[public abstract void UpdateRoleSetting(int roleId, string settingName, string settingValue, int lastModifiedByUserID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateUser">
+          <declaration><![CDATA[public abstract void UpdateUser(int userId, int portalID, string firstName, string lastName, bool isSuperUser, string email, string displayName, bool updatePassword, bool isApproved, bool refreshRoles, string lastIpAddress, bool isDeleted, int lastModifiedByUserID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateUserRole">
+          <declaration><![CDATA[public abstract void UpdateUserRole(int userRoleId, int status, bool isOwner, DateTime effectiveDate, DateTime expiryDate, int lastModifiedByUserID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateUsersOnline">
+          <declaration><![CDATA[public abstract void UpdateUsersOnline(Hashtable userList);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UserLogin">
+          <declaration><![CDATA[public abstract IDataReader UserLogin(string username, string password);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SqlDataProvider">
+      <declaration><![CDATA[public class SqlDataProvider : DataProvider]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ Project:    DotNetNuke
+ Namespace:  DotNetNuke.Security.Membership
+ Class:      SqlDataProvider
+ -----------------------------------------------------------------------------
+ <summary>
+ The SqlDataProvider provides a concrete SQL Server implementation of the
+ Data Access Layer for the project
+ </summary>
+ <remarks>
+ </remarks>
+ <history>
+     [cnurse]	03/28/2006	created
+ </history>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SqlDataProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddRole">
+          <declaration><![CDATA[public override int AddRole(int portalId, int roleGroupId, string roleName, string description, float serviceFee, string billingPeriod, string billingFrequency, float trialFee, int trialPeriod, string trialFrequency, bool isPublic, bool autoAssignment, string rsvpCode, string iconFile, int createdByUserID, int status, int securityMode)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="269" sc="9" el="290" ec="10">SqlDataProvider.cs</location>
+            <body hash="03938824f575c7ce45b70130d022f831"><![CDATA[{
+            return
+                Convert.ToInt32(SqlHelper.ExecuteScalar(ConnectionString,
+                                                        GetFullyQualifiedName("AddRole"),
+                                                        portalId,
+                                                        GetNull(roleGroupId),
+                                                        roleName,
+                                                        description,
+                                                        serviceFee,
+                                                        billingPeriod,
+                                                        GetNull(billingFrequency),
+                                                        trialFee,
+                                                        trialPeriod,
+                                                        GetNull(trialFrequency),
+                                                        isPublic,
+                                                        autoAssignment,
+                                                        rsvpCode,
+                                                        iconFile,
+                                                        createdByUserID,
+                                                        status,
+                                                        securityMode));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddRoleGroup">
+          <declaration><![CDATA[public override int AddRoleGroup(int portalId, string groupName, string description, int createdByUserID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="353" sc="9" el="355" ec="10">SqlDataProvider.cs</location>
+            <body hash="05c7dcb597ba8240d637051b4c466904"><![CDATA[{
+            return Convert.ToInt32(SqlHelper.ExecuteScalar(ConnectionString, GetFullyQualifiedName("AddRoleGroup"), portalId, groupName, description, createdByUserID));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddUser">
+          <declaration><![CDATA[public int AddUser(int portalID, string username, string firstName, string lastName, int affiliateId, bool isSuperUser, string email, string displayName, bool updatePassword, int createdByUserID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="100" sc="9" el="102" ec="10">SqlDataProvider.cs</location>
+            <body hash="c901999bc2c9320b4d653acb155a534e"><![CDATA[{
+            return AddUser(portalID, username, firstName, lastName, affiliateId, isSuperUser, email, displayName, updatePassword, false, createdByUserID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddUser">
+          <declaration><![CDATA[public override int AddUser(int portalID, string username, string firstName, string lastName, int affiliateId, bool isSuperUser, string email, string displayName, bool updatePassword, bool isApproved, int createdByUserID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="106" sc="9" el="121" ec="10">SqlDataProvider.cs</location>
+            <body hash="8469a76ca0f64a21a0cbfa2f2ce0c343"><![CDATA[{
+            return
+                Convert.ToInt32(SqlHelper.ExecuteScalar(ConnectionString,
+                                                        DatabaseOwner + ObjectQualifier + "AddUser",
+                                                        portalID,
+                                                        username,
+                                                        firstName,
+                                                        lastName,
+                                                        GetNull(affiliateId),
+                                                        isSuperUser,
+                                                        email,
+                                                        displayName,
+                                                        updatePassword,
+                                                        isApproved,
+                                                        createdByUserID));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddUserRole">
+          <declaration><![CDATA[public override int AddUserRole(int portalId, int userId, int roleId, int status, bool isOwner, DateTime effectiveDate, DateTime expiryDate, int createdByUserID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="384" sc="9" el="386" ec="10">SqlDataProvider.cs</location>
+            <body hash="e443c92885c200fa8b46893b5fcea1d9"><![CDATA[{
+            return Convert.ToInt32(SqlHelper.ExecuteScalar(ConnectionString, GetFullyQualifiedName("AddUserRole"), portalId, userId, roleId, status, isOwner, GetNull(effectiveDate), GetNull(expiryDate), createdByUserID));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteRole">
+          <declaration><![CDATA[public override void DeleteRole(int roleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="293" sc="9" el="295" ec="10">SqlDataProvider.cs</location>
+            <body hash="390af3538bc79770d48f8f3a3815b82c"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, GetFullyQualifiedName("DeleteRole"), roleId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteRoleGroup">
+          <declaration><![CDATA[public override void DeleteRoleGroup(int roleGroupId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="358" sc="9" el="360" ec="10">SqlDataProvider.cs</location>
+            <body hash="9b4b5abbcb25def36856b5114ce47e10"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, GetFullyQualifiedName("DeleteRoleGroup"), roleGroupId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUserPortal">
+          <declaration><![CDATA[public override void DeleteUserPortal(int userId, int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="124" sc="9" el="126" ec="10">SqlDataProvider.cs</location>
+            <body hash="6f30ca5cd3a1f02cfa31162a01c53c32"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, GetFullyQualifiedName("DeleteUserPortal"), userId, GetNull(portalId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUserRole">
+          <declaration><![CDATA[public override void DeleteUserRole(int userId, int roleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="389" sc="9" el="391" ec="10">SqlDataProvider.cs</location>
+            <body hash="2f68dc139eba6b97ed350082b5d91e73"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, GetFullyQualifiedName("DeleteUserRole"), userId, roleId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteUsersOnline">
+          <declaration><![CDATA[public override void DeleteUsersOnline(int timeWindow)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="434" sc="9" el="436" ec="10">SqlDataProvider.cs</location>
+            <body hash="515603b1e1bfdc9c7969b86af8ec8a13"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "DeleteUsersOnline", timeWindow);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAllUsers">
+          <declaration><![CDATA[public override IDataReader GetAllUsers(int portalID, int pageIndex, int pageSize, bool includeDeleted, bool superUsersOnly)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="159" sc="9" el="161" ec="10">SqlDataProvider.cs</location>
+            <body hash="f4e7f5645d6418dcd75b33049ae19579"><![CDATA[{
+            return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetAllUsers"), GetNull(portalID), pageIndex, pageSize, includeDeleted, superUsersOnly);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAllUsers">
+          <declaration><![CDATA[public override IDataReader GetAllUsers(int portalID, int pageIndex, int pageSize)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="164" sc="9" el="166" ec="10">SqlDataProvider.cs</location>
+            <body hash="53880b5996a50c3e96562eefb28a7116"><![CDATA[{
+            return GetAllUsers(portalID, pageIndex, pageSize, false, false);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAuthRoles">
+          <declaration><![CDATA[public override IDataReader GetAuthRoles(int portalId, int moduleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="94" sc="9" el="96" ec="10">SqlDataProvider.cs</location>
+            <body hash="05d91fdbab52fa1172de53a772fa4c2a"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetAuthRoles"), portalId, moduleId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDeletedUsers">
+          <declaration><![CDATA[public override IDataReader GetDeletedUsers(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="179" sc="9" el="181" ec="10">SqlDataProvider.cs</location>
+            <body hash="c1e4c6bffb4994a0c9918b54c6580ed1"><![CDATA[{
+            return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetDeletedUsers"), GetNull(portalId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFullyQualifiedName">
+          <declaration><![CDATA[private string GetFullyQualifiedName(string name)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="9" el="85" ec="10">SqlDataProvider.cs</location>
+            <body hash="701ee69c615d112b79fadf5104e1fc46"><![CDATA[{
+            return DatabaseOwner + ObjectQualifier + name;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNull">
+          <declaration><![CDATA[private object GetNull(object field)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="80" ec="10">SqlDataProvider.cs</location>
+            <body hash="aedf2ca2939af3fa7ccc8e98db1b9f98"><![CDATA[{
+            return Null.GetNull(field, DBNull.Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetOnlineUser">
+          <declaration><![CDATA[public override IDataReader GetOnlineUser(int userId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="439" sc="9" el="441" ec="10">SqlDataProvider.cs</location>
+            <body hash="f483cc0d0e7bfa6a7b2f6470550165aa"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetOnlineUser", userId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetOnlineUsers">
+          <declaration><![CDATA[public override IDataReader GetOnlineUsers(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="444" sc="9" el="446" ec="10">SqlDataProvider.cs</location>
+            <body hash="4539f467f6ec5890763b6a844a7bf1aa"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetOnlineUsers", portalId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalRoles">
+          <declaration><![CDATA[public override IDataReader GetPortalRoles(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="298" sc="9" el="300" ec="10">SqlDataProvider.cs</location>
+            <body hash="8892d7ada000a40d151d7e2d40cb8dd4"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetPortalRoles"), portalId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleGroup">
+          <declaration><![CDATA[public override IDataReader GetRoleGroup(int portalId, int roleGroupId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="363" sc="9" el="365" ec="10">SqlDataProvider.cs</location>
+            <body hash="4163fbc68336c0d1e89dc8a280ec187b"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetRoleGroup"), portalId, roleGroupId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleGroupByName">
+          <declaration><![CDATA[public override IDataReader GetRoleGroupByName(int portalID, string roleGroupName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="368" sc="9" el="370" ec="10">SqlDataProvider.cs</location>
+            <body hash="00ad8525e7a1f41f2c01571b391cccd4"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetRoleGroupByName"), portalID, roleGroupName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleGroups">
+          <declaration><![CDATA[public override IDataReader GetRoleGroups(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="373" sc="9" el="375" ec="10">SqlDataProvider.cs</location>
+            <body hash="92b9832e29aeabb40f315ca9ecea2774"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetRoleGroups"), portalId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoles">
+          <declaration><![CDATA[public override IDataReader GetRoles()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="303" sc="9" el="305" ec="10">SqlDataProvider.cs</location>
+            <body hash="f515d0b95f2ce4d6cc82a2c62930c8f3"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetRoles"));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRolesBasicSearch">
+          <declaration><![CDATA[public override IDataReader GetRolesBasicSearch(int portalID, int pageSize, string filterBy)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="308" sc="9" el="310" ec="10">SqlDataProvider.cs</location>
+            <body hash="5e87695e2a89cc22cddf527da7ec9227"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetRolesBasicSearch"),portalID,pageSize,filterBy);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRoleSettings">
+          <declaration><![CDATA[public override IDataReader GetRoleSettings(int roleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="314" sc="9" el="316" ec="10">SqlDataProvider.cs</location>
+            <body hash="86692fbd56062180a3deaa7bbc85ab80"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetRoleSettings"), roleId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetServices">
+          <declaration><![CDATA[public override IDataReader GetServices(int portalId, int userId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="394" sc="9" el="396" ec="10">SqlDataProvider.cs</location>
+            <body hash="ed28d420f0ed3440aaa16a5243feb393"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetServices"), portalId, GetNull(userId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSuperUsers">
+          <declaration><![CDATA[public override IDataReader GetSuperUsers()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="257" sc="9" el="259" ec="10">SqlDataProvider.cs</location>
+            <body hash="f957843cb2ccf2349252a5904711efe0"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetSuperUsers"));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUnAuthorizedUsers">
+          <declaration><![CDATA[public override IDataReader GetUnAuthorizedUsers(int portalId, bool includeDeleted, bool superUsersOnly)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="169" sc="9" el="171" ec="10">SqlDataProvider.cs</location>
+            <body hash="e3cb3337f56a490d9a490bab6c4551c5"><![CDATA[{
+            return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUnAuthorizedUsers"), GetNull(portalId), includeDeleted, superUsersOnly);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUnAuthorizedUsers">
+          <declaration><![CDATA[public override IDataReader GetUnAuthorizedUsers(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="174" sc="9" el="176" ec="10">SqlDataProvider.cs</location>
+            <body hash="c5e6119070495707ad583d73759cb83b"><![CDATA[{
+            return GetUnAuthorizedUsers(portalId, false, false);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUser">
+          <declaration><![CDATA[public override IDataReader GetUser(int portalId, int userId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="184" sc="9" el="186" ec="10">SqlDataProvider.cs</location>
+            <body hash="cc38bc6fbf226e582992868ee82089fa"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUser"), portalId, userId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserByAuthToken">
+          <declaration><![CDATA[public override IDataReader GetUserByAuthToken(int portalID, string userToken, string authType)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="189" sc="9" el="191" ec="10">SqlDataProvider.cs</location>
+            <body hash="a35d79caae1efaea09194864c224a624"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUserByAuthToken"), portalID, userToken, authType);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserByDisplayName">
+          <declaration><![CDATA[public override IDataReader GetUserByDisplayName(int portalId, string displayName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="194" sc="9" el="196" ec="10">SqlDataProvider.cs</location>
+            <body hash="a5eaec0d3fb381b2e2a7ad48103cf39c"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUserByDisplayName"), GetNull(portalId), displayName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserByUsername">
+          <declaration><![CDATA[public override IDataReader GetUserByUsername(int portalId, string username)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="199" sc="9" el="201" ec="10">SqlDataProvider.cs</location>
+            <body hash="71bf6865298d1348acfd4977fdaecfbe"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUserByUsername"), GetNull(portalId), username);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserCountByPortal">
+          <declaration><![CDATA[public override int GetUserCountByPortal(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="204" sc="9" el="206" ec="10">SqlDataProvider.cs</location>
+            <body hash="77b0cb99c14f63ab0ee013569f67597d"><![CDATA[{
+            return Convert.ToInt32(SqlHelper.ExecuteScalar(ConnectionString, GetFullyQualifiedName("GetUserCountByPortal"), portalId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserProfile">
+          <declaration><![CDATA[public override IDataReader GetUserProfile(int userId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="420" sc="9" el="422" ec="10">SqlDataProvider.cs</location>
+            <body hash="5299ae8cbf0b5d152cd44881ed8946b4"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUserProfile"), userId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserRole">
+          <declaration><![CDATA[public override IDataReader GetUserRole(int portalID, int userId, int roleId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="399" sc="9" el="401" ec="10">SqlDataProvider.cs</location>
+            <body hash="4e91eba244105cfbe55de313159e62c7"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUserRole"), portalID, userId, roleId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserRoles">
+          <declaration><![CDATA[public override IDataReader GetUserRoles(int portalID, int userId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="404" sc="9" el="406" ec="10">SqlDataProvider.cs</location>
+            <body hash="041ccaee65b9586ba5975df79b126edf"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUserRoles"), portalID, userId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserRolesByUsername">
+          <declaration><![CDATA[public override IDataReader GetUserRolesByUsername(int portalID, string username, string rolename)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="409" sc="9" el="411" ec="10">SqlDataProvider.cs</location>
+            <body hash="86f5d22f88a6acf6375f0b6183214234"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUserRolesByUsername"), portalID, GetNull(username), GetNull(rolename));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsers">
+          <declaration><![CDATA[public override IDataReader GetUsers(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="262" sc="9" el="264" ec="10">SqlDataProvider.cs</location>
+            <body hash="fe1739f9ff667642e3d18f68e6697810"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUsers"), GetNull(portalId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersAdvancedSearch">
+          <declaration><![CDATA[public override IDataReader GetUsersAdvancedSearch(int portalId, int userId, int filterUserId, int fitlerRoleId, int relationTypeId, bool isAdmin, int pageIndex, int pageSize, string sortColumn, bool sortAscending, string propertyNames, string propertyValues)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="211" sc="9" el="213" ec="10">SqlDataProvider.cs</location>
+            <body hash="c9818603ff6fa0dc43f963ad268daee7"><![CDATA[{
+            return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUsersAdvancedSearch"), portalId, userId, filterUserId, fitlerRoleId, relationTypeId, isAdmin, pageSize, pageIndex, sortColumn, sortAscending, propertyNames, propertyValues);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersBasicSearch">
+          <declaration><![CDATA[public override IDataReader GetUsersBasicSearch(int portalId, int pageIndex, int pageSize, string sortColumn, bool sortAscending, string propertyName, string propertyValue)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="217" sc="9" el="219" ec="10">SqlDataProvider.cs</location>
+            <body hash="a6d70490772c39be8ece5f56175041b6"><![CDATA[{
+            return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUsersBasicSearch"), portalId, pageSize, pageIndex, sortColumn, sortAscending, propertyName, propertyValue);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByEmail">
+          <declaration><![CDATA[public override IDataReader GetUsersByEmail(int portalID, string email, int pageIndex, int pageSize, bool includeDeleted, bool superUsersOnly)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="222" sc="9" el="224" ec="10">SqlDataProvider.cs</location>
+            <body hash="7d972eab65c938cb10d8f0bd963e5a8f"><![CDATA[{
+            return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUsersByEmail"), GetNull(portalID), email, pageIndex, pageSize, includeDeleted, superUsersOnly);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByEmail">
+          <declaration><![CDATA[public override IDataReader GetUsersByEmail(int portalID, string email, int pageIndex, int pageSize)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="227" sc="9" el="229" ec="10">SqlDataProvider.cs</location>
+            <body hash="5648a72659d0bed7b5169a02d667e7f8"><![CDATA[{
+            return GetUsersByEmail(portalID, email, pageIndex, pageSize, false, false);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByProfileProperty">
+          <declaration><![CDATA[public override IDataReader GetUsersByProfileProperty(int portalID, string propertyName, string propertyValue, int pageIndex, int pageSize)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="232" sc="9" el="234" ec="10">SqlDataProvider.cs</location>
+            <body hash="7b9f0ec8d1e7a389492fe06db2f0d636"><![CDATA[{
+            return GetUsersByProfileProperty(portalID, propertyName, propertyValue, pageIndex, pageSize, false, false);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByProfileProperty">
+          <declaration><![CDATA[public override IDataReader GetUsersByProfileProperty(int portalID, string propertyName, string propertyValue, int pageIndex, int pageSize, bool includeDeleted, bool superUsersOnly)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="237" sc="9" el="239" ec="10">SqlDataProvider.cs</location>
+            <body hash="c2cc90301cad454096d5b570a97a7337"><![CDATA[{
+            return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUsersByProfileProperty"), GetNull(portalID), propertyName, propertyValue, pageIndex, pageSize, includeDeleted, superUsersOnly);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByRolename">
+          <declaration><![CDATA[public override IDataReader GetUsersByRolename(int portalID, string rolename)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="242" sc="9" el="244" ec="10">SqlDataProvider.cs</location>
+            <body hash="63f59619371b5b5ad7ab56144ad3bcfb"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUsersByRolename"), GetNull(portalID), rolename);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByUsername">
+          <declaration><![CDATA[public override IDataReader GetUsersByUsername(int portalID, string username, int pageIndex, int pageSize, bool includeDeleted, bool superUsersOnly)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="247" sc="9" el="249" ec="10">SqlDataProvider.cs</location>
+            <body hash="290b5ba21ebb53acef2cecda1b4fa15b"><![CDATA[{
+            return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetUsersByUsername"), GetNull(portalID), username, pageIndex, pageSize, includeDeleted, superUsersOnly);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUsersByUsername">
+          <declaration><![CDATA[public override IDataReader GetUsersByUsername(int portalID, string username, int pageIndex, int pageSize)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="252" sc="9" el="254" ec="10">SqlDataProvider.cs</location>
+            <body hash="b15436a5499d6ad57acf0746a5859577"><![CDATA[{
+            return GetUsersByUsername(portalID, username, pageIndex, pageSize, false, false);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveUser">
+          <declaration><![CDATA[public override void RemoveUser(int userId, int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="134" sc="9" el="136" ec="10">SqlDataProvider.cs</location>
+            <body hash="2afa0b53e1f3ce31b96f2ac767eb85e9"><![CDATA[{
+	        SqlHelper.ExecuteNonQuery(ConnectionString, GetFullyQualifiedName("RemoveUser"), userId, GetNull(portalId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreUser">
+          <declaration><![CDATA[public override void RestoreUser(int userId, int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="129" sc="9" el="131" ec="10">SqlDataProvider.cs</location>
+            <body hash="9b55dd652a52b857fbd7d784abd2a08b"><![CDATA[{
+	        SqlHelper.ExecuteNonQuery(ConnectionString, GetFullyQualifiedName("RestoreUser"), userId, GetNull(portalId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateProfileProperty">
+          <declaration><![CDATA[public override void UpdateProfileProperty(int profileId, int userId, int propertyDefinitionID, string propertyValue, int visibility, string extendedVisibility, DateTime lastUpdatedDate)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="426" sc="9" el="430" ec="10">SqlDataProvider.cs</location>
+            <body hash="da4d86528efd0f049c38c8c15997f81f"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, GetFullyQualifiedName("UpdateUserProfileProperty"), GetNull(profileId), userId, 
+                                                                        propertyDefinitionID, propertyValue, visibility, 
+                                                                        extendedVisibility, lastUpdatedDate);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateRole">
+          <declaration><![CDATA[public override void UpdateRole(int roleId, int roleGroupId, string description, float serviceFee, string billingPeriod, string billingFrequency, float trialFee, int trialPeriod, string trialFrequency, bool isPublic, bool autoAssignment, string rsvpCode, string iconFile, int lastModifiedByUserID, int status, int securityMode)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="320" sc="9" el="339" ec="10">SqlDataProvider.cs</location>
+            <body hash="9775a7e735c2a375c4b7f18dc8e36b1a"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                                      GetFullyQualifiedName("UpdateRole"),
+                                      roleId,
+                                      GetNull(roleGroupId),
+                                      description,
+                                      serviceFee,
+                                      billingPeriod,
+                                      GetNull(billingFrequency),
+                                      trialFee,
+                                      trialPeriod,
+                                      GetNull(trialFrequency),
+                                      isPublic,
+                                      autoAssignment,
+                                      rsvpCode,
+                                      iconFile,
+                                      lastModifiedByUserID,
+                                      status,
+                                      securityMode);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateRoleGroup">
+          <declaration><![CDATA[public override void UpdateRoleGroup(int roleGroupId, string groupName, string description, int lastModifiedByUserID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="378" sc="9" el="380" ec="10">SqlDataProvider.cs</location>
+            <body hash="443bbcf9a97584989191ca6ce8fdd264"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, GetFullyQualifiedName("UpdateRoleGroup"), roleGroupId, groupName, description, lastModifiedByUserID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateRoleSetting">
+          <declaration><![CDATA[public override void UpdateRoleSetting(int roleId, string settingName, string settingValue, int lastModifiedByUserID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="342" sc="9" el="349" ec="10">SqlDataProvider.cs</location>
+            <body hash="b243b4c7b5c6e7b2c49004d860d1f42a"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                                      GetFullyQualifiedName("UpdateRoleSetting"),
+                                      roleId,
+                                      settingName,
+                                      settingValue,
+                                      lastModifiedByUserID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateUser">
+          <declaration><![CDATA[public override void UpdateUser(int userId, int portalID, string firstName, string lastName, bool isSuperUser, string email, string displayName, bool updatePassword, bool isApproved, bool refreshRoles, string lastIpAddress, bool isDeleted, int lastModifiedByUserID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="140" sc="9" el="156" ec="10">SqlDataProvider.cs</location>
+            <body hash="bdb7bb9bacd1a063707de68b4e78744f"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                                      GetFullyQualifiedName("UpdateUser"),
+                                      userId,
+                                      GetNull(portalID),
+                                      firstName,
+                                      lastName,
+                                      isSuperUser,
+                                      email,
+                                      displayName,
+                                      updatePassword,
+                                      isApproved,
+                                      refreshRoles,
+                                      lastIpAddress,
+                                      isDeleted,
+                                      lastModifiedByUserID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateUserRole">
+          <declaration><![CDATA[public override void UpdateUserRole(int userRoleId, int status, bool isOwner, DateTime effectiveDate, DateTime expiryDate, int lastModifiedByUserID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="414" sc="9" el="416" ec="10">SqlDataProvider.cs</location>
+            <body hash="23df185ee307b3d485a50063f62602f7"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, GetFullyQualifiedName("UpdateUserRole"), userRoleId, status, isOwner, GetNull(effectiveDate), GetNull(expiryDate), lastModifiedByUserID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateUsersOnline">
+          <declaration><![CDATA[public override void UpdateUsersOnline(Hashtable userList)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="449" sc="9" el="468" ec="10">SqlDataProvider.cs</location>
+            <body hash="4b86e7e800e0189f54da474a8ca549b0"><![CDATA[{
+            if ((userList.Count == 0))
+            {
+				//No users to process, quit method
+                return;
+            }
+            foreach (string key in userList.Keys)
+            {
+                if (userList[key] is AnonymousUserInfo)
+                {
+                    var user = (AnonymousUserInfo) userList[key];
+                    SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "UpdateAnonymousUser", user.UserID, user.PortalID, user.TabID, user.LastActiveDate);
+                }
+                else if (userList[key] is OnlineUserInfo)
+                {
+                    var user = (OnlineUserInfo) userList[key];
+                    SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "UpdateOnlineUser", user.UserID, user.PortalID, user.TabID, user.LastActiveDate);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UserLogin">
+          <declaration><![CDATA[public override IDataReader UserLogin(string username, string password)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="9" el="91" ec="10">SqlDataProvider.cs</location>
+            <body hash="108815624611e95017206d359605427d"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("UserLogin"), username, password);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ConnectionString">
+          <declaration><![CDATA[public string ConnectionString]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="13" el="58" ec="14">SqlDataProvider.cs</location>
+            <body hash="740ade4121f0ef7fd4a8b206d88bdb36"><![CDATA[{
+                return DotNetNuke.Data.DataProvider.Instance().ConnectionString;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DatabaseOwner">
+          <declaration><![CDATA[public string DatabaseOwner]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="13" el="66" ec="14">SqlDataProvider.cs</location>
+            <body hash="4cae72823586bac7a078a2b037f628ef"><![CDATA[{
+                return DotNetNuke.Data.DataProvider.Instance().DatabaseOwner;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ObjectQualifier">
+          <declaration><![CDATA[public string ObjectQualifier]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="13" el="74" ec="14">SqlDataProvider.cs</location>
+            <body hash="4e45e901fad06bd2a8aecebec69887f0"><![CDATA[{
+                return DotNetNuke.Data.DataProvider.Instance().ObjectQualifier;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

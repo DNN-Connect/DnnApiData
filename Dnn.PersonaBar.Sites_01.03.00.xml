@@ -1,0 +1,2137 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.Sites.dll" version="01.03.00" generated="2017-08-10 13:08:46Z" generationTime="5.2474545">
+  <namespace name="Dnn.PersonaBar.Sites.Components">
+    <class name="Constants">
+      <declaration><![CDATA[public static class Constants]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="LocalResourcesFile">
+          <declaration><![CDATA[public const string LocalResourcesFile = "~/DesktopModules/admin/Dnn.PersonaBar/Modules/Dnn.Sites/App_LocalResources/Sites.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SitesController">
+      <declaration><![CDATA[public class SitesController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly TabsController _tabsController = new TabsController();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="70" ec="80">Components\SitesController.cs</location>
+            <body hash="f97e76147de4cbac58a3e27578ff8c50"><![CDATA[private readonly TabsController _tabsController = new TabsController()]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static SitesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="71" ec="113">Components\SitesController.cs</location>
+            <body hash="3242c9a11ec7779a70baa0f5adbb294a"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SitesController));
+        private readonly TabsController _tabsController = new TabsController();
+        internal static readonly IList<string> ImageExtensions = new List<string>() { ".png", ".jpg", ".jpeg" };]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CreateListItem">
+          <declaration><![CDATA[public ListItem CreateListItem(PortalController.PortalTemplateInfo template)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="139" sc="9" el="172" ec="10">Components\SitesController.cs</location>
+            <body hash="9d8399d14c97e2b12e6cd115a450b9cd"><![CDATA[{
+            string text, value;
+            var fileName = Path.GetFileName(template.TemplateFilePath);
+            if (string.IsNullOrEmpty(template.CultureCode))
+            {
+                text = template.Name;
+                value = string.Format("{0}|{1}", fileName, GetThumbnail(fileName));
+            }
+            else
+            {
+                if (DisplayType == 0)
+                {
+                    var _ViewType = Convert.ToString(DotNetNuke.Services.Personalization.Personalization.GetProfile("LanguageDisplayMode", "ViewType" + PortalSettings.Current.PortalId));
+                    switch (_ViewType)
+                    {
+                        case "NATIVE":
+                            DisplayType = CultureDropDownTypes.NativeName;
+                            break;
+                        case "ENGLISH":
+                            DisplayType = CultureDropDownTypes.EnglishName;
+                            break;
+                        default:
+                            DisplayType = CultureDropDownTypes.DisplayName;
+                            break;
+                    }
+                }
+
+                text = string.Format("{0} - {1}", template.Name, Localization.GetLocaleName(template.CultureCode, DisplayType));
+                
+                value = string.Format("{0}|{1}|{2}", fileName, template.CultureCode, GetThumbnail(fileName));
+            }
+
+            return new ListItem(text, value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreatePortal">
+          <declaration><![CDATA[public int CreatePortal(List<string> errors, string domainName, string serverPath, string siteTemplate, string siteName, string siteAlias, string siteDescription, string siteKeywords, bool isChildSite, string homeDirectory, int siteGroupId, bool useCurrent, string firstname, string lastname, string username, string email, string password, string confirm, string question = "", string answer = "")]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="355" sc="9" el="597" ec="10">Components\SitesController.cs</location>
+            <body hash="41a5aead3c9cc07cb9f2d1dfd489f9fb"><![CDATA[{
+            var template = LoadPortalTemplateInfoForSelectedItem(siteTemplate);
+
+            var strChildPath = string.Empty;
+            var closePopUpStr = string.Empty;
+            var intPortalId = -1;
+            //check template validity
+            var schemaFilename = HttpContext.Current.Server.MapPath("~/DesktopModules/Admin/Portals/portal.template.xsd");
+            var xmlFilename = template.TemplateFilePath;
+            var xval = new PortalTemplateValidator();
+            if (!xval.Validate(xmlFilename, schemaFilename))
+            {
+                errors.AddRange(xval.Errors.OfType<string>());
+                return intPortalId;
+            }
+
+            //Set Portal Name
+            siteAlias = siteAlias.ToLowerInvariant().Replace("http://", "").Replace("https://", "");
+
+            //Validate Portal Name
+            var strPortalAlias = isChildSite
+                ? PortalController.GetPortalFolder(siteAlias)
+                : siteAlias;
+
+            var error = false;
+            var message = string.Empty;
+            if (!PortalAliasController.ValidateAlias(strPortalAlias, isChildSite))
+            {
+                error = true;
+                message = Localization.GetString("InvalidName", LocalResourcesFile);
+            }
+
+            //check whether have conflict between tab path and portal alias.
+            var checkTabPath = string.Format("//{0}", strPortalAlias);
+            if (TabController.GetTabByTabPath(PortalSettings.PortalId, checkTabPath, string.Empty) != Null.NullInteger
+                || TabController.GetTabByTabPath(Null.NullInteger, checkTabPath, string.Empty) != Null.NullInteger)
+            {
+                error = true;
+                message = Localization.GetString("DuplicateWithTab", LocalResourcesFile);
+            }
+
+            //Validate Password
+            if (password != confirm)
+            {
+                error = true;
+                if (!string.IsNullOrEmpty(message)) message += "<br/>";
+                message += Localization.GetString("InvalidPassword", LocalResourcesFile);
+            }
+
+            //Set Portal Alias for Child Portals
+            if (string.IsNullOrEmpty(message))
+            {
+                if (isChildSite)
+                {
+                    strChildPath = serverPath + strPortalAlias;
+
+                    if (Directory.Exists(strChildPath))
+                    {
+                        error = true;
+                        message = Localization.GetString("ChildExists", LocalResourcesFile);
+                    }
+                    else
+                    {
+                        strPortalAlias = siteAlias;
+                    }
+                }
+            }
+
+            //Get Home Directory
+            var homeDir = homeDirectory != @"Portals/[PortalID]" ? homeDirectory : "";
+
+            //Validate Home Folder
+            if (!string.IsNullOrEmpty(homeDir))
+            {
+                if (string.IsNullOrEmpty(string.Format("{0}\\{1}\\", Globals.ApplicationMapPath, homeDir).Replace("/", "\\")))
+                {
+                    error = true;
+                    message = Localization.GetString("InvalidHomeFolder", LocalResourcesFile);
+                }
+                if (homeDir.Contains("admin") || homeDir.Contains("DesktopModules") || homeDir.ToLowerInvariant() == "portals/")
+                {
+                    error = true;
+                    message = Localization.GetString("InvalidHomeFolder", LocalResourcesFile);
+                }
+            }
+
+            //Validate Portal Alias
+            if (!string.IsNullOrEmpty(strPortalAlias))
+            {
+                PortalAliasInfo portalAlias = null;
+                foreach (PortalAliasInfo alias in PortalAliasController.Instance.GetPortalAliases().Values)
+                {
+                    if (string.Equals(alias.HTTPAlias, strPortalAlias, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        portalAlias = alias;
+                        break;
+                    }
+                }
+
+                if (portalAlias != null)
+                {
+                    error = true;
+                    message = Localization.GetString("DuplicatePortalAlias", LocalResourcesFile);
+                }
+            }
+
+            //Create Portal
+            if (!error)
+            {
+                //Attempt to create the portal
+                var adminUser = new UserInfo();
+                try
+                {
+                    if (useCurrent)
+                    {
+                        adminUser = PortalSettings.Current.UserInfo;
+                        intPortalId = PortalController.Instance.CreatePortal(siteName,
+                            adminUser.UserID,
+                            siteDescription,
+                            siteKeywords,
+                            template,
+                            homeDir,
+                            strPortalAlias,
+                            serverPath,
+                            strChildPath,
+                            isChildSite);
+                    }
+                    else
+                    {
+                        adminUser = new UserInfo
+                        {
+                            FirstName = firstname,
+                            LastName = lastname,
+                            Username = username,
+                            DisplayName = firstname + " " + lastname,
+                            Email = email,
+                            IsSuperUser = false,
+                            Membership =
+                            {
+                                Approved = true,
+                                Password = password,
+                                PasswordQuestion = question,
+                                PasswordAnswer = answer
+                            },
+                            Profile =
+                            {
+                                FirstName = firstname,
+                                LastName = lastname
+                            }
+                        };
+
+                        intPortalId = PortalController.Instance.CreatePortal(siteName,
+                            adminUser,
+                            siteDescription,
+                            siteKeywords,
+                            template,
+                            homeDir,
+                            strPortalAlias,
+                            serverPath,
+                            strChildPath,
+                            isChildSite);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex);
+
+                    intPortalId = Null.NullInteger;
+                    message = ex.Message;
+
+                    TryDeleteCreatingPortal(serverPath, isChildSite ? strChildPath : string.Empty);
+                }
+
+                if (intPortalId != -1)
+                {
+                    //Add new portal to Site Group
+                    if (siteGroupId != Null.NullInteger)
+                    {
+                        var portal = PortalController.Instance.GetPortal(intPortalId);
+                        var portalGroup = PortalGroupController.Instance.GetPortalGroups().SingleOrDefault(g => g.PortalGroupId == siteGroupId);
+                        if (portalGroup != null)
+                        {
+                            PortalGroupController.Instance.AddPortalToGroup(portal, portalGroup, args => { });
+                        }
+                    }
+
+                    //Create a Portal Settings object for the new Portal
+                    var objPortal = PortalController.Instance.GetPortal(intPortalId);
+                    var newSettings = new PortalSettings
+                    {
+                        PortalAlias = new PortalAliasInfo {HTTPAlias = strPortalAlias},
+                        PortalId = intPortalId,
+                        DefaultLanguage = objPortal.DefaultLanguage
+                    };
+                    var webUrl = Globals.AddHTTP(strPortalAlias);
+                    try
+                    {
+                        message = string.IsNullOrEmpty(Host.HostEmail)
+                            ? string.Format(Localization.GetString("UnknownEmailAddress.Error", LocalResourcesFile), message, webUrl, closePopUpStr)
+                            : Mail.SendMail(Host.HostEmail,
+                                email,
+                                Host.HostEmail,
+                                Localization.GetSystemMessage(newSettings, "EMAIL_PORTAL_SIGNUP_SUBJECT", adminUser),
+                                Localization.GetSystemMessage(newSettings, "EMAIL_PORTAL_SIGNUP_BODY", adminUser),
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "");
+                    }
+                    catch (Exception exc)
+                    {
+                        Logger.Error(exc);
+                        message = string.Format(Localization.GetString("UnknownSendMail.Error", LocalResourcesFile), webUrl, closePopUpStr);
+                    }
+                    EventLogController.Instance.AddLog(PortalController.Instance.GetPortal(intPortalId), PortalSettings, PortalSettings.UserId,
+                        "", EventLogController.EventLogType.PORTAL_CREATED);
+
+                    // mark default language as published if content localization is enabled
+                    var ContentLocalizationEnabled = PortalController.GetPortalSettingAsBoolean("ContentLocalizationEnabled", PortalSettings.PortalId,
+                        false);
+                    if (ContentLocalizationEnabled)
+                    {
+                        var lc = new LocaleController();
+                        lc.PublishLanguage(intPortalId, objPortal.DefaultLanguage, true);
+                    }
+
+                    //Redirect to this new site
+                    if (message != Null.NullString)
+                    {
+                        message = string.Format(Localization.GetString("SendMail.Error", LocalResourcesFile), message, webUrl, closePopUpStr);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(message))
+            {
+                errors.Add(message);
+            }
+
+            return intPortalId;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ExportPortalTemplate">
+          <declaration><![CDATA[public string ExportPortalTemplate(ExportTemplateRequest request, UserInfo userInfo, out bool success)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="201" sc="9" el="300" ec="10">Components\SitesController.cs</location>
+            <body hash="de30b3036727b6a8b7e4e671d698977d"><![CDATA[{
+            var locales = request.Locales.ToList();
+            var pages = request.Pages.ToList();
+            var isValid = true;
+            success = false;
+
+            // Verify all ancestor pages are selected
+            foreach (var page in pages)
+            {
+                if (page.ParentTabId != Null.NullInteger && pages.All(p => p.TabId != page.ParentTabId.ToString(CultureInfo.InvariantCulture)))
+                    isValid = false;
+            }
+            if (!isValid)
+            {
+                return Localization.GetString("ErrorAncestorPages", LocalResourcesFile);
+            }
+
+            if (!pages.Any())
+            {
+                return Localization.GetString("ErrorPages", LocalResourcesFile);
+            }
+
+            var xmlSettings = new XmlWriterSettings
+            {
+                ConformanceLevel = ConformanceLevel.Fragment,
+                OmitXmlDeclaration = true,
+                Indent = true,
+                IndentChars = "  ",
+                Encoding = Encoding.UTF8,
+                WriteEndDocumentOnClose = true
+            };
+
+            var filename = Globals.HostMapPath + request.FileName.Replace("/", @"\");
+            if (!filename.EndsWith(".template", StringComparison.InvariantCultureIgnoreCase))
+            {
+                filename += ".template";
+            }
+
+            using (var writer = XmlWriter.Create(filename, xmlSettings))
+            {
+                writer.WriteStartElement("portal");
+                writer.WriteAttributeString("version", "5.0");
+
+                //Add template description
+                writer.WriteElementString("description", HttpUtility.HtmlEncode(request.Description));
+
+                //Serialize portal settings
+                var portal = PortalController.Instance.GetPortal(request.PortalId);
+
+                SerializePortalSettings(writer, portal, request.IsMultilanguage);
+                SerializeEnabledLocales(writer, portal, request.IsMultilanguage, locales);
+                SerializeExtensionUrlProviders(writer, request.PortalId);
+
+                if (request.IncludeProfile)
+                {
+                    //Serialize Profile Definitions
+                    SerializeProfileDefinitions(writer, portal);
+                }
+
+                if (request.IncludeModules)
+                {
+                    //Serialize Portal Desktop Modules
+                    DesktopModuleController.SerializePortalDesktopModules(writer, request.PortalId);
+                }
+
+                if (request.IncludeRoles)
+                {
+                    //Serialize Roles
+                    RoleController.SerializeRoleGroups(writer, request.PortalId);
+                }
+
+                //Serialize tabs
+                SerializeTabs(writer, portal, request.IsMultilanguage, pages, userInfo, request.IncludeContent, locales, request.LocalizationCulture);
+
+                if (request.IncludeFiles)
+                {
+                    //Create Zip File to hold files
+                    var resourcesFile = new ZipOutputStream(File.Create(filename + ".resources"));
+                    resourcesFile.SetLevel(6);
+
+                    //Serialize folders (while adding files to zip file)
+                    SerializeFolders(writer, portal, ref resourcesFile);
+
+                    //Finish and Close Zip file
+                    resourcesFile.Finish();
+                    resourcesFile.Close();
+                }
+                writer.WriteEndElement();
+                writer.Close();
+            }
+
+            EventManager.Instance.OnPortalTemplateCreated(new PortalTemplateEventArgs()
+            {
+                PortalId = request.PortalId,
+                TemplatePath = filename
+            });
+
+            success = true;
+            return string.Format(Localization.GetString("ExportedMessage", LocalResourcesFile), filename);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FormatExpiryDate">
+          <declaration><![CDATA[public string FormatExpiryDate(DateTime dateTime)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="117" sc="9" el="124" ec="10">Components\SitesController.cs</location>
+            <body hash="3f6f6e28aafe935b58974d4b8bb739b3"><![CDATA[{
+            var strDate = string.Empty;
+            if (!Null.IsNull(dateTime))
+            {
+                strDate = dateTime.ToShortDateString();
+            }
+            return strDate;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FormatPortalAliases">
+          <declaration><![CDATA[public IList<HttpAliasDto> FormatPortalAliases(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="100" sc="9" el="114" ec="10">Components\SitesController.cs</location>
+            <body hash="05ab0bcdcebde3b8dbe0c99b53b40561"><![CDATA[{
+            var aliases = new List<HttpAliasDto>();
+
+            var arr = PortalAliasController.Instance.GetPortalAliasesByPortalId(portalId).ToList();
+            foreach (var portalAliasInfo in arr)
+            {
+                var httpAlias = Globals.AddHTTP(portalAliasInfo.HTTPAlias);
+                var originalUrl = HttpContext.Current.Items["UrlRewrite:OriginalUrl"];
+
+                httpAlias = Globals.AddPort(httpAlias, originalUrl?.ToString().ToLowerInvariant() ?? httpAlias);
+                aliases.Add(new HttpAliasDto { Url = portalAliasInfo.HTTPAlias, Link = httpAlias });
+            }
+
+            return aliases;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetActualFileName">
+          <declaration><![CDATA[private string GetActualFileName(IFileInfo objFile)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="946" sc="9" el="950" ec="10">Components\SitesController.cs</location>
+            <body hash="61ce3391a20d38567a5574f7d5584c57"><![CDATA[{
+            return (objFile.StorageLocation == (int)FolderController.StorageLocationTypes.SecureFileSystem)
+                ? objFile.FileName + Globals.glbProtectedExtension
+                : objFile.FileName;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDefaultTemplate">
+          <declaration><![CDATA[public string GetDefaultTemplate()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="175" sc="9" el="193" ec="10">Components\SitesController.cs</location>
+            <body hash="4d364279d38fc49c53ab4f661caa29f0"><![CDATA[{
+            var templates = PortalController.Instance.GetAvailablePortalTemplates();
+            var currentCulture = Thread.CurrentThread.CurrentUICulture.Name;
+
+            var defaultTemplates =
+                templates.Where(x => Path.GetFileNameWithoutExtension(x.TemplateFilePath) == "Default Website").ToList();
+
+            var match = defaultTemplates.FirstOrDefault(x => x.CultureCode == currentCulture);
+            if (match == null)
+            {
+                match = defaultTemplates.FirstOrDefault(x => x.CultureCode.StartsWith(currentCulture.Substring(0, 2)));
+            }
+            if (match == null)
+            {
+                match = defaultTemplates.FirstOrDefault(x => string.IsNullOrEmpty(x.CultureCode));
+            }
+
+            return match != null ? string.Format("{0}|{1}", Path.GetFileName(match.TemplateFilePath), match.CultureCode) : "";
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetExportableTabs">
+          <declaration><![CDATA[private TabCollection GetExportableTabs(TabCollection tabs)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="600" sc="9" el="603" ec="10">Components\SitesController.cs</location>
+            <body hash="c467180a09f3f0e172cd3620b5c7b7d8"><![CDATA[{
+            var exportableTabs = tabs.Where(kvp => !kvp.Value.IsSystem).Select(kvp => kvp.Value);
+            return new TabCollection(exportableTabs);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalTemplate">
+          <declaration><![CDATA[public PortalController.PortalTemplateInfo GetPortalTemplate(string fileName, string cultureCode)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="134" sc="9" el="136" ec="10">Components\SitesController.cs</location>
+            <body hash="38b369a49baefcd6291dc5df5d991709"><![CDATA[{
+            return PortalController.Instance.GetPortalTemplate(fileName, cultureCode);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalTemplates">
+          <declaration><![CDATA[public IList<PortalController.PortalTemplateInfo> GetPortalTemplates()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="127" sc="9" el="131" ec="10">Components\SitesController.cs</location>
+            <body hash="cccc1e673a64e960352cedc4c70d3eb0"><![CDATA[{
+            var templates = PortalController.Instance.GetAvailablePortalTemplates();
+            templates = templates.OrderBy(x => x, new TemplateDisplayComparer()).ToList();
+            return templates;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTabByCulture">
+          <declaration><![CDATA[public TabDto GetTabByCulture(int tabId, int portalId, string cultureCode)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="196" sc="9" el="198" ec="10">Components\SitesController.cs</location>
+            <body hash="c36d3c95b0cb6bb6cca69707429f4e1b"><![CDATA[{
+            return _tabsController.GetTabByCulture(tabId, portalId, cultureCode);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTabsToExport">
+          <declaration><![CDATA[private IEnumerable<TabDto> GetTabsToExport(UserInfo userInfo, int portalId, string cultureCode, bool isMultiLanguage, IEnumerable<TabDto> userSelection, IList<TabDto> tabsCollection)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="304" sc="9" el="348" ec="10">Components\SitesController.cs</location>
+            <body hash="2943582df168d6620010c7fba221e5bb"><![CDATA[{
+            if (tabsCollection == null)
+            {
+                var tab = _tabsController.GetPortalTabs(userInfo, portalId, cultureCode, isMultiLanguage);
+                tabsCollection = tab.ChildTabs;
+                tab.ChildTabs = null;
+                tab.HasChildren = false;
+                tabsCollection.Add(tab);
+            }
+            var selectedTabs = userSelection as List<TabDto> ?? userSelection.ToList();
+            foreach (var tab in tabsCollection)
+            {
+                if (selectedTabs.Exists(x => x.TabId == tab.TabId))
+                {
+                    var existingTab = selectedTabs.First(x => x.TabId == tab.TabId);
+                    tab.CheckedState = existingTab.CheckedState;
+                    if (string.IsNullOrEmpty(Convert.ToString(existingTab.Name)))
+                    {
+                        selectedTabs.Remove(existingTab);
+                        selectedTabs.Add(tab);
+                    }
+                }
+                else
+                {
+                    selectedTabs.Add(tab);
+                }
+
+                if (tab.HasChildren)
+                {
+                    var checkedState = NodeCheckedState.UnChecked;
+                    if (tab.CheckedState == NodeCheckedState.Checked)
+                    {
+                        checkedState = NodeCheckedState.Checked;
+                    }
+
+                    var descendants = _tabsController.GetTabsDescendants(portalId, Convert.ToInt32(tab.TabId), cultureCode,
+                        isMultiLanguage).ToList();
+                    descendants.ForEach(x => { x.CheckedState = checkedState; });
+
+                    selectedTabs.AddRange(GetTabsToExport(userInfo, portalId, cultureCode, isMultiLanguage, selectedTabs,
+                        descendants).Where(x => !selectedTabs.Exists(y => y.TabId == x.TabId)));
+                }
+            }
+            return selectedTabs;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetThumbnail">
+          <declaration><![CDATA[private string GetThumbnail(string templateName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="1115" sc="9" el="1133" ec="10">Components\SitesController.cs</location>
+            <body hash="caeca432b16b91d9218dbfc285801851"><![CDATA[{
+            var filePath = Path.Combine(Globals.HostMapPath, templateName);
+            var imagePath = string.Empty;
+            foreach (var ext in ImageExtensions)
+            {
+                var path = Path.ChangeExtension(filePath, ext);
+                if (File.Exists(path))
+                {
+                    imagePath = path;
+                    break;
+                }
+            }
+
+            imagePath = "~/" + imagePath.Replace(Globals.ApplicationMapPath, string.Empty)
+                            .TrimStart('\\')
+                            .Replace("\\", "/");
+
+            return Globals.ResolveUrl(imagePath);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadPortalTemplateInfoForSelectedItem">
+          <declaration><![CDATA[private PortalController.PortalTemplateInfo LoadPortalTemplateInfoForSelectedItem(string template)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="1087" sc="9" el="1090" ec="10">Components\SitesController.cs</location>
+            <body hash="05453a3bdebe722df5f339f4f6b81203"><![CDATA[{
+            var values = template.Split('|');
+            return PortalController.Instance.GetPortalTemplate(Path.Combine(TestableGlobals.Instance.HostMapPath, values[0]), values.Length > 1 ? values[1] : null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SerializeEnabledLocales">
+          <declaration><![CDATA[private void SerializeEnabledLocales(XmlWriter writer, PortalInfo portal, bool isMultilanguage, IEnumerable<string> locales)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="820" sc="9" el="842" ec="10">Components\SitesController.cs</location>
+            <body hash="ac111ca9abada2e24080527435ef4d25"><![CDATA[{
+            var enabledLocales = LocaleController.Instance.GetLocales(portal.PortalID);
+            if (enabledLocales.Count > 1)
+            {
+                writer.WriteStartElement("locales");
+                if (isMultilanguage)
+                {
+                    foreach (var cultureCode in locales)
+                    {
+                        writer.WriteElementString("locale", cultureCode);
+                    }
+                }
+                else
+                {
+                    foreach (var enabledLocale in enabledLocales)
+                    {
+                        writer.WriteElementString("locale", enabledLocale.Value.Code);
+                    }
+                }
+
+                writer.WriteEndElement();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SerializeExtensionUrlProviders">
+          <declaration><![CDATA[private void SerializeExtensionUrlProviders(XmlWriter writer, int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="845" sc="9" el="888" ec="10">Components\SitesController.cs</location>
+            <body hash="62c5e3a778fcd90d47948727755c62f9"><![CDATA[{
+            var providers = ExtensionUrlProviderController.GetModuleProviders(portalId);
+            if (!providers.Any())
+            {
+                return;
+            }
+
+            writer.WriteStartElement("extensionUrlProviders");
+
+            foreach (var provider in providers)
+            {
+                writer.WriteStartElement("extensionUrlProvider");
+                writer.WriteElementString("name", provider.ProviderConfig.ProviderName);
+                writer.WriteElementString("active", provider.ProviderConfig.IsActive.ToString());
+                var settings = provider.ProviderConfig.Settings;
+                if (settings.Any())
+                {
+                    writer.WriteStartElement("settings");
+                    foreach (var setting in settings)
+                    {
+                        writer.WriteStartElement("setting");
+                        writer.WriteAttributeString("name", setting.Key);
+                        writer.WriteAttributeString("value", setting.Value);
+                        writer.WriteEndElement();
+                    }
+
+                    writer.WriteEndElement();
+                }
+
+                ////if (provider.ProviderConfig.TabIds.Any())
+                ////{
+                ////    writer.WriteStartElement("tabIds");
+                ////    foreach (var tabId in provider.ProviderConfig.TabIds)
+                ////    {
+                ////        writer.WriteElementString("tabId", tabId.ToString(CultureInfo.InvariantCulture));
+                ////    }
+                ////    writer.WriteEndElement();
+                ////}
+
+                writer.WriteEndElement();
+            }
+
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SerializeFiles">
+          <declaration><![CDATA[private void SerializeFiles(XmlWriter writer, PortalInfo objportal, string folderPath, ref ZipOutputStream zipFile)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="916" sc="9" el="943" ec="10">Components\SitesController.cs</location>
+            <body hash="580eb6f32323373ea006c6117ae429f6"><![CDATA[{
+            var folderManager = FolderManager.Instance;
+            var objFolder = folderManager.GetFolder(objportal.PortalID, folderPath);
+
+            writer.WriteStartElement("files");
+            foreach (var fileInfo in folderManager.GetFiles(objFolder))
+            {
+                var objFile = (FileInfo) fileInfo;
+                //verify that the file exists on the file system
+                var filePath = objportal.HomeDirectoryMapPath + folderPath + GetActualFileName(objFile);
+                if (File.Exists(filePath))
+                {
+                    writer.WriteStartElement("file");
+
+                    writer.WriteElementString("contenttype", objFile.ContentType);
+                    writer.WriteElementString("extension", objFile.Extension);
+                    writer.WriteElementString("filename", objFile.FileName);
+                    writer.WriteElementString("height", objFile.Height.ToString(CultureInfo.InvariantCulture));
+                    writer.WriteElementString("size", objFile.Size.ToString(CultureInfo.InvariantCulture));
+                    writer.WriteElementString("width", objFile.Width.ToString(CultureInfo.InvariantCulture));
+                    
+                    writer.WriteEndElement();
+
+                    FileSystemUtils.AddToZip(ref zipFile, filePath, GetActualFileName(objFile), folderPath);
+                }
+            }
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SerializeFolderPermissions">
+          <declaration><![CDATA[private void SerializeFolderPermissions(XmlWriter writer, PortalInfo objportal, string folderPath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="953" sc="9" el="970" ec="10">Components\SitesController.cs</location>
+            <body hash="7ff5ae5106dcc138d6f5e50e319c354a"><![CDATA[{
+            var permissions = FolderPermissionController.GetFolderPermissionsCollectionByFolder(objportal.PortalID, folderPath);
+
+            writer.WriteStartElement("folderpermissions");
+
+            foreach (FolderPermissionInfo permission in permissions)
+            {
+                writer.WriteStartElement("permission");
+
+                writer.WriteElementString("permissioncode", permission.PermissionCode);
+                writer.WriteElementString("permissionkey", permission.PermissionKey);
+                writer.WriteElementString("rolename", permission.RoleName);
+                writer.WriteElementString("allowaccess", permission.AllowAccess.ToString().ToLowerInvariant());
+
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SerializeFolders">
+          <declaration><![CDATA[private void SerializeFolders(XmlWriter writer, PortalInfo objportal, ref ZipOutputStream zipFile)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="891" sc="9" el="913" ec="10">Components\SitesController.cs</location>
+            <body hash="ebe758d4aaf35b3398e82348dba7740a"><![CDATA[{
+            //Sync db and filesystem before exporting so all required files are found
+            var folderManager = FolderManager.Instance;
+            folderManager.Synchronize(objportal.PortalID);
+            writer.WriteStartElement("folders");
+
+            foreach (var folder in folderManager.GetFolders(objportal.PortalID))
+            {
+                writer.WriteStartElement("folder");
+
+                writer.WriteElementString("folderpath", folder.FolderPath);
+                writer.WriteElementString("storagelocation", folder.StorageLocation.ToString());
+
+                //Serialize Folder Permissions
+                SerializeFolderPermissions(writer, objportal, folder.FolderPath);
+
+                //Serialize files
+                SerializeFiles(writer, objportal, folder.FolderPath, ref zipFile);
+
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SerializePortalSettings">
+          <declaration><![CDATA[private void SerializePortalSettings(XmlWriter writer, PortalInfo portal, bool isMultilanguage)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="708" sc="9" el="817" ec="10">Components\SitesController.cs</location>
+            <body hash="a84851cee0495e70d597d7eec92263f0"><![CDATA[{
+            writer.WriteStartElement("settings");
+
+            writer.WriteElementString("logofile", portal.LogoFile);
+            writer.WriteElementString("footertext", portal.FooterText);
+            writer.WriteElementString("userregistration", portal.UserRegistration.ToString(CultureInfo.InvariantCulture));
+            writer.WriteElementString("banneradvertising", portal.BannerAdvertising.ToString(CultureInfo.InvariantCulture));
+            writer.WriteElementString("defaultlanguage", portal.DefaultLanguage);
+
+            var settingsDictionary = PortalController.Instance.GetPortalSettings(portal.PortalID);
+
+            string setting;
+            settingsDictionary.TryGetValue("DefaultPortalSkin", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("skinsrc", setting);
+            }
+            settingsDictionary.TryGetValue("DefaultAdminSkin", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("skinsrcadmin", setting);
+            }
+            settingsDictionary.TryGetValue("DefaultPortalContainer", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("containersrc", setting);
+            }
+            settingsDictionary.TryGetValue("DefaultAdminContainer", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("containersrcadmin", setting);
+            }
+            settingsDictionary.TryGetValue("EnableSkinWidgets", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("enableskinwidgets", setting);
+            }
+            settingsDictionary.TryGetValue("portalaliasmapping", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("portalaliasmapping", setting);
+            }
+
+            writer.WriteElementString("contentlocalizationenabled", isMultilanguage.ToString());
+
+            settingsDictionary.TryGetValue("TimeZone", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("timezone", setting);
+            }
+
+            settingsDictionary.TryGetValue("EnablePopUps", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("enablepopups", setting);
+            }
+
+            settingsDictionary.TryGetValue("InlineEditorEnabled", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("inlineeditorenabled", setting);
+            }
+
+            settingsDictionary.TryGetValue("HideFoldersEnabled", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("hidefoldersenabled", setting);
+            }
+
+            settingsDictionary.TryGetValue("ControlPanelMode", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("controlpanelmode", setting);
+            }
+
+            settingsDictionary.TryGetValue("ControlPanelSecurity", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("controlpanelsecurity", setting);
+            }
+
+            settingsDictionary.TryGetValue("ControlPanelVisibility", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("controlpanelvisibility", setting);
+            }
+
+            writer.WriteElementString("hostspace", portal.HostSpace.ToString(CultureInfo.InvariantCulture));
+            writer.WriteElementString("userquota", portal.UserQuota.ToString(CultureInfo.InvariantCulture));
+            writer.WriteElementString("pagequota", portal.PageQuota.ToString(CultureInfo.InvariantCulture));
+
+            settingsDictionary.TryGetValue("PageHeadText", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("pageheadtext", setting);
+            }
+            settingsDictionary.TryGetValue("InjectModuleHyperLink", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("injectmodulehyperlink", setting);
+            }
+            settingsDictionary.TryGetValue("AddCompatibleHttpHeader", out setting);
+            if (!string.IsNullOrEmpty(setting))
+            {
+                writer.WriteElementString("addcompatiblehttpheader", setting);
+            }
+
+            //End Portal Settings
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SerializeProfileDefinitions">
+          <declaration><![CDATA[private void SerializeProfileDefinitions(XmlWriter writer, PortalInfo objportal)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="973" sc="9" el="992" ec="10">Components\SitesController.cs</location>
+            <body hash="e63f3241f42748a9d5fe7c999c625b6f"><![CDATA[{
+            var objListController = new ListController();
+
+            writer.WriteStartElement("profiledefinitions");
+            foreach (ProfilePropertyDefinition objProfileProperty in
+                ProfileController.GetPropertyDefinitionsByPortal(objportal.PortalID, false, false))
+            {
+                writer.WriteStartElement("profiledefinition");
+
+                writer.WriteElementString("propertycategory", objProfileProperty.PropertyCategory);
+                writer.WriteElementString("propertyname", objProfileProperty.PropertyName);
+
+                var objList = objListController.GetListEntryInfo("DataType", objProfileProperty.DataType);
+                writer.WriteElementString("datatype", objList == null ? "Unknown" : objList.Value);
+                writer.WriteElementString("length", objProfileProperty.Length.ToString(CultureInfo.InvariantCulture));
+                writer.WriteElementString("defaultvisibility", Convert.ToInt32(objProfileProperty.DefaultVisibility).ToString(CultureInfo.InvariantCulture));
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SerializeTabs">
+          <declaration><![CDATA[private void SerializeTabs(XmlWriter writer, PortalInfo portal, bool isMultilanguage, IEnumerable<TabDto> pages, UserInfo userInfo, bool includeContent, IEnumerable<string> locales, string localizationCulture = "")]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="996" sc="9" el="1043" ec="10">Components\SitesController.cs</location>
+            <body hash="b0113e0ba6a4d6e9104770c7a500edec"><![CDATA[{
+            //supporting object to build the tab hierarchy
+            var tabs = new Hashtable();
+
+            writer.WriteStartElement("tabs");
+            var tabsToExport = GetTabsToExport(userInfo, portal.PortalID, portal.DefaultLanguage, isMultilanguage, pages, null).ToList();
+
+            if (isMultilanguage)
+            {
+                //Process Default Language first
+                SerializeTabs(writer, portal, tabs,
+                    GetExportableTabs(
+                        TabController.Instance.GetTabsByPortal(portal.PortalID)
+                            .WithCulture(portal.DefaultLanguage, true)), tabsToExport, includeContent);
+
+                //Process other locales
+                foreach (var cultureCode in locales)
+                {
+                    if (cultureCode != portal.DefaultLanguage)
+                    {
+                        SerializeTabs(writer, portal, tabs,
+                            GetExportableTabs(
+                                TabController.Instance.GetTabsByPortal(portal.PortalID).WithCulture(cultureCode, false)),
+                            tabsToExport, includeContent);
+                    }
+                }
+            }
+            else
+            {
+                string contentLocalizable;
+                if (PortalController.Instance.GetPortalSettings(portal.PortalID)
+                    .TryGetValue("ContentLocalizationEnabled", out contentLocalizable) &&
+                    Convert.ToBoolean(contentLocalizable))
+                {
+                    SerializeTabs(writer, portal, tabs,
+                     GetExportableTabs(TabController.Instance.GetTabsByPortal(portal.PortalID).WithCulture(localizationCulture, true)), tabsToExport,
+                     includeContent);
+                }
+                else
+                {
+                    SerializeTabs(writer, portal, tabs,
+                        GetExportableTabs(TabController.Instance.GetTabsByPortal(portal.PortalID)), tabsToExport,
+                        includeContent);
+                }
+            }
+
+            writer.WriteEndElement();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SerializeTabs">
+          <declaration><![CDATA[private void SerializeTabs(XmlWriter writer, PortalInfo portal, Hashtable tabs, TabCollection tabCollection, IEnumerable<TabDto> pages, bool chkContent)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="1046" sc="9" el="1084" ec="10">Components\SitesController.cs</location>
+            <body hash="c66f177ae04ab09293a63db0ed645655"><![CDATA[{
+            pages = pages.ToList();
+            foreach (var tab in tabCollection.Values.OrderBy(x=>x.TabID))
+            {
+                //if not deleted
+                if (!tab.IsDeleted)
+                {
+                    XmlNode tabNode = null;
+                    if (string.IsNullOrEmpty(tab.CultureCode) || tab.CultureCode == portal.DefaultLanguage)
+                    {
+                        // page in default culture and checked or page doesn't exist in tree(which should always export).
+                        var tabId = tab.TabID.ToString(CultureInfo.InvariantCulture);
+                        if (pages.Any(p => p.TabId == tabId && (p.CheckedState == NodeCheckedState.Checked || p.CheckedState == NodeCheckedState.Partial)) ||
+                            pages.All(p => p.TabId != tabId))
+                        {
+                            tabNode = TabController.SerializeTab(new XmlDocument(), tabs, tab, portal, chkContent);
+                        }
+                    }
+                    else
+                    {
+                        // check if default culture page is selected or default page doesn't exist in tree(which should always export).
+                        var defaultTab = tab.DefaultLanguageTab;
+                        if (defaultTab == null
+                            || pages.All(p => p.TabId != defaultTab.TabID.ToString(CultureInfo.InvariantCulture))
+                            ||
+                            pages.Count(
+                                p =>
+                                    p.TabId == defaultTab.TabID.ToString(CultureInfo.InvariantCulture) &&
+                                    (p.CheckedState == NodeCheckedState.Checked || p.CheckedState == NodeCheckedState.Partial)) > 0)
+                        {
+                            tabNode = TabController.SerializeTab(new XmlDocument(), tabs, tab, portal, chkContent);
+                        }
+                    }
+
+                    if (tabNode != null)
+                        tabNode.WriteTo(writer);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TryDeleteCreatingPortal">
+          <declaration><![CDATA[private void TryDeleteCreatingPortal(string serverPath, string childPath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="1093" sc="9" el="1112" ec="10">Components\SitesController.cs</location>
+            <body hash="01be24798e3d8f17ff147e90efa96f2f"><![CDATA[{
+            try
+            {
+                if (HttpContext.Current != null && HttpContext.Current.Items.Contains("CreatingPortalId"))
+                {
+                    var creatingPortalId = Convert.ToInt32(HttpContext.Current.Items["CreatingPortalId"]);
+                    var portalInfo = PortalController.Instance.GetPortal(creatingPortalId);
+                    PortalController.DeletePortal(portalInfo, serverPath);
+                }
+
+                if (!string.IsNullOrEmpty(childPath))
+                {
+                    PortalController.DeletePortalFolder(string.Empty, childPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_tabsController">
+          <declaration><![CDATA[private readonly TabsController _tabsController = new TabsController();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ImageExtensions">
+          <declaration><![CDATA[internal static readonly IList<string> ImageExtensions = new List<string>]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SitesController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="DisplayType">
+          <declaration><![CDATA[private CultureDropDownTypes DisplayType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="52" el="73" ec="56">Components\SitesController.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="73" sc="57" el="73" ec="61">Components\SitesController.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LocalResourcesFile">
+          <declaration><![CDATA[public string LocalResourcesFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="97" sc="45" el="97" ec="146">Components\SitesController.cs</location>
+            <body hash="f441da8a820a9735eaa1863644ff2dcd"><![CDATA[Path.Combine("~/DesktopModules/admin/Dnn.PersonaBar/Modules/Dnn.Sites/App_LocalResources/Sites.resx"]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalSettings">
+          <declaration><![CDATA[private PortalSettings PortalSettings]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="95" sc="50" el="95" ec="102">Components\SitesController.cs</location>
+            <body hash="9a9acd53c40c448eb883c37aefbb294b"><![CDATA[PortalController.Instance.GetCurrentPortalSettings(]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Sites.Components.Dto">
+    <class name="HttpAliasDto">
+      <declaration><![CDATA[public class HttpAliasDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public HttpAliasDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Link">
+          <declaration><![CDATA[public string Link]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="30" el="16" ec="34">Components\Dto\HttpAliasDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="16" sc="35" el="16" ec="39">Components\Dto\HttpAliasDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Url">
+          <declaration><![CDATA[public string Url]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="29" el="13" ec="33">Components\Dto\HttpAliasDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="13" sc="34" el="13" ec="38">Components\Dto\HttpAliasDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Sites.MenuControllers">
+    <class name="AdminMenuController">
+      <declaration><![CDATA[public class AdminMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AdminMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="9" el="29" ec="10">MenuControllers\AdminMenuController.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="9" el="18" ec="10">MenuControllers\AdminMenuController.cs</location>
+            <body hash="4a8f06184b6087940b8e4519251d0924"><![CDATA[{
+            
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="9" el="24" ec="10">MenuControllers\AdminMenuController.cs</location>
+            <body hash="d4c78a0d5351d270343f678a4a02cf22"><![CDATA[{
+            var user = UserController.Instance.GetCurrentUserInfo();
+            return user.IsSuperUser || user.IsInRole(PortalSettings.Current?.AdministratorRoleName);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Sites.Services">
+    <class name="SitesController">
+      <declaration><![CDATA[public class SitesController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly SitesController _controller = new SitesController();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="35" ec="100">Services\SitesController.cs</location>
+            <body hash="f1ea014cb19e2d545ee36419e7252873"><![CDATA[private readonly Components.SitesController _controller = new Components.SitesController()]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static SitesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="9" el="34" ec="105">Services\SitesController.cs</location>
+            <body hash="446680160d8f21508b9806402efee931"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (SitesController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CreatePortal">
+          <declaration><![CDATA[public HttpResponseMessage CreatePortal(CreatePortalRequest request)]]></declaration>
+          <documentation>POST: api/Sites/CreatePortal
+ <summary>
+ Adds a portal
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="95" sc="9" el="121" ec="10">Services\SitesController.cs</location>
+            <body hash="407883a5db34c9f330e003c99d56b860"><![CDATA[{
+            try
+            {
+                var errors = new List<string>();
+                var portalId = _controller.CreatePortal(errors, GetDomainName(), GetAbsoluteServerPath(),
+                    request.SiteTemplate, request.SiteName,
+                    request.SiteAlias, request.SiteDescription, request.SiteKeywords,
+                    request.IsChildSite, request.HomeDirectory, request.SiteGroupId, request.UseCurrentUserAsAdmin,
+                    request.Firstname, request.Lastname, request.Username, request.Email, request.Password,
+                    request.PasswordConfirm, request.Question, request.Answer);
+                if (portalId < 0)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, string.Join("<br/>", errors));
+                }
+                var portal = PortalController.Instance.GetPortal(portalId);
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    Portal = GetPortalDto(portal),
+                    ErrorMessage = errors
+                });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteExpiredPortals">
+          <declaration><![CDATA[public HttpResponseMessage DeleteExpiredPortals()]]></declaration>
+          <documentation>POST: api/Sites/DeleteExpiredPortals
+ <summary>
+ Deletes expired portals
+ </summary>
+ <param></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="243" sc="9" el="254" ec="10">Services\SitesController.cs</location>
+            <body hash="d65f8b7290449f893f4e3a370713c28b"><![CDATA[{
+            try
+            {
+                PortalController.DeleteExpiredPortals(GetAbsoluteServerPath());
+                return Request.CreateResponse(HttpStatusCode.OK, new {Success = true});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeletePortal">
+          <declaration><![CDATA[public HttpResponseMessage DeletePortal(int portalId)]]></declaration>
+          <documentation>POST: api/Sites/DeletePortal
+ <summary>
+ Deletes a portal
+ </summary>
+ <param name="portalId"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="132" sc="9" el="161" ec="10">Services\SitesController.cs</location>
+            <body hash="1f68d68a421d39e1295df3789c5bd828"><![CDATA[{
+            try
+            {
+                var portal = PortalController.Instance.GetPortal(portalId);
+                if (portal != null)
+                {
+                    if (portal.PortalID != PortalSettings.PortalId &&
+                        !PortalController.IsMemberOfPortalGroup(portal.PortalID))
+                    {
+                        var strMessage = PortalController.DeletePortal(portal, GetAbsoluteServerPath());
+                        if (string.IsNullOrEmpty(strMessage))
+                        {
+                            EventLogController.Instance.AddLog("PortalName", portal.PortalName, PortalSettings,
+                                UserInfo.UserID, EventLogController.EventLogType.PORTAL_DELETED);
+                            return Request.CreateResponse(HttpStatusCode.OK, new {Success = true});
+                        }
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, strMessage);
+                    }
+                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized,
+                        Localization.GetString("PortalDeletionDenied", Components.Constants.LocalResourcesFile));
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound,
+                    Localization.GetString("PortalNotFound", Components.Constants.LocalResourcesFile));
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ExportPortalTemplate">
+          <declaration><![CDATA[public HttpResponseMessage ExportPortalTemplate(ExportTemplateRequest request)]]></declaration>
+          <documentation>POST: api/Sites/ExportPortalTemplate
+ <summary>
+ Exports portal template
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="172" sc="9" el="199" ec="10">Services\SitesController.cs</location>
+            <body hash="b3c3b1f6fb03433332ec1bca02a8889c"><![CDATA[{
+            try
+            {
+                bool success;
+                var message = _controller.ExportPortalTemplate(request, UserInfo, out success);
+
+                if (!success)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, message);
+                }
+                var template = _controller.GetPortalTemplates().First(x => x.Name == request.FileName);
+                var templateItem = _controller.CreateListItem(template);
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    Message = message,
+                    Template = new
+                    {
+                        Name = templateItem.Text,
+                        templateItem.Value
+                    }
+                });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAbsoluteServerPath">
+          <declaration><![CDATA[private string GetAbsoluteServerPath()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="326" sc="9" el="336" ec="10">Services\SitesController.cs</location>
+            <body hash="1b90d8657d9022a43ef0d7fd5ba4338c"><![CDATA[{
+            var httpContext = Request.Properties["MS_HttpContext"] as HttpContextWrapper;
+            var strServerPath = string.Empty;
+            if (httpContext != null)
+                strServerPath = httpContext.Request.MapPath(httpContext.Request.ApplicationPath);
+            if (!strServerPath.EndsWith("\\"))
+            {
+                strServerPath += "\\";
+            }
+            return strServerPath;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDomainName">
+          <declaration><![CDATA[private string GetDomainName()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="339" sc="9" el="342" ec="10">Services\SitesController.cs</location>
+            <body hash="30c651eeb7dce24f59a19ace0f2ad2c4"><![CDATA[{
+            var httpContext = Request.Properties["MS_HttpContext"] as HttpContextWrapper;
+            return httpContext != null ? Globals.GetDomainName(httpContext.Request, true) : string.Empty;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalDto">
+          <declaration><![CDATA[private object GetPortalDto(PortalInfo portal)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="345" sc="9" el="368" ec="10">Services\SitesController.cs</location>
+            <body hash="c108f2ff9df7166af19245d923161a9f"><![CDATA[{
+            string contentLocalizable;
+            var portalDto = new
+            {
+                portal.PortalID,
+                portal.PortalName,
+                PortalAliases = _controller.FormatPortalAliases(portal.PortalID),
+                portal.Users,
+                portal.Pages,
+                portal.HostSpace,
+                portal.HostFee,
+                portal.DefaultLanguage,
+                ExpiryDate = _controller.FormatExpiryDate(portal.ExpiryDate),
+                portal.LastModifiedOnDate,
+                contentLocalizable =
+                    PortalController.Instance.GetPortalSettings(portal.PortalID)
+                        .TryGetValue("ContentLocalizationEnabled", out contentLocalizable) &&
+                    Convert.ToBoolean(contentLocalizable),
+                allowDelete =
+                    (portal.PortalID != PortalSettings.PortalId &&
+                     !PortalController.IsMemberOfPortalGroup(portal.PortalID))
+            };
+            return portalDto;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalLocales">
+          <declaration><![CDATA[public HttpResponseMessage GetPortalLocales(int portalId)]]></declaration>
+          <documentation>GET: api/Sites/GetPortalLocales
+ <summary>
+ Gets list of portal locales
+ </summary>
+ <param name="portalId"></param>
+ <returns>List of portal locales</returns></documentation>
+          <codeblock>
+            <location sl="209" sc="9" el="232" ec="10">Services\SitesController.cs</location>
+            <body hash="ce1b5dd1d12005a9fbeeaad5e99556d7"><![CDATA[{
+            try
+            {
+                var locales = LocaleController.Instance.GetLocales(portalId).Values;
+                var response = new
+                {
+                    Success = true,
+                    Results = locales.Select(l => new
+                    {
+                        l.Code,
+                        l.EnglishName,
+                        l.LanguageId
+                    }),
+                    TotalResults = locales.Count
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortals">
+          <declaration><![CDATA[public HttpResponseMessage GetPortals(int portalGroupId, string filter, int pageIndex, int pageSize)]]></declaration>
+          <documentation>
+            <summary>
+ Gets list of portals
+ </summary>
+ <param name="portalGroupId"></param>
+ <param name="filter"></param>
+ <param name="pageIndex"></param>
+ <param name="pageSize"></param>
+ <returns>List of portals</returns>
+ <example>
+ GET /api/personabar/sites/GetPortals?portalGroupId=-1&amp;filter=mysite&amp;pageIndex=0&amp;pageSize=10
+ </example></documentation>
+          <codeblock>
+            <location sl="50" sc="9" el="83" ec="10">Services\SitesController.cs</location>
+            <body hash="c48a33e9d65cab601769c7c8bb7be658"><![CDATA[{
+            try
+            {
+                var totalRecords = 0;
+                IEnumerable<PortalInfo> portals;
+
+                if (portalGroupId > Null.NullInteger)
+                {
+                    portals = PortalGroupController.Instance.GetPortalsByGroup(portalGroupId)
+                                .Where(p => string.IsNullOrEmpty(filter) 
+                                                || p.PortalName.ToLowerInvariant().Contains(filter.ToLowerInvariant()))
+                                .ToList();
+                    totalRecords = portals.Count();
+                    portals = portals.Skip(pageIndex*pageSize).Take(pageSize);
+                }
+                else
+                {
+                    portals = PortalController.GetPortalsByName($"%{filter}%", pageIndex, pageSize,
+                                ref totalRecords).Cast<PortalInfo>();
+                }
+                var response = new
+                {
+                    Results = portals.Select(GetPortalDto).ToList(),
+                    TotalResults = totalRecords
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalTemplates">
+          <declaration><![CDATA[public HttpResponseMessage GetPortalTemplates()]]></declaration>
+          <documentation>GET: api/Sites/GetPortalTemplates
+ <summary>
+ Gets list of portal templates
+ </summary>
+ <param></param>
+ <returns>List of portal templates</returns></documentation>
+          <codeblock>
+            <location sl="264" sc="9" el="300" ec="10">Services\SitesController.cs</location>
+            <body hash="6669b282e11a55d4045b01aed2d35292"><![CDATA[{
+            try
+            {
+                var defaultTemplate = _controller.GetDefaultTemplate();
+                var temps = new List<Tuple<string, string>>();
+                var templates = _controller.GetPortalTemplates();
+                foreach (var template in templates)
+                {
+                    var item = _controller.CreateListItem(template);
+                    temps.Add(new Tuple<string, string>(item.Text, item.Value));
+                    if (item.Value.StartsWith(defaultTemplate))
+                        defaultTemplate = item.Value;
+                }
+
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        Templates = temps.Select(t => new
+                        {
+                            Name = t.Item1,
+                            Value = t.Item2
+                        }),
+                        DefaultTemplate = defaultTemplate
+                    },
+                    TotalResults = temps.Count
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RequiresQuestionAndAnswer">
+          <declaration><![CDATA[public HttpResponseMessage RequiresQuestionAndAnswer()]]></declaration>
+          <documentation>GET: api/Sites/RequiresQuestionAndAnswer
+ <summary>
+ Gets whether a Question/Answer is required for Password retrieval
+ </summary>
+ <param></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="310" sc="9" el="323" ec="10">Services\SitesController.cs</location>
+            <body hash="ae57537be860c4001363682138c738de"><![CDATA[{
+            try
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new
+                {
+                    MembershipProviderConfig.RequiresQuestionAndAnswer
+                });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_controller">
+          <declaration><![CDATA[private readonly SitesController _controller = new SitesController();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SitesController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Sites.Services.Dto">
+    <class name="CreatePortalRequest">
+      <declaration><![CDATA[public class CreatePortalRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CreatePortalRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Answer">
+          <declaration><![CDATA[public string Answer]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="32" el="69" ec="36">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="69" sc="37" el="69" ec="41">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Email">
+          <declaration><![CDATA[public string Email]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="31" el="61" ec="35">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="61" sc="36" el="61" ec="40">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Firstname">
+          <declaration><![CDATA[public string Firstname]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="35" el="55" ec="39">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="55" sc="40" el="55" ec="44">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="HomeDirectory">
+          <declaration><![CDATA[public string HomeDirectory]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="39" el="49" ec="43">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="49" sc="44" el="49" ec="48">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="IsChildSite">
+          <declaration><![CDATA[public bool IsChildSite]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="35" el="47" ec="39">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="47" sc="40" el="47" ec="44">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Lastname">
+          <declaration><![CDATA[public string Lastname]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="34" el="57" ec="38">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="57" sc="39" el="57" ec="43">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Password">
+          <declaration><![CDATA[public string Password]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="34" el="63" ec="38">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="63" sc="39" el="63" ec="43">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PasswordConfirm">
+          <declaration><![CDATA[public string PasswordConfirm]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="41" el="65" ec="45">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="65" sc="46" el="65" ec="50">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Question">
+          <declaration><![CDATA[public string Question]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="67" sc="34" el="67" ec="38">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="67" sc="39" el="67" ec="43">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SiteAlias">
+          <declaration><![CDATA[public string SiteAlias]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="35" el="41" ec="39">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="41" sc="40" el="41" ec="44">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SiteDescription">
+          <declaration><![CDATA[public string SiteDescription]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="41" el="43" ec="45">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="46" el="43" ec="50">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SiteGroupId">
+          <declaration><![CDATA[public int SiteGroupId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="34" el="51" ec="38">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="51" sc="39" el="51" ec="43">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SiteKeywords">
+          <declaration><![CDATA[public string SiteKeywords]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="38" el="45" ec="42">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="45" sc="43" el="45" ec="47">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SiteName">
+          <declaration><![CDATA[public string SiteName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="34" el="39" ec="38">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="39" sc="39" el="39" ec="43">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SiteTemplate">
+          <declaration><![CDATA[public string SiteTemplate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="38" el="37" ec="42">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="43" el="37" ec="47">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UseCurrentUserAsAdmin">
+          <declaration><![CDATA[public bool UseCurrentUserAsAdmin]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="45" el="53" ec="49">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="53" sc="50" el="53" ec="54">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Username">
+          <declaration><![CDATA[public string Username]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="34" el="59" ec="38">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="59" sc="39" el="59" ec="43">Services\Dto\CreatePortalRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ExportTemplateRequest">
+      <declaration><![CDATA[public class ExportTemplateRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ExportTemplateRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Description">
+          <declaration><![CDATA[public string Description]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="37" el="44" ec="41">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="44" sc="42" el="44" ec="46">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="FileName">
+          <declaration><![CDATA[public string FileName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="34" el="41" ec="38">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="41" sc="39" el="41" ec="43">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="IncludeContent">
+          <declaration><![CDATA[public bool IncludeContent]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="62" sc="38" el="62" ec="42">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="62" sc="43" el="62" ec="47">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="IncludeFiles">
+          <declaration><![CDATA[public bool IncludeFiles]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="36" el="65" ec="40">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="65" sc="41" el="65" ec="45">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="IncludeModules">
+          <declaration><![CDATA[public bool IncludeModules]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="38" el="74" ec="42">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="74" sc="43" el="74" ec="47">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="IncludeProfile">
+          <declaration><![CDATA[public bool IncludeProfile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="38" el="71" ec="42">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="71" sc="43" el="71" ec="47">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="IncludeRoles">
+          <declaration><![CDATA[public bool IncludeRoles]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="36" el="68" ec="40">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="68" sc="41" el="68" ec="45">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="IsMultilanguage">
+          <declaration><![CDATA[public bool IsMultilanguage]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="39" el="59" ec="43">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="59" sc="44" el="59" ec="48">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Locales">
+          <declaration><![CDATA[public IEnumerable<string> Locales]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="46" el="53" ec="50">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="53" sc="51" el="53" ec="55">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LocalizationCulture">
+          <declaration><![CDATA[public string LocalizationCulture]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="45" el="56" ec="49">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="56" sc="50" el="56" ec="54">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Pages">
+          <declaration><![CDATA[public IEnumerable<TabDto> Pages]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="44" el="50" ec="48">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="50" sc="49" el="50" ec="53">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalId">
+          <declaration><![CDATA[public int PortalId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="31" el="47" ec="35">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="47" sc="36" el="47" ec="40">Services\Dto\ExportTemplateRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

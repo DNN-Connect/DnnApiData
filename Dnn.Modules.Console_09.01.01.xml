@@ -1,0 +1,1477 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.Modules.Console.dll" version="09.01.01" generated="2017-08-10 13:30:32Z" generationTime="2.903959">
+  <namespace name="Dnn.Modules.Console">
+    <class name="Settings">
+      <declaration><![CDATA[public class Settings : ModuleSettingsBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Settings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static Settings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="6" el="47" ec="95">Settings.ascx.cs</location>
+            <body hash="d5261ebd56800b23b3e59be2e527b74e"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (Settings))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindTabs">
+          <declaration><![CDATA[private void BindTabs(int tabId, bool includeParent)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="9" el="90" ec="10">Settings.ascx.cs</location>
+            <body hash="49930d45664730dff5bbc999803efee6"><![CDATA[{
+            List<TabInfo> tempTabs = TabController.GetTabsBySortOrder(PortalId).OrderBy(t => t.Level).ThenBy(t => t.HasChildren).ToList();
+
+            IList<TabInfo> tabList = new List<TabInfo>();
+
+            IList<int> tabIdList = new List<int>();
+            tabIdList.Add(tabId);
+
+            if (includeParent)
+            {
+                TabInfo consoleTab = TabController.Instance.GetTab(tabId, PortalId);
+                if (consoleTab != null)
+                {
+                    tabList.Add(consoleTab);
+                }
+            }
+
+
+            foreach (TabInfo tab in tempTabs)
+            {
+                bool canShowTab = TabPermissionController.CanViewPage(tab) &&
+                        !tab.IsDeleted &&
+                        (tab.StartDate < DateTime.Now || tab.StartDate == Null.NullDate);
+
+                if (!canShowTab)
+                {
+                    continue;
+                }
+                if ((tabIdList.Contains(tab.ParentId)))
+                {
+                    if ((!tabIdList.Contains(tab.TabID)))
+                    {
+                        tabIdList.Add(tab.TabID);
+                    }
+                    tabList.Add(tab);
+                }
+            }
+
+            tabs.DataSource = tabList;
+            tabs.DataBind();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadSettings">
+          <declaration><![CDATA[public override void LoadSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="124" sc="9" el="187" ec="10">Settings.ascx.cs</location>
+            <body hash="9c28f6d5e51794e234e3a46b3e98f1c5"><![CDATA[{
+            try
+            {
+                if (Page.IsPostBack == false)
+                {
+                    if (Settings.ContainsKey("ParentTabId") && !string.IsNullOrEmpty(Convert.ToString(Settings["ParentTabId"])))
+                    {
+                        var tabId = Convert.ToInt32(Settings["ParentTabId"]);
+                        ParentTab.SelectedPage = TabController.Instance.GetTab(tabId, PortalId);
+                    }
+
+                    foreach (string val in ConsoleController.GetSizeValues())
+                    {
+                        //DefaultSize.Items.Add(new ListItem(Localization.GetString(val, LocalResourceFile), val));
+                        DefaultSize.AddItem(Localization.GetString(val, LocalResourceFile), val);
+                    }
+                    SelectDropDownListItem(ref DefaultSize, "DefaultSize");
+
+                    SelectDropDownListItem(ref modeList, "Mode");
+
+                    if (Settings.ContainsKey("AllowSizeChange"))
+                    {
+                        AllowResize.Checked = Convert.ToBoolean(Settings["AllowSizeChange"]);
+                    }
+                    foreach (var val in ConsoleController.GetViewValues())
+                    {
+                        //DefaultView.Items.Add(new ListItem(Localization.GetString(val, LocalResourceFile), val));
+                        DefaultView.AddItem(Localization.GetString(val, LocalResourceFile), val);
+                    }
+                    SelectDropDownListItem(ref DefaultView, "DefaultView");
+                    if (Settings.ContainsKey("IncludeParent"))
+                    {
+                        IncludeParent.Checked = Convert.ToBoolean(Settings["IncludeParent"]);
+                    }
+                    if (Settings.ContainsKey("AllowViewChange"))
+                    {
+                        AllowViewChange.Checked = Convert.ToBoolean(Settings["AllowViewChange"]);
+                    }
+                    if (Settings.ContainsKey("ShowTooltip"))
+                    {
+                        ShowTooltip.Checked = Convert.ToBoolean(Settings["ShowTooltip"]);
+                    }
+					if (Settings.ContainsKey("OrderTabsByHierarchy"))
+					{
+						OrderTabsByHierarchy.Checked = Convert.ToBoolean(Settings["OrderTabsByHierarchy"]);
+					}
+                    if (Settings.ContainsKey("IncludeHiddenPages"))
+                    {
+                        IncludeHiddenPages.Checked = Convert.ToBoolean(Settings["IncludeHiddenPages"]);
+                    }
+                    if (Settings.ContainsKey("ConsoleWidth"))
+                    {
+                        ConsoleWidth.Text = Convert.ToString(Settings["ConsoleWidth"]);
+                    }
+
+                    SwitchMode();
+                }
+
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="modeList_SelectedIndexChanged">
+          <declaration><![CDATA[private void modeList_SelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="257" sc="9" el="260" ec="10">Settings.ascx.cs</location>
+            <body hash="fa7bc632ba6125062f3419bf1948365a"><![CDATA[{
+            SwitchMode();
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="247" sc="9" el="254" ec="10">Settings.ascx.cs</location>
+            <body hash="1052bbe83810ba37e23bd277ce32171f"><![CDATA[{
+            base.OnInit(e);
+
+            tabs.ItemDataBound +=  tabs_ItemDataBound;
+            modeList.SelectedIndexChanged += modeList_SelectedIndexChanged;
+
+            ParentTab.UndefinedItem = new ListItem(DynamicSharedConstants.Unspecified, string.Empty);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="parentTab_SelectedIndexChanged">
+          <declaration><![CDATA[protected void parentTab_SelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="263" sc="9" el="265" ec="10">Settings.ascx.cs</location>
+            <body hash="cf7e748e2caee80815fb4089a1ce8bb3"><![CDATA[{
+            BindTabs(ParentTab.SelectedItemValueAsInt, IncludeParent.Checked);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SelectDropDownListItem">
+          <declaration><![CDATA[private void SelectDropDownListItem(ref DnnComboBox ddl, string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="307" sc="9" el="317" ec="10">Settings.ascx.cs</location>
+            <body hash="2bebc43ae54b43b4ec6271e6b2584099"><![CDATA[{
+            if (Settings.ContainsKey(key))
+            {
+                ddl.ClearSelection();
+                var selItem = ddl.FindItemByValue(Convert.ToString(Settings[key]));
+                if (selItem != null)
+                {
+                    selItem.Selected = true;
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SwitchMode">
+          <declaration><![CDATA[private void SwitchMode()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="93" sc="9" el="121" ec="10">Settings.ascx.cs</location>
+            <body hash="101f6a6d3b4f308b4758e03b19e4ed58"><![CDATA[{
+            int parentTabId = -1;
+            if (Settings.ContainsKey("ParentTabID") && !string.IsNullOrEmpty(Convert.ToString(Settings["ParentTabID"])))
+            {
+                parentTabId = Convert.ToInt32(Settings["ParentTabID"]);
+            }
+            switch (modeList.SelectedValue)
+            {
+                case "Normal":
+                    parentTabRow.Visible = true;
+                    includeParentRow.Visible = true;
+                    tabVisibilityRow.Visible = false;
+                    break;
+                case "Profile":
+                    parentTabRow.Visible = false;
+                    includeParentRow.Visible = false;
+                    tabVisibilityRow.Visible = true;
+                    parentTabId = PortalSettings.UserTabId;
+                    break;
+                case "Group":
+                    parentTabRow.Visible = true;
+                    includeParentRow.Visible = true;
+                    tabVisibilityRow.Visible = true;
+                   break;
+            }
+
+            ParentTab.SelectedPage = TabController.Instance.GetTab(parentTabId, PortalId);
+            BindTabs(parentTabId, IncludeParent.Checked);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="tabs_ItemDataBound">
+          <declaration><![CDATA[private void tabs_ItemDataBound(object Sender, RepeaterItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="268" sc="9" el="304" ec="10">Settings.ascx.cs</location>
+            <body hash="a190247d59e62e93d8af3a072fcd5b29"><![CDATA[{
+
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                var tab = (TabInfo) e.Item.DataItem;
+                DnnComboBox visibilityDropDown = (DnnComboBox)e.Item.FindControl("tabVisibility");
+
+                var tabLabel = (Label) e.Item.FindControl("tabLabel");
+                var tabPathField = (HiddenField) e.Item.FindControl("tabPath");
+
+                visibilityDropDown.Items.Clear();
+                //visibilityDropDown.Items.Add(new ListItem(LocalizeString("AllUsers"), "AllUsers"));
+                visibilityDropDown.AddItem(LocalizeString("AllUsers"), "AllUsers");
+                if (modeList.SelectedValue == "Profile")
+                {
+                    //visibilityDropDown.Items.Add(new ListItem(LocalizeString("Friends"), "Friends"));
+                    //visibilityDropDown.Items.Add(new ListItem(LocalizeString("User"), "User"));
+
+                    visibilityDropDown.AddItem(LocalizeString("Friends"), "Friends");
+                    visibilityDropDown.AddItem(LocalizeString("User"), "User");
+                }
+                else
+                {
+                    //visibilityDropDown.Items.Add(new ListItem(LocalizeString("Owner"), "Owner"));
+                    //visibilityDropDown.Items.Add(new ListItem(LocalizeString("Members"), "Members"));
+
+                    visibilityDropDown.AddItem(LocalizeString("Owner"), "Owner");
+                    visibilityDropDown.AddItem(LocalizeString("Members"), "Members");
+                }
+
+                tabLabel.Text = tab.TabName;
+                tabPathField.Value = tab.TabPath;
+
+                var key = String.Format("TabVisibility{0}", tab.TabPath.Replace("//", "-"));
+                SelectDropDownListItem(ref visibilityDropDown, key);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSettings">
+          <declaration><![CDATA[public override void UpdateSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="190" sc="9" el="244" ec="10">Settings.ascx.cs</location>
+            <body hash="994cdf111a9d76cb4e39a5ec1f5c059e"><![CDATA[{
+            try
+            {
+				//validate console width value
+                var wdth = string.Empty;
+                if ((ConsoleWidth.Text.Trim().Length > 0))
+                {
+                    try
+                    {
+                        wdth = Unit.Parse(ConsoleWidth.Text.Trim()).ToString();
+                    }
+                    catch (Exception exc)
+                    {
+                        Logger.Error(exc);
+
+                        throw new Exception("ConsoleWidth value is invalid. Value must be numeric.");
+                    }
+                }
+                if (ParentTab.SelectedItemValueAsInt == Null.NullInteger)
+                {
+                    ModuleController.Instance.DeleteModuleSetting(ModuleId, "ParentTabID");
+                }
+                else
+                {
+                    ModuleController.Instance.UpdateModuleSetting(ModuleId, "ParentTabID", ParentTab.SelectedItem.Value);
+                }
+
+                ModuleController.Instance.UpdateModuleSetting(ModuleId, "Mode", modeList.SelectedValue);
+                ModuleController.Instance.UpdateModuleSetting(ModuleId, "DefaultSize", DefaultSize.SelectedValue);
+                ModuleController.Instance.UpdateModuleSetting(ModuleId, "AllowSizeChange", AllowResize.Checked.ToString(CultureInfo.InvariantCulture));
+                ModuleController.Instance.UpdateModuleSetting(ModuleId, "DefaultView", DefaultView.SelectedValue);
+                ModuleController.Instance.UpdateModuleSetting(ModuleId, "AllowViewChange", AllowViewChange.Checked.ToString(CultureInfo.InvariantCulture));
+                ModuleController.Instance.UpdateModuleSetting(ModuleId, "ShowTooltip", ShowTooltip.Checked.ToString(CultureInfo.InvariantCulture));
+                ModuleController.Instance.UpdateModuleSetting(ModuleId, "OrderTabsByHierarchy", OrderTabsByHierarchy.Checked.ToString(CultureInfo.InvariantCulture));
+                ModuleController.Instance.UpdateModuleSetting(ModuleId, "IncludeHiddenPages", IncludeHiddenPages.Checked.ToString(CultureInfo.InvariantCulture));
+                ModuleController.Instance.UpdateModuleSetting(ModuleId, "IncludeParent", IncludeParent.Checked.ToString(CultureInfo.InvariantCulture));
+                ModuleController.Instance.UpdateModuleSetting(ModuleId, "ConsoleWidth", wdth);
+
+                foreach (RepeaterItem item in tabs.Items)
+                {
+                    if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
+                    {
+	                    var tabPath = (item.FindControl("tabPath") as HiddenField).Value;
+						var visibility = (item.FindControl("tabVisibility") as DnnComboBox).SelectedValue;
+
+                        var key = String.Format("TabVisibility{0}", tabPath.Replace("//","-"));
+                        ModuleController.Instance.UpdateModuleSetting(ModuleId, key, visibility);
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="AllowResize">
+          <declaration><![CDATA[protected CheckBox AllowResize;]]></declaration>
+          <documentation>
+            <summary>
+ AllowResize control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="AllowViewChange">
+          <declaration><![CDATA[protected CheckBox AllowViewChange;]]></declaration>
+          <documentation>
+            <summary>
+ AllowViewChange control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ConsoleWidth">
+          <declaration><![CDATA[protected TextBox ConsoleWidth;]]></declaration>
+          <documentation>
+            <summary>
+ ConsoleWidth control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DefaultSize">
+          <declaration><![CDATA[protected DnnComboBox DefaultSize;]]></declaration>
+          <documentation>
+            <summary>
+ DefaultSize control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DefaultView">
+          <declaration><![CDATA[protected DnnComboBox DefaultView;]]></declaration>
+          <documentation>
+            <summary>
+ DefaultView control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="IncludeHiddenPages">
+          <declaration><![CDATA[protected CheckBox IncludeHiddenPages;]]></declaration>
+          <documentation>
+            <summary>
+ IncludeHiddenPages control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="IncludeParent">
+          <declaration><![CDATA[protected CheckBox IncludeParent;]]></declaration>
+          <documentation>
+            <summary>
+ IncludeParent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="includeParentRow">
+          <declaration><![CDATA[protected HtmlGenericControl includeParentRow;]]></declaration>
+          <documentation>
+            <summary>
+ includeParentRow control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Label1">
+          <declaration><![CDATA[protected UserControl Label1;]]></declaration>
+          <documentation>
+            <summary>
+ Label1 control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblAllowResize">
+          <declaration><![CDATA[protected UserControl lblAllowResize;]]></declaration>
+          <documentation>
+            <summary>
+ lblAllowResize control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblAllowViewChange">
+          <declaration><![CDATA[protected UserControl lblAllowViewChange;]]></declaration>
+          <documentation>
+            <summary>
+ lblAllowViewChange control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblConsoleWidth">
+          <declaration><![CDATA[protected UserControl lblConsoleWidth;]]></declaration>
+          <documentation>
+            <summary>
+ lblConsoleWidth control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblDefaultSize">
+          <declaration><![CDATA[protected UserControl lblDefaultSize;]]></declaration>
+          <documentation>
+            <summary>
+ lblDefaultSize control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblDefaultView">
+          <declaration><![CDATA[protected UserControl lblDefaultView;]]></declaration>
+          <documentation>
+            <summary>
+ lblDefaultView control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblIncludeHiddenPages">
+          <declaration><![CDATA[protected UserControl lblIncludeHiddenPages;]]></declaration>
+          <documentation>
+            <summary>
+ lblIncludeHiddenPages control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblIncludeParent">
+          <declaration><![CDATA[protected UserControl lblIncludeParent;]]></declaration>
+          <documentation>
+            <summary>
+ lblIncludeParent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblOrderTabsByHierarchy">
+          <declaration><![CDATA[protected UserControl lblOrderTabsByHierarchy;]]></declaration>
+          <documentation>
+            <summary>
+ lblOrderTabsByHierarchy control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblParentTab">
+          <declaration><![CDATA[protected UserControl lblParentTab;]]></declaration>
+          <documentation>
+            <summary>
+ lblParentTab control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblShowTooltip">
+          <declaration><![CDATA[protected UserControl lblShowTooltip;]]></declaration>
+          <documentation>
+            <summary>
+ lblShowTooltip control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(Settings));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="modeList">
+          <declaration><![CDATA[protected DnnComboBox modeList;]]></declaration>
+          <documentation>
+            <summary>
+ modeList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="OrderTabsByHierarchy">
+          <declaration><![CDATA[protected CheckBox OrderTabsByHierarchy;]]></declaration>
+          <documentation>
+            <summary>
+ OrderTabsByHierarchy control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ParentTab">
+          <declaration><![CDATA[protected DnnPageDropDownList ParentTab;]]></declaration>
+          <documentation>
+            <summary>
+ ParentTab control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="parentTabRow">
+          <declaration><![CDATA[protected HtmlGenericControl parentTabRow;]]></declaration>
+          <documentation>
+            <summary>
+ parentTabRow control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ShowTooltip">
+          <declaration><![CDATA[protected CheckBox ShowTooltip;]]></declaration>
+          <documentation>
+            <summary>
+ ShowTooltip control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="tabs">
+          <declaration><![CDATA[protected Repeater tabs;]]></declaration>
+          <documentation>
+            <summary>
+ tabs control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="tabsLabel">
+          <declaration><![CDATA[protected UserControl tabsLabel;]]></declaration>
+          <documentation>
+            <summary>
+ tabsLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="tabVisibilityRow">
+          <declaration><![CDATA[protected HtmlGenericControl tabVisibilityRow;]]></declaration>
+          <documentation>
+            <summary>
+ tabVisibilityRow control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ViewConsole">
+      <declaration><![CDATA[public class ViewConsole : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private string _defaultSize = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="3" el="60" ec="35">ViewConsole.ascx.cs</location>
+            <body hash="c10fd2b1c33a317c897d00ae8fa02f6f"><![CDATA[private string _defaultSize = string.Empty;
+		private string _defaultView = string.Empty;
+	    private int _groupTabID = -1;]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ViewConsole()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="3" el="56" ec="95">ViewConsole.ascx.cs</location>
+            <body hash="19098a99be4ef3edf64a447260907883"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (ViewConsole))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CanShowTab">
+          <declaration><![CDATA[private bool CanShowTab(TabInfo tab)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="212" sc="9" el="246" ec="10">ViewConsole.ascx.cs</location>
+            <body hash="244cf7295d93d91a24d7323aa4cc4f72"><![CDATA[{
+            bool canShowTab = TabPermissionController.CanViewPage(tab) &&
+                                !tab.IsDeleted &&
+                                (IncludeHiddenPages || tab.IsVisible) &&
+                                (tab.StartDate < DateTime.Now || tab.StartDate == Null.NullDate);
+
+            if (canShowTab)
+            {
+                var key = String.Format("TabVisibility{0}", tab.TabPath.Replace("//", "-"));
+                var visibility = Settings.ContainsKey(key) ? Settings[key].ToString() : "AllUsers";
+
+                switch (visibility)
+                {
+                    case "Owner":
+                        canShowTab = (UserInfo.Social.Roles.SingleOrDefault(ur => ur.RoleID == GroupId && ur.IsOwner) != null);
+                        break;
+                    case "Members":
+                        var group = RoleController.Instance.GetRole(PortalId, (r) => r.RoleID == GroupId);
+                        canShowTab = (group != null) && UserInfo.IsInRole(group.RoleName);
+                        break;
+                    case "Friends":
+                        var profileUser = UserController.GetUserById(PortalId, ProfileUserId);
+                        canShowTab = (profileUser != null) && (profileUser.Social.Friend != null) || (UserId == ProfileUserId);
+                        break;
+                    case "User":
+                        canShowTab = (UserId == ProfileUserId);
+                        break;
+                    case "AllUsers":
+                        break;
+                }
+            }
+
+
+            return canShowTab;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetClientSideSettings">
+          <declaration><![CDATA[protected string GetClientSideSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="525" sc="3" el="538" ec="4">ViewConsole.ascx.cs</location>
+            <body hash="4354c6b8f6b3ad356a385f34a272355b"><![CDATA[{
+			string tmid = "-1";
+			if ((UserId > -1))
+			{
+				tmid = TabModuleId.ToString(CultureInfo.InvariantCulture);
+			}
+			return string.Format("allowIconSizeChange: {0}, allowDetailChange: {1}, selectedSize: '{2}', showDetails: '{3}', tabModuleID: {4}, showTooltip: {5}",
+								 AllowSizeChange.ToString(CultureInfo.InvariantCulture).ToLower(),
+								 AllowViewChange.ToString(CultureInfo.InvariantCulture).ToLower(),
+								 DefaultSize,
+								 DefaultView,
+								 tmid,
+								 ShowTooltip.ToString(CultureInfo.InvariantCulture).ToLower());
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="GetHtml">
+          <declaration><![CDATA[protected string GetHtml(TabInfo tab)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="462" sc="3" el="522" ec="4">ViewConsole.ascx.cs</location>
+            <body hash="64c86b2485913b56c5bb816902910bea"><![CDATA[{
+			string returnValue = string.Empty;
+			if ((_groupTabID > -1 && _groupTabID != tab.ParentId))
+			{
+				_groupTabID = -1;
+				if ((!tab.DisableLink))
+				{
+					returnValue = "<br style=\"clear:both;\" /><br />";
+				}
+			}
+			if ((tab.DisableLink))
+			{
+				const string headerHtml = "<br style=\"clear:both;\" /><br /><h1><span class=\"TitleHead\">{0}</span></h1><br style=\"clear:both\" />";
+				returnValue += string.Format(headerHtml, tab.TabName);
+				_groupTabID = tab.TabID;
+			}
+			else
+			{
+			    var sb = new StringBuilder();
+                if(tab.TabID == PortalSettings.ActiveTab.TabID)
+                {
+                    sb.Append("<div class=\"active console-none \">");
+                }
+                else
+                {
+                    sb.Append("<div class=\"console-none \">");
+                }
+                sb.Append("<a href=\"{0}\" aria-label=\"{3}\">");
+
+                if (DefaultSize != "IconNone" || (AllowSizeChange || AllowViewChange))
+                {
+                    sb.Append("<img src=\"{1}\" alt=\"{3}\" width=\"16px\" height=\"16px\"/>");
+                    sb.Append("<img src=\"{2}\" alt=\"{3}\" width=\"32px\" height=\"32px\"/>");
+                }
+                sb.Append("</a>");
+                sb.Append("<h3>{3}</h3>");
+                sb.Append("<div>{4}</div>");
+			    sb.Append("</div>");
+
+                //const string contentHtml = "<div>" + "<a href=\"{0}\"><img src=\"{1}\" alt=\"{3}\" width=\"16px\" height=\"16px\"/><img src=\"{2}\" alt=\"{3}\" width=\"32px\" height=\"32px\"/></a>" + "<h3>{3}</h3>" + "<div>{4}</div>" + "</div>";
+
+			    var tabUrl = tab.FullUrl;
+                if (ProfileUserId > -1)
+                {
+                    tabUrl = Globals.NavigateURL(tab.TabID, "", "UserId=" + ProfileUserId.ToString(CultureInfo.InvariantCulture));
+                }
+
+                if (GroupId > -1)
+                {
+                    tabUrl = Globals.NavigateURL(tab.TabID, "", "GroupId=" + GroupId.ToString(CultureInfo.InvariantCulture));
+                }
+
+				returnValue += string.Format(sb.ToString(),
+                                             tabUrl,
+											 GetIconUrl(tab.IconFile, "IconFile"),
+											 GetIconUrl(tab.IconFileLarge, "IconFileLarge"),
+											 tab.LocalizedTabName,
+											 tab.Description);
+			}
+			return returnValue;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="GetIconUrl">
+          <declaration><![CDATA[private string GetIconUrl(string iconURL, string size)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="249" sc="9" el="259" ec="10">ViewConsole.ascx.cs</location>
+            <body hash="fc4d77b031b7f9893e7fda0c5e5e88c1"><![CDATA[{
+            if (string.IsNullOrEmpty(iconURL))
+            {
+                iconURL = (size == "IconFile") ? "~/images/icon_unknown_16px.gif" : "~/images/icon_unknown_32px.gif";
+            }
+            if (iconURL.Contains("~") == false)
+            {
+                iconURL = Path.Combine(PortalSettings.HomeDirectory, iconURL);
+            }
+            return ResolveUrl(iconURL);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUserSetting">
+          <declaration><![CDATA[private object GetUserSetting(string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="262" sc="9" el="264" ec="10">ViewConsole.ascx.cs</location>
+            <body hash="8aa90c7fb1fb9e679abd63f3fdcabfae"><![CDATA[{
+            return Personalization.GetProfile(ModuleConfiguration.ModuleDefinition.FriendlyName, PersonalizationKey(key));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsHostTab">
+          <declaration><![CDATA[private bool IsHostTab()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="267" sc="9" el="285" ec="10">ViewConsole.ascx.cs</location>
+            <body hash="b05b3f9b7d33999b082a4d88adff51eb"><![CDATA[{
+            var returnValue = false;
+            if (ConsoleTabID != TabId)
+            {
+                if (UserInfo != null && UserInfo.IsSuperUser)
+                {
+                    var hostTabs = TabController.Instance.GetTabsByPortal(Null.NullInteger);
+                    if (hostTabs.Keys.Any(key => key == ConsoleTabID))
+                    {
+                        returnValue = true;
+                    }
+                }
+            }
+            else
+            {
+                returnValue = PortalSettings.ActiveTab.IsSuperTab;
+            }
+            return returnValue;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="342" sc="3" el="360" ec="4">ViewConsole.ascx.cs</location>
+            <body hash="ae223a7dad872f95b7bd548641c068d3"><![CDATA[{
+			base.OnInit(e);
+
+			try
+			{
+				JavaScript.RequestRegistration(CommonJs.jQuery);
+
+                ClientResourceManager.RegisterScript(Page, "~/desktopmodules/admin/console/scripts/jquery.console.js");
+
+				DetailView.ItemDataBound += RepeaterItemDataBound;
+
+				//Save User Preferences
+				SavePersonalizedSettings();
+			}
+			catch (Exception exc)
+			{
+				Exceptions.ProcessModuleLoadException(this, exc);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="363" sc="3" el="445" ec="4">ViewConsole.ascx.cs</location>
+            <body hash="57f8a634320cd89e770acd853e81f4c8"><![CDATA[{
+			base.OnLoad(e);
+			try
+			{
+                IconSize.Visible = AllowSizeChange;
+                View.Visible = AllowViewChange;
+
+                foreach (string val in ConsoleController.GetSizeValues())
+                {
+                    IconSize.Items.Add(new ListItem(Localization.GetString(val + ".Text", LocalResourceFile), val));
+                }
+                foreach (string val in ConsoleController.GetViewValues())
+                {
+                    View.Items.Add(new ListItem(Localization.GetString(val + ".Text", LocalResourceFile), val));
+                }
+                IconSize.SelectedValue = DefaultSize;
+                View.SelectedValue = DefaultView;
+                
+                if ((!IsPostBack))
+                {
+                    Console.Attributes["class"] = Console.Attributes["class"] + " " + Mode.ToLower(CultureInfo.InvariantCulture);
+
+                    SettingsBreak.Visible = (AllowSizeChange && AllowViewChange);
+
+				    List<TabInfo> tempTabs = (IsHostTab())
+										? TabController.GetTabsBySortOrder(Null.NullInteger).OrderBy(t => t.Level).ThenBy(t => t.LocalizedTabName).ToList()
+										: TabController.GetTabsBySortOrder(PortalId).OrderBy(t => t.Level).ThenBy(t => t.LocalizedTabName).ToList();
+
+					_tabs = new List<TabInfo>();
+
+					IList<int> tabIdList = new List<int>();
+					tabIdList.Add(ConsoleTabID);
+
+                    if(IncludeParent)
+                    {
+                        TabInfo consoleTab = TabController.Instance.GetTab(ConsoleTabID, PortalId);
+                        if (consoleTab != null)
+                        {
+							_tabs.Add(consoleTab);
+                        }
+                    }
+
+					foreach (TabInfo tab in tempTabs)
+					{
+						if ((!CanShowTab(tab)))
+						{
+							continue;
+						}
+						if ((tabIdList.Contains(tab.ParentId)))
+						{
+							if ((!tabIdList.Contains(tab.TabID)))
+							{
+								tabIdList.Add(tab.TabID);
+							}
+							_tabs.Add(tab);  
+						}
+					}
+
+					//if OrderTabsByHierarchy set to true, we need reorder the tab list to move tabs which have child tabs to the end of list.
+					//so that the list display in UI can show tabs in same level in same area, and not break by child tabs.
+					if (OrderTabsByHierarchy)
+					{
+						_tabs = _tabs.OrderBy(t => t.HasChildren).ToList();
+					}
+
+				    int minLevel = -1;
+                    if (_tabs.Count > 0)
+                    {
+                        minLevel = _tabs.Min(t => t.Level);
+                    }
+					DetailView.DataSource = (minLevel > -1) ? _tabs.Where(t => t.Level == minLevel) : _tabs;
+					DetailView.DataBind();
+				}
+				if ((ConsoleWidth != string.Empty))
+				{
+					Console.Attributes.Add("style", "width:" + ConsoleWidth);
+				}
+			}
+			catch (Exception exc)
+			{
+				Exceptions.ProcessModuleLoadException(this, exc);
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="PersonalizationKey">
+          <declaration><![CDATA[private string PersonalizationKey(string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="288" sc="9" el="290" ec="10">ViewConsole.ascx.cs</location>
+            <body hash="a906198810c7d1c03acbeffc207086af"><![CDATA[{
+            return string.Format("{0}_{1}_{2}", PortalId, TabModuleId, key);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RepeaterItemDataBound">
+          <declaration><![CDATA[private void RepeaterItemDataBound(object sender, RepeaterItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="448" sc="3" el="459" ec="4">ViewConsole.ascx.cs</location>
+            <body hash="9fb4e91a35314a3291d11bd9755b8042"><![CDATA[{
+			var tab = e.Item.DataItem as TabInfo;
+			e.Item.Controls.Add(new Literal() { Text = GetHtml(tab) });
+			if (_tabs.Any(t => t.ParentId == tab.TabID))
+			{
+				var repeater = new Repeater();
+				repeater.ItemDataBound += RepeaterItemDataBound;
+				e.Item.Controls.Add(repeater);
+				repeater.DataSource = _tabs.Where(t => t.ParentId == tab.TabID);
+				repeater.DataBind();
+			}
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="SavePersonalizedSettings">
+          <declaration><![CDATA[private void SavePersonalizedSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="293" sc="9" el="332" ec="10">ViewConsole.ascx.cs</location>
+            <body hash="d6d9e48c2d4cced603d6455a3b8193b1"><![CDATA[{
+            if ((UserId > -1))
+            {
+                int consoleModuleID = -1;
+                try
+                {
+                    if (Request.QueryString["CTMID"] != null)
+                    {
+                        consoleModuleID = Convert.ToInt32(Request.QueryString["CTMID"]);
+                    }
+                }
+                catch (Exception exc)
+                {
+                    Logger.Error(exc);
+
+                    consoleModuleID = -1;
+                }
+                if ((consoleModuleID == TabModuleId))
+                {
+                    string consoleSize = string.Empty;
+                    if (Request.QueryString["CS"] != null)
+                    {
+                        consoleSize = Request.QueryString["CS"];
+                    }
+                    string consoleView = string.Empty;
+                    if (Request.QueryString["CV"] != null)
+                    {
+                        consoleView = Request.QueryString["CV"];
+                    }
+                    if ((consoleSize != string.Empty && ConsoleController.GetSizeValues().Contains(consoleSize)))
+                    {
+                        SaveUserSetting("DefaultSize", consoleSize);
+                    }
+                    if ((consoleView != string.Empty && ConsoleController.GetViewValues().Contains(consoleView)))
+                    {
+                        SaveUserSetting("DefaultView", consoleView);
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveUserSetting">
+          <declaration><![CDATA[private void SaveUserSetting(string key, object val)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="335" sc="9" el="337" ec="10">ViewConsole.ascx.cs</location>
+            <body hash="95d3476f10d90e940d12cda7a7d7cf2f"><![CDATA[{
+            Personalization.SetProfile(ModuleConfiguration.ModuleDefinition.FriendlyName, PersonalizationKey(key), val);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_consoleCtrl">
+          <declaration><![CDATA[private ConsoleController _consoleCtrl;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultSize">
+          <declaration><![CDATA[private string _defaultSize = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_defaultView">
+          <declaration><![CDATA[private string _defaultView = string.Empty;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_groupTabID">
+          <declaration><![CDATA[private int _groupTabID = -1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_tabs">
+          <declaration><![CDATA[private IList<TabInfo> _tabs;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Console">
+          <declaration><![CDATA[protected HtmlGenericControl Console;]]></declaration>
+          <documentation>
+            <summary>
+ Console control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DetailView">
+          <declaration><![CDATA[protected Repeater DetailView;]]></declaration>
+          <documentation>
+            <summary>
+ DetailView control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="IconSize">
+          <declaration><![CDATA[protected DropDownList IconSize;]]></declaration>
+          <documentation>
+            <summary>
+ IconSize control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ViewConsole));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="SettingsBreak">
+          <declaration><![CDATA[protected HtmlGenericControl SettingsBreak;]]></declaration>
+          <documentation>
+            <summary>
+ SettingsBreak control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="View">
+          <declaration><![CDATA[protected DropDownList View;]]></declaration>
+          <documentation>
+            <summary>
+ View control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="AllowSizeChange">
+          <declaration><![CDATA[public bool AllowSizeChange]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="AllowViewChange">
+          <declaration><![CDATA[public bool AllowViewChange]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ConsoleCtrl">
+          <declaration><![CDATA[public ConsoleController ConsoleCtrl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="4" el="89" ec="5">ViewConsole.ascx.cs</location>
+            <body hash="d90ce496763f8faa9ff0ae1bf5eeb43f"><![CDATA[{
+				if ((_consoleCtrl == null))
+				{
+					_consoleCtrl = new ConsoleController();
+				}
+				return _consoleCtrl;
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="ConsoleTabID">
+          <declaration><![CDATA[public int ConsoleTabID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="95" sc="4" el="101" ec="5">ViewConsole.ascx.cs</location>
+            <body hash="0b4af4062048a2f6d0832e1321834df3"><![CDATA[{
+                return (Mode == "Profile")
+                                   ? PortalSettings.UserTabId
+                                   : (Settings.ContainsKey("ParentTabID")
+                                        ? int.Parse(Settings["ParentTabID"].ToString())
+                                        : TabId);
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="ConsoleWidth">
+          <declaration><![CDATA[public string ConsoleWidth]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="107" sc="13" el="109" ec="14">ViewConsole.ascx.cs</location>
+            <body hash="3a06a356ed5f18af037caf728224dd5b"><![CDATA[{
+                return Settings.ContainsKey("ConsoleWidth") ? Settings["ConsoleWidth"].ToString() : String.Empty;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DefaultSize">
+          <declaration><![CDATA[public string DefaultSize]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="115" sc="4" el="129" ec="5">ViewConsole.ascx.cs</location>
+            <body hash="55d00ceeae2d68e0e05643de7d2983a4"><![CDATA[{
+				if ((_defaultSize == string.Empty && AllowSizeChange && UserId > Null.NullInteger))
+				{
+					object personalizedValue = GetUserSetting("DefaultSize");
+					if ((personalizedValue != null))
+					{
+						_defaultSize = Convert.ToString(personalizedValue);
+					}
+				}
+				if ((_defaultSize == string.Empty))
+				{
+					_defaultSize = Settings.ContainsKey("DefaultSize") ? Convert.ToString(Settings["DefaultSize"]) : "IconFile";
+				}
+				return _defaultSize;
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="DefaultView">
+          <declaration><![CDATA[public string DefaultView]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="135" sc="4" el="149" ec="5">ViewConsole.ascx.cs</location>
+            <body hash="c8228c920a435dabcebed64c962f28e1"><![CDATA[{
+				if ((_defaultView == string.Empty && AllowViewChange && UserId > Null.NullInteger))
+				{
+					object personalizedValue = GetUserSetting("DefaultView");
+					if ((personalizedValue != null))
+					{
+						_defaultView = Convert.ToString(personalizedValue);
+					}
+				}
+				if ((_defaultView == string.Empty))
+				{
+					_defaultView = Settings.ContainsKey("DefaultView") ? Convert.ToString(Settings["DefaultView"]) : "Hide";
+				}
+				return _defaultView;
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupId">
+          <declaration><![CDATA[public int GroupId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="155" sc="13" el="162" ec="14">ViewConsole.ascx.cs</location>
+            <body hash="c22519e32978bfa56337cc593877f9d5"><![CDATA[{
+                var groupId = Null.NullInteger;
+                if (!string.IsNullOrEmpty(Request.Params["GroupId"]))
+                {
+                    groupId = Int32.Parse(Request.Params["GroupId"]);
+                }
+                return groupId;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IncludeHiddenPages">
+          <declaration><![CDATA[public bool IncludeHiddenPages]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="IncludeParent">
+          <declaration><![CDATA[public bool IncludeParent]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="168" sc="13" el="170" ec="14">ViewConsole.ascx.cs</location>
+            <body hash="9e278ca7e0bcad6da27ad03ef37567b1"><![CDATA[{
+                return (Mode == "Profile") || (Settings.ContainsKey("IncludeParent") && bool.Parse(Settings["IncludeParent"].ToString()));
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Mode">
+          <declaration><![CDATA[public string Mode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="176" sc="13" el="178" ec="14">ViewConsole.ascx.cs</location>
+            <body hash="c94ee8bdb333d8e35b9f04cbcb8fac6c"><![CDATA[{
+                return Settings.ContainsKey("Mode") ? Settings["Mode"].ToString() : "Normal";
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="OrderTabsByHierarchy">
+          <declaration><![CDATA[public bool OrderTabsByHierarchy]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="202" sc="4" el="204" ec="5">ViewConsole.ascx.cs</location>
+            <body hash="ccb707c452bc44036fde806ce172818e"><![CDATA[{
+				return Settings.ContainsKey("OrderTabsByHierarchy") && bool.Parse(Settings["OrderTabsByHierarchy"].ToString());
+			}]]></body>
+          </codeblock>
+        </property>
+        <property name="ProfileUserId">
+          <declaration><![CDATA[public int ProfileUserId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="184" sc="13" el="191" ec="14">ViewConsole.ascx.cs</location>
+            <body hash="b54f995526c72617c67516af9667b32c"><![CDATA[{
+                var userId = Null.NullInteger;
+                if (!string.IsNullOrEmpty(Request.Params["UserId"]))
+                {
+                    userId = Int32.Parse(Request.Params["UserId"]);
+                }
+                return userId;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ShowTooltip">
+          <declaration><![CDATA[public bool ShowTooltip]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Console.Components">
+    <class name="BusinessController">
+      <declaration><![CDATA[public class BusinessController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="55" ec="10">Components\BusinessController.cs</location>
+            <body hash="01bc5f8bd1d974a31f0b95552d1bdb1d"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "08.00.00":
+
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ConsoleController">
+      <declaration><![CDATA[public class ConsoleController]]></declaration>
+      <documentation>
+        <summary>
+ Controls the Console
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ConsoleController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSizeValues">
+          <declaration><![CDATA[public static IList<string> GetSizeValues()]]></declaration>
+          <documentation>
+            <summary>
+ Gets the size values.
+ </summary>
+ <returns>A list with different icon types</returns></documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="55" ec="10">Components\ConsoleController.cs</location>
+            <body hash="9666ece51ac76fca62df6ad4dbc2092c"><![CDATA[{
+            IList<string> returnValue = new List<string>();
+            returnValue.Add("IconFile");
+            returnValue.Add("IconFileLarge");
+            returnValue.Add("IconNone");
+            return returnValue;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetViewValues">
+          <declaration><![CDATA[public static IList<string> GetViewValues()]]></declaration>
+          <documentation>
+            <summary>
+ Gets the view values.
+ </summary>
+ <returns>Show or Hide</returns></documentation>
+          <codeblock>
+            <location sl="62" sc="9" el="67" ec="10">Components\ConsoleController.cs</location>
+            <body hash="af02daa0ca6dcd1e02697c73724be008"><![CDATA[{
+            IList<string> returnValue = new List<string>();
+            returnValue.Add("Hide");
+            returnValue.Add("Show");
+            return returnValue;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

@@ -1,0 +1,499 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.DNNTreeNavigationProvider.dll" version="07.03.03" generated="2017-06-19 12:24:32Z" generationTime="1.3855552">
+  <namespace name="DotNetNuke.NavigationControl">
+    <class name="DNNTreeNavigationProvider">
+      <declaration><![CDATA[public class DNNTreeNavigationProvider : NavigationProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public DNNTreeNavigationProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Bind">
+          <declaration><![CDATA[public override void Bind(DNNNodeCollection objNodes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="249" sc="9" el="348" ec="10">DNNTreeNavigationProvider.cs</location>
+            <body hash="a7c0e2bb7ed8531a444bf627e0403328"><![CDATA[{
+            TreeNode objTreeItem;
+            if (IndicateChildren == false)
+            {
+                IndicateChildImageSub = "";
+                IndicateChildImageRoot = "";
+                IndicateChildImageExpandedSub = "";
+                IndicateChildImageExpandedRoot = "";
+            }
+            if (!String.IsNullOrEmpty(CSSNodeSelectedRoot) && CSSNodeSelectedRoot == CSSNodeSelectedSub)
+            {
+                Tree.DefaultNodeCssClassSelected = CSSNodeSelectedRoot; //set on parent, thus decreasing overall payload
+            }
+            foreach (DNNNode objNode in objNodes)
+            {
+                if (objNode.Level == 0) //root Tree
+                {
+                    int intIndex = Tree.TreeNodes.Import(objNode, true);
+                    objTreeItem = Tree.TreeNodes[intIndex];
+                    if (objNode.Enabled == false)
+                    {
+                        objTreeItem.ClickAction = eClickAction.Expand;
+                    }
+                    if (!String.IsNullOrEmpty(CSSNodeRoot))
+                    {
+                        objTreeItem.CssClass = CSSNodeRoot;
+                    }
+                    if (!String.IsNullOrEmpty(CSSNodeHoverRoot))
+                    {
+                        objTreeItem.CSSClassHover = CSSNodeHoverRoot;
+                    }
+                    if (String.IsNullOrEmpty(Tree.DefaultNodeCssClassSelected) && !String.IsNullOrEmpty(CSSNodeSelectedRoot))
+                    {
+                        objTreeItem.CSSClassSelected = CSSNodeSelectedRoot;
+                    }
+                    objTreeItem.CSSIcon = " "; //< ignore for root...???
+                    if (objNode.BreadCrumb)
+                    {
+                        objTreeItem.CssClass = CSSBreadCrumbRoot;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        TreeNode objParent = Tree.TreeNodes.FindNode(objNode.ParentNode.ID);
+                        if (objParent == null) //POD
+                        {
+                            objParent = Tree.TreeNodes[Tree.TreeNodes.Import(objNode.ParentNode.Clone(), true)];
+                        }
+                        objTreeItem = objParent.TreeNodes.FindNode(objNode.ID);
+                        if (objTreeItem == null) //POD
+                        {
+                            objTreeItem = objParent.TreeNodes[objParent.TreeNodes.Import(objNode.Clone(), true)];
+                        }
+                        if (objNode.Enabled == false)
+                        {
+                            objTreeItem.ClickAction = eClickAction.Expand;
+                        }
+                        if (!String.IsNullOrEmpty(CSSNodeHover))
+                        {
+                            objTreeItem.CSSClassHover = CSSNodeHover;
+                        }
+                        if (String.IsNullOrEmpty(Tree.DefaultNodeCssClassSelected) && !String.IsNullOrEmpty(CSSNodeSelectedSub))
+                        {
+                            objTreeItem.CSSClassSelected = CSSNodeSelectedSub;
+                        }
+                        if (objNode.BreadCrumb)
+                        {
+                            objTreeItem.CssClass = CSSBreadCrumbSub;
+                        }
+                    }
+                    catch
+                    {
+                        //throws exception if the parent tab has not been loaded ( may be related to user role security not allowing access to a parent tab )
+                        objTreeItem = null;
+                    }
+                }
+                if (!String.IsNullOrEmpty(objNode.Image))
+                {
+                    if (objNode.Image.StartsWith("~/images/"))
+                    {
+                        objNode.Image = objNode.Image.Replace("~/images/", PathSystemImage);
+                    }
+                    else if (!objNode.Image.Contains("://") && objNode.Image.StartsWith("/") == false && !String.IsNullOrEmpty(PathImage))
+                    {
+                        objNode.Image = PathImage + objNode.Image;
+                    }
+                    objTreeItem.Image = objNode.Image;
+                }
+                objTreeItem.ToolTip = objNode.ToolTip;
+
+                //End Select
+                if (objNode.Selected)
+                {
+                    Tree.SelectNode(objNode.ID);
+                }
+                Bind(objNode.DNNNodes);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ClearNodes">
+          <declaration><![CDATA[public override void ClearNodes()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="361" sc="9" el="363" ec="10">DNNTreeNavigationProvider.cs</location>
+            <body hash="0d03be9599448515ce3460e96c843d77"><![CDATA[{
+            Tree.TreeNodes.Clear();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DNNTree_NodeClick">
+          <declaration><![CDATA[private void DNNTree_NodeClick(object source, DNNTreeNodeClickEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="351" sc="9" el="353" ec="10">DNNTreeNavigationProvider.cs</location>
+            <body hash="1af6e3d70050b44c7d92b7836ee5e1d3"><![CDATA[{
+            RaiseEvent_NodeClick(e.Node);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DNNTree_PopulateOnDemand">
+          <declaration><![CDATA[private void DNNTree_PopulateOnDemand(object source, DNNTreeEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="356" sc="9" el="358" ec="10">DNNTreeNavigationProvider.cs</location>
+            <body hash="edd593bde8a2140552b63529ccdf3b71"><![CDATA[{
+            RaiseEvent_PopulateOnDemand(e.Node);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Initialize">
+          <declaration><![CDATA[public override void Initialize()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="241" sc="9" el="246" ec="10">DNNTreeNavigationProvider.cs</location>
+            <body hash="8e2045ff4512d227d274a8f4d1af7d4b"><![CDATA[{
+            Tree = new DnnTree();
+            Tree.ID = _controlID;
+            Tree.NodeClick += DNNTree_NodeClick;
+            Tree.PopulateOnDemand += DNNTree_PopulateOnDemand;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_controlID">
+          <declaration><![CDATA[private string _controlID;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ControlID">
+          <declaration><![CDATA[public override string ControlID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="118" sc="13" el="120" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="5bee8b2cb13015627e6fe6f8cf3e6074"><![CDATA[{
+                return _controlID;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="122" sc="13" el="124" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="3951093f888b94e34f2e8ec84506b0d9"><![CDATA[{
+                _controlID = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSBreadCrumbRoot">
+          <declaration><![CDATA[public override string CSSBreadCrumbRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSBreadCrumbSub">
+          <declaration><![CDATA[public override string CSSBreadCrumbSub]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSControl">
+          <declaration><![CDATA[public override string CSSControl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="134" sc="13" el="136" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="145d2030304ec521fd97ff21ff91d9cb"><![CDATA[{
+                return Tree.CssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="138" sc="13" el="140" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="0f66c54b1a1ed8b2d21ad55abad90663"><![CDATA[{
+                Tree.CssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSIcon">
+          <declaration><![CDATA[public override string CSSIcon]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="146" sc="13" el="148" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="9f1ac965c204e7ae2ab1ade02f08a397"><![CDATA[{
+                return Tree.DefaultIconCssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="150" sc="13" el="152" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="c374511716faaa4f6e9151988b920303"><![CDATA[{
+                Tree.DefaultIconCssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNode">
+          <declaration><![CDATA[public override string CSSNode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="158" sc="13" el="160" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="5f1a1664a27c564defd30ec3639cf75c"><![CDATA[{
+                return Tree.DefaultNodeCssClass;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="162" sc="13" el="164" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="7e9f691c5f453897d72a17389f94ed14"><![CDATA[{
+                Tree.DefaultNodeCssClass = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNodeHover">
+          <declaration><![CDATA[public override string CSSNodeHover]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="174" sc="13" el="176" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="faac5e8ab3a17f2eb5c022afbe645e01"><![CDATA[{
+                return Tree.DefaultNodeCssClassOver;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="178" sc="13" el="180" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="df243dbad8fc66027d6936236f023d09"><![CDATA[{
+                Tree.DefaultNodeCssClassOver = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNodeHoverRoot">
+          <declaration><![CDATA[public override string CSSNodeHoverRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNodeHoverSub">
+          <declaration><![CDATA[public override string CSSNodeHoverSub]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNodeRoot">
+          <declaration><![CDATA[public override string CSSNodeRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNodeSelectedRoot">
+          <declaration><![CDATA[public override string CSSNodeSelectedRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNodeSelectedSub">
+          <declaration><![CDATA[public override string CSSNodeSelectedSub]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ForceDownLevel">
+          <declaration><![CDATA[public override string ForceDownLevel]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="192" sc="13" el="194" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="e14fe11d6e720cd92b698895df7ef4a6"><![CDATA[{
+                return Tree.ForceDownLevel.ToString();
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="196" sc="13" el="198" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="ce8b187e6f2af4f82f56d41b2d24e53d"><![CDATA[{
+                Tree.ForceDownLevel = Convert.ToBoolean(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildImageExpandedRoot">
+          <declaration><![CDATA[public override string IndicateChildImageExpandedRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="94" sc="13" el="96" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="b18e87ca97aaf8dd643850c1276adb50"><![CDATA[{
+                return Tree.ExpandedNodeImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="98" sc="13" el="100" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="ca71941265fd77ba00fbcb1b10fac37a"><![CDATA[{
+                Tree.ExpandedNodeImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildImageExpandedSub">
+          <declaration><![CDATA[public override string IndicateChildImageExpandedSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="106" sc="13" el="108" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="b18e87ca97aaf8dd643850c1276adb50"><![CDATA[{
+                return Tree.ExpandedNodeImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="110" sc="13" el="112" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="ca71941265fd77ba00fbcb1b10fac37a"><![CDATA[{
+                Tree.ExpandedNodeImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildImageRoot">
+          <declaration><![CDATA[public override string IndicateChildImageRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="13" el="72" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="2d22e6084012b9d56faf186e92cdb6d4"><![CDATA[{
+                return Tree.CollapsedNodeImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="74" sc="13" el="76" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="49b494c232d14613c4dae87d0e34db78"><![CDATA[{
+                Tree.CollapsedNodeImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildImageSub">
+          <declaration><![CDATA[public override string IndicateChildImageSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="13" el="60" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="2d22e6084012b9d56faf186e92cdb6d4"><![CDATA[{
+                return Tree.CollapsedNodeImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="62" sc="13" el="64" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="49b494c232d14613c4dae87d0e34db78"><![CDATA[{
+                Tree.CollapsedNodeImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildren">
+          <declaration><![CDATA[public override bool IndicateChildren]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="NavigationControl">
+          <declaration><![CDATA[public override Control NavigationControl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="13" el="44" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="d55ccab7953fee24f1bb46703d3c6988"><![CDATA[{
+                return Tree;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PathImage">
+          <declaration><![CDATA[public override string PathImage]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="PathSystemImage">
+          <declaration><![CDATA[public override string PathSystemImage]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="218" sc="13" el="220" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="06b7131a5f7731d2a5ad3965ad2e1a4c"><![CDATA[{
+                return Tree.SystemImagesPath;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="222" sc="13" el="224" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="3b44e19b8495c14ee91648c0547dd7cb"><![CDATA[{
+                Tree.SystemImagesPath = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PathSystemScript">
+          <declaration><![CDATA[public override string PathSystemScript]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="232" sc="13" el="234" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="ca077e100c5ef68624eed114b7facc54"><![CDATA[{
+                return Tree.TreeScriptPath;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="236" sc="13" el="237" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="dcf329278ec483df0390d9bf53626976"><![CDATA[{
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PopulateNodesFromClient">
+          <declaration><![CDATA[public override bool PopulateNodesFromClient]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="206" sc="13" el="208" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="40bf11fe4ab5153dec1b2eb55066b8f8"><![CDATA[{
+                return Tree.PopulateNodesFromClient;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="210" sc="13" el="212" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="c53c7809301c239ae3b0c72b51dece33"><![CDATA[{
+                Tree.PopulateNodesFromClient = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SupportsPopulateOnDemand">
+          <declaration><![CDATA[public override bool SupportsPopulateOnDemand]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="13" el="52" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="f5368e81f663038061ec388beff126aa"><![CDATA[{
+                return true;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Tree">
+          <declaration><![CDATA[public DnnTree Tree]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="WorkImage">
+          <declaration><![CDATA[public override string WorkImage]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="82" sc="13" el="84" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="3dfaf9292b0bc63861f01fcb15410781"><![CDATA[{
+                return Tree.WorkImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="86" sc="13" el="88" ec="14">DNNTreeNavigationProvider.cs</location>
+            <body hash="1d31de7e9e8a09c5763677e2848c8888"><![CDATA[{
+                Tree.WorkImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

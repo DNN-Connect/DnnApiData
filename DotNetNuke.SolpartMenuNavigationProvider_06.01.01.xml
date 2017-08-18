@@ -1,0 +1,1652 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.SolpartMenuNavigationProvider.dll" version="06.01.01" generated="2017-06-18 21:20:33Z" generationTime="1.8739154">
+  <namespace name="DotNetNuke.NavigationControl">
+    <class name="SolpartMenuNavigationProvider">
+      <declaration><![CDATA[public class SolpartMenuNavigationProvider : NavigationProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLBreadCrumbRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="9" el="60" ec="63">SolpartMenuNavigationProvider.cs</location>
+            <body hash="26bb586a40678db534fbf1bc7b777285"><![CDATA[private string m_strNodeLeftHTMLBreadCrumbRoot = "";
+        private string m_strNodeLeftHTMLBreadCrumbSub = "";
+        private string m_strNodeLeftHTMLRoot = "";
+        private string m_strNodeLeftHTMLSub = "";
+        private string m_strNodeRightHTMLBreadCrumbRoot = "";
+        private string m_strNodeRightHTMLBreadCrumbSub = "";
+        private string m_strNodeRightHTMLRoot = "";
+        private string m_strNodeRightHTMLSub = "";
+        private string m_strSeparatorHTML = "";
+        private string m_strSeparatorLeftHTML = "";
+        private string m_strSeparatorLeftHTMLActive = "";
+        private string m_strSeparatorLeftHTMLBreadCrumb = "";
+        private string m_strSeparatorRightHTML = "";
+        private string m_strSeparatorRightHTMLActive = "";
+        private string m_strSeparatorRightHTMLBreadCrumb = "";]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddSeparator">
+          <declaration><![CDATA[private void AddSeparator(string strType, DNNNode objPrevNode, DNNNode objNextNode)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="1110" sc="9" el="1158" ec="10">SolpartMenuNavigationProvider.cs</location>
+            <body hash="fd29a0f45624999b3c6758f62b267ad6"><![CDATA[{
+            string strLeftHTML = SeparatorLeftHTML + SeparatorLeftHTMLBreadCrumb + SeparatorLeftHTMLActive;
+            string strRightHTML = SeparatorRightHTML + SeparatorRightHTMLBreadCrumb + SeparatorRightHTMLActive;
+            string strHTML = SeparatorHTML + strLeftHTML + strRightHTML;
+            XmlNode objBreak;
+            if (!String.IsNullOrEmpty(strHTML))
+            {
+                string strSeparatorTable = "";
+                string strSeparator = "";
+                string strSeparatorLeftHTML = "";
+                string strSeparatorRightHTML = "";
+                string strSeparatorClass = "";
+                string strLeftSeparatorClass = "";
+                string strRightSeparatorClass = "";
+                if (!String.IsNullOrEmpty(strLeftHTML))
+                {
+                    strLeftSeparatorClass = GetSeparatorText(CSSLeftSeparator, CSSLeftSeparatorBreadCrumb, CSSLeftSeparatorSelection, objNextNode);
+                    strSeparatorLeftHTML = GetSeparatorText(SeparatorLeftHTML, SeparatorLeftHTMLBreadCrumb, SeparatorLeftHTMLActive, objNextNode);
+                }
+                if (!String.IsNullOrEmpty(SeparatorHTML))
+                {
+                    if (!String.IsNullOrEmpty(CSSSeparator))
+                    {
+                        strSeparatorClass = CSSSeparator;
+                    }
+                    strSeparator = SeparatorHTML;
+                }
+                if (!String.IsNullOrEmpty(strRightHTML))
+                {
+                    strRightSeparatorClass = GetSeparatorText(CSSRightSeparator, CSSRightSeparatorBreadCrumb, CSSRightSeparatorSelection, objPrevNode);
+                    strSeparatorRightHTML = GetSeparatorText(SeparatorRightHTML, SeparatorRightHTMLBreadCrumb, SeparatorRightHTMLActive, objPrevNode);
+                }
+                strSeparatorTable = "<table summary=\"Table for menu separator design\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>";
+                if (!String.IsNullOrEmpty(strSeparatorRightHTML) && strType != "Left")
+                {
+                    strSeparatorTable += GetSeparatorTD(strRightSeparatorClass, strSeparatorRightHTML);
+                }
+                if (!String.IsNullOrEmpty(strSeparator) && strType != "Left" && strType != "Right")
+                {
+                    strSeparatorTable += GetSeparatorTD(strSeparatorClass, strSeparator);
+                }
+                if (!String.IsNullOrEmpty(strSeparatorLeftHTML) && strType != "Right")
+                {
+                    strSeparatorTable += GetSeparatorTD(strLeftSeparatorClass, strSeparatorLeftHTML);
+                }
+                strSeparatorTable += "</tr></table>";
+                objBreak = Menu.AddBreak("", strSeparatorTable);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Bind">
+          <declaration><![CDATA[public override void Bind(DNNNodeCollection objNodes)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="895" sc="9" el="1107" ec="10">SolpartMenuNavigationProvider.cs</location>
+            <body hash="8774f1587655e01d1567d455a6072cae"><![CDATA[{
+            DNNNode objNode = null;
+            SPMenuItemNode objMenuItem = null;
+            DNNNode objPrevNode = null;
+            bool RootFlag = false;
+            if (IndicateChildren == false)
+            {
+            }
+            else
+            {
+                if (!String.IsNullOrEmpty(IndicateChildImageRoot))
+                {
+                    Menu.RootArrow = true;
+                }
+            }
+            foreach (DNNNode node in objNodes)
+            {
+                objNode = node;
+                try
+                {
+                    if (objNode.Level == 0)
+                    {
+                        if (RootFlag)
+                        {
+                            AddSeparator("All", objPrevNode, objNode);
+                        }
+                        else
+                        {
+                            if (!String.IsNullOrEmpty(SeparatorLeftHTML) || !String.IsNullOrEmpty(SeparatorLeftHTMLBreadCrumb) || !String.IsNullOrEmpty(SeparatorLeftHTMLActive))
+                            {
+                                AddSeparator("Left", objPrevNode, objNode);
+                            }
+                            RootFlag = true;
+                        }
+                        if (objNode.Enabled == false)
+                        {
+                            objMenuItem = new SPMenuItemNode(Menu.AddMenuItem(objNode.ID, objNode.Text, ""));
+                        }
+                        else
+                        {
+                            if (!String.IsNullOrEmpty(objNode.JSFunction))
+                            {
+                                objMenuItem = new SPMenuItemNode(Menu.AddMenuItem(objNode.ID, objNode.Text, GetClientScriptURL(objNode.JSFunction, objNode.ID)));
+                            }
+                            else
+                            {
+                                objMenuItem = new SPMenuItemNode(Menu.AddMenuItem(objNode.ID, objNode.Text, objNode.NavigateURL));
+                            }
+                        }
+                        if (!String.IsNullOrEmpty(StyleRoot))
+                        {
+                            objMenuItem.ItemStyle = StyleRoot;
+                        }
+                        if (!String.IsNullOrEmpty(CSSNodeRoot))
+                        {
+                            objMenuItem.ItemCss = CSSNodeRoot;
+                        }
+                        if (!String.IsNullOrEmpty(CSSNodeHoverRoot))
+                        {
+                            objMenuItem.ItemSelectedCss = CSSNodeHoverRoot;
+                        }
+                        if (!String.IsNullOrEmpty(NodeLeftHTMLRoot))
+                        {
+                            objMenuItem.LeftHTML = NodeLeftHTMLRoot;
+                        }
+                        if (objNode.BreadCrumb)
+                        {
+                            objMenuItem.ItemCss = objMenuItem.ItemCss + " " + CSSBreadCrumbRoot;
+                            if (!String.IsNullOrEmpty(NodeLeftHTMLBreadCrumbRoot))
+                            {
+                                objMenuItem.LeftHTML = NodeLeftHTMLBreadCrumbRoot;
+                            }
+                            if (!String.IsNullOrEmpty(NodeRightHTMLBreadCrumbRoot))
+                            {
+                                objMenuItem.RightHTML = NodeRightHTMLBreadCrumbRoot;
+                            }
+                            if (objNode.Selected)
+                            {
+                                objMenuItem.ItemCss = objMenuItem.ItemCss + " " + CSSNodeSelectedRoot;
+                            }
+                        }
+                        if (!String.IsNullOrEmpty(NodeRightHTMLRoot))
+                        {
+                            objMenuItem.RightHTML = NodeRightHTMLRoot;
+                        }
+                    }
+                    else if (objNode.IsBreak)
+                    {
+                        Menu.AddBreak(objNode.ParentNode.ID);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            if (objNode.Enabled == false)
+                            {
+                                objMenuItem = new SPMenuItemNode(Menu.AddMenuItem(objNode.ParentNode.ID, objNode.ID, "&nbsp;" + objNode.Text, ""));
+                            }
+                            else
+                            {
+                                if (!String.IsNullOrEmpty(objNode.JSFunction))
+                                {
+                                    objMenuItem = new SPMenuItemNode(Menu.AddMenuItem(objNode.ParentNode.ID, objNode.ID, "&nbsp;" + objNode.Text, GetClientScriptURL(objNode.JSFunction, objNode.ID)));
+                                }
+                                else
+                                {
+                                    objMenuItem = new SPMenuItemNode(Menu.AddMenuItem(objNode.ParentNode.ID, objNode.ID, "&nbsp;" + objNode.Text, objNode.NavigateURL));
+                                }
+                            }
+                            if (objNode.ClickAction == eClickAction.PostBack)
+                            {
+                                objMenuItem.RunAtServer = true;
+                            }
+                            if (!String.IsNullOrEmpty(CSSNodeHoverSub))
+                            {
+                                objMenuItem.ItemSelectedCss = CSSNodeHoverSub;
+                            }
+                            if (!String.IsNullOrEmpty(NodeLeftHTMLSub))
+                            {
+                                objMenuItem.LeftHTML = NodeLeftHTMLSub;
+                            }
+                            if (objNode.BreadCrumb)
+                            {
+                                objMenuItem.ItemCss = CSSBreadCrumbSub;
+                                if (!String.IsNullOrEmpty(NodeLeftHTMLBreadCrumbSub))
+                                {
+                                    objMenuItem.LeftHTML = NodeLeftHTMLBreadCrumbSub;
+                                }
+                                if (!String.IsNullOrEmpty(NodeRightHTMLBreadCrumbSub))
+                                {
+                                    objMenuItem.RightHTML = NodeRightHTMLBreadCrumbSub;
+                                }
+                                if (objNode.Selected)
+                                {
+                                    objMenuItem.ItemCss = CSSNodeSelectedSub;
+                                    DNNNode objParentNode = objNode;
+                                    do
+                                    {
+                                        objParentNode = objParentNode.ParentNode;
+                                        Menu.FindMenuItem(objParentNode.ID).ItemCss = CSSNodeSelectedSub;
+                                    } while (objParentNode.Level != 0);
+                                    Menu.FindMenuItem(objParentNode.ID).ItemCss = CSSBreadCrumbRoot + " " + CSSNodeSelectedRoot;
+                                }
+                            }
+                            if (!String.IsNullOrEmpty(NodeRightHTMLSub))
+                            {
+                                objMenuItem.RightHTML = NodeRightHTMLSub;
+                            }
+                        }
+                        catch
+                        {
+                            objMenuItem = null;
+                        }
+                    }
+                    if (!String.IsNullOrEmpty(objNode.Image))
+                    {
+                        if (objNode.Image.StartsWith("~/images/"))
+                        {
+                            objMenuItem.Image = objNode.Image.Replace("~/images/", "");
+                        }
+                        else if (objNode.Image.IndexOf("/") > -1)
+                        {
+                            string strImage = objNode.Image;
+                            if (strImage.StartsWith(Menu.IconImagesPath))
+                            {
+                                strImage = strImage.Substring(Menu.IconImagesPath.Length);
+                            }
+                            if (strImage.IndexOf("/") > -1)
+                            {
+                                objMenuItem.Image = strImage.Substring(strImage.LastIndexOf("/") + 1);
+                                if (strImage.StartsWith("/"))
+                                {
+                                    objMenuItem.ImagePath = strImage.Substring(0, strImage.LastIndexOf("/") + 1);
+                                }
+                                else if (strImage.StartsWith("~/"))
+                                {
+                                    objMenuItem.ImagePath = Globals.ResolveUrl(strImage.Substring(0, strImage.LastIndexOf("/") + 1));
+                                }
+                                else
+                                {
+                                    objMenuItem.ImagePath = Menu.IconImagesPath + strImage.Substring(0, strImage.LastIndexOf("/") + 1);
+                                }
+                            }
+                            else
+                            {
+                                objMenuItem.Image = strImage;
+                            }
+                        }
+                        else
+                        {
+                            objMenuItem.Image = objNode.Image;
+                        }
+                    }
+                    if (!String.IsNullOrEmpty(objNode.ToolTip))
+                    {
+                        objMenuItem.ToolTip = objNode.ToolTip;
+                    }
+                    Bind(objNode.DNNNodes);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                objPrevNode = objNode;
+            }
+            if (objNode != null && objNode.Level == 0)
+            {
+                if (!String.IsNullOrEmpty(SeparatorRightHTML) || !String.IsNullOrEmpty(SeparatorRightHTMLBreadCrumb) || !String.IsNullOrEmpty(SeparatorRightHTMLActive))
+                {
+                    AddSeparator("Right", objPrevNode, null);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ctlActions_MenuClick">
+          <declaration><![CDATA[private void ctlActions_MenuClick(string ID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="890" sc="9" el="892" ec="10">SolpartMenuNavigationProvider.cs</location>
+            <body hash="00a29f62475d08360585da1bc084588e"><![CDATA[{
+            RaiseEvent_NodeClick(ID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetClientScriptURL">
+          <declaration><![CDATA[private string GetClientScriptURL(string strScript, string strID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="1194" sc="9" el="1200" ec="10">SolpartMenuNavigationProvider.cs</location>
+            <body hash="eea56261305553a9cb756e6d4ddcd4ab"><![CDATA[{
+            if (strScript.ToLower().StartsWith("javascript:") == false)
+            {
+                strScript = "javascript: " + strScript;
+            }
+            return strScript;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSeparatorTD">
+          <declaration><![CDATA[private string GetSeparatorTD(string strClass, string strHTML)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="1179" sc="9" el="1191" ec="10">SolpartMenuNavigationProvider.cs</location>
+            <body hash="3daca201661ac8a5ea31ce6f92196ff3"><![CDATA[{
+            string strRet = "";
+            if (!String.IsNullOrEmpty(strClass))
+            {
+                strRet += "<td class = \"" + strClass + "\">";
+            }
+            else
+            {
+                strRet += "<td>";
+            }
+            strRet += strHTML + "</td>";
+            return strRet;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSeparatorText">
+          <declaration><![CDATA[private string GetSeparatorText(string strNormal, string strBreadCrumb, string strSelection, DNNNode objNode)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="1161" sc="9" el="1176" ec="10">SolpartMenuNavigationProvider.cs</location>
+            <body hash="241552aa6cf4185366239299f0beb065"><![CDATA[{
+            string strRet = "";
+            if (!String.IsNullOrEmpty(strNormal))
+            {
+                strRet = strNormal;
+            }
+            if (!String.IsNullOrEmpty(strBreadCrumb) && objNode != null && objNode.BreadCrumb)
+            {
+                strRet = strBreadCrumb;
+            }
+            if (!String.IsNullOrEmpty(strSelection) && objNode != null && objNode.Selected)
+            {
+                strRet = strSelection;
+            }
+            return strRet;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Initialize">
+          <declaration><![CDATA[public override void Initialize()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="881" sc="9" el="887" ec="10">SolpartMenuNavigationProvider.cs</location>
+            <body hash="ab559d76dd427a7397b583ff07f6ec11"><![CDATA[{
+            m_objMenu = new SolpartMenu();
+            Menu.ID = m_strControlID;
+            Menu.SeparateCSS = true;
+            StyleSelectionBorderColor = null;
+            m_objMenu.MenuClick += ctlActions_MenuClick;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="m_objMenu">
+          <declaration><![CDATA[private SolpartMenu m_objMenu;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strControlID">
+          <declaration><![CDATA[private string m_strControlID;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeLeftHTMLBreadCrumbRoot">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLBreadCrumbRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeLeftHTMLBreadCrumbSub">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLBreadCrumbSub = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeLeftHTMLRoot">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeLeftHTMLSub">
+          <declaration><![CDATA[private string m_strNodeLeftHTMLSub = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeRightHTMLBreadCrumbRoot">
+          <declaration><![CDATA[private string m_strNodeRightHTMLBreadCrumbRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeRightHTMLBreadCrumbSub">
+          <declaration><![CDATA[private string m_strNodeRightHTMLBreadCrumbSub = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeRightHTMLRoot">
+          <declaration><![CDATA[private string m_strNodeRightHTMLRoot = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strNodeRightHTMLSub">
+          <declaration><![CDATA[private string m_strNodeRightHTMLSub = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorHTML">
+          <declaration><![CDATA[private string m_strSeparatorHTML = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorLeftHTML">
+          <declaration><![CDATA[private string m_strSeparatorLeftHTML = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorLeftHTMLActive">
+          <declaration><![CDATA[private string m_strSeparatorLeftHTMLActive = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorLeftHTMLBreadCrumb">
+          <declaration><![CDATA[private string m_strSeparatorLeftHTMLBreadCrumb = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorRightHTML">
+          <declaration><![CDATA[private string m_strSeparatorRightHTML = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorRightHTMLActive">
+          <declaration><![CDATA[private string m_strSeparatorRightHTMLActive = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="m_strSeparatorRightHTMLBreadCrumb">
+          <declaration><![CDATA[private string m_strSeparatorRightHTMLBreadCrumb = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ControlAlignment">
+          <declaration><![CDATA[public override NavigationProvider.Alignment ControlAlignment]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="113" sc="13" el="125" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="3251296dee8dea367b0c2f8be848389e"><![CDATA[{
+                switch (Menu.MenuAlignment.ToLower())
+                {
+                    case "left":
+                        return Alignment.Left;
+                    case "right":
+                        return Alignment.Right;
+                    case "center":
+                        return Alignment.Center;
+                    default:
+                        return Alignment.Justify;
+                }
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="127" sc="13" el="143" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="2cbeaba62308c36cbbd524ab1381842a"><![CDATA[{
+                switch (value)
+                {
+                    case Alignment.Left:
+                        Menu.MenuAlignment = "Left";
+                        break;
+                    case Alignment.Right:
+                        Menu.MenuAlignment = "Right";
+                        break;
+                    case Alignment.Center:
+                        Menu.MenuAlignment = "Center";
+                        break;
+                    case Alignment.Justify:
+                        Menu.MenuAlignment = "Justify";
+                        break;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ControlID">
+          <declaration><![CDATA[public override string ControlID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="149" sc="13" el="151" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="2b8710fb27eb8a745bb841a8a55c8060"><![CDATA[{
+                return m_strControlID;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="153" sc="13" el="155" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="2b90542a7872430773e1d683b78b82f5"><![CDATA[{
+                m_strControlID = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ControlOrientation">
+          <declaration><![CDATA[public override NavigationProvider.Orientation ControlOrientation]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="161" sc="13" el="170" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="647bb971fa5fcd87d267792769d1a0ae"><![CDATA[{
+                if (Menu.Display.ToLower() == "horizontal")
+                {
+                    return Orientation.Horizontal;
+                }
+                else
+                {
+                    return Orientation.Vertical;
+                }
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="172" sc="13" el="181" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="f50d5603f2b8c029d5c37ec2fa0d28ab"><![CDATA[{
+                if (value == Orientation.Horizontal)
+                {
+                    Menu.Display = "Horizontal";
+                }
+                else
+                {
+                    Menu.Display = "Vertical";
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSBreadCrumbRoot">
+          <declaration><![CDATA[public override string CSSBreadCrumbRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSBreadCrumbSub">
+          <declaration><![CDATA[public override string CSSBreadCrumbSub]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSBreak">
+          <declaration><![CDATA[public override string CSSBreak]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="215" sc="13" el="217" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="6df45d626fdba43074dede88e2534bee"><![CDATA[{
+                return Menu.MenuCSS.MenuBreak;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="219" sc="13" el="221" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="bb1953769ae318b14804aa4ffa4e7231"><![CDATA[{
+                Menu.MenuCSS.MenuBreak = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSContainerRoot">
+          <declaration><![CDATA[public override string CSSContainerRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="227" sc="13" el="229" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="23b28106c2f867396da65298d8839f66"><![CDATA[{
+                return Menu.MenuCSS.MenuContainer;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="231" sc="13" el="233" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="96190adcfa31fdcd905ed427cd6c3b69"><![CDATA[{
+                Menu.MenuCSS.MenuContainer = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSContainerSub">
+          <declaration><![CDATA[public override string CSSContainerSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="311" sc="13" el="313" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="eadd66d39ce369e6ca483edd1381e563"><![CDATA[{
+                return Menu.MenuCSS.SubMenu;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="315" sc="13" el="317" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="0719e3d80836814feb56d9ef9ec017a4"><![CDATA[{
+                Menu.MenuCSS.SubMenu = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSControl">
+          <declaration><![CDATA[public override string CSSControl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="239" sc="13" el="241" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="1ff338f8415b84f0bc93b36cd8c10faa"><![CDATA[{
+                return Menu.MenuCSS.MenuBar;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="243" sc="13" el="245" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="a2950367b0d673642c3ffaf1d32b8cdb"><![CDATA[{
+                Menu.MenuCSS.MenuBar = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSIcon">
+          <declaration><![CDATA[public override string CSSIcon]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="251" sc="13" el="253" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="371f141c0ec037c72404231943a2803a"><![CDATA[{
+                return Menu.MenuCSS.MenuIcon;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="255" sc="13" el="257" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="63c689879197281a9900507fade3a458"><![CDATA[{
+                Menu.MenuCSS.MenuIcon = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSIndicateChildRoot">
+          <declaration><![CDATA[public override string CSSIndicateChildRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="199" sc="13" el="201" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="aa8131cedc79c8b7ef6df52418ff3a23"><![CDATA[{
+                return Menu.MenuCSS.RootMenuArrow;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="203" sc="13" el="205" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="b821cdf449d7249c523acf86e5d11f3b"><![CDATA[{
+                Menu.MenuCSS.RootMenuArrow = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSIndicateChildSub">
+          <declaration><![CDATA[public override string CSSIndicateChildSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="187" sc="13" el="189" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="253bfe914abeb6d18a84df82ae05be39"><![CDATA[{
+                return Menu.MenuCSS.MenuArrow;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="191" sc="13" el="193" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="87665fd520f7e96f1626139c93fc71d7"><![CDATA[{
+                Menu.MenuCSS.MenuArrow = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSLeftSeparator">
+          <declaration><![CDATA[public override string CSSLeftSeparator]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSLeftSeparatorBreadCrumb">
+          <declaration><![CDATA[public override string CSSLeftSeparatorBreadCrumb]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSLeftSeparatorSelection">
+          <declaration><![CDATA[public override string CSSLeftSeparatorSelection]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNode">
+          <declaration><![CDATA[public override string CSSNode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="269" sc="13" el="271" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="2a3f54814c08e0d5c1c641d5bb1e6553"><![CDATA[{
+                return Menu.MenuCSS.MenuItem;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="273" sc="13" el="275" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="fa30658e7c78b7741071c9515e7bf9e3"><![CDATA[{
+                Menu.MenuCSS.MenuItem = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNodeHover">
+          <declaration><![CDATA[public override string CSSNodeHover]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="285" sc="13" el="287" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="c9725c8891a403309a712aec2d5c5749"><![CDATA[{
+                return Menu.MenuCSS.MenuItemSel;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="289" sc="13" el="291" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="0ef1abb90e18db9a503a13c45712e929"><![CDATA[{
+                Menu.MenuCSS.MenuItemSel = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CSSNodeHoverRoot">
+          <declaration><![CDATA[public override string CSSNodeHoverRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNodeHoverSub">
+          <declaration><![CDATA[public override string CSSNodeHoverSub]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNodeRoot">
+          <declaration><![CDATA[public override string CSSNodeRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNodeSelectedRoot">
+          <declaration><![CDATA[public override string CSSNodeSelectedRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSNodeSelectedSub">
+          <declaration><![CDATA[public override string CSSNodeSelectedSub]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSRightSeparator">
+          <declaration><![CDATA[public override string CSSRightSeparator]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSRightSeparatorBreadCrumb">
+          <declaration><![CDATA[public override string CSSRightSeparatorBreadCrumb]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSRightSeparatorSelection">
+          <declaration><![CDATA[public override string CSSRightSeparatorSelection]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CSSSeparator">
+          <declaration><![CDATA[public override string CSSSeparator]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="EffectsDuration">
+          <declaration><![CDATA[public override double EffectsDuration]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="373" sc="13" el="375" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="19c5e0f9ab63195ae9cac11da833fdd7"><![CDATA[{
+                return Menu.MenuEffects.MenuTransitionLength;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="377" sc="13" el="379" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="4a764503ab91773a2338c33018187277"><![CDATA[{
+                Menu.MenuEffects.MenuTransitionLength = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="EffectsShadowColor">
+          <declaration><![CDATA[public override string EffectsShadowColor]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="385" sc="13" el="387" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="4ebb41342600c9a79ee84eb1187f3c31"><![CDATA[{
+                return ColorTranslator.ToHtml(Menu.ShadowColor);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="389" sc="13" el="391" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="ec8950c08634511f7fefa175e2c2fa19"><![CDATA[{
+                Menu.ShadowColor = Color.FromName(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="EffectsShadowDirection">
+          <declaration><![CDATA[public override string EffectsShadowDirection]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="397" sc="13" el="399" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="e4d762faf9ea66c252fef05b8d94507d"><![CDATA[{
+                return Menu.MenuEffects.ShadowDirection;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="401" sc="13" el="403" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="686a2f216dcb8c7f0a9f21840434f4c3"><![CDATA[{
+                Menu.MenuEffects.ShadowDirection = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="EffectsShadowStrength">
+          <declaration><![CDATA[public override int EffectsShadowStrength]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="409" sc="13" el="411" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="46b0f5de995fa78a242e162684d86b9f"><![CDATA[{
+                return Menu.MenuEffects.ShadowStrength;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="413" sc="13" el="415" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="fba309decdd647e4e1c620f5b6070329"><![CDATA[{
+                Menu.MenuEffects.ShadowStrength = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="EffectsStyle">
+          <declaration><![CDATA[public override string EffectsStyle]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="361" sc="13" el="363" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="72ef21a52ce894030a96e10cba704925"><![CDATA[{
+                return Menu.MenuEffects.get_Style(false);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="365" sc="13" el="367" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="e0ed8f3cebe159aec073ba18d7dfcf40"><![CDATA[{
+                string.Concat(Menu.MenuEffects.get_Style(false), value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="EffectsTransition">
+          <declaration><![CDATA[public override string EffectsTransition]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="421" sc="13" el="423" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="e6a0ea5798da19c3f4fd2c862bcb538a"><![CDATA[{
+                return Menu.MenuEffects.MenuTransition;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="425" sc="13" el="427" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="c420e5fbd08c7043b05ff11bf5ba2ad6"><![CDATA[{
+                Menu.MenuEffects.MenuTransition = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ForceCrawlerDisplay">
+          <declaration><![CDATA[public override string ForceCrawlerDisplay]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="323" sc="13" el="325" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="2bd98e886f59a62ab4e77474167ce38e"><![CDATA[{
+                return Menu.ForceFullMenuList.ToString();
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="327" sc="13" el="329" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="8b0a6d832d185b66118ff86ec0195632"><![CDATA[{
+                Menu.ForceFullMenuList = Convert.ToBoolean(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ForceDownLevel">
+          <declaration><![CDATA[public override string ForceDownLevel]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="335" sc="13" el="337" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="0719ea058315e350917f1cfa7604319e"><![CDATA[{
+                return Menu.ForceDownlevel.ToString();
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="339" sc="13" el="341" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="f1a01a6555cfdac86a88e5cdf6126651"><![CDATA[{
+                Menu.ForceDownlevel = Convert.ToBoolean(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildImageRoot">
+          <declaration><![CDATA[public override string IndicateChildImageRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="101" sc="13" el="103" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="fe90670623d45516c72dcb65996a6b7c"><![CDATA[{
+                return Menu.RootArrowImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="105" sc="13" el="107" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="d56bd7b73c3769eab3da955524a3a2a5"><![CDATA[{
+                Menu.RootArrowImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildImageSub">
+          <declaration><![CDATA[public override string IndicateChildImageSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="13" el="91" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="a9fb4e491888434a8f168cdb0ab6a8c0"><![CDATA[{
+                return Menu.ArrowImage;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="93" sc="13" el="95" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="50b7aa8b469418820f1ae41e14ce059f"><![CDATA[{
+                Menu.ArrowImage = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IndicateChildren">
+          <declaration><![CDATA[public override bool IndicateChildren]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Menu">
+          <declaration><![CDATA[public SolpartMenu Menu]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="13" el="67" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="9a27af22f064ef03902036a5d2f75c18"><![CDATA[{
+                return m_objMenu;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="MouseOutHideDelay">
+          <declaration><![CDATA[public override decimal MouseOutHideDelay]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="433" sc="13" el="435" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="00e1766eebd1bef98154e8a44de46bc8"><![CDATA[{
+                return Menu.MenuEffects.MouseOutHideDelay;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="437" sc="13" el="439" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="81abd5c0373f61b12de8946123ad24e0"><![CDATA[{
+                Menu.MenuEffects.MouseOutHideDelay = Convert.ToInt32(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="MouseOverAction">
+          <declaration><![CDATA[public override NavigationProvider.HoverAction MouseOverAction]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="445" sc="13" el="454" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="2d7a22675d3beed4ab2cc1505ec7002d"><![CDATA[{
+                if (Menu.MenuEffects.MouseOverExpand)
+                {
+                    return HoverAction.Expand;
+                }
+                else
+                {
+                    return HoverAction.None;
+                }
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="456" sc="13" el="465" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="28632a342c29943f2189c1b8c418b945"><![CDATA[{
+                if (value == HoverAction.Expand)
+                {
+                    Menu.MenuEffects.MouseOverExpand = true;
+                }
+                else
+                {
+                    Menu.MenuEffects.MouseOverExpand = false;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="MouseOverDisplay">
+          <declaration><![CDATA[public override NavigationProvider.HoverDisplay MouseOverDisplay]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="471" sc="13" el="481" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="57d263afa1ab148de128ed399a7141e4"><![CDATA[{
+                switch (Menu.MenuEffects.MouseOverDisplay)
+                {
+                    case MenuEffectsMouseOverDisplay.Highlight:
+                        return HoverDisplay.Highlight;
+                    case MenuEffectsMouseOverDisplay.Outset:
+                        return HoverDisplay.Outset;
+                    default:
+                        return HoverDisplay.None;
+                }
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="483" sc="13" el="496" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="ca7415126aa535819ace7cab67319e9b"><![CDATA[{
+                switch (value)
+                {
+                    case HoverDisplay.Highlight:
+                        Menu.MenuEffects.MouseOverDisplay = MenuEffectsMouseOverDisplay.Highlight;
+                        break;
+                    case HoverDisplay.Outset:
+                        Menu.MenuEffects.MouseOverDisplay = MenuEffectsMouseOverDisplay.Outset;
+                        break;
+                    default:
+                        Menu.MenuEffects.MouseOverDisplay = MenuEffectsMouseOverDisplay.None;
+                        break;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NavigationControl">
+          <declaration><![CDATA[public override Control NavigationControl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="13" el="75" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="72bfb39c469f0a1ea25f37b6ae41eeb0"><![CDATA[{
+                return Menu;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeLeftHTMLBreadCrumbRoot">
+          <declaration><![CDATA[public override string NodeLeftHTMLBreadCrumbRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="526" sc="13" el="528" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="146b83e8ea8375936038453a3ec87c4b"><![CDATA[{
+                return m_strNodeLeftHTMLBreadCrumbRoot;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="530" sc="13" el="532" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="9342dcf8a1705a3bdd1ec406e5b3c573"><![CDATA[{
+                m_strNodeLeftHTMLBreadCrumbRoot = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeLeftHTMLBreadCrumbSub">
+          <declaration><![CDATA[public override string NodeLeftHTMLBreadCrumbSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="514" sc="13" el="516" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="636df91e65c7e673e70546b1868b7086"><![CDATA[{
+                return m_strNodeLeftHTMLBreadCrumbSub;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="518" sc="13" el="520" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="7a482b4a31d384092bc2acc99d4772de"><![CDATA[{
+                m_strNodeLeftHTMLBreadCrumbSub = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeLeftHTMLRoot">
+          <declaration><![CDATA[public override string NodeLeftHTMLRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="538" sc="13" el="540" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="c9bc47c63e95a2e959bdb971834d70bc"><![CDATA[{
+                return m_strNodeLeftHTMLRoot;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="542" sc="13" el="544" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="6dfc55f39b98488c9b99bd80d55ebe8f"><![CDATA[{
+                m_strNodeLeftHTMLRoot = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeLeftHTMLSub">
+          <declaration><![CDATA[public override string NodeLeftHTMLSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="502" sc="13" el="504" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="225fee6938cc5e23be350a5f5767dcb0"><![CDATA[{
+                return m_strNodeLeftHTMLSub;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="506" sc="13" el="508" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="18a5b7874d00dfd1924ede9223516690"><![CDATA[{
+                m_strNodeLeftHTMLSub = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeRightHTMLBreadCrumbRoot">
+          <declaration><![CDATA[public override string NodeRightHTMLBreadCrumbRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="574" sc="13" el="576" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="71d6778c708d99b38fe09b148978df95"><![CDATA[{
+                return m_strNodeRightHTMLBreadCrumbRoot;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="578" sc="13" el="580" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="78e335c84ffe0cb007cb0850e8c20c05"><![CDATA[{
+                m_strNodeRightHTMLBreadCrumbRoot = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeRightHTMLBreadCrumbSub">
+          <declaration><![CDATA[public override string NodeRightHTMLBreadCrumbSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="562" sc="13" el="564" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="5ec7ce3b1fc97d05b0ad0d2013760288"><![CDATA[{
+                return m_strNodeRightHTMLBreadCrumbSub;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="566" sc="13" el="568" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="2f8b8e8df3c870a9023e7e1bc4ae0250"><![CDATA[{
+                m_strNodeRightHTMLBreadCrumbSub = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeRightHTMLRoot">
+          <declaration><![CDATA[public override string NodeRightHTMLRoot]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="586" sc="13" el="588" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="40a28d2ce802ef502870e18298c367ff"><![CDATA[{
+                return m_strNodeRightHTMLRoot;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="590" sc="13" el="592" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="2d164e390b0bce74819c7611e41ae63e"><![CDATA[{
+                m_strNodeRightHTMLRoot = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="NodeRightHTMLSub">
+          <declaration><![CDATA[public override string NodeRightHTMLSub]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="550" sc="13" el="552" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="7beeaa0d9f44c8af7a57b771cf3982fd"><![CDATA[{
+                return m_strNodeRightHTMLSub;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="554" sc="13" el="556" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="dd5b9651b2c1a954721682e858d673af"><![CDATA[{
+                m_strNodeRightHTMLSub = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PathImage">
+          <declaration><![CDATA[public override string PathImage]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="347" sc="13" el="349" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="699b04d1199b7d6e2072bfaa3214d397"><![CDATA[{
+                return Menu.IconImagesPath;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="351" sc="13" el="353" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="79eb38623d329f581500466882295f84"><![CDATA[{
+                Menu.IconImagesPath = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PathSystemImage">
+          <declaration><![CDATA[public override string PathSystemImage]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="859" sc="13" el="861" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="584c7025acc1a26fb97bd78f116a59c8"><![CDATA[{
+                return Menu.SystemImagesPath;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="863" sc="13" el="865" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="d45a0c7b4c3b116a1194c30800c2bdf6"><![CDATA[{
+                Menu.SystemImagesPath = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PathSystemScript">
+          <declaration><![CDATA[public override string PathSystemScript]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="871" sc="13" el="873" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="965091278fdd1ff306dd22a96febc610"><![CDATA[{
+                return Menu.SystemScriptPath;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="875" sc="13" el="877" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="b5a96530c6f3973c6462485a235ae5dd"><![CDATA[{
+                Menu.SystemScriptPath = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorHTML">
+          <declaration><![CDATA[public override string SeparatorHTML]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="598" sc="13" el="600" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="8061fbf2eff3365a817be2487d6ec995"><![CDATA[{
+                return m_strSeparatorHTML;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="602" sc="13" el="604" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="9e66da4117e25b2d34d6a305ece8e199"><![CDATA[{
+                m_strSeparatorHTML = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorLeftHTML">
+          <declaration><![CDATA[public override string SeparatorLeftHTML]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="610" sc="13" el="612" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="5893491fadc7408620810e7c6695e9c9"><![CDATA[{
+                return m_strSeparatorLeftHTML;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="614" sc="13" el="616" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="a98f0f82e181044685ec05b75c655668"><![CDATA[{
+                m_strSeparatorLeftHTML = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorLeftHTMLActive">
+          <declaration><![CDATA[public override string SeparatorLeftHTMLActive]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="622" sc="13" el="624" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="3a194bfefa45d7b3f8a842999f3f89c8"><![CDATA[{
+                return m_strSeparatorLeftHTMLActive;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="626" sc="13" el="628" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="2a3f685e3cbae23f1c2d421680653953"><![CDATA[{
+                m_strSeparatorLeftHTMLActive = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorLeftHTMLBreadCrumb">
+          <declaration><![CDATA[public override string SeparatorLeftHTMLBreadCrumb]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="634" sc="13" el="636" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="d3a82822d2d06faf45ad351fd6235c74"><![CDATA[{
+                return m_strSeparatorLeftHTMLBreadCrumb;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="638" sc="13" el="640" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="01cb0f87e6f4a01a30e67953ae8be124"><![CDATA[{
+                m_strSeparatorLeftHTMLBreadCrumb = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorRightHTML">
+          <declaration><![CDATA[public override string SeparatorRightHTML]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="646" sc="13" el="648" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="6c660d4205d80cb0ba0e19bd67cedf48"><![CDATA[{
+                return m_strSeparatorRightHTML;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="650" sc="13" el="652" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="6102dc564e6214c6a0385d0a4ec599b9"><![CDATA[{
+                m_strSeparatorRightHTML = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorRightHTMLActive">
+          <declaration><![CDATA[public override string SeparatorRightHTMLActive]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="658" sc="13" el="660" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="d41a91a1db3e3c23874bbcaa51e62f4f"><![CDATA[{
+                return m_strSeparatorRightHTMLActive;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="662" sc="13" el="664" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="c882c9504e9107b794476fdb8cbcc4b7"><![CDATA[{
+                m_strSeparatorRightHTMLActive = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SeparatorRightHTMLBreadCrumb">
+          <declaration><![CDATA[public override string SeparatorRightHTMLBreadCrumb]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="670" sc="13" el="672" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="a56587c4058ef9798791f624bbcc04f5"><![CDATA[{
+                return m_strSeparatorRightHTMLBreadCrumb;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="674" sc="13" el="676" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="b7e72c0e48860944170b2203cc8a8cd6"><![CDATA[{
+                m_strSeparatorRightHTMLBreadCrumb = value;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleBackColor">
+          <declaration><![CDATA[public override string StyleBackColor]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="682" sc="13" el="684" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="1c452f18233ffb8787950d7a00f5e682"><![CDATA[{
+                return ColorTranslator.ToHtml(Menu.BackColor);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="686" sc="13" el="688" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="236176fa10776b620594c015e961ae40"><![CDATA[{
+                Menu.BackColor = Color.FromName(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleBorderWidth">
+          <declaration><![CDATA[public override decimal StyleBorderWidth]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="694" sc="13" el="696" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="389632baf9e538533b05807c7ddfa0f1"><![CDATA[{
+                return Menu.MenuBorderWidth;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="698" sc="13" el="700" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="6404dce9576010528afafe1e388704ed"><![CDATA[{
+                Menu.MenuBorderWidth = Convert.ToInt32(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleControlHeight">
+          <declaration><![CDATA[public override decimal StyleControlHeight]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="706" sc="13" el="708" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="a5522436825fdc852e51f799b847008f"><![CDATA[{
+                return Menu.MenuBarHeight;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="710" sc="13" el="712" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="5a3186f227837cb8c6e649740916b2d9"><![CDATA[{
+                Menu.MenuBarHeight = Convert.ToInt32(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleFontBold">
+          <declaration><![CDATA[public override string StyleFontBold]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="718" sc="13" el="720" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="2409ea28850ded63eb3e317be0d5f093"><![CDATA[{
+                return Menu.Font.Bold.ToString();
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="722" sc="13" el="724" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="c92f3615ba2135dabdca3b0583a6bb23"><![CDATA[{
+                Menu.Font.Bold = Convert.ToBoolean(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleFontNames">
+          <declaration><![CDATA[public override string StyleFontNames]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="730" sc="13" el="732" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="213032535bcafd7825afc09b3af3a16a"><![CDATA[{
+                return String.Join(";", Menu.Font.Names);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="734" sc="13" el="736" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="80ea97e4bc7501ccae9efd7f015ca504"><![CDATA[{
+                Menu.Font.Names = value.Split(Convert.ToChar(";"));
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleFontSize">
+          <declaration><![CDATA[public override decimal StyleFontSize]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="742" sc="13" el="744" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="6efd866bf4f8e1c193da98ad8eaa49f6"><![CDATA[{
+                return Convert.ToDecimal(Menu.Font.Size.Unit.Value);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="746" sc="13" el="748" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="a93966a6dc14560dbc7ad78f9a452e5b"><![CDATA[{
+                Menu.Font.Size = FontUnit.Parse(value.ToString());
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleForeColor">
+          <declaration><![CDATA[public override string StyleForeColor]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="754" sc="13" el="756" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="a2b41e4b6546087db4c61380e44f0834"><![CDATA[{
+                return ColorTranslator.ToHtml(Menu.ForeColor);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="758" sc="13" el="760" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="2467fb7f627799063868fb0c197be2f5"><![CDATA[{
+                Menu.ForeColor = Color.FromName(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleHighlightColor">
+          <declaration><![CDATA[public override string StyleHighlightColor]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="766" sc="13" el="768" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="b23b80715bededfc5453cd14601a1040"><![CDATA[{
+                return ColorTranslator.ToHtml(Menu.HighlightColor);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="770" sc="13" el="772" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="ed2fe1b45bcd08d8981602e3e879e1c2"><![CDATA[{
+                Menu.HighlightColor = Color.FromName(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleIconBackColor">
+          <declaration><![CDATA[public override string StyleIconBackColor]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="778" sc="13" el="780" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="16d1c49289faf4456c87022e8299f07f"><![CDATA[{
+                return ColorTranslator.ToHtml(Menu.IconBackgroundColor);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="782" sc="13" el="784" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="1deebb7a809e0cf7dcd07cfc5326413f"><![CDATA[{
+                Menu.IconBackgroundColor = Color.FromName(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleIconWidth">
+          <declaration><![CDATA[public override decimal StyleIconWidth]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="790" sc="13" el="792" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="43b1856466bb93750a1096023c1fa7cb"><![CDATA[{
+                return Menu.IconWidth;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="794" sc="13" el="796" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="7ebd07e0025421cbd56e31950340b5e9"><![CDATA[{
+                Menu.IconWidth = Convert.ToInt32(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleNodeHeight">
+          <declaration><![CDATA[public override decimal StyleNodeHeight]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="802" sc="13" el="804" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="fd24fa18687654db9e214766833dedb4"><![CDATA[{
+                return Menu.MenuItemHeight;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="806" sc="13" el="808" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="729ef35f8d4d36c29ec99b807c953722"><![CDATA[{
+                Menu.MenuItemHeight = Convert.ToInt32(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleRoot">
+          <declaration><![CDATA[public override string StyleRoot]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="StyleSelectionBorderColor">
+          <declaration><![CDATA[public override string StyleSelectionBorderColor]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="814" sc="13" el="816" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="c8bccb6a442377a89a9b74f0e79a4463"><![CDATA[{
+                return ColorTranslator.ToHtml(Menu.SelectedBorderColor);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="818" sc="13" el="827" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="5888a73ad5e4cb10316ffb8c7c6be935"><![CDATA[{
+                if (value != null)
+                {
+                    Menu.SelectedBorderColor = Color.FromName(value);
+                }
+                else
+                {
+                    Menu.SelectedBorderColor = Color.Empty;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleSelectionColor">
+          <declaration><![CDATA[public override string StyleSelectionColor]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="833" sc="13" el="835" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="ea38e14f45005407c93ea8247d6e9b00"><![CDATA[{
+                return ColorTranslator.ToHtml(Menu.SelectedColor);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="837" sc="13" el="839" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="92e397ec7292974e4bb7cb12ed99036d"><![CDATA[{
+                Menu.SelectedColor = Color.FromName(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleSelectionForeColor">
+          <declaration><![CDATA[public override string StyleSelectionForeColor]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="845" sc="13" el="847" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="42beecd7f035a0b2b120381e69c7bca5"><![CDATA[{
+                return ColorTranslator.ToHtml(Menu.SelectedForeColor);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="849" sc="13" el="851" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="404d5191ad8b3e96fc6ca7718559d624"><![CDATA[{
+                Menu.SelectedForeColor = Color.FromName(value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="SupportsPopulateOnDemand">
+          <declaration><![CDATA[public override bool SupportsPopulateOnDemand]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="81" sc="13" el="83" ec="14">SolpartMenuNavigationProvider.cs</location>
+            <body hash="479cced518a49e9e626d5350fca9bbad"><![CDATA[{
+                return false;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

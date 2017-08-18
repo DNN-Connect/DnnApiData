@@ -1,0 +1,2214 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Modules.Messaging.dll" version="06.01.02" generated="2017-06-18 21:29:11Z" generationTime="2.0527918">
+  <namespace name="DotNetNuke.Modules.Messaging">
+    <class name="MessagingBusinessController">
+      <declaration><![CDATA[public class MessagingBusinessController : IUpgradeable]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MessagingBusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string Version)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="122" ec="10">Components\MessagingBusinessController.cs</location>
+            <body hash="a052f746caabe9ab28da6a48e6b39092"><![CDATA[{
+            try
+            {
+                switch (Version)
+                {
+                    case "01.00.00":
+                        ModuleDefinitionInfo moduleDefinition = ModuleDefinitionController.GetModuleDefinitionByFriendlyName("Messaging");
+
+                        if (moduleDefinition != null)
+                        {
+                            //Add Module to User Profile Page for all Portals
+                            var objPortalController = new PortalController();
+                            var objTabController = new TabController();
+                            var objModuleController = new ModuleController();
+
+                            ArrayList portals = objPortalController.GetPortals();
+                            foreach (PortalInfo portal in portals)
+                            {
+                                int tabID = TabController.GetTabByTabPath(portal.PortalID, "//UserProfile", Null.NullString);
+                                if ((tabID != Null.NullInteger))
+                                {
+                                    TabInfo tab = objTabController.GetTab(tabID, portal.PortalID, true);
+                                    if ((tab != null))
+                                    {
+                                        int moduleId = Upgrade.AddModuleToPage(tab, moduleDefinition.ModuleDefID, "My Inbox", "", true);
+                                        ModuleInfo objModule = objModuleController.GetModule(moduleId, tabID, false);
+
+                                        var settings = new PortalSettings(portal);
+
+                                        var modulePermission = (from ModulePermissionInfo p in objModule.ModulePermissions
+                                                                where p.ModuleID == moduleId
+                                                                   && p.RoleID == settings.RegisteredRoleId
+                                                                   && p.UserID == Null.NullInteger
+                                                                   && p.PermissionKey == "EDIT"
+                                                                select p).SingleOrDefault();
+
+                                        if (modulePermission == null)
+                                        {
+                                            ArrayList permissions = new PermissionController().GetPermissionByCodeAndKey("SYSTEM_MODULE_DEFINITION", "EDIT");
+                                            PermissionInfo permission = null;
+                                            if (permissions.Count == 1)
+                                            {
+                                                permission = permissions[0] as PermissionInfo;
+                                            }
+                                            if (permission != null)
+                                            {
+                                                modulePermission = new ModulePermissionInfo(permission)
+                                                                            {
+                                                                                ModuleID = moduleId,
+                                                                                RoleID = settings.RegisteredRoleId,
+                                                                                UserID = Null.NullInteger,
+                                                                                AllowAccess = true
+                                                                            };
+
+
+                                                objModule.ModulePermissions.Add(modulePermission);
+
+                                                ModulePermissionController.SaveModulePermissions(objModule);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Messaging.Presenters">
+    <class name="EditMessagePresenter">
+      <declaration><![CDATA[public class EditMessagePresenter : ModulePresenter<IEditMessageView, EditMessageModel>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditMessagePresenter(IEditMessageView editView) : this(editView, new MessagingController(new MessagingDataService()))]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="9" el="52" ec="10">Presenters\EditMessagePresenter.cs</location>
+            <body hash="7508500546ae9b05fd888bbefc5b96ac"><![CDATA[public EditMessagePresenter(IEditMessageView editView) : this(editView, new MessagingController(new MessagingDataService()))
+        {
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditMessagePresenter(IEditMessageView editView, IMessagingController messagingController) : base(editView)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="9" el="65" ec="10">Presenters\EditMessagePresenter.cs</location>
+            <body hash="ebd181756ff4eeb76ba30b9ac52de59a"><![CDATA[public EditMessagePresenter(IEditMessageView editView, IMessagingController messagingController) : base(editView)
+        {
+            Requires.NotNull("messagingController", messagingController);
+
+            _messagingController = messagingController;
+
+            View.Delete += DeleteMessage;
+            View.Load += Load;
+            View.SaveDraft += SaveDraft;
+            View.SendMessage += SendMessage;
+            View.ValidateUser += ValidateUser;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AuthorizeUser">
+          <declaration><![CDATA[private void AuthorizeUser(Message message)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="152" sc="9" el="177" ec="10">Presenters\EditMessagePresenter.cs</location>
+            <body hash="e323fc9573bce2c85f4876a758d65402"><![CDATA[{
+            switch (message.Status)
+            {
+                case MessageStatusType.Deleted:
+                    Response.Redirect(GetInboxUrl());
+                    break;
+                case MessageStatusType.Draft:
+                    if (message.FromUserID != UserId)
+                    {
+                        Response.Redirect(GetInboxUrl());
+                    }
+                    break;
+                case MessageStatusType.Read:
+                    if (message.ToUserID != UserId)
+                    {
+                        Response.Redirect(GetInboxUrl());
+                    }
+                    break;
+                case MessageStatusType.Unread:
+                    if (message.ToUserID != UserId)
+                    {
+                        Response.Redirect(GetInboxUrl());
+                    }
+                    break;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteMessage">
+          <declaration><![CDATA[public void DeleteMessage(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="112" sc="9" el="120" ec="10">Presenters\EditMessagePresenter.cs</location>
+            <body hash="3b616e6bfcc5ff61594f32424509c7c2"><![CDATA[{
+            View.BindMessage(View.Model.Message);
+
+            View.Model.Message.Status = MessageStatusType.Deleted;
+            _messagingController.UpdateMessage(View.Model.Message);
+
+            //Redirect to List
+            Response.Redirect(GetInboxUrl());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetInboxUrl">
+          <declaration><![CDATA[private string GetInboxUrl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="103" sc="9" el="105" ec="10">Presenters\EditMessagePresenter.cs</location>
+            <body hash="19846f5a78fc50ee0f795f4bed95a204"><![CDATA[{
+            return Globals.NavigateURL(TabId, "", string.Format("userId={0}", UserId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Load">
+          <declaration><![CDATA[public void Load(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="123" sc="9" el="149" ec="10">Presenters\EditMessagePresenter.cs</location>
+            <body hash="e8df191258da8494c8e7e609456801a1"><![CDATA[{
+            View.Model.InboxUrl = GetInboxUrl();
+
+            if (!IsPostBack)
+            {
+                if ((MessageId > 0))
+                {
+                    var orgMessage = _messagingController.GetMessageByID(PortalId, UserId, (int) MessageId);
+                    AuthorizeUser(orgMessage);
+                    if (IsReplyMode)
+                    {
+                        View.Model.Message = _messagingController.GetMessageByID(PortalId, UserId, (int) MessageId).GetReplyMessage();
+                        View.HideDeleteButton();
+                    }
+                    else
+                    {
+                        View.Model.Message = _messagingController.GetMessageByID(PortalId, UserId, (int) MessageId);
+                    }
+                }
+                else
+                {
+                    View.Model.Message = new Message();
+                }
+
+                View.BindMessage(View.Model.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveDraft">
+          <declaration><![CDATA[public void SaveDraft(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="180" sc="9" el="182" ec="10">Presenters\EditMessagePresenter.cs</location>
+            <body hash="9fca58756eeb39ff910439c1564b1243"><![CDATA[{
+            SubmitMessage(MessageStatusType.Draft);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SendMessage">
+          <declaration><![CDATA[public void SendMessage(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="185" sc="9" el="187" ec="10">Presenters\EditMessagePresenter.cs</location>
+            <body hash="77057e01e73339908cd7a9f452ab4d60"><![CDATA[{
+            SubmitMessage(MessageStatusType.Unread);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SubmitMessage">
+          <declaration><![CDATA[private void SubmitMessage(MessageStatusType status)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="190" sc="9" el="217" ec="10">Presenters\EditMessagePresenter.cs</location>
+            <body hash="363b177463ab354f8ce2585e40d616ba"><![CDATA[{
+            View.BindMessage(View.Model.Message);
+
+            View.Model.Message.ToUserID = ValidateUserName(View.Model.UserName);
+
+
+            if (View.Model.Message.ToUserID > Null.NullInteger)
+            {
+                View.Model.Message.FromUserID = UserId;
+                View.Model.Message.MessageDate = DateTime.Now;
+
+
+                View.Model.Message.Status = status;
+
+                //Save Message
+                if ((View.Model.Message.MessageID == 0))
+                {
+                    _messagingController.SaveMessage(View.Model.Message);
+                }
+                else
+                {
+                    _messagingController.UpdateMessage(View.Model.Message);
+                }
+
+                //Redirect to Message List
+                Response.Redirect(GetInboxUrl());
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ValidateUser">
+          <declaration><![CDATA[public void ValidateUser(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="220" sc="9" el="226" ec="10">Presenters\EditMessagePresenter.cs</location>
+            <body hash="6e66974a8ef15e01e9fdb76766cb1a24"><![CDATA[{
+            // validate username
+            if ((ValidateUserName(View.Model.UserName) > 0))
+            {
+                View.ShowValidUserMessage();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ValidateUserName">
+          <declaration><![CDATA[private int ValidateUserName(string userName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="231" sc="9" el="249" ec="10">Presenters\EditMessagePresenter.cs</location>
+            <body hash="62f2bdcd494ae1e1062c356aceb2453f"><![CDATA[{
+            var userId = Null.NullInteger;
+            if (!string.IsNullOrEmpty(userName))
+            {
+                // validate username
+                var objUser = UserController.GetUserByName(PortalId, userName);
+                if (objUser != null)
+                {
+                    userId = objUser.UserID;
+                }
+            }
+
+            if ((userId == Null.NullInteger))
+            {
+                View.ShowInvalidUserError();
+            }
+
+            return userId;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_messagingController">
+          <declaration><![CDATA[private readonly IMessagingController _messagingController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="IsReplyMode">
+          <declaration><![CDATA[public bool IsReplyMode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="88" sc="13" el="95" ec="14">Presenters\EditMessagePresenter.cs</location>
+            <body hash="11608e0377b7ff12d650e6abc94a4d7f"><![CDATA[{
+                var isReply = false;
+                if (!string.IsNullOrEmpty(Request.Params["IsReply"]))
+                {
+                    bool.TryParse(Request.Params["IsReply"], out isReply);
+                }
+                return isReply;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="MessageId">
+          <declaration><![CDATA[public long MessageId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="13" el="81" ec="14">Presenters\EditMessagePresenter.cs</location>
+            <body hash="841c9cc361a5515209012597bd875b14"><![CDATA[{
+                long indexId = Null.NullInteger;
+                if (!string.IsNullOrEmpty(Request.Params["MessageId"]))
+                {
+                    indexId = Int32.Parse(Request.Params["MessageId"]);
+                }
+                return indexId;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="MessageListPresenter">
+      <declaration><![CDATA[public class MessageListPresenter : ModulePresenter<IMessageListView, MessageListModel>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MessageListPresenter(IMessageListView listView) : this(listView, new MessagingController(new MessagingDataService()))]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="9" el="55" ec="10">Presenters\MessageListPresenter.cs</location>
+            <body hash="d8b2a84896ab12ec0326637351e29c4e"><![CDATA[public MessageListPresenter(IMessageListView listView) : this(listView, new MessagingController(new MessagingDataService()))
+        {
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MessageListPresenter(IMessageListView listView, IMessagingController messagingController) : base(listView)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="9" el="67" ec="10">Presenters\MessageListPresenter.cs</location>
+            <body hash="f1e659051e75178d642fd78c71c6227d"><![CDATA[public MessageListPresenter(IMessageListView listView, IMessagingController messagingController) : base(listView)
+        {
+            Requires.NotNull("messagingController", messagingController);
+            _MessagingController = messagingController;
+
+            View.DeleteSelectedMessages += DeleteSelectedMessages;
+            View.MarkSelectedMessagesRead += MarkSelectedMessagesRead;
+            View.MarkSelectedMessagesUnread += MarkSelectedMessagesUnread;
+            View.MessageDataBound += MessageDataBound;
+            View.MessagesNeedDataSource += MessagesNeedDataSource;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="DeleteSelectedMessages">
+          <declaration><![CDATA[public void DeleteSelectedMessages(object sender, DnnGridItemSelectedEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="81" sc="9" el="89" ec="10">Presenters\MessageListPresenter.cs</location>
+            <body hash="b7e74ebc75bdd988cd68d5bf55650ada"><![CDATA[{
+            foreach (GridItem c in e.SelectedItems)
+            {
+                var messageID = Convert.ToInt32(c.OwnerTableView.DataKeyValues[c.ItemIndex]["MessageID"]);
+                var message = _MessagingController.GetMessageByID(PortalId, UserId, messageID);
+                message.Status = MessageStatusType.Deleted;
+                _MessagingController.UpdateMessage(message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MarkSelectedMessagesRead">
+          <declaration><![CDATA[public void MarkSelectedMessagesRead(object sender, DnnGridItemSelectedEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="104" ec="10">Presenters\MessageListPresenter.cs</location>
+            <body hash="5236399e22754a2ba87cb4f7c43a6879"><![CDATA[{
+            foreach (GridItem c in e.SelectedItems)
+            {
+                var messageID = Convert.ToInt32(c.OwnerTableView.DataKeyValues[c.ItemIndex]["MessageID"]);
+                var message = _MessagingController.GetMessageByID(PortalId, UserId, messageID);
+
+                if ((message.Status == MessageStatusType.Unread))
+                {
+                    message.Status = MessageStatusType.Read;
+                    _MessagingController.UpdateMessage(message);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MarkSelectedMessagesUnread">
+          <declaration><![CDATA[public void MarkSelectedMessagesUnread(object sender, DnnGridItemSelectedEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="107" sc="9" el="119" ec="10">Presenters\MessageListPresenter.cs</location>
+            <body hash="6bbfc243a8cef592f59f6589f4e57ccc"><![CDATA[{
+            foreach (GridItem c in e.SelectedItems)
+            {
+                var messageID = Convert.ToInt32(c.OwnerTableView.DataKeyValues[c.ItemIndex]["MessageID"]);
+                var message = _MessagingController.GetMessageByID(PortalId, UserId, messageID);
+
+                if ((message.Status == MessageStatusType.Read))
+                {
+                    message.Status = MessageStatusType.Unread;
+                    _MessagingController.UpdateMessage(message);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MessageDataBound">
+          <declaration><![CDATA[public void MessageDataBound(object sender, GridItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="122" sc="9" el="152" ec="10">Presenters\MessageListPresenter.cs</location>
+            <body hash="e6be76bc51d152f98111d8916c0c1e96"><![CDATA[{
+            if (e.Item.ItemType == GridItemType.AlternatingItem || e.Item.ItemType == GridItemType.Item)
+            {
+                var message = e.Item.DataItem as Message;
+
+                var item = (GridDataItem) e.Item;
+
+                var hyperLinkColumn = item.Controls[4].Controls[0] as HyperLink;
+
+                if (hyperLinkColumn != null)
+                {
+                    if (message.Status == MessageStatusType.Draft)
+                    {
+                        //Message is from me
+                        hyperLinkColumn.NavigateUrl = Globals.NavigateURL(TabId, "EditMessage", string.Format("mid={0}", ModuleId), string.Format("MessageId={0}", message.MessageID));
+                        hyperLinkColumn.Text = string.Format("[Draft] {0}", message.Subject);
+                    }
+                    else
+                    {
+                        //Message is to me
+                        hyperLinkColumn.NavigateUrl = Globals.NavigateURL(TabId, "ViewMessage", string.Format("mid={0}", ModuleId), string.Format("MessageId={0}", message.MessageID));
+                        hyperLinkColumn.Text = message.Subject;
+                    }
+                }
+
+                if ((message.Status == MessageStatusType.Unread))
+                {
+                    hyperLinkColumn.Font.Bold = true;
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="MessagesNeedDataSource">
+          <declaration><![CDATA[public void MessagesNeedDataSource(object sender, GridNeedDataSourceEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="155" sc="9" el="160" ec="10">Presenters\MessageListPresenter.cs</location>
+            <body hash="46cc0934b340b5657093c27dd3c6c8eb"><![CDATA[{
+            var mGrid = (DnnGrid) sender;
+            mGrid.PagerStyle.AlwaysVisible = true;
+            mGrid.VirtualItemCount = _MessagingController.GetInboxCount(PortalId, UserId);
+            mGrid.DataSource = _MessagingController.GetUserInbox(PortalId, UserId, mGrid.CurrentPageIndex + 1, mGrid.PageSize);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="78" ec="10">Presenters\MessageListPresenter.cs</location>
+            <body hash="36330d0c268a3bc50e88350a8d15bd61"><![CDATA[{
+            base.OnInit();
+
+            View.Model.Messages = _MessagingController.GetUserInbox(PortalId, UserId, 1, 999);
+            View.Model.ComposeMsgUrl = Globals.NavigateURL(TabId, "EditMessage", string.Format("mid={0}", ModuleId));
+            View.Refresh();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_MessagingController">
+          <declaration><![CDATA[private readonly IMessagingController _MessagingController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ViewMessagePresenter">
+      <declaration><![CDATA[public class ViewMessagePresenter : ModulePresenter<IViewMessageView, ViewMessageModel>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ViewMessagePresenter(IViewMessageView viewView) : this(viewView, new MessagingController(new MessagingDataService()))]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="50" ec="10">Presenters\ViewMessagePresenter.cs</location>
+            <body hash="1e606698c1eb4e5a4d3e99ee60b8fd3c"><![CDATA[public ViewMessagePresenter(IViewMessageView viewView) : this(viewView, new MessagingController(new MessagingDataService()))
+        {
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ViewMessagePresenter(IViewMessageView viewView, IMessagingController messagingController) : base(viewView)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="9" el="60" ec="10">Presenters\ViewMessagePresenter.cs</location>
+            <body hash="b40782340764447eb450913b79d4909e"><![CDATA[public ViewMessagePresenter(IViewMessageView viewView, IMessagingController messagingController) : base(viewView)
+        {
+            Requires.NotNull("messagingController", messagingController);
+
+            _MessagingController = messagingController;
+
+            View.Delete += DeleteMessage;
+            View.Load += Load;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="DeleteMessage">
+          <declaration><![CDATA[public void DeleteMessage(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="98" sc="9" el="106" ec="10">Presenters\ViewMessagePresenter.cs</location>
+            <body hash="39d1f49324757e369d889d1b3664fa00"><![CDATA[{
+            View.BindMessage(View.Model.Message);
+
+            View.Model.Message.Status = MessageStatusType.Deleted;
+            _MessagingController.UpdateMessage(View.Model.Message);
+
+            //Redirect to List
+            Response.Redirect(GetInboxUrl());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetInboxUrl">
+          <declaration><![CDATA[private string GetInboxUrl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="84" sc="9" el="86" ec="10">Presenters\ViewMessagePresenter.cs</location>
+            <body hash="19846f5a78fc50ee0f795f4bed95a204"><![CDATA[{
+            return Globals.NavigateURL(TabId, "", string.Format("userId={0}", UserId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetReplyUrl">
+          <declaration><![CDATA[private string GetReplyUrl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="89" sc="9" el="91" ec="10">Presenters\ViewMessagePresenter.cs</location>
+            <body hash="0ef36d026c3dfcca2cfd820d16514315"><![CDATA[{
+            return Globals.NavigateURL(TabId, "EditMessage", string.Format("mid={0}", ModuleId), string.Format("MessageId={0}", View.Model.Message.MessageID), "IsReply=true");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Load">
+          <declaration><![CDATA[public void Load(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="109" sc="9" el="128" ec="10">Presenters\ViewMessagePresenter.cs</location>
+            <body hash="22dd85710cc3c5d20628575682a5bb7a"><![CDATA[{
+            if (!IsPostBack)
+            {
+                View.Model.Message = _MessagingController.GetMessageByID(PortalId, UserId, IndexId);
+                if (View.Model.Message == null || View.Model.Message.ToUserID != UserId)
+                {
+                    //Redirect - message does not belong to user
+                    Response.Redirect(GetInboxUrl());
+                }
+                if (View.Model.Message.Status == MessageStatusType.Unread)
+                {
+                    View.Model.Message.Status = MessageStatusType.Read;
+                    _MessagingController.UpdateMessage(View.Model.Message);
+                }
+                View.Model.ReplyUrl = GetReplyUrl();
+                View.Model.InboxUrl = GetInboxUrl();
+
+                View.BindMessage(View.Model.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_MessagingController">
+          <declaration><![CDATA[private readonly IMessagingController _MessagingController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="IndexId">
+          <declaration><![CDATA[public int IndexId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="13" el="76" ec="14">Presenters\ViewMessagePresenter.cs</location>
+            <body hash="b981c2b13605b94db1d04f787f7e018e"><![CDATA[{
+                var indexId = Null.NullInteger;
+                if (!string.IsNullOrEmpty(Request.Params["MessageId"]))
+                {
+                    indexId = Int32.Parse(Request.Params["MessageId"]);
+                }
+                return indexId;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Messaging.Views">
+    <class name="EditMessage">
+      <declaration><![CDATA[public class EditMessage : ModuleView<EditMessageModel>, IEditMessageView, IModuleView<EditMessageModel>, IModuleViewBase, IView<EditMessageModel>, IView]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditMessage()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="add_Delete">
+          <declaration><![CDATA[public void add_Delete(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_SaveDraft">
+          <declaration><![CDATA[public void add_SaveDraft(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_SendMessage">
+          <declaration><![CDATA[public void add_SendMessage(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_ValidateUser">
+          <declaration><![CDATA[public void add_ValidateUser(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="BindMessage">
+          <declaration><![CDATA[public void BindMessage(Message message)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="90" ec="10">EditMessage.ascx.cs</location>
+            <body hash="536554d4fcd4fc2d036396372e3366a1"><![CDATA[{
+            cancelEdit.NavigateUrl = Model.InboxUrl;
+
+            if (IsPostBack)
+            {
+                message.Subject = EncodeContent(txtSubject.Text);
+                PortalSecurity ps = new PortalSecurity();
+                string filterValue = string.Empty;
+                filterValue = ps.InputFilter(messageEditor.Text, PortalSecurity.FilterFlag.NoScripting);
+                message.Body = filterValue;
+            }
+            else
+            {
+                txtTo.Text = message.ToUserName;
+                txtTo.ToolTip = message.ToUserName;
+                txtSubject.Text = message.Subject;
+                messageEditor.Text = message.Body;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="EncodeContent">
+          <declaration><![CDATA[private string EncodeContent(string content)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="154" sc="9" el="156" ec="10">EditMessage.ascx.cs</location>
+            <body hash="43a03b6297fbe0bd1586692bbbc372cc"><![CDATA[{
+            return HttpUtility.HtmlEncode(content.ToString());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="HideDeleteButton">
+          <declaration><![CDATA[public void HideDeleteButton()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="110" sc="9" el="112" ec="10">EditMessage.ascx.cs</location>
+            <body hash="a050f7c25cb6198fe6d8359748bef357"><![CDATA[{
+            liDelete.Visible = false;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDeleteMessage">
+          <declaration><![CDATA[protected void OnDeleteMessage(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="119" sc="9" el="124" ec="10">EditMessage.ascx.cs</location>
+            <body hash="465cf2b98d750c10d78200d1b8cb8274"><![CDATA[{
+            if (Delete != null)
+            {
+                Delete(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="60" ec="10">EditMessage.ascx.cs</location>
+            <body hash="bd82576a01c334d80fac2bb43a51cf32"><![CDATA[{
+            base.OnLoad(e);
+
+            jQuery.RequestDnnPluginsRegistration();
+
+            deleteMessage.Click += OnDeleteMessage;
+            saveDraftButton.Click += OnSaveDraftClick;
+            sendMessageButton.Click += OnSendMessageClick;
+            validateUserButton.Click += OnValidateUserClick;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSaveDraftClick">
+          <declaration><![CDATA[protected void OnSaveDraftClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="127" sc="9" el="133" ec="10">EditMessage.ascx.cs</location>
+            <body hash="9a82915c72e743ece145e658dc77fda2"><![CDATA[{
+            Model.UserName = EncodeContent(txtTo.Text);
+            if (SaveDraft != null)
+            {
+                SaveDraft(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSendMessageClick">
+          <declaration><![CDATA[protected void OnSendMessageClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="136" sc="9" el="142" ec="10">EditMessage.ascx.cs</location>
+            <body hash="4248e63bf1fdf4fb996cd6e0869a98e0"><![CDATA[{
+            Model.UserName = EncodeContent(txtTo.Text);
+            if (SendMessage != null)
+            {
+                SendMessage(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnValidateUserClick">
+          <declaration><![CDATA[protected void OnValidateUserClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="145" sc="9" el="151" ec="10">EditMessage.ascx.cs</location>
+            <body hash="3fb8a0185770e83674a27b9ebaa0d4d7"><![CDATA[{
+            Model.UserName = EncodeContent(txtTo.Text);
+            if (ValidateUser != null)
+            {
+                ValidateUser(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_Delete">
+          <declaration><![CDATA[public void remove_Delete(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_SaveDraft">
+          <declaration><![CDATA[public void remove_SaveDraft(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_SendMessage">
+          <declaration><![CDATA[public void remove_SendMessage(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_ValidateUser">
+          <declaration><![CDATA[public void remove_ValidateUser(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ShowInvalidUserError">
+          <declaration><![CDATA[public void ShowInvalidUserError()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="93" sc="9" el="100" ec="10">EditMessage.ascx.cs</location>
+            <body hash="53facd6ca9f2c5496f33a819bcf53f85"><![CDATA[{
+            //'toTextBox.Text = ""
+            var toError = string.Format(Localization.GetString("Validation.Error.Message", LocalResourceFile), EncodeContent(txtTo.Text));
+
+            UI.Skins.Skin.AddModuleMessage(this, toError, ModuleMessage.ModuleMessageType.RedError);
+
+            //'Services.Localization.Localization.GetString("Validation.Error.Message", Me)
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ShowValidUserMessage">
+          <declaration><![CDATA[public void ShowValidUserMessage()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="103" sc="9" el="107" ec="10">EditMessage.ascx.cs</location>
+            <body hash="ae2e1e1f0361fe153c1a5764d10a3ef5"><![CDATA[{
+            var toValid = string.Format(Localization.GetString("Validation.Success.Message", LocalResourceFile), EncodeContent(txtTo.Text));
+
+            UI.Skins.Skin.AddModuleMessage(this, toValid, ModuleMessage.ModuleMessageType.GreenSuccess);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cancelEdit">
+          <declaration><![CDATA[protected HyperLink cancelEdit;]]></declaration>
+          <documentation>
+            <summary>
+ cancelEdit control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Delete">
+          <declaration><![CDATA[private EventHandler Delete;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="deleteMessage">
+          <declaration><![CDATA[protected LinkButton deleteMessage;]]></declaration>
+          <documentation>
+            <summary>
+ deleteMessage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="dnnlblMsg">
+          <declaration><![CDATA[protected DnnFieldLabel dnnlblMsg;]]></declaration>
+          <documentation>
+            <summary>
+ dnnlblMsg control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="dnnlblSubject">
+          <declaration><![CDATA[protected DnnFieldLabel dnnlblSubject;]]></declaration>
+          <documentation>
+            <summary>
+ dnnlblSubject control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="dnnlblTo">
+          <declaration><![CDATA[protected DnnFieldLabel dnnlblTo;]]></declaration>
+          <documentation>
+            <summary>
+ dnnlblTo control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="liDelete">
+          <declaration><![CDATA[protected HtmlGenericControl liDelete;]]></declaration>
+          <documentation>
+            <summary>
+ liDelete control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="messageEditor">
+          <declaration><![CDATA[protected TextEditor messageEditor;]]></declaration>
+          <documentation>
+            <summary>
+ messageEditor control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="SaveDraft">
+          <declaration><![CDATA[private EventHandler SaveDraft;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="saveDraftButton">
+          <declaration><![CDATA[protected LinkButton saveDraftButton;]]></declaration>
+          <documentation>
+            <summary>
+ saveDraftButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="SendMessage">
+          <declaration><![CDATA[private EventHandler SendMessage;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="sendMessageButton">
+          <declaration><![CDATA[protected LinkButton sendMessageButton;]]></declaration>
+          <documentation>
+            <summary>
+ sendMessageButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="subjectValidator">
+          <declaration><![CDATA[protected RequiredFieldValidator subjectValidator;]]></declaration>
+          <documentation>
+            <summary>
+ subjectValidator control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="toValidator">
+          <declaration><![CDATA[protected RequiredFieldValidator toValidator;]]></declaration>
+          <documentation>
+            <summary>
+ toValidator control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtSubject">
+          <declaration><![CDATA[protected TextBox txtSubject;]]></declaration>
+          <documentation>
+            <summary>
+ txtSubject control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtTo">
+          <declaration><![CDATA[protected TextBox txtTo;]]></declaration>
+          <documentation>
+            <summary>
+ txtTo control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ValidateUser">
+          <declaration><![CDATA[private EventHandler ValidateUser;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="validateUserButton">
+          <declaration><![CDATA[protected LinkButton validateUserButton;]]></declaration>
+          <documentation>
+            <summary>
+ validateUserButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="Delete">
+          <declaration><![CDATA[public event EventHandler Delete;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="SaveDraft">
+          <declaration><![CDATA[public event EventHandler SaveDraft;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="SendMessage">
+          <declaration><![CDATA[public event EventHandler SendMessage;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="ValidateUser">
+          <declaration><![CDATA[public event EventHandler ValidateUser;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="IEditMessageView">
+      <declaration><![CDATA[public interface IEditMessageView : IModuleView<EditMessageModel>, IModuleViewBase, IView<EditMessageModel>, IView]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="add_Delete">
+          <declaration><![CDATA[void add_Delete(EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_SaveDraft">
+          <declaration><![CDATA[void add_SaveDraft(EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_SendMessage">
+          <declaration><![CDATA[void add_SendMessage(EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_ValidateUser">
+          <declaration><![CDATA[void add_ValidateUser(EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="BindMessage">
+          <declaration><![CDATA[void BindMessage(Message message);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="HideDeleteButton">
+          <declaration><![CDATA[void HideDeleteButton();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_Delete">
+          <declaration><![CDATA[void remove_Delete(EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_SaveDraft">
+          <declaration><![CDATA[void remove_SaveDraft(EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_SendMessage">
+          <declaration><![CDATA[void remove_SendMessage(EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_ValidateUser">
+          <declaration><![CDATA[void remove_ValidateUser(EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ShowInvalidUserError">
+          <declaration><![CDATA[void ShowInvalidUserError();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ShowValidUserMessage">
+          <declaration><![CDATA[void ShowValidUserMessage();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="Delete">
+          <declaration><![CDATA[event EventHandler Delete;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="SaveDraft">
+          <declaration><![CDATA[event EventHandler SaveDraft;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="SendMessage">
+          <declaration><![CDATA[event EventHandler SendMessage;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="ValidateUser">
+          <declaration><![CDATA[event EventHandler ValidateUser;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="IMessageListView">
+      <declaration><![CDATA[public interface IMessageListView : IModuleView<MessageListModel>, IModuleViewBase, IView<MessageListModel>, IView]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="add_DeleteSelectedMessages">
+          <declaration><![CDATA[void add_DeleteSelectedMessages(DnnGridItemSelectedEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_MarkSelectedMessagesRead">
+          <declaration><![CDATA[void add_MarkSelectedMessagesRead(DnnGridItemSelectedEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_MarkSelectedMessagesUnread">
+          <declaration><![CDATA[void add_MarkSelectedMessagesUnread(DnnGridItemSelectedEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_MessageDataBound">
+          <declaration><![CDATA[void add_MessageDataBound(GridItemEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_MessagesNeedDataSource">
+          <declaration><![CDATA[void add_MessagesNeedDataSource(GridNeedDataSourceEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="Refresh">
+          <declaration><![CDATA[void Refresh();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_DeleteSelectedMessages">
+          <declaration><![CDATA[void remove_DeleteSelectedMessages(DnnGridItemSelectedEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_MarkSelectedMessagesRead">
+          <declaration><![CDATA[void remove_MarkSelectedMessagesRead(DnnGridItemSelectedEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_MarkSelectedMessagesUnread">
+          <declaration><![CDATA[void remove_MarkSelectedMessagesUnread(DnnGridItemSelectedEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_MessageDataBound">
+          <declaration><![CDATA[void remove_MessageDataBound(GridItemEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_MessagesNeedDataSource">
+          <declaration><![CDATA[void remove_MessagesNeedDataSource(GridNeedDataSourceEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="DeleteSelectedMessages">
+          <declaration><![CDATA[event DnnGridItemSelectedEventHandler DeleteSelectedMessages;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="MarkSelectedMessagesRead">
+          <declaration><![CDATA[event DnnGridItemSelectedEventHandler MarkSelectedMessagesRead;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="MarkSelectedMessagesUnread">
+          <declaration><![CDATA[event DnnGridItemSelectedEventHandler MarkSelectedMessagesUnread;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="MessageDataBound">
+          <declaration><![CDATA[event GridItemEventHandler MessageDataBound;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="MessagesNeedDataSource">
+          <declaration><![CDATA[event GridNeedDataSourceEventHandler MessagesNeedDataSource;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="IViewMessageView">
+      <declaration><![CDATA[public interface IViewMessageView : IModuleView<ViewMessageModel>, IModuleViewBase, IView<ViewMessageModel>, IView]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="add_Delete">
+          <declaration><![CDATA[void add_Delete(EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="BindMessage">
+          <declaration><![CDATA[void BindMessage(Message message);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_Delete">
+          <declaration><![CDATA[void remove_Delete(EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="Delete">
+          <declaration><![CDATA[event EventHandler Delete;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="MessageList">
+      <declaration><![CDATA[public class MessageList : ModuleView<MessageListModel>, IMessageListView, IModuleView<MessageListModel>, IModuleViewBase, IView<MessageListModel>, IView, IProfileModule]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MessageList()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="9" el="55" ec="10">MessageList.ascx.cs</location>
+            <body hash="ebc3edeeefbd0bf8aea7e8b614c40a69"><![CDATA[public MessageList()
+        {
+            AutoDataBind = false;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="add_DeleteSelectedMessages">
+          <declaration><![CDATA[public void add_DeleteSelectedMessages(DnnGridItemSelectedEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_MarkSelectedMessagesRead">
+          <declaration><![CDATA[public void add_MarkSelectedMessagesRead(DnnGridItemSelectedEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_MarkSelectedMessagesUnread">
+          <declaration><![CDATA[public void add_MarkSelectedMessagesUnread(DnnGridItemSelectedEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_MessageDataBound">
+          <declaration><![CDATA[public void add_MessageDataBound(GridItemEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_MessagesNeedDataSource">
+          <declaration><![CDATA[public void add_MessagesNeedDataSource(GridNeedDataSourceEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDeleteMessagesClick">
+          <declaration><![CDATA[protected void OnDeleteMessagesClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="120" sc="9" el="126" ec="10">MessageList.ascx.cs</location>
+            <body hash="c7a61360ef57220719dc25f84c775bd5"><![CDATA[{
+            if (DeleteSelectedMessages != null)
+            {
+                DeleteSelectedMessages(this, new DnnGridItemSelectedEventArgs(messagesGrid.SelectedItems));
+            }
+            RefreshInbox();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="97" sc="9" el="107" ec="10">MessageList.ascx.cs</location>
+            <body hash="72cd7fc5c476fde9802ae5902b8cc00b"><![CDATA[{
+            base.OnLoad(e);
+
+            jQuery.RequestDnnPluginsRegistration();
+
+            markAsRead.Click += OnMarkAsReadClick;
+            markAsUnread.Click += OnMarkAsUnreadClick;
+            delete.Click += OnDeleteMessagesClick;
+            messagesGrid.ItemDataBound += OnMessagesItemDataBound;
+            messagesGrid.NeedDataSource += OnMessagesNeedDataSource;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnMarkAsReadClick">
+          <declaration><![CDATA[protected void OnMarkAsReadClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="129" sc="9" el="135" ec="10">MessageList.ascx.cs</location>
+            <body hash="32e8541ae09b1de3bb2c9df1e8729c95"><![CDATA[{
+            if (MarkSelectedMessagesRead != null)
+            {
+                MarkSelectedMessagesRead(this, new DnnGridItemSelectedEventArgs(messagesGrid.SelectedItems));
+            }
+            RefreshInbox();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnMarkAsUnreadClick">
+          <declaration><![CDATA[protected void OnMarkAsUnreadClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="138" sc="9" el="144" ec="10">MessageList.ascx.cs</location>
+            <body hash="5193ab85db3a6f28609d1faaab6aad9c"><![CDATA[{
+            if (MarkSelectedMessagesUnread != null)
+            {
+                MarkSelectedMessagesUnread(this, new DnnGridItemSelectedEventArgs(messagesGrid.SelectedItems));
+            }
+            RefreshInbox();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnMessagesItemDataBound">
+          <declaration><![CDATA[protected void OnMessagesItemDataBound(object sender, GridItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="147" sc="9" el="152" ec="10">MessageList.ascx.cs</location>
+            <body hash="9d2e18e610792501f3c99d3ceaf0d4db"><![CDATA[{
+            if (MessageDataBound != null)
+            {
+                MessageDataBound(messagesGrid, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnMessagesNeedDataSource">
+          <declaration><![CDATA[protected void OnMessagesNeedDataSource(object source, GridNeedDataSourceEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="155" sc="9" el="160" ec="10">MessageList.ascx.cs</location>
+            <body hash="54149f3c41480fd42798cfd6b78aff5a"><![CDATA[{
+            if (MessagesNeedDataSource != null)
+            {
+                MessagesNeedDataSource(messagesGrid, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Refresh">
+          <declaration><![CDATA[public void Refresh()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="110" sc="9" el="112" ec="10">MessageList.ascx.cs</location>
+            <body hash="dc0662c3b78ccc87a700cd0ccc8d58d0"><![CDATA[{
+            addMessageButton.NavigateUrl = Model.ComposeMsgUrl;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RefreshInbox">
+          <declaration><![CDATA[private void RefreshInbox()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="115" sc="9" el="117" ec="10">MessageList.ascx.cs</location>
+            <body hash="a2b7b6eeb8fe6e4cb8e847f9d2ac7bfe"><![CDATA[{
+            Response.Redirect(Request.RawUrl);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_DeleteSelectedMessages">
+          <declaration><![CDATA[public void remove_DeleteSelectedMessages(DnnGridItemSelectedEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_MarkSelectedMessagesRead">
+          <declaration><![CDATA[public void remove_MarkSelectedMessagesRead(DnnGridItemSelectedEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_MarkSelectedMessagesUnread">
+          <declaration><![CDATA[public void remove_MarkSelectedMessagesUnread(DnnGridItemSelectedEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_MessageDataBound">
+          <declaration><![CDATA[public void remove_MessageDataBound(GridItemEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_MessagesNeedDataSource">
+          <declaration><![CDATA[public void remove_MessagesNeedDataSource(GridNeedDataSourceEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="addMessageButton">
+          <declaration><![CDATA[protected HyperLink addMessageButton;]]></declaration>
+          <documentation>
+            <summary>
+ addMessageButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="delete">
+          <declaration><![CDATA[protected LinkButton delete;]]></declaration>
+          <documentation>
+            <summary>
+ delete control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="DeleteSelectedMessages">
+          <declaration><![CDATA[private DnnGridItemSelectedEventHandler DeleteSelectedMessages;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="markAsRead">
+          <declaration><![CDATA[protected LinkButton markAsRead;]]></declaration>
+          <documentation>
+            <summary>
+ markAsRead control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="markAsUnread">
+          <declaration><![CDATA[protected LinkButton markAsUnread;]]></declaration>
+          <documentation>
+            <summary>
+ markAsUnread control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="MarkSelectedMessagesRead">
+          <declaration><![CDATA[private DnnGridItemSelectedEventHandler MarkSelectedMessagesRead;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MarkSelectedMessagesUnread">
+          <declaration><![CDATA[private DnnGridItemSelectedEventHandler MarkSelectedMessagesUnread;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MessageDataBound">
+          <declaration><![CDATA[private GridItemEventHandler MessageDataBound;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="messagesGrid">
+          <declaration><![CDATA[protected DnnGrid messagesGrid;]]></declaration>
+          <documentation>
+            <summary>
+ messagesGrid control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="MessagesNeedDataSource">
+          <declaration><![CDATA[private GridNeedDataSourceEventHandler MessagesNeedDataSource;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="titleLabel">
+          <declaration><![CDATA[protected Label titleLabel;]]></declaration>
+          <documentation>
+            <summary>
+ titleLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="DisplayModule">
+          <declaration><![CDATA[public bool DisplayModule]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="13" el="66" ec="14">MessageList.ascx.cs</location>
+            <body hash="717d17dde8c56325a5d90506bd8c5dcf"><![CDATA[{
+                return Request.IsAuthenticated && (ProfileUserId == ModuleContext.PortalSettings.UserId);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ProfileUserId">
+          <declaration><![CDATA[public int ProfileUserId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="13" el="79" ec="14">MessageList.ascx.cs</location>
+            <body hash="a7474ab03e8ce1ec23e7418f5d078bd2"><![CDATA[{
+                var profileUserId = Null.NullInteger;
+                if (!string.IsNullOrEmpty(Request.Params["UserId"]))
+                {
+                    profileUserId = Int32.Parse(Request.Params["UserId"]);
+                }
+                return profileUserId;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+        <event name="DeleteSelectedMessages">
+          <declaration><![CDATA[public event DnnGridItemSelectedEventHandler DeleteSelectedMessages;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="MarkSelectedMessagesRead">
+          <declaration><![CDATA[public event DnnGridItemSelectedEventHandler MarkSelectedMessagesRead;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="MarkSelectedMessagesUnread">
+          <declaration><![CDATA[public event DnnGridItemSelectedEventHandler MarkSelectedMessagesUnread;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="MessageDataBound">
+          <declaration><![CDATA[public event GridItemEventHandler MessageDataBound;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="MessagesNeedDataSource">
+          <declaration><![CDATA[public event GridNeedDataSourceEventHandler MessagesNeedDataSource;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="ViewMessage">
+      <declaration><![CDATA[public class ViewMessage : ModuleView<ViewMessageModel>, IViewMessageView, IModuleView<ViewMessageModel>, IModuleViewBase, IView<ViewMessageModel>, IView]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ViewMessage()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="add_Delete">
+          <declaration><![CDATA[public void add_Delete(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="BindMessage">
+          <declaration><![CDATA[public void BindMessage(Message message)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="9" el="57" ec="10">ViewMessage.ascx.cs</location>
+            <body hash="9321fc8b914adc422d37e105dd39411e"><![CDATA[{
+            fromLabel.Text = message.FromUserName;
+            subjectLabel.Text = message.Subject;
+            messageLabel.Text = HtmlUtils.ConvertToHtml(message.Body);
+
+            hlReplyMessage.NavigateUrl = Model.ReplyUrl;
+            hlCancel.NavigateUrl = Model.InboxUrl;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDeleteMessageClick">
+          <declaration><![CDATA[protected void OnDeleteMessageClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="9" el="78" ec="10">ViewMessage.ascx.cs</location>
+            <body hash="465cf2b98d750c10d78200d1b8cb8274"><![CDATA[{
+            if (Delete != null)
+            {
+                Delete(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="9" el="70" ec="10">ViewMessage.ascx.cs</location>
+            <body hash="b3ee60ef31e0b61d4b1e7a58bee17eb6"><![CDATA[{
+            base.OnLoad(e);
+
+            jQuery.RequestDnnPluginsRegistration();
+
+            deleteMessage.Click += OnDeleteMessageClick;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_Delete">
+          <declaration><![CDATA[public void remove_Delete(EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Delete">
+          <declaration><![CDATA[private EventHandler Delete;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="deleteMessage">
+          <declaration><![CDATA[protected LinkButton deleteMessage;]]></declaration>
+          <documentation>
+            <summary>
+ deleteMessage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fromFieldLabel">
+          <declaration><![CDATA[protected DnnFieldLabel fromFieldLabel;]]></declaration>
+          <documentation>
+            <summary>
+ fromFieldLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fromLabel">
+          <declaration><![CDATA[protected Label fromLabel;]]></declaration>
+          <documentation>
+            <summary>
+ fromLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="hlCancel">
+          <declaration><![CDATA[protected HyperLink hlCancel;]]></declaration>
+          <documentation>
+            <summary>
+ hlCancel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="hlReplyMessage">
+          <declaration><![CDATA[protected HyperLink hlReplyMessage;]]></declaration>
+          <documentation>
+            <summary>
+ hlReplyMessage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="MessageFieldLabel">
+          <declaration><![CDATA[protected DnnFieldLabel MessageFieldLabel;]]></declaration>
+          <documentation>
+            <summary>
+ MessageFieldLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="messageLabel">
+          <declaration><![CDATA[protected Label messageLabel;]]></declaration>
+          <documentation>
+            <summary>
+ messageLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="subjectFieldLabel">
+          <declaration><![CDATA[protected DnnFieldLabel subjectFieldLabel;]]></declaration>
+          <documentation>
+            <summary>
+ subjectFieldLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="subjectLabel">
+          <declaration><![CDATA[protected Label subjectLabel;]]></declaration>
+          <documentation>
+            <summary>
+ subjectLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="Delete">
+          <declaration><![CDATA[public event EventHandler Delete;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Messaging.Views.Models">
+    <class name="EditMessageModel">
+      <declaration><![CDATA[public class EditMessageModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditMessageModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="InboxUrl">
+          <declaration><![CDATA[public string InboxUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Message">
+          <declaration><![CDATA[public Message Message]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="UserName">
+          <declaration><![CDATA[public string UserName]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="MessageListModel">
+      <declaration><![CDATA[public class MessageListModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MessageListModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ComposeMsgUrl">
+          <declaration><![CDATA[public string ComposeMsgUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Messages">
+          <declaration><![CDATA[public IList<Message> Messages]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ViewMessageModel">
+      <declaration><![CDATA[public class ViewMessageModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ViewMessageModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="InboxUrl">
+          <declaration><![CDATA[public string InboxUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Message">
+          <declaration><![CDATA[public Message Message]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ReplyUrl">
+          <declaration><![CDATA[public string ReplyUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

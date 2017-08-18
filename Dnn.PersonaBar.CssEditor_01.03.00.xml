@@ -1,0 +1,392 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.CssEditor.dll" version="01.03.00" generated="2017-08-10 13:09:03Z" generationTime="2.0726853">
+  <namespace name="Dnn.PersonaBar.CssEditor.MenuControllers">
+    <class name="AdminMenuController">
+      <declaration><![CDATA[public class AdminMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AdminMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="9" el="29" ec="10">MenuControllers\AdminMenuController.cs</location>
+            <body hash="e58ece320c3127efb710b9676c9d552e"><![CDATA[{
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="9" el="18" ec="10">MenuControllers\AdminMenuController.cs</location>
+            <body hash="4a8f06184b6087940b8e4519251d0924"><![CDATA[{
+            
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="9" el="24" ec="10">MenuControllers\AdminMenuController.cs</location>
+            <body hash="d4c78a0d5351d270343f678a4a02cf22"><![CDATA[{
+            var user = UserController.Instance.GetCurrentUserInfo();
+            return user.IsSuperUser || user.IsInRole(PortalSettings.Current?.AdministratorRoleName);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.CssEditor.Services">
+    <class name="CssEditorController">
+      <declaration><![CDATA[public class CssEditorController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CssEditorController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static CssEditorController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="9" el="32" ec="108">Services\CssEditorController.cs</location>
+            <body hash="4bdfa02da88121e173a599582b0c190f"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(CssEditorController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetStyleSheet">
+          <declaration><![CDATA[public HttpResponseMessage GetStyleSheet(int portalId)]]></declaration>
+          <documentation>GET: api/CssEditor/GetStyleSheet
+ <summary>
+ Gets portal.css of specific portal
+ </summary>
+ <param name="portalId">Id of portal</param>
+ <returns>Content of portal.css</returns></documentation>
+          <codeblock>
+            <location sl="42" sc="9" el="78" ec="10">Services\CssEditorController.cs</location>
+            <body hash="43bea8a8b07154708b0bb7086df16bf3"><![CDATA[{
+            try
+            {
+                if (!PortalSettings.Current.UserInfo.IsSuperUser && PortalSettings.Current.UserInfo.PortalID != portalId)
+                {
+                    throw new SecurityException("No Permission");
+                }
+                else
+                {
+                    var activeLanguage = LocaleController.Instance.GetDefaultLocale(portalId).Code;
+                    var portal = PortalController.Instance.GetPortal(portalId, activeLanguage);
+
+                    string uploadDirectory = "";
+                    string styleSheetContent = "";
+                    if (portal != null)
+                    {
+                        uploadDirectory = portal.HomeDirectoryMapPath;
+                    }
+
+                    //read CSS file
+                    if (File.Exists(uploadDirectory + "portal.css"))
+                    {
+                        using (var text = File.OpenText(uploadDirectory + "portal.css"))
+                        {
+                            styleSheetContent = text.ReadToEnd();
+                        }
+                    }
+
+                    return Request.CreateResponse(HttpStatusCode.OK, new { Content = styleSheetContent });
+                }
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadStyleSheet">
+          <declaration><![CDATA[private string LoadStyleSheet(int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="196" sc="9" el="217" ec="10">Services\CssEditorController.cs</location>
+            <body hash="9ea94187d0be7a7778aaa83dad57b916"><![CDATA[{
+            var activeLanguage = LocaleController.Instance.GetDefaultLocale(portalId).Code;
+            var portal = PortalController.Instance.GetPortal(portalId, activeLanguage);
+
+            string uploadDirectory = "";
+            string styleSheetContent = "";
+            if (portal != null)
+            {
+                uploadDirectory = portal.HomeDirectoryMapPath;
+            }
+
+            //read CSS file
+            if (File.Exists(uploadDirectory + "portal.css"))
+            {
+                using (var text = File.OpenText(uploadDirectory + "portal.css"))
+                {
+                    styleSheetContent = text.ReadToEnd();
+                }
+            }
+
+            return styleSheetContent;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RestoreStyleSheet">
+          <declaration><![CDATA[public HttpResponseMessage RestoreStyleSheet(RestoreCssRequest request)]]></declaration>
+          <documentation>POST: api/CssEditor/RestoreStyleSheet
+ <summary>
+ Restores portal.css of specific portal
+ </summary>
+ <param name="request">Id of portal</param>
+ <returns>Content of portal.css</returns></documentation>
+          <codeblock>
+            <location sl="156" sc="9" el="191" ec="10">Services\CssEditorController.cs</location>
+            <body hash="d9555ae4fc53477a2a6f891e5e804f3c"><![CDATA[{
+            if (!PortalSettings.Current.UserInfo.IsSuperUser &&
+                PortalSettings.Current.UserInfo.PortalID != request.PortalId)
+            {
+                throw new SecurityException("No Permission");
+            }
+            else
+            {
+                try
+                {
+                    PortalInfo portal = PortalController.Instance.GetPortal(request.PortalId);
+                    if (portal != null)
+                    {
+                        if (File.Exists(portal.HomeDirectoryMapPath + "portal.css"))
+                        {
+                            //delete existing style sheet
+                            File.Delete(portal.HomeDirectoryMapPath + "portal.css");
+                        }
+
+                        //copy file from Host
+                        if (File.Exists(Globals.HostMapPath + "portal.css"))
+                        {
+                            File.Copy(Globals.HostMapPath + "portal.css", portal.HomeDirectoryMapPath + "portal.css");
+                        }
+                    }
+                    var content = LoadStyleSheet(request.PortalId);
+
+                    return Request.CreateResponse(HttpStatusCode.OK, new {Success = true, StyleSheetContent = content});
+                }
+                catch (Exception exc)
+                {
+                    Logger.Error(exc);
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateStyleSheet">
+          <declaration><![CDATA[public HttpResponseMessage UpdateStyleSheet(UpdateCssRequest request)]]></declaration>
+          <documentation>POST: api/CssEditor/UpdateStyleSheet
+ <summary>
+ Updates portal.css of specific portal
+ </summary>
+ <param name="request">Content of portal css</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="89" sc="9" el="145" ec="10">Services\CssEditorController.cs</location>
+            <body hash="25cf3291016d7a3108f9c023a9d29041"><![CDATA[{
+            if (!PortalSettings.Current.UserInfo.IsSuperUser && PortalSettings.Current.UserInfo.PortalID != request.PortalId)
+            {
+                throw new SecurityException("No Permission");
+            }
+            else
+            {
+                try
+                {
+                    string strUploadDirectory = "";
+
+                    PortalInfo objPortal = PortalController.Instance.GetPortal(request.PortalId);
+                    if (objPortal != null)
+                    {
+                        strUploadDirectory = objPortal.HomeDirectoryMapPath;
+                    }
+
+                    //reset attributes
+                    if (File.Exists(strUploadDirectory + "portal.css"))
+                    {
+                        File.SetAttributes(strUploadDirectory + "portal.css", FileAttributes.Normal);
+                    }
+
+                    //write CSS file
+                    using (var writer = File.CreateText(strUploadDirectory + "portal.css"))
+                    {
+                        writer.WriteLine(HttpUtility.UrlDecode(request.StyleSheetContent));
+                    }
+
+                    //Clear client resource cache
+                    var overrideSetting =
+                        PortalController.GetPortalSetting(ClientResourceSettings.OverrideDefaultSettingsKey,
+                            request.PortalId, "False");
+                    bool overridePortal;
+                    if (bool.TryParse(overrideSetting, out overridePortal))
+                    {
+                        if (overridePortal)
+                        {
+                            // increment this portal version only
+                            PortalController.IncrementCrmVersion(request.PortalId);
+                        }
+                        else
+                        {
+                            // increment host version, do not increment other portal versions though.
+                            HostController.Instance.IncrementCrmVersion(false);
+                        }
+                    }
+
+                    return Request.CreateResponse(HttpStatusCode.OK, new {Success = true});
+                }
+                catch (Exception exc)
+                {
+                    Logger.Error(exc);
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(CssEditorController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.CssEditor.Services.Dto">
+    <class name="RestoreCssRequest">
+      <declaration><![CDATA[public class RestoreCssRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public RestoreCssRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="PortalId">
+          <declaration><![CDATA[public int PortalId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="31" el="35" ec="35">Services\Dto\RestoreCssRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="35" sc="36" el="35" ec="40">Services\Dto\RestoreCssRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateCssRequest">
+      <declaration><![CDATA[public class UpdateCssRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateCssRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="PortalId">
+          <declaration><![CDATA[public int PortalId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="31" el="35" ec="35">Services\Dto\UpdateCssRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="35" sc="36" el="35" ec="40">Services\Dto\UpdateCssRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="StyleSheetContent">
+          <declaration><![CDATA[public string StyleSheetContent]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="43" el="37" ec="47">Services\Dto\UpdateCssRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="48" el="37" ec="52">Services\Dto\UpdateCssRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

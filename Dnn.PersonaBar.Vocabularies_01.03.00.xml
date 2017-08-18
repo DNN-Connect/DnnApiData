@@ -1,0 +1,1200 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.Vocabularies.dll" version="01.03.00" generated="2017-08-10 13:09:27Z" generationTime="2.5887714">
+  <namespace name="Dnn.PersonaBar.Vocabularies.Components">
+    <class name="Constants">
+      <declaration><![CDATA[public class Constants]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Constants()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="TermValidationError">
+          <declaration><![CDATA[internal const string TermValidationError = "TermValidationError";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="TermValidationPropertyName">
+          <declaration><![CDATA[internal const string TermValidationPropertyName = "TermName";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="VocabularyExistsError">
+          <declaration><![CDATA[internal const string VocabularyExistsError = "VocabularyExistsError";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="VocabularyScopeTypeWebsite">
+          <declaration><![CDATA[internal const string VocabularyScopeTypeWebsite = "Portal";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="VocabularyTypeHierarchy">
+          <declaration><![CDATA[internal const string VocabularyTypeHierarchy = "Hierarchy";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="VocabularyTypeSimple">
+          <declaration><![CDATA[internal const string VocabularyTypeSimple = "Simple";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="VocabularyValidationError">
+          <declaration><![CDATA[internal const string VocabularyValidationError = "VocabularyValidationError";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="VocabularyValidationPropertyName">
+          <declaration><![CDATA[internal const string VocabularyValidationPropertyName = "VocabularyName";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="VocabulariesController">
+      <declaration><![CDATA[public class VocabulariesController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabulariesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="9" el="50" ec="10">Components\VocabulariesController.cs</location>
+            <body hash="07728d5d17bab8671c68db92895ae85d"><![CDATA[public VocabulariesController()
+        {
+            _termController = new TermController();
+            _vocabularyController = new VocabularyController();
+            _validator = new Validator(new DataAnnotationsObjectValidator());
+            _validator.Validators.Add(new VocabularyNameValidator(_vocabularyController, _termController));
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddChildNodes">
+          <declaration><![CDATA[private void AddChildNodes(List<Term> termList, TermDto parentNode)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="146" sc="9" el="171" ec="10">Components\VocabulariesController.cs</location>
+            <body hash="80c6778231ca88424b42cdcb893b4f13"><![CDATA[{
+            if (parentNode.ChildTerms != null)
+            {
+                parentNode.ChildTerms.Clear();
+                var parentId = parentNode.TermId;
+                var terms = termList.Where(v => v.ParentTermId == parentId);
+
+                foreach (var term in terms)
+                {
+                    if (term.ParentTermId == parentId)
+                    {
+                        var node = new TermDto
+                        {
+                            TermId = term.TermId,
+                            Description = term.Description,
+                            Name = term.Name,
+                            ParentTermId = term.ParentTermId ?? Null.NullInteger,
+                            VocabularyId = term.VocabularyId,
+                            ChildTerms = new List<TermDto>()
+                        };
+                        AddChildNodes(termList, node);
+                        parentNode.ChildTerms.Add(node);
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddTerm">
+          <declaration><![CDATA[public int AddTerm(Term term)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="110" sc="9" el="120" ec="10">Components\VocabulariesController.cs</location>
+            <body hash="cfe48b8eef8fa507dc8797b8b76adfed"><![CDATA[{
+            var result = _validator.ValidateObject(term);
+            if (result.IsValid)
+            {
+                return _termController.AddTerm(term);
+            }
+            else
+            {
+                throw new TermValidationException();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddVocabulary">
+          <declaration><![CDATA[public int AddVocabulary(Vocabulary vocabulary)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="83" ec="10">Components\VocabulariesController.cs</location>
+            <body hash="4442abf123eee76670e0260a29f61335"><![CDATA[{
+            if (vocabulary.ScopeType.ScopeType == Constants.VocabularyScopeTypeWebsite)
+            {
+                vocabulary.ScopeId = PortalSettings.Current.PortalId;
+            }
+            var result = _validator.ValidateObject(vocabulary);
+            if (result.IsValid)
+            {
+                return _vocabularyController.AddVocabulary(vocabulary);
+            }
+            else
+            {
+                throw new VocabularyNameAlreadyExistsException();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteTerm">
+          <declaration><![CDATA[public void DeleteTerm(Term term)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="136" sc="9" el="138" ec="10">Components\VocabulariesController.cs</location>
+            <body hash="e814d1b1b69b40d1ec19792a44dde858"><![CDATA[{
+            _termController.DeleteTerm(term);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteVocabulary">
+          <declaration><![CDATA[public void DeleteVocabulary(Vocabulary vocabulary)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="99" sc="9" el="101" ec="10">Components\VocabulariesController.cs</location>
+            <body hash="bf82485e68d9841a1108acecd7105267"><![CDATA[{
+            _vocabularyController.DeleteVocabulary(vocabulary);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTerm">
+          <declaration><![CDATA[public Term GetTerm(int termId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="141" sc="9" el="143" ec="10">Components\VocabulariesController.cs</location>
+            <body hash="0e97a719b1e565f8415103772d50ea97"><![CDATA[{
+            return _termController.GetTerm(termId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTermsByVocabulary">
+          <declaration><![CDATA[public List<Term> GetTermsByVocabulary(int vocabularyId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="104" sc="9" el="107" ec="10">Components\VocabulariesController.cs</location>
+            <body hash="aa83e49e6746bd3466d827445386c2e4"><![CDATA[{
+            var vocabulary = _vocabularyController.GetVocabularies().SingleOrDefault(v => v.VocabularyId == vocabularyId);
+            return _termController.GetTermsByVocabulary(vocabularyId).ToList();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetVocabularies">
+          <declaration><![CDATA[public List<Vocabulary> GetVocabularies(int portalId, int pageIndex, int pageSize, int scopeTypeId, out int total)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="9" el="61" ec="10">Components\VocabulariesController.cs</location>
+            <body hash="0710513b5b423a740a09e9f94c3ea9b5"><![CDATA[{
+            var vocabularies = _vocabularyController.GetVocabularies().Where(v => v.ScopeType.ScopeType == "Application" || (v.ScopeType.ScopeType == "Portal" && v.ScopeId == portalId));
+            if (scopeTypeId != Null.NullInteger)
+            {
+                vocabularies = vocabularies.Where(v => v.ScopeTypeId == scopeTypeId);
+            }
+            total = vocabularies.Count();
+            return vocabularies.Skip(pageIndex * pageSize).Take(pageSize).ToList();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsSystemVocabulary">
+          <declaration><![CDATA[public bool IsSystemVocabulary(int vocabularyId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="9" el="66" ec="10">Components\VocabulariesController.cs</location>
+            <body hash="860a12a947b0f05aaf9d3f7e1a5794b1"><![CDATA[{
+            return _vocabularyController.GetVocabularies().Any(v => v.VocabularyId == vocabularyId && v.IsSystem);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateTerm">
+          <declaration><![CDATA[public void UpdateTerm(Term term)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="123" sc="9" el="133" ec="10">Components\VocabulariesController.cs</location>
+            <body hash="796f30a8eba6f36ec1809981263f72f5"><![CDATA[{
+            var result = _validator.ValidateObject(term);
+            if (result.IsValid)
+            {
+                _termController.UpdateTerm(term);
+            }
+            else
+            {
+                throw new TermValidationException();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateVocabulary">
+          <declaration><![CDATA[public void UpdateVocabulary(Vocabulary vocabulary)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="9" el="96" ec="10">Components\VocabulariesController.cs</location>
+            <body hash="0df291e2647a75279fe00e27054c1a06"><![CDATA[{
+            var result = _validator.ValidateObject(vocabulary);
+            if (result.IsValid)
+            {
+                _vocabularyController.UpdateVocabulary(vocabulary);
+            }
+            else
+            {
+                throw new VocabularyValidationException();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_termController">
+          <declaration><![CDATA[private TermController _termController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_validator">
+          <declaration><![CDATA[private Validator _validator;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_vocabularyController">
+          <declaration><![CDATA[private VocabularyController _vocabularyController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Vocabularies.Exceptions">
+    <class name="TermValidationException">
+      <declaration><![CDATA[public class TermValidationException : VocabulariesException]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public TermValidationException() : base("TermValidationError")]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="15" el="32" ec="10">Exceptions\TermValidationException.cs</location>
+            <body hash="6f16906a4981fa22f44d85903aea869e"><![CDATA[base(Constants.TermValidationError)
+        {
+            
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="VocabulariesException">
+      <declaration><![CDATA[public class VocabulariesException : ApplicationException]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabulariesException()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="9" el="31" ec="10">Exceptions\VocabulariesException.cs</location>
+            <body hash="3694f76b78ab0b78af62076b92507b4a"><![CDATA[public VocabulariesException()
+        {
+            
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabulariesException(string message) : base(message)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="56" el="36" ec="10">Exceptions\VocabulariesException.cs</location>
+            <body hash="77e917e463ea72f178c938fbcfc384d1"><![CDATA[base(message)
+        {
+            
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabulariesException(string message, Exception innerException) : base(message, innerException)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="82" el="41" ec="10">Exceptions\VocabulariesException.cs</location>
+            <body hash="5ff29591300f68e1ebad53c3a50e9bad"><![CDATA[base(message, innerException)
+        {
+
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="VocabularyNameAlreadyExistsException">
+      <declaration><![CDATA[public class VocabularyNameAlreadyExistsException : VocabulariesException]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabularyNameAlreadyExistsException() : base("VocabularyExistsError")]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="15" el="32" ec="10">Exceptions\VocabularyNameAlreadyExistsException.cs</location>
+            <body hash="5217a9ff9ab6f859e89d94e481e2fb99"><![CDATA[base(Constants.VocabularyExistsError)
+        {
+            
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="VocabularyValidationException">
+      <declaration><![CDATA[public class VocabularyValidationException : VocabulariesException]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabularyValidationException() : base("VocabularyValidationError")]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="15" el="32" ec="10">Exceptions\VocabularyValidationException.cs</location>
+            <body hash="385710199ed30d1782b395af26a558d5"><![CDATA[base(Constants.VocabularyValidationError)
+        {
+            
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Vocabularies.MenuControllers">
+    <class name="VocabulariesMenuController">
+      <declaration><![CDATA[public class VocabulariesMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabulariesMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="22" sc="9" el="26" ec="10">MenuControllers\VocabulariesMenuController.cs</location>
+            <body hash="5ed46893a78362d630a49113ef535d5c"><![CDATA[{
+            var settings = new Dictionary<string, object>();
+            settings.Add("isHost", UserController.Instance.GetCurrentUserInfo().IsSuperUser);
+            return settings;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="12" sc="9" el="13" ec="10">MenuControllers\VocabulariesMenuController.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="9" el="19" ec="10">MenuControllers\VocabulariesMenuController.cs</location>
+            <body hash="d4c78a0d5351d270343f678a4a02cf22"><![CDATA[{
+            var user = UserController.Instance.GetCurrentUserInfo();
+            return user.IsSuperUser || user.IsInRole(PortalSettings.Current?.AdministratorRoleName);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Vocabularies.Services">
+    <class name="VocabulariesController">
+      <declaration><![CDATA[public class VocabulariesController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private VocabulariesController _controller = new VocabulariesController();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="31" ec="105">Services\VocabulariesController.cs</location>
+            <body hash="ce86e4cbba25e01b1986a96918b1f1dc"><![CDATA[private Components.VocabulariesController _controller = new Components.VocabulariesController()]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static VocabulariesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="30" ec="111">Services\VocabulariesController.cs</location>
+            <body hash="591e58e55c364b5c8e6ce3861a6d9615"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(VocabulariesController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CreateTerm">
+          <declaration><![CDATA[public HttpResponseMessage CreateTerm(TermDto termDto)]]></declaration>
+          <documentation>POST: api/Vocabularies/CreateTerm
+ <summary>
+ Creates a new term
+ </summary>
+ <param name="termDto">Data of a new term</param>
+ <returns>Id of the new created term</returns></documentation>
+          <codeblock>
+            <location sl="242" sc="9" el="266" ec="10">Services\VocabulariesController.cs</location>
+            <body hash="d193f6edf9a984f8744186a7ff36995b"><![CDATA[{
+            try
+            {
+                if (_controller.IsSystemVocabulary(termDto.VocabularyId) && !UserInfo.IsSuperUser)
+                {
+                    return Request.CreateResponse(HttpStatusCode.Forbidden, new { Success = true, Message = AuthFailureMessage });
+                }
+                var term = new Term(termDto.Name, termDto.Description, termDto.VocabularyId);
+                if (termDto.ParentTermId != Null.NullInteger)
+                {
+                    term.ParentTermId = termDto.ParentTermId;
+                }
+                int termId = _controller.AddTerm(term);
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true, TermId = termId });
+            }
+            catch (TermValidationException)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, string.Format(Localization.GetString("TermExists.Error", LocalResourcesFile), termDto.Name));
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateVocabulary">
+          <declaration><![CDATA[public HttpResponseMessage CreateVocabulary(VocabularyDto vocabularyDto)]]></declaration>
+          <documentation>POST: api/Vocabularies/CreateVocabulary
+ <summary>
+ Creates a new vocabulary
+ </summary>
+ <param name="vocabularyDto">Data of a new vocabulary</param>
+ <returns>Id of the new added vocabulary</returns></documentation>
+          <codeblock>
+            <location sl="83" sc="9" el="104" ec="10">Services\VocabulariesController.cs</location>
+            <body hash="5d9cbcb381aed2aa310ac7a1027ee213"><![CDATA[{
+            try
+            {
+                var vocabulary = new Vocabulary(vocabularyDto.Name, vocabularyDto.Description);
+                vocabulary.Type = vocabularyDto.TypeId == 1
+                    ? VocabularyType.Simple
+                    : VocabularyType.Hierarchy;
+                vocabulary.ScopeTypeId = vocabularyDto.ScopeTypeId;
+
+                int vocabularyId = _controller.AddVocabulary(vocabulary);
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true, VocabularyId = vocabularyId });
+            }
+            catch (VocabularyNameAlreadyExistsException)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, string.Format(Localization.GetString("VocabularyExists.Error", LocalResourcesFile), vocabularyDto.Name));
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteTerm">
+          <declaration><![CDATA[public HttpResponseMessage DeleteTerm(int termId)]]></declaration>
+          <documentation>POST: api/Vocabularies/DeleteTerm
+ <summary>
+ Removes an existing term
+ </summary>
+ <param name="termId">Id of an existing term</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="313" sc="9" el="329" ec="10">Services\VocabulariesController.cs</location>
+            <body hash="8ca6c42eb3c4889d2fa903520b5a2720"><![CDATA[{
+            try
+            {
+                var term = _controller.GetTerm(termId);
+                if (_controller.IsSystemVocabulary(term.VocabularyId) && !UserInfo.IsSuperUser)
+                {
+                    return Request.CreateResponse(HttpStatusCode.Forbidden, new { Success = true, Message = AuthFailureMessage });
+                }
+                _controller.DeleteTerm(term);
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteVocabulary">
+          <declaration><![CDATA[public HttpResponseMessage DeleteVocabulary(int vocabularyId)]]></declaration>
+          <documentation>POST: api/Vocabularies/DeleteVocabulary
+ <summary>
+ Removes an existing vocabulary
+ </summary>
+ <param name="vocabularyId">Id of an existing vocabulary that will be deleted</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="151" sc="9" el="166" ec="10">Services\VocabulariesController.cs</location>
+            <body hash="7fdab1944d74c692a0e58f7b455485fe"><![CDATA[{
+            try
+            {
+                if (_controller.IsSystemVocabulary(vocabularyId))
+                {
+                    return Request.CreateResponse(HttpStatusCode.Forbidden, new { Success = true, Message = "CannotDeleteSystemVocabulary" });
+                }
+                _controller.DeleteVocabulary(new Vocabulary() { VocabularyId = vocabularyId });
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTerm">
+          <declaration><![CDATA[public HttpResponseMessage GetTerm(int termId)]]></declaration>
+          <documentation>GET: api/Vocabularies/GetTerm
+ <summary>
+ Gets a term
+ </summary>
+ <param name="termId">Id of an existing term</param>
+ <returns>Data of a term</returns></documentation>
+          <codeblock>
+            <location sl="211" sc="9" el="231" ec="10">Services\VocabulariesController.cs</location>
+            <body hash="9708a0f39c33c059927e0990e7aaf60d"><![CDATA[{
+            try
+            {
+                var term = _controller.GetTerm(termId);
+                var response = new
+                {
+                    term.TermId,
+                    term.ParentTermId,
+                    TermPath = term.GetTermPath(),
+                    term.VocabularyId,
+                    term.Name,
+                    term.Description
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTermsByVocabularyId">
+          <declaration><![CDATA[public HttpResponseMessage GetTermsByVocabularyId(int vocabularyId)]]></declaration>
+          <documentation>GET: api/Vocabularies/GetTermsByVocabularyId
+ <summary>
+ Gets a list of terms belonging to a specific vocabulary
+ </summary>
+ <param name="vocabularyId">Id of an existing vocabulary</param>
+ <returns>List of terms</returns></documentation>
+          <codeblock>
+            <location sl="176" sc="9" el="201" ec="10">Services\VocabulariesController.cs</location>
+            <body hash="a060d71db07ca4d7dab612d595db309b"><![CDATA[{
+            try
+            {
+                var terms = _controller.GetTermsByVocabulary(vocabularyId);
+
+                var response = new
+                {
+                    Success = true,
+                    Results = terms.Select(t => new 
+                    {
+                        t.TermId,
+                        t.Description,
+                        t.Name,
+                        ParentTermId = t.ParentTermId ?? Null.NullInteger,
+                        t.VocabularyId
+                    }),
+                    TotalResults = terms.Count
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetVocabularies">
+          <declaration><![CDATA[public HttpResponseMessage GetVocabularies(int pageIndex, int pageSize, int scopeTypeId = -1)]]></declaration>
+          <documentation>GET: api/Vocabularies/GetVocabularies
+ <summary>
+ Gets an overall list of vocabularies
+ </summary>
+ <param></param>
+ <returns>List of vocabularies</returns></documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="72" ec="10">Services\VocabulariesController.cs</location>
+            <body hash="75150884432252a1810e8dce511e6dee"><![CDATA[{
+            try
+            {
+                int total = 0;
+                var vocabularies = _controller.GetVocabularies(PortalId, pageIndex, pageSize, scopeTypeId, out total).Select(v => new
+                {
+                    v.VocabularyId,
+                    v.Name,
+                    v.Description,
+                    Type = v.Type.ToString(),
+                    TypeId = (int)v.Type,
+                    v.ScopeType.ScopeType,
+                    v.ScopeTypeId,
+                    v.IsSystem
+                });
+
+                var response = new
+                {
+                    Success = true,
+                    Results = vocabularies,
+                    TotalResults = total
+                };
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateTerm">
+          <declaration><![CDATA[public HttpResponseMessage UpdateTerm(TermDto termDto)]]></declaration>
+          <documentation>POST: api/Vocabularies/UpdateTerm
+ <summary>
+ Updates an existing term
+ </summary>
+ <param name="termDto">Data of an existing term</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="277" sc="9" el="302" ec="10">Services\VocabulariesController.cs</location>
+            <body hash="06e4ce0aaac6811dd2ab84a8e98a3783"><![CDATA[{
+            try
+            {
+                if (_controller.IsSystemVocabulary(termDto.VocabularyId) && !UserInfo.IsSuperUser)
+                {
+                    return Request.CreateResponse(HttpStatusCode.Forbidden, new { Success = true, Message = AuthFailureMessage });
+                }
+                var term = new Term(termDto.Name, termDto.Description, termDto.VocabularyId);
+                term.TermId = termDto.TermId;
+                if (termDto.ParentTermId != Null.NullInteger)
+                {
+                    term.ParentTermId = termDto.ParentTermId;
+                }
+                _controller.UpdateTerm(term);
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (TermValidationException)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, string.Format(Localization.GetString("TermExists.Error", LocalResourcesFile), termDto.Name));
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateVocabulary">
+          <declaration><![CDATA[public HttpResponseMessage UpdateVocabulary(VocabularyDto vocabularyDto)]]></declaration>
+          <documentation>POST: api/Vocabularies/UpdateVocabulary
+ <summary>
+ Updates an existing vocabulary
+ </summary>
+ <param name="vocabularyDto">Data of an existing vocabulary</param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="115" sc="9" el="140" ec="10">Services\VocabulariesController.cs</location>
+            <body hash="f17d66854f1b85a6a8d07fdd47a29dd3"><![CDATA[{
+            try
+            {
+                if (_controller.IsSystemVocabulary(vocabularyDto.VocabularyId) && !UserInfo.IsSuperUser)
+                {
+                    return Request.CreateResponse(HttpStatusCode.Forbidden, new { Success = true, Message = AuthFailureMessage });
+                }
+
+                var vocabulary = new Vocabulary(vocabularyDto.Name, vocabularyDto.Description);
+                vocabulary.Type = vocabularyDto.Type == Constants.VocabularyTypeSimple ? VocabularyType.Simple : VocabularyType.Hierarchy;
+                vocabulary.ScopeTypeId = vocabularyDto.ScopeTypeId;
+                vocabulary.VocabularyId = vocabularyDto.VocabularyId;
+
+                _controller.UpdateVocabulary(vocabulary);
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (VocabularyValidationException exc)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, exc);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc.Message);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_controller">
+          <declaration><![CDATA[private VocabulariesController _controller = new VocabulariesController();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="AuthFailureMessage">
+          <declaration><![CDATA[private const string AuthFailureMessage = "Authorization has been denied for this request.";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(VocabulariesController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="LocalResourcesFile">
+          <declaration><![CDATA[private static string LocalResourcesFile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="53" el="32" ec="172">Services\VocabulariesController.cs</location>
+            <body hash="d1d3e57081fde9d443e409f31b683163"><![CDATA[Path.Combine(Library.Constants.PersonaBarRelativePath, "Modules/Dnn.Vocabularies/App_LocalResources/Vocabularies.resx"]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Vocabularies.Services.Dto">
+    <class name="TermDto">
+      <declaration><![CDATA[public class TermDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public TermDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ChildTerms">
+          <declaration><![CDATA[public IList<TermDto> ChildTerms]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="44" el="46" ec="48">Services\Dto\TermDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="46" sc="49" el="46" ec="53">Services\Dto\TermDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Description">
+          <declaration><![CDATA[public string Description]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="37" el="38" ec="41">Services\Dto\TermDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="38" sc="42" el="38" ec="46">Services\Dto\TermDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="30" el="36" ec="34">Services\Dto\TermDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="36" sc="35" el="36" ec="39">Services\Dto\TermDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ParentTermId">
+          <declaration><![CDATA[public int ParentTermId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="35" el="42" ec="39">Services\Dto\TermDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="42" sc="40" el="42" ec="44">Services\Dto\TermDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TermId">
+          <declaration><![CDATA[public int TermId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="29" el="40" ec="33">Services\Dto\TermDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="40" sc="34" el="40" ec="38">Services\Dto\TermDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="VocabularyId">
+          <declaration><![CDATA[public int VocabularyId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="35" el="44" ec="39">Services\Dto\TermDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="44" sc="40" el="44" ec="44">Services\Dto\TermDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="VocabularyDto">
+      <declaration><![CDATA[public class VocabularyDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabularyDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Description">
+          <declaration><![CDATA[public string Description]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="37" el="40" ec="41">Services\Dto\VocabularyDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="40" sc="42" el="40" ec="46">Services\Dto\VocabularyDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="30" el="37" ec="34">Services\Dto\VocabularyDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="35" el="37" ec="39">Services\Dto\VocabularyDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ScopeType">
+          <declaration><![CDATA[public string ScopeType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="35" el="43" ec="39">Services\Dto\VocabularyDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="40" el="43" ec="44">Services\Dto\VocabularyDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ScopeTypeId">
+          <declaration><![CDATA[public int ScopeTypeId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="34" el="46" ec="38">Services\Dto\VocabularyDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="46" sc="39" el="46" ec="43">Services\Dto\VocabularyDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Type">
+          <declaration><![CDATA[public string Type]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="30" el="49" ec="34">Services\Dto\VocabularyDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="49" sc="35" el="49" ec="39">Services\Dto\VocabularyDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TypeId">
+          <declaration><![CDATA[public int TypeId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="29" el="52" ec="33">Services\Dto\VocabularyDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="52" sc="34" el="52" ec="38">Services\Dto\VocabularyDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="VocabularyId">
+          <declaration><![CDATA[public int VocabularyId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="35" el="55" ec="39">Services\Dto\VocabularyDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="55" sc="40" el="55" ec="44">Services\Dto\VocabularyDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Vocabularies.Validators">
+    <class name="VocabularyNameValidator">
+      <declaration><![CDATA[public class VocabularyNameValidator : ObjectValidator]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabularyNameValidator(IVocabularyController vocabularyController, ITermController termController)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="43" ec="10">Validators\VocabularyNameValidator.cs</location>
+            <body hash="7dd1b00b2701eb45a50af281b8e803bf"><![CDATA[public VocabularyNameValidator(IVocabularyController vocabularyController, ITermController termController)
+        {
+            _vocabularyController = vocabularyController;
+            _termController = termController;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ValidateObject">
+          <declaration><![CDATA[public override ValidationResult ValidateObject(object target)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="9" el="102" ec="10">Validators\VocabularyNameValidator.cs</location>
+            <body hash="af89e6840d29326c288a4ebafa209403"><![CDATA[{
+            if (target is Vocabulary)
+            {
+                var vocabulary = target as Vocabulary;
+                var existVocabulary =
+                    _vocabularyController.GetVocabularies().FirstOrDefault(v => v.Name == vocabulary.Name && v.ScopeId == vocabulary.ScopeId);
+
+                if (existVocabulary != null && (vocabulary.VocabularyId == Null.NullInteger || existVocabulary.VocabularyId != vocabulary.VocabularyId))
+                {
+                    return new ValidationResult(new[] { new ValidationError { ErrorMessage = Constants.VocabularyExistsError, PropertyName = Constants.VocabularyValidationPropertyName, Validator = this } });
+                }
+            }
+            else if (target is Term)
+            {
+                var term = target as Term;
+                var vocabulary = _vocabularyController.GetVocabularies().FirstOrDefault(v => v.VocabularyId == term.VocabularyId);
+                var terms = _termController.GetTermsByVocabulary(term.VocabularyId);
+
+                if (vocabulary != null)
+                {
+                    if (vocabulary.IsHeirarchical)
+                    {
+                        if (term.ParentTermId > 0)
+                        {
+                            var existTerm = terms.FirstOrDefault(v => v.Name == term.Name && v.TermId != term.TermId && v.ParentTermId == term.ParentTermId);
+                            if (existTerm != null)
+                            {
+                                return
+                                    new ValidationResult(new[]
+                                    {
+                                        new ValidationError
+                                        {
+                                            ErrorMessage = Constants.TermValidationError,
+                                            PropertyName = Constants.TermValidationPropertyName,
+                                            Validator = this
+                                        }
+                                    });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var existTerm = terms.FirstOrDefault(v => v.Name == term.Name && v.TermId != term.TermId);
+                        if (existTerm != null)
+                        {
+                            return new ValidationResult(new[] { new ValidationError { ErrorMessage = Constants.TermValidationError, PropertyName = Constants.TermValidationPropertyName, Validator = this } });
+                        }
+                    }
+                }
+                else
+                {
+                    return new ValidationResult(new[] { new ValidationError { ErrorMessage = Constants.VocabularyValidationError, PropertyName = "", Validator = this } });
+                }
+            }
+
+            return ValidationResult.Successful;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_termController">
+          <declaration><![CDATA[private ITermController _termController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_vocabularyController">
+          <declaration><![CDATA[private IVocabularyController _vocabularyController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

@@ -1,0 +1,808 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Modules.HtmlEditorManager.dll" version="08.00.03" generated="2017-06-19 23:35:11Z" generationTime="2.5201041">
+  <namespace name="DotNetNuke.Modules.HtmlEditorManager.Components">
+    <class name="UpgradeController">
+      <declaration><![CDATA[public class UpgradeController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+ Class that contains upgrade procedures
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpgradeController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetModuleDefinitionID">
+          <declaration><![CDATA[private int GetModuleDefinitionID(string moduleName, string moduleDefinitionName)]]></declaration>
+          <documentation>
+            <summary>Gets the module definition identifier.</summary>
+ <param name="moduleName">Name of the module.</param>
+ <param name="moduleDefinitionName">Name of the module definition.</param>
+ <returns>The Module Id for the HTML Editor Management module</returns></documentation>
+          <codeblock>
+            <location sl="96" sc="9" el="114" ec="10">Components\UpgradeController.cs</location>
+            <body hash="af317d08fa21c86245757e055971ac78"><![CDATA[{
+            // get desktop module
+            DesktopModuleInfo desktopModule = DesktopModuleController.GetDesktopModuleByModuleName(moduleName, Null.NullInteger);
+            if (desktopModule == null)
+            {
+                return -1;
+            }
+
+            // get module definition
+            ModuleDefinitionInfo moduleDefinition = ModuleDefinitionController.GetModuleDefinitionByDefinitionName(
+                moduleDefinitionName,
+                desktopModule.DesktopModuleID);
+            if (moduleDefinition == null)
+            {
+                return -1;
+            }
+
+            return moduleDefinition.ModuleDefID;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>Called when a module is upgraded.</summary>
+ <param name="version">The version.</param>
+ <returns>Success if all goes well, otherwise, Failed</returns></documentation>
+          <codeblock>
+            <location sl="46" sc="9" el="89" ec="10">Components\UpgradeController.cs</location>
+            <body hash="b7cd81f287015f2f8f184d25021756f6"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "07.04.00":
+                        const string ResourceFile = ModuleFolder + "/App_LocalResources/ProviderConfiguration.ascx.resx";
+                        string pageName = Localization.GetString("HTMLEditorPageName", ResourceFile);
+                        string pageDescription = Localization.GetString("HTMLEditorPageDescription", ResourceFile);
+
+                        // Create HTML Editor Config Page (or get existing one)
+                        TabInfo editorPage = Upgrade.AddHostPage(pageName, pageDescription, ModuleFolder + "/images/HtmlEditorManager_Standard_16x16.png", ModuleFolder + "/images/HtmlEditorManager_Standard_32x32.png", true);
+
+                        // Find the RadEditor control and remove it
+                        Upgrade.RemoveModule("RadEditor Manager", editorPage.TabName, editorPage.ParentId, false);
+
+                        // Add Module To Page
+                        int moduleDefId = this.GetModuleDefinitionID("DotNetNuke.HtmlEditorManager", "Html Editor Management");
+                        Upgrade.AddModuleToPage(editorPage, moduleDefId, pageName, ModuleFolder + "/images/HtmlEditorManager_Standard_32x32.png", true);
+
+                        foreach (var item in DesktopModuleController.GetDesktopModules(Null.NullInteger))
+                        {
+                            DesktopModuleInfo moduleInfo = item.Value;
+
+                            if (moduleInfo.ModuleName == "DotNetNuke.HtmlEditorManager")
+                            {
+                                moduleInfo.Category = "Host";
+                                DesktopModuleController.SaveDesktopModule(moduleInfo, false, false);
+                            }
+                        }
+
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                var xlc = new ExceptionLogController();
+                xlc.AddLog(ex);
+
+                return "Failed";
+            }
+
+            return "Success";
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="ModuleFolder">
+          <declaration><![CDATA[private const string ModuleFolder = "~/DesktopModules/Admin/HtmlEditorManager";]]></declaration>
+          <documentation>
+            <summary>The module folder location</summary>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.HtmlEditorManager.Presenters">
+    <class name="ProviderConfigurationPresenter">
+      <declaration><![CDATA[public class ProviderConfigurationPresenter : ModulePresenter<IProviderConfigurationView, ProviderConfigurationViewModel>]]></declaration>
+      <documentation>
+        <summary>
+ Presenter for Provider Configuration
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ProviderConfigurationPresenter(IProviderConfigurationView view) : base(view)]]></declaration>
+          <documentation>
+            <summary>Initializes a new instance of the <see cref="T:DotNetNuke.Modules.HtmlEditorManager.Presenters.ProviderConfigurationPresenter" /> class.</summary>
+ <param name="view">the interface provider view.</param></documentation>
+          <codeblock>
+            <location sl="55" sc="15" el="60" ec="10">Presenters\ProviderConfigurationPresenter.cs</location>
+            <body hash="34454e4e2bd702cffcf549b88a0ae6c6"><![CDATA[base(view)
+        {
+            this.View.Initialize += this.View_Initialize;
+            this.View.SaveEditorChoice += this.View_SaveEditorChoice;
+            this.View.EditorChanged += this.View_EditorChanged;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetAvailableEditors">
+          <declaration><![CDATA[private List<string> GetAvailableEditors()]]></declaration>
+          <documentation>
+            <summary>Gets the provider list.</summary>
+ <returns>A list of the installed providers</returns></documentation>
+          <codeblock>
+            <location sl="185" sc="9" el="208" ec="10">Presenters\ProviderConfigurationPresenter.cs</location>
+            <body hash="18247ba2cb34a8f4c9d9f2e669eb1760"><![CDATA[{
+            var editors = new List<string>();
+            XmlDocument xmlConfig = this.DNNConfiguration;
+            if (xmlConfig != null && xmlConfig.DocumentElement != null)
+            {
+                XmlNodeList editorNodes = xmlConfig.DocumentElement.SelectNodes(HtmlEditorNode + "/providers/add");
+                if (editorNodes != null)
+                {
+                    int i = 0;
+                    while (i < editorNodes.Count)
+                    {
+                        XmlNode node = editorNodes[i];
+                        if (node.Attributes["name"] != null)
+                        {
+                            editors.Add(node.Attributes["name"].Value);
+                        }
+
+                        i = i + 1;
+                    }
+                }
+            }
+
+            return editors;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetHtmlEditorProviderNode">
+          <declaration><![CDATA[private XmlNode GetHtmlEditorProviderNode(XmlDocument dnnConfiguration)]]></declaration>
+          <documentation>
+            <summary>Gets the HTML provider node.</summary>
+ <param name="dnnConfiguration">The DNN configuration.</param>
+ <returns>The XmlNode for the htmlEditor provider.</returns></documentation>
+          <codeblock>
+            <location sl="173" sc="9" el="180" ec="10">Presenters\ProviderConfigurationPresenter.cs</location>
+            <body hash="d93e8739c80356a3960073d2b83d20cb"><![CDATA[{
+            if (dnnConfiguration != null && dnnConfiguration.DocumentElement != null)
+            {
+                return dnnConfiguration.DocumentElement.SelectSingleNode(HtmlEditorNode);
+            }
+
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSelectedEditor">
+          <declaration><![CDATA[private string GetSelectedEditor()]]></declaration>
+          <documentation>
+            <summary>Gets the selected editor.</summary>
+ <returns>The currently configured editor</returns></documentation>
+          <codeblock>
+            <location sl="213" sc="9" el="223" ec="10">Presenters\ProviderConfigurationPresenter.cs</location>
+            <body hash="80ee7339c187e6cdf7b2c72bd56498b8"><![CDATA[{
+            XmlDocument xmlConfig = this.DNNConfiguration;
+
+            if (xmlConfig != null && xmlConfig.DocumentElement != null)
+            {
+                XmlNode editorProviderNode = xmlConfig.DocumentElement.SelectSingleNode(HtmlEditorNode);
+                return editorProviderNode.Attributes["defaultProvider"].Value;
+            }
+
+            return string.Empty;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadCurrentEditor">
+          <declaration><![CDATA[private Control LoadCurrentEditor(string editorName)]]></declaration>
+          <documentation>
+            <summary>Loads the current editor.</summary>
+ <param name="editorName">Name of the editor.</param>
+ <returns>The editor based on the current editor settings in the web configuration</returns></documentation>
+          <codeblock>
+            <location sl="99" sc="9" el="124" ec="10">Presenters\ProviderConfigurationPresenter.cs</location>
+            <body hash="ba8ede05b727b3595de1cd780789f1cc"><![CDATA[{
+            XmlDocument dnnConfiguration = this.DNNConfiguration;
+            XmlNode htmlProviderNode = this.GetHtmlEditorProviderNode(dnnConfiguration);
+            XmlNode currentProvider = htmlProviderNode.SelectSingleNode("providers/add[@name='" + editorName + "']");
+
+            var settingsAttribute = currentProvider.Attributes["settingsControlPath"];
+            if (settingsAttribute != null)
+            {
+                try
+                {
+                    var controlPath = settingsAttribute.Value;
+                    var control = (PortalModuleBase)((TemplateControl)this.View).LoadControl(controlPath);
+                    control.ModuleConfiguration = this.ModuleContext.Configuration;
+                    control.ID = Path.GetFileNameWithoutExtension(controlPath);
+                    this.View.Model.CanSave = true;
+                    return control;
+                }
+                catch (Exception)
+                {
+                    this.View.Model.CanSave = false;
+                }
+            }
+
+            // Display a nice message to the user that this provider is not supported.
+            return ((TemplateControl)this.View).LoadControl("~/DesktopModules/Admin/HtmlEditorManager/Controls/InvalidConfiguration.ascx");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadCurrentEditor">
+          <declaration><![CDATA[private Control LoadCurrentEditor()]]></declaration>
+          <documentation>
+            <summary>Loads the current editor.</summary>
+ <returns>The editor based on the current editor settings in the web configuration</returns></documentation>
+          <codeblock>
+            <location sl="129" sc="9" el="131" ec="10">Presenters\ProviderConfigurationPresenter.cs</location>
+            <body hash="75c60bd9c2c077c4483c60c064184087"><![CDATA[{
+            return this.LoadCurrentEditor(this.GetSelectedEditor());
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveEditorInConfiguration">
+          <declaration><![CDATA[private void SaveEditorInConfiguration(string name)]]></declaration>
+          <documentation>
+            <summary>Saves the editor in configuration.</summary>
+ <param name="name">The name.</param></documentation>
+          <codeblock>
+            <location sl="158" sc="9" el="167" ec="10">Presenters\ProviderConfigurationPresenter.cs</location>
+            <body hash="bf2bd0a4b93b754857d72b9ee272580f"><![CDATA[{
+            XmlDocument dnnConfiguration = this.DNNConfiguration;
+            XmlNode providerNode = this.GetHtmlEditorProviderNode(dnnConfiguration);
+
+            if (providerNode != null)
+            {
+                providerNode.Attributes["defaultProvider"].Value = name;
+                Config.Save(dnnConfiguration);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="View_EditorChanged">
+          <declaration><![CDATA[private void View_EditorChanged(object sender, EditorEventArgs e)]]></declaration>
+          <documentation>
+            <summary>Handles the Editor was changed event of the View control.</summary>
+ <param name="sender">The source of the event.</param>
+ <param name="e">The <see cref="T:DotNetNuke.Modules.HtmlEditorManager.Views.EditorEventArgs" /> instance containing the event data.</param></documentation>
+          <codeblock>
+            <location sl="137" sc="9" el="141" ec="10">Presenters\ProviderConfigurationPresenter.cs</location>
+            <body hash="f8f5f66d264fdb13cd13a268fdd092b0"><![CDATA[{
+            this.View.Editor.Controls.Clear();
+            this.View.Model.SelectedEditor = e.Editor;
+            this.View.Model.CanSave = true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="View_Initialize">
+          <declaration><![CDATA[private void View_Initialize(object sender, EventArgs e)]]></declaration>
+          <documentation>
+            <summary>Handles the Initialize event of the View control.</summary>
+ <param name="sender">The source of the event.</param>
+ <param name="e">The <see cref="T:System.EventArgs" /> instance containing the event data.</param></documentation>
+          <codeblock>
+            <location sl="85" sc="9" el="93" ec="10">Presenters\ProviderConfigurationPresenter.cs</location>
+            <body hash="2ea1c12065ca707b6c0ceaaeb0656966"><![CDATA[{
+            this.View.Model.Editors = this.GetAvailableEditors();
+            this.View.Model.SelectedEditor = this.GetSelectedEditor();
+            this.View.Editor.Controls.Add(this.LoadCurrentEditor());
+
+            // hack: force DNN to load the Telerik Combobox skin. Needed for the RadEditor provider
+            var ctl = new DnnComboBox();
+            Utilities.ApplySkin(ctl);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="View_SaveEditorChoice">
+          <declaration><![CDATA[private void View_SaveEditorChoice(object sender, EditorEventArgs e)]]></declaration>
+          <documentation>
+            <summary>Handles the SaveEditorChoice event of the View control.</summary>
+ <param name="sender">The source of the event.</param>
+ <param name="e">The <see cref="T:DotNetNuke.Modules.HtmlEditorManager.Views.EditorEventArgs" /> instance containing the event data.</param></documentation>
+          <codeblock>
+            <location sl="147" sc="9" el="153" ec="10">Presenters\ProviderConfigurationPresenter.cs</location>
+            <body hash="2baedcc15d2a04dec1314cae16450a1c"><![CDATA[{
+            this.SaveEditorInConfiguration(e.Editor);
+            this.View.Refresh();
+            this.View.Editor.Controls.Clear();
+            this.View.Editor.Controls.Add(this.LoadCurrentEditor());
+            this.View.Model.SelectedEditor = e.Editor;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="dotnetNukeDocument">
+          <declaration><![CDATA[private XmlDocument dotnetNukeDocument;]]></declaration>
+          <documentation>
+            <summary>The dot net nuke document</summary>
+          </documentation>
+        </field>
+        <field name="HtmlEditorNode">
+          <declaration><![CDATA[private const string HtmlEditorNode = "/configuration/dotnetnuke/htmlEditor";]]></declaration>
+          <documentation>
+            <summary>The HTML editor node</summary>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="DNNConfiguration">
+          <declaration><![CDATA[protected XmlDocument DNNConfiguration]]></declaration>
+          <documentation>
+            <summary>Gets the DNN configuration.</summary>
+ <value>The DNN configuration.</value></documentation>
+          <codeblock>
+            <location sl="67" sc="13" el="78" ec="14">Presenters\ProviderConfigurationPresenter.cs</location>
+            <body hash="fe9fac8959819861c91a32312f8df81e"><![CDATA[{
+                if (this.dotnetNukeDocument == null)
+                {
+                    UserInfo currentUser = UserController.Instance.GetCurrentUserInfo();
+                    if (currentUser != null && currentUser.IsSuperUser)
+                    {
+                        this.dotnetNukeDocument = Config.Load();
+                    }
+                }
+
+                return this.dotnetNukeDocument;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.HtmlEditorManager.ViewModels">
+    <class name="ProviderConfigurationViewModel">
+      <declaration><![CDATA[public class ProviderConfigurationViewModel]]></declaration>
+      <documentation>
+        <summary>
+ Model for provider configuration
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ProviderConfigurationViewModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CanSave">
+          <declaration><![CDATA[public bool CanSave]]></declaration>
+          <documentation>
+            <summary>Gets or sets a value indicating whether the provider can be saved.</summary>
+ <value><c>true</c> if this instance can save; otherwise, <c>false</c>.</value></documentation>
+          <codeblock>
+            <location sl="40" sc="31" el="40" ec="35">ViewModels\ProviderConfigurationViewModel.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="40" sc="36" el="40" ec="40">ViewModels\ProviderConfigurationViewModel.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Editors">
+          <declaration><![CDATA[public List<string> Editors]]></declaration>
+          <documentation>
+            <summary>Gets or sets the editors.</summary>
+ <value>The editors.</value></documentation>
+          <codeblock>
+            <location sl="32" sc="39" el="32" ec="43">ViewModels\ProviderConfigurationViewModel.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="32" sc="44" el="32" ec="48">ViewModels\ProviderConfigurationViewModel.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SelectedEditor">
+          <declaration><![CDATA[public string SelectedEditor]]></declaration>
+          <documentation>
+            <summary>Gets or sets the selected editor.</summary>
+ <value>The selected editor.</value></documentation>
+          <codeblock>
+            <location sl="36" sc="40" el="36" ec="44">ViewModels\ProviderConfigurationViewModel.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="36" sc="45" el="36" ec="49">ViewModels\ProviderConfigurationViewModel.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.HtmlEditorManager.Views">
+    <class name="EditorEventArgs">
+      <declaration><![CDATA[public class EditorEventArgs : EventArgs]]></declaration>
+      <documentation>
+        <summary>
+ Contains information about the selected editor when saving
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditorEventArgs(string editor)]]></declaration>
+          <documentation>
+            <summary>Initializes a new instance of the <see cref="T:DotNetNuke.Modules.HtmlEditorManager.Views.EditorEventArgs" /> class.</summary>
+ <param name="editor">The editor.</param></documentation>
+          <codeblock>
+            <location sl="32" sc="9" el="35" ec="10">Views\EditorEventArgs.cs</location>
+            <body hash="0c085424decbbb8589bcf4b36aed0d6a"><![CDATA[public EditorEventArgs(string editor)
+        {
+            this.Editor = editor;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Editor">
+          <declaration><![CDATA[public string Editor]]></declaration>
+          <documentation>
+            <summary>Gets a value indicating whether this data comes from a valid form submission.</summary>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="32" el="38" ec="36">Views\EditorEventArgs.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="38" sc="37" el="38" ec="49">Views\EditorEventArgs.cs</location>
+            <body hash="5dbe2cc086ebbf5db6b03610487cca4c"><![CDATA[private set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="InvalidConfiguration">
+      <declaration><![CDATA[public class InvalidConfiguration : PortalModuleBase]]></declaration>
+      <documentation>
+        <summary>
+ Control to display information about provider not being supported.
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public InvalidConfiguration()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="IProviderConfigurationView">
+      <declaration><![CDATA[public interface IProviderConfigurationView : IModuleView<ProviderConfigurationViewModel>, IModuleViewBase, IView, IView<ProviderConfigurationViewModel>]]></declaration>
+      <documentation>
+        <summary>
+ Interface for the Provider Configuration View
+ </summary>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="add_EditorChanged">
+          <declaration><![CDATA[void add_EditorChanged(EventHandler<EditorEventArgs> value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_SaveEditorChoice">
+          <declaration><![CDATA[void add_SaveEditorChoice(EventHandler<EditorEventArgs> value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="Refresh">
+          <declaration><![CDATA[void Refresh();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_EditorChanged">
+          <declaration><![CDATA[void remove_EditorChanged(EventHandler<EditorEventArgs> value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_SaveEditorChoice">
+          <declaration><![CDATA[void remove_SaveEditorChoice(EventHandler<EditorEventArgs> value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Editor">
+          <declaration><![CDATA[PlaceHolder Editor]]></declaration>
+          <documentation>
+            <summary>Gets or sets the editor panel.</summary>
+ <value>The editor panel.</value></documentation>
+        </property>
+      </properties>
+      <events>
+        <event name="EditorChanged">
+          <declaration><![CDATA[event EventHandler<EditorEventArgs> EditorChanged;]]></declaration>
+          <documentation>
+            <summary>Occurs when the editor changed.</summary>
+          </documentation>
+        </event>
+        <event name="SaveEditorChoice">
+          <declaration><![CDATA[event EventHandler<EditorEventArgs> SaveEditorChoice;]]></declaration>
+          <documentation>
+            <summary>Occurs when [save editor choice].</summary>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="ProviderConfiguration">
+      <declaration><![CDATA[public class ProviderConfiguration : ModuleView<ProviderConfigurationViewModel>, IProviderConfigurationView, IModuleView<ProviderConfigurationViewModel>, IModuleViewBase, IView, IView<ProviderConfigurationViewModel>]]></declaration>
+      <documentation>
+        <summary>
+ View control for selecting an HTML provider
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ProviderConfiguration()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="add_EditorChanged">
+          <declaration><![CDATA[public void add_EditorChanged(EventHandler<EditorEventArgs> value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_SaveEditorChoice">
+          <declaration><![CDATA[public void add_SaveEditorChoice(EventHandler<EditorEventArgs> value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="80" sc="9" el="88" ec="10">Views\ProviderConfiguration.ascx.cs</location>
+            <body hash="cb09b6964b4ed4269a15aade72ec847b"><![CDATA[{
+            var currentUser = UserController.Instance.GetCurrentUserInfo();
+            if (currentUser == null || !currentUser.IsSuperUser)
+            {
+                LocalResourceFile = "/DesktopModules/Admin/HtmlEditorManager/App_LocalResources/ProviderConfiguration.ascx.resx";
+                Globals.Redirect(Globals.AccessDeniedURL(LocalizeString("CannotManageHTMLEditorProviders")), true);
+            }
+            base.OnInit(e);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ProvidersDropDownList_SelectedIndexChanged">
+          <declaration><![CDATA[protected void ProvidersDropDownList_SelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+            <summary>Handles the SelectedIndexChanged event of the ProvidersDropDownList control.</summary>
+ <param name="sender">The source of the event.</param>
+ <param name="e">The <see cref="T:System.EventArgs" /> instance containing the event data.</param></documentation>
+          <codeblock>
+            <location sl="70" sc="9" el="72" ec="10">Views\ProviderConfiguration.ascx.cs</location>
+            <body hash="2a1ed17197d65082a6a30b58e3dfd15d"><![CDATA[{
+            this.EditorChanged(this, new EditorEventArgs(this.ProvidersDropDownList.SelectedValue));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Refresh">
+          <declaration><![CDATA[public void Refresh()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="75" sc="9" el="77" ec="10">Views\ProviderConfiguration.ascx.cs</location>
+            <body hash="6e36de3e4af9989937824f09b0ac5231"><![CDATA[{
+            Response.Redirect(Request.RawUrl, true);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_EditorChanged">
+          <declaration><![CDATA[public void remove_EditorChanged(EventHandler<EditorEventArgs> value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_SaveEditorChoice">
+          <declaration><![CDATA[public void remove_SaveEditorChoice(EventHandler<EditorEventArgs> value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveButton_Click">
+          <declaration><![CDATA[protected void SaveButton_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+            <summary>Handles the Click event of the SaveButton control.</summary>
+ <param name="sender">The source of the event.</param>
+ <param name="e">The <see cref="T:System.EventArgs" /> instance containing the event data.</param></documentation>
+          <codeblock>
+            <location sl="62" sc="9" el="64" ec="10">Views\ProviderConfiguration.ascx.cs</location>
+            <body hash="b5ca1c68abd5edadadf16fb5fed7dbf8"><![CDATA[{
+            this.SaveEditorChoice(this, new EditorEventArgs(this.ProvidersDropDownList.SelectedValue));
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="EditorChanged">
+          <declaration><![CDATA[private EventHandler<EditorEventArgs> EditorChanged;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="EditorPanel">
+          <declaration><![CDATA[protected PlaceHolder EditorPanel;]]></declaration>
+          <documentation>
+            <summary>
+ EditorPanel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ProvidersDropDownList">
+          <declaration><![CDATA[protected DropDownList ProvidersDropDownList;]]></declaration>
+          <documentation>
+            <summary>
+ ProvidersDropDownList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="SaveButton">
+          <declaration><![CDATA[protected Button SaveButton;]]></declaration>
+          <documentation>
+            <summary>
+ SaveButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="SaveEditorChoice">
+          <declaration><![CDATA[private EventHandler<EditorEventArgs> SaveEditorChoice;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="Editor">
+          <declaration><![CDATA[public PlaceHolder Editor]]></declaration>
+          <documentation>
+            <summary>Gets or sets the editor panel.</summary>
+ <value>The editor panel.</value></documentation>
+          <codeblock>
+            <location sl="48" sc="13" el="50" ec="14">Views\ProviderConfiguration.ascx.cs</location>
+            <body hash="c7bbddaa0962226a6a9ef3fbdd27cefc"><![CDATA[{
+                return this.EditorPanel;
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="53" sc="13" el="55" ec="14">Views\ProviderConfiguration.ascx.cs</location>
+            <body hash="5e10bd8d762afd891124212c6ef3515d"><![CDATA[{
+                this.EditorPanel = value;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+        <event name="EditorChanged">
+          <declaration><![CDATA[public event EventHandler<EditorEventArgs> EditorChanged;]]></declaration>
+          <documentation>
+            <summary>Occurs when the editor is changed.</summary>
+          </documentation>
+        </event>
+        <event name="SaveEditorChoice">
+          <declaration><![CDATA[public event EventHandler<EditorEventArgs> SaveEditorChoice;]]></declaration>
+          <documentation>
+            <summary>Occurs when the save button is clicked.</summary>
+          </documentation>
+        </event>
+      </events>
+    </class>
+  </namespace>
+</root>

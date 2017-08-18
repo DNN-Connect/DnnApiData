@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.EditBar.Library.dll" version="01.01.00" generated="2017-08-10 12:33:43Z" generationTime="1.182998">
+  <namespace name="Dnn.EditBar.Library">
+    <class name="Constants">
+      <declaration><![CDATA[public static class Constants]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="EditBarRelativePath">
+          <declaration><![CDATA[public const string EditBarRelativePath = "~/DesktopModules/admin/Dnn.EditBar";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LeftMenu">
+          <declaration><![CDATA[public const string LeftMenu = "LeftMenu";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MenuItemsCacheKey">
+          <declaration><![CDATA[public const string MenuItemsCacheKey = "Dnn.EditBar.MenuItems";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="RightMenu">
+          <declaration><![CDATA[public const string RightMenu = "RightMenu";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.EditBar.Library.Items">
+    <class name="BaseMenuItem">
+      <declaration><![CDATA[public abstract class BaseMenuItem]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly int <Order>k__BackingField = 0;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="45" el="74" ec="104">Items\BaseMenuItem.cs</location>
+            <body hash="0a650d2a684f6039695c688675bb53d2"><![CDATA[0;
+
+        /// <summary>
+        /// the menu script path, which will handle the button click event.
+        /// </summary>
+        [DataMember(Name = "loader")]
+        public abstract string Loader { get; }
+
+        /// <summary>
+        /// the menu have custom layout.
+        /// </summary>
+        [DataMember(Name = "customLayout")]
+        public virtual bool CustomLayout { get; } = false;
+
+        /// <summary>
+        /// menu custom settings.
+        /// </summary>
+        [DataMember(Name = "settings")]
+        public virtual IDictionary<string, object> Settings { get; } = new Dictionary<string, object>()]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Visible">
+          <declaration><![CDATA[public virtual bool Visible()]]></declaration>
+          <documentation>
+            <summary>
+ whether the menu is visible in current context.
+ </summary>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="81" sc="9" el="83" ec="10">Items\BaseMenuItem.cs</location>
+            <body hash="f882ca7e6e289653f91b0768029d8a89"><![CDATA[{
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CssClass">
+          <declaration><![CDATA[public virtual string CssClass]]></declaration>
+          <documentation>
+            <summary>
+ the menu's css class.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="42" el="30" ec="46">Items\BaseMenuItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="CustomLayout">
+          <declaration><![CDATA[public virtual bool CustomLayout]]></declaration>
+          <documentation>
+            <summary>
+ the menu have custom layout.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="44" el="68" ec="48">Items\BaseMenuItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Group">
+          <declaration><![CDATA[public virtual string Group]]></declaration>
+          <documentation>
+            <summary>
+ the menu item's group.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="39" el="24" ec="43">Items\BaseMenuItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Loader">
+          <declaration><![CDATA[public abstract string Loader]]></declaration>
+          <documentation>
+            <summary>
+ the menu script path, which will handle the button click event.
+ </summary>
+          </documentation>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public abstract string Name]]></declaration>
+          <documentation>
+            <summary>
+ the menu item name
+ </summary>
+          </documentation>
+        </property>
+        <property name="Order">
+          <declaration><![CDATA[public virtual int Order]]></declaration>
+          <documentation>
+            <summary>
+ the menu order.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="36" el="56" ec="40">Items\BaseMenuItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Parent">
+          <declaration><![CDATA[public abstract string Parent]]></declaration>
+          <documentation>
+            <summary>
+ parent which the menu item will stay in.
+ currently we have LeftMenu and RightMenu defined in edit bar.
+ if the edit bar modified and add new position, this value can extend with more values.
+ </summary>
+          </documentation>
+        </property>
+        <property name="Settings">
+          <declaration><![CDATA[public virtual IDictionary<string, object> Settings]]></declaration>
+          <documentation>
+            <summary>
+ menu custom settings.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="63" el="74" ec="67">Items\BaseMenuItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Template">
+          <declaration><![CDATA[public virtual string Template]]></declaration>
+          <documentation>
+            <summary>
+ the content will render as the menu item.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="42" el="42" ec="46">Items\BaseMenuItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+        <property name="Text">
+          <declaration><![CDATA[public virtual string Text]]></declaration>
+          <documentation>
+            <summary>
+ the menu's text, when template set value, this will be ignored.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="38" el="36" ec="42">Items\BaseMenuItem.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

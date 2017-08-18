@@ -1,0 +1,1000 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.Modules.Sql.dll" version="09.00.02" generated="2017-08-10 12:44:07Z" generationTime="1.9652706">
+  <namespace name="Dnn.Modules.Sql">
+    <class name="Sql">
+      <declaration><![CDATA[public class Sql : PortalModuleBase]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+ The SQL PortalModuleBase is used run SQL Scripts on the Database
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Sql()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static Sql()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="9" el="64" ec="87">Sql.ascx.cs</location>
+            <body hash="d6b6b8cc0707c6782f342fd1349299a1"><![CDATA[private static readonly Regex SqlObjRegex = new Regex(ScriptDelimiterRegex,
+            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="btDelete_Click">
+          <declaration><![CDATA[private void btDelete_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="289" sc="9" el="306" ec="10">Sql.ascx.cs</location>
+            <body hash="ed5bf5cc5a3ded0d8c08add91f0ec9e1"><![CDATA[{
+            try
+            {
+                SqlQueryController ctl = new SqlQueryController();
+                SqlQuery query = ctl.GetQuery(int.Parse(ddlSavedQuery.SelectedValue));
+                if (query != null)
+                {
+                    ctl.DeleteQuery(query);
+                    LoadSavedQueries();
+                    DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, LocalizeString("Deleted"), ModuleMessage.ModuleMessageType.GreenSuccess);
+                }
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CheckSecurity">
+          <declaration><![CDATA[private void CheckSecurity()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="342" sc="9" el="347" ec="10">Sql.ascx.cs</location>
+            <body hash="edc1f8f66b7da3cb5769ecf5d7cd2626"><![CDATA[{
+            if (!UserInfo.IsSuperUser)
+            {
+                Response.Redirect(Globals.NavigateURL("Access Denied"), true);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ddlSavedQuery_SelectedIndexChanged">
+          <declaration><![CDATA[private void ddlSavedQuery_SelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="223" sc="9" el="248" ec="10">Sql.ascx.cs</location>
+            <body hash="44ab2b2fa159f9fc44c8132f642e05bb"><![CDATA[{
+            if (ddlSavedQuery.SelectedValue == "")
+            {
+                txtQuery.Text = "";
+                btDelete.Visible = false;
+                ddlConnection.SelectedValue = "SiteSqlServer";
+            }
+            else
+            {
+                SqlQueryController ctl = new SqlQueryController();
+                SqlQuery query = ctl.GetQuery(int.Parse(ddlSavedQuery.SelectedValue));
+                if (query != null)
+                {
+                    txtQuery.Text = query.Query;
+                    btDelete.Visible = true;
+                    if (ddlConnection.Items.FindByValue(query.ConnectionStringName) != null)
+                    {
+                        ddlConnection.SelectedValue = query.ConnectionStringName;
+                    }
+                    else
+                    {
+                        DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, string.Format(LocalizeString("CnnStringNotFound"), query.ConnectionStringName), ModuleMessage.ModuleMessageType.YellowWarning);
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetClipboardPath">
+          <declaration><![CDATA[protected string GetClipboardPath()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="388" sc="9" el="390" ec="10">Sql.ascx.cs</location>
+            <body hash="789d3a7a54e1553b257feeeb49e8151b"><![CDATA[{
+            return this.TemplateSourceDirectory + "/plugins/clipboard/zeroclipboard.swf";
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="gvResults_PreRender">
+          <declaration><![CDATA[private void gvResults_PreRender(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="217" sc="9" el="220" ec="10">Sql.ascx.cs</location>
+            <body hash="349cd19ae3c59b963dd0c96943247b7f"><![CDATA[{
+            GridView gvResults = (GridView)sender;
+            gvResults.HeaderRow.TableSection = TableRowSection.TableHeader;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="lnkSave_Click">
+          <declaration><![CDATA[private void lnkSave_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="251" sc="9" el="286" ec="10">Sql.ascx.cs</location>
+            <body hash="17633a7df2ed65d8b13b50ac5849d34b"><![CDATA[{
+            try
+            {
+                SqlQueryController ctl = new SqlQueryController();
+                SqlQuery query = ctl.GetQuery(txtName.Text);
+                if (query == null)
+                {
+                    query = new SqlQuery();
+                    query.CreatedByUserId = UserId;
+                    query.CreatedOnDate = DateTime.Now;
+                }
+                query.Name = txtName.Text;
+                query.Query = txtQuery.Text;
+                query.ConnectionStringName = ddlConnection.SelectedValue;
+                query.LastModifiedByUserId = UserId;
+                query.LastModifiedOnDate = DateTime.Now;
+
+                if (query.QueryId == 0)
+                {
+                    ctl.AddQuery(query);
+                }
+                else
+                {
+                    ctl.UpdateQuery(query);
+                }
+                LoadSavedQueries();
+                ddlSavedQuery.SelectedValue = query.QueryId.ToString();
+                btDelete.Visible = true;
+
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, LocalizeString("Saved"), ModuleMessage.ModuleMessageType.GreenSuccess);
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadConnectionStrings">
+          <declaration><![CDATA[private void LoadConnectionStrings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="350" sc="9" el="360" ec="10">Sql.ascx.cs</location>
+            <body hash="1af72be6953a9907216d4715697dc522"><![CDATA[{
+            ConnectionStringSettingsCollection connections = ConfigurationManager.ConnectionStrings;
+            foreach (ConnectionStringSettings connection in connections)
+            {
+                if (connection.Name.ToLower() != "localmysqlserver" && connection.Name.ToLower() != "localsqlserver")
+                {
+                    ddlConnection.Items.Add(new ListItem(connection.Name, connection.Name));
+                }
+            }
+            ddlConnection.SelectedIndex = 0;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadPlugins">
+          <declaration><![CDATA[private void LoadPlugins()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="379" sc="9" el="385" ec="10">Sql.ascx.cs</location>
+            <body hash="5e748a28e772667e12946fdd0767a5df"><![CDATA[{
+            Page.ClientScript.RegisterClientScriptInclude("datatables", this.TemplateSourceDirectory + "/plugins/datatables/js/jquery.dataTables.min.js");
+            Page.ClientScript.RegisterClientScriptInclude("fixedheader", this.TemplateSourceDirectory + "/plugins/datatables/js/FixedHeader.min.js");
+            Page.ClientScript.RegisterClientScriptInclude("fixedcolumn", this.TemplateSourceDirectory + "/plugins/datatables/js/FixedColumns.min.js");
+            Page.ClientScript.RegisterClientScriptInclude("tabletools", this.TemplateSourceDirectory + "/plugins/datatables/js/TableTools.min.js");
+            Page.ClientScript.RegisterClientScriptInclude("zclip", this.TemplateSourceDirectory + "/plugins/datatables/js/ZeroClipboard.js");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadSavedQueries">
+          <declaration><![CDATA[private void LoadSavedQueries()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="363" sc="9" el="371" ec="10">Sql.ascx.cs</location>
+            <body hash="63b99f5835a21ad1cd9eb8aaf9552034"><![CDATA[{
+            SqlQueryController ctl = new SqlQueryController();
+            ddlSavedQuery.DataSource = ctl.GetQueries();
+            ddlSavedQuery.DataBind();
+
+            ddlSavedQuery.Items.Insert(0, new ListItem(LocalizeString("NewQuery"), ""));
+            btDelete.Visible = false;
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnExecuteClick">
+          <declaration><![CDATA[protected void OnExecuteClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="104" sc="9" el="182" ec="10">Sql.ascx.cs</location>
+            <body hash="ee32aebf93605cd47dad89818f412b27"><![CDATA[{
+            try
+            {
+                if (!Page.IsValid)
+                {
+                    return;
+                }
+                pnlResults.Visible = false;
+                pnlError.Visible = false;
+
+                var connectionstring = Config.GetConnectionString(ddlConnection.SelectedValue);
+
+                if (RunAsScript())
+                {
+                    var strError = DataProvider.Instance().ExecuteScript(connectionstring, txtQuery.Text);
+                    if (strError == Null.NullString)
+                    {
+                        pnlResults.Visible = true;
+                        DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("QuerySuccess", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+                    }
+                    else
+                    {
+                        DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("QueryError", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+                        pnlError.Visible = true;
+                        txtError.Text = strError;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        string errorMessage;
+                        using (var dr = DataProvider.Instance().ExecuteSQLTemp(connectionstring, txtQuery.Text, out errorMessage))
+                        {
+                            if (dr != null)
+                            {
+                                var tables = new List<DataTable>();
+                                string tabs = "";
+                                int numTabs = 1;
+                                do
+                                {
+                                    var table = new DataTable { Locale = CultureInfo.CurrentCulture };
+                                    table.Load(dr);
+                                    tables.Add(table);
+                                    tabs += string.Format("<li><a href='#result_{0}'>{1} {0}</a></li>", numTabs.ToString(), LocalizeString("ResultTitle"));
+                                    numTabs++;
+                                }
+                                while (!dr.IsClosed); // table.Load automatically moves to the next result and closes the reader once there are no more
+
+                                plTabs.Controls.Add(new LiteralControl(tabs));
+                                rptResults.DataSource = tables;
+                                rptResults.DataBind();
+
+                                pnlResults.Visible = true;
+                                Skin.AddModuleMessage(this, Localization.GetString("QuerySuccess", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+                            }
+                            else
+                            {
+                                Skin.AddModuleMessage(this, Localization.GetString("QueryError", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+                                pnlError.Visible = true;
+                                txtError.Text = errorMessage;
+                            }
+                        }
+                    }
+                    catch (SqlException sqlException)
+                    {
+                        DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("QueryError", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+                        pnlError.Visible = true;
+                        txtError.Text = sqlException.Message;
+                        return;
+                    }
+                }
+                RecordAuditEventLog(txtQuery.Text);
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="101" ec="10">Sql.ascx.cs</location>
+            <body hash="83184fa2355fcafde8207c30e9cfe68e"><![CDATA[{
+            base.OnLoad(e);
+
+            CheckSecurity();
+            LoadPlugins();
+
+            cmdExecute.Click += OnExecuteClick;
+            cmdUpload.Click += OnUploadClick;
+            btDelete.ServerClick += btDelete_Click;
+            lnkSave.Click += lnkSave_Click;
+            rptResults.ItemDataBound += rptResults_ItemDataBound;
+            ddlSavedQuery.SelectedIndexChanged += ddlSavedQuery_SelectedIndexChanged;
+
+            txtQuery.Attributes.Add("placeholder", Localization.GetSafeJSString(LocalizeString("Placeholder")));
+
+            try
+            {
+                if (!Page.IsPostBack)
+                {
+                    LoadConnectionStrings();
+                    LoadSavedQueries();
+
+                    cmdExecute.ToolTip = Localization.GetString("cmdExecute.ToolTip", LocalResourceFile);
+                    //DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(btDelete, LocalizeString("DeleteItem"));
+                }
+                var js = string.Format("javascript:return confirm('{0}');", Localization.GetSafeJSString(LocalizeString("DeleteItem")));
+                btDelete.Attributes.Add("onClick", js);
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnUploadClick">
+          <declaration><![CDATA[protected void OnUploadClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="309" sc="9" el="318" ec="10">Sql.ascx.cs</location>
+            <body hash="bbda433f5cab8c7f1be752c78527e72e"><![CDATA[{
+            if (Page.IsPostBack)
+            {
+                if (!String.IsNullOrEmpty(uplSqlScript.PostedFile.FileName))
+                {
+                    var scriptFile = new StreamReader(uplSqlScript.PostedFile.InputStream);
+                    txtQuery.Text = scriptFile.ReadToEnd();
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RecordAuditEventLog">
+          <declaration><![CDATA[private void RecordAuditEventLog(string query)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="325" sc="9" el="339" ec="10">Sql.ascx.cs</location>
+            <body hash="4b83a10af77b83ebb1329ebcfa1377e0"><![CDATA[{
+            var props = new LogProperties { new LogDetailInfo("User", UserInfo.Username), new LogDetailInfo("SQL Query", query) };
+
+            //Add the event log with host portal id.
+            var log = new LogInfo
+            {
+                LogUserID = UserId,
+                LogTypeKey = EventLogController.EventLogType.HOST_SQL_EXECUTED.ToString(),
+                LogProperties = props,
+                BypassBuffering = true,
+                LogPortalID = Null.NullInteger
+            };
+
+            LogController.Instance.AddLog(log);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="rptResults_ItemDataBound">
+          <declaration><![CDATA[private void rptResults_ItemDataBound(object sender, RepeaterItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="185" sc="9" el="214" ec="10">Sql.ascx.cs</location>
+            <body hash="c31623320ca6f9339dc12d7d4e5aa75f"><![CDATA[{
+            try
+            {
+                if (e.Item.ItemType == ListItemType.AlternatingItem || e.Item.ItemType == ListItemType.Item)
+                {
+                    var gvResults = (GridView)e.Item.FindControl("gvResults");
+                    var lblRows = (Label)e.Item.FindControl("lblRows");
+
+                    gvResults.DataSource = e.Item.DataItem;
+                    gvResults.DataBind();
+                    gvResults.ToolTip = "Query " + (e.Item.ItemIndex + 1).ToString();
+                    
+
+                    if (gvResults.Rows.Count == 0)
+                    {
+                        lblRows.Text = LocalizeString("NoDataReturned");
+                    }
+                    else
+                    {
+                        gvResults.PreRender += gvResults_PreRender;
+                        //lblRows.Text = string.Format(LocalizeString("NumRowsReturned"), gvResults.Rows.Count);
+                        lblRows.Visible = false;
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RunAsScript">
+          <declaration><![CDATA[private bool RunAsScript()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="374" sc="9" el="376" ec="10">Sql.ascx.cs</location>
+            <body hash="c03c44e2673588ed88a8155f157e3c9c"><![CDATA[{
+            return SqlObjRegex.IsMatch(txtQuery.Text);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="btDelete">
+          <declaration><![CDATA[protected HtmlButton btDelete;]]></declaration>
+          <documentation>
+            <summary>
+ btDelete control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdExecute">
+          <declaration><![CDATA[protected LinkButton cmdExecute;]]></declaration>
+          <documentation>
+            <summary>
+ cmdExecute control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdUpload">
+          <declaration><![CDATA[protected LinkButton cmdUpload;]]></declaration>
+          <documentation>
+            <summary>
+ cmdUpload control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ddlConnection">
+          <declaration><![CDATA[protected DropDownList ddlConnection;]]></declaration>
+          <documentation>
+            <summary>
+ ddlConnection control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ddlSavedQuery">
+          <declaration><![CDATA[protected DropDownList ddlSavedQuery;]]></declaration>
+          <documentation>
+            <summary>
+ ddlSavedQuery control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="errorLabel">
+          <declaration><![CDATA[protected UserControl errorLabel;]]></declaration>
+          <documentation>
+            <summary>
+ errorLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblName">
+          <declaration><![CDATA[protected UserControl lblName;]]></declaration>
+          <documentation>
+            <summary>
+ lblName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblSavedQuery">
+          <declaration><![CDATA[protected UserControl lblSavedQuery;]]></declaration>
+          <documentation>
+            <summary>
+ lblSavedQuery control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lnkSave">
+          <declaration><![CDATA[protected LinkButton lnkSave;]]></declaration>
+          <documentation>
+            <summary>
+ lnkSave control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plConnection">
+          <declaration><![CDATA[protected UserControl plConnection;]]></declaration>
+          <documentation>
+            <summary>
+ plConnection control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="plTabs">
+          <declaration><![CDATA[protected PlaceHolder plTabs;]]></declaration>
+          <documentation>
+            <summary>
+ plTabs control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="pnlError">
+          <declaration><![CDATA[protected Panel pnlError;]]></declaration>
+          <documentation>
+            <summary>
+ pnlError control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="pnlResults">
+          <declaration><![CDATA[protected Panel pnlResults;]]></declaration>
+          <documentation>
+            <summary>
+ pnlResults control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rptResults">
+          <declaration><![CDATA[protected Repeater rptResults;]]></declaration>
+          <documentation>
+            <summary>
+ rptResults control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ScriptDelimiterRegex">
+          <declaration><![CDATA[private const string ScriptDelimiterRegex = "(?<=(?:[^\\w]+|^))GO(?=(?: |\\t)*?(?:\\r?\\n|$))";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="SqlObjRegex">
+          <declaration><![CDATA[private static readonly Regex SqlObjRegex = new Regex("(?<=(?:[^\\w]+|^))GO(?=(?: |\\t)*?(?:\\r?\\n|$))", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="txtError">
+          <declaration><![CDATA[protected TextBox txtError;]]></declaration>
+          <documentation>
+            <summary>
+ txtError control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtName">
+          <declaration><![CDATA[protected TextBox txtName;]]></declaration>
+          <documentation>
+            <summary>
+ txtName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtQuery">
+          <declaration><![CDATA[protected TextBox txtQuery;]]></declaration>
+          <documentation>
+            <summary>
+ txtQuery control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="uplSqlScript">
+          <declaration><![CDATA[protected FileUpload uplSqlScript;]]></declaration>
+          <documentation>
+            <summary>
+ uplSqlScript control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="valName">
+          <declaration><![CDATA[protected RequiredFieldValidator valName;]]></declaration>
+          <documentation>
+            <summary>
+ valName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="valText">
+          <declaration><![CDATA[protected RequiredFieldValidator valText;]]></declaration>
+          <documentation>
+            <summary>
+ valText control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.Sql.Components">
+    <class name="BusinessController">
+      <declaration><![CDATA[public class BusinessController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="55" ec="10">Components\BusinessController.cs</location>
+            <body hash="67abc96a144fec1e91cc1f2ff9dacb31"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "08.00.00":
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.SQL.Components">
+    <class name="SqlQuery">
+      <declaration><![CDATA[public class SqlQuery]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SqlQuery()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ConnectionStringName">
+          <declaration><![CDATA[public string ConnectionStringName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="46" el="48" ec="50">Components\SqlQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="48" sc="51" el="48" ec="55">Components\SqlQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CreatedByUserId">
+          <declaration><![CDATA[public int CreatedByUserId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="38" el="49" ec="42">Components\SqlQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="49" sc="43" el="49" ec="47">Components\SqlQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CreatedOnDate">
+          <declaration><![CDATA[public DateTime CreatedOnDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="41" el="50" ec="45">Components\SqlQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="50" sc="46" el="50" ec="50">Components\SqlQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LastModifiedByUserId">
+          <declaration><![CDATA[public int LastModifiedByUserId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="43" el="51" ec="47">Components\SqlQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="51" sc="48" el="51" ec="52">Components\SqlQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LastModifiedOnDate">
+          <declaration><![CDATA[public DateTime LastModifiedOnDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="46" el="52" ec="50">Components\SqlQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="52" sc="51" el="52" ec="55">Components\SqlQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="30" el="46" ec="34">Components\SqlQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="46" sc="35" el="46" ec="39">Components\SqlQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Query">
+          <declaration><![CDATA[public string Query]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="31" el="47" ec="35">Components\SqlQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="47" sc="36" el="47" ec="40">Components\SqlQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="QueryId">
+          <declaration><![CDATA[public int QueryId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="30" el="45" ec="34">Components\SqlQuery.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="45" sc="35" el="45" ec="39">Components\SqlQuery.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SqlQueryController">
+      <declaration><![CDATA[public class SqlQueryController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SqlQueryController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddQuery">
+          <declaration><![CDATA[public void AddQuery(SqlQuery query)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="41" ec="10">Components\SqlQueryController.cs</location>
+            <body hash="7844f83355a095c85a0181281eb0d7ae"><![CDATA[{
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                rep.Insert(query);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteQuery">
+          <declaration><![CDATA[public void DeleteQuery(SqlQuery query)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="9" el="50" ec="10">Components\SqlQueryController.cs</location>
+            <body hash="ca01d8207c1e46d1d3fcf1807c67b140"><![CDATA[{
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                rep.Delete(query);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetQueries">
+          <declaration><![CDATA[public IEnumerable<SqlQuery> GetQueries()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="9" el="62" ec="10">Components\SqlQueryController.cs</location>
+            <body hash="717d945ec4be423f06b100b20f8be30a"><![CDATA[{
+            IEnumerable<SqlQuery> queries;
+
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                queries = rep.Get();
+            }
+            return queries;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetQuery">
+          <declaration><![CDATA[public SqlQuery GetQuery(int id)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="65" sc="9" el="74" ec="10">Components\SqlQueryController.cs</location>
+            <body hash="894336c13fca763f4c43ed803dc7d49b"><![CDATA[{
+            SqlQuery query;
+
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                query = rep.GetById(id);
+            }
+            return query;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetQuery">
+          <declaration><![CDATA[public SqlQuery GetQuery(string name)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="77" sc="9" el="89" ec="10">Components\SqlQueryController.cs</location>
+            <body hash="d175c9da82f8d4ea07a4c115dcb71758"><![CDATA[{
+            List<SqlQuery> queries;
+            SqlQuery query = null;
+
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                queries = rep.Find("where name = @0", name).ToList();
+                if (queries != null && queries.Count > 0)
+                    query = queries.ElementAt(0);
+            }
+            return query;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateQuery">
+          <declaration><![CDATA[public void UpdateQuery(SqlQuery query)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="92" sc="9" el="98" ec="10">Components\SqlQueryController.cs</location>
+            <body hash="9100ecd336eb3d68c136e60d62b4bf0c"><![CDATA[{
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                rep.Update(query);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

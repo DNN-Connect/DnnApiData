@@ -1,0 +1,2791 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Modules.Journal.dll" version="06.02.01" generated="2017-06-18 22:01:27Z" generationTime="3.4917326">
+  <namespace name="DotNetNuke.Modules.Journal">
+    <class name="Edit">
+      <declaration><![CDATA[public class Edit : JournalModuleBase]]></declaration>
+      <documentation>
+        <summary>
+ EditJournal class.
+ </summary>
+ <remarks>
+ Auto-generated class.
+ </remarks>
+ -----------------------------------------------------------------------------
+ <summary>
+ The EditJournal class is used to manage content
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Edit()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="InitializeComponent">
+          <declaration><![CDATA[private void InitializeComponent()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="44" el="34" ec="10">Edit.ascx.cs</location>
+            <body hash="c013940a408bbf6e8b29beca9d25c8d4"><![CDATA[{
+            this.Load += new System.EventHandler(this.Page_Load);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="53" el="30" ec="10">Edit.ascx.cs</location>
+            <body hash="e6e53dfb76749bfeaf496967e2ea1d91"><![CDATA[{
+            InitializeComponent();
+            base.OnInit(e);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Page_Load">
+          <declaration><![CDATA[private void Page_Load(object sender, EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Page_Load runs when the control is loaded
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="41" sc="67" el="49" ec="10">Edit.ascx.cs</location>
+            <body hash="7df4b29731efae905136ca697aeeff0d"><![CDATA[{
+            try {
+                //Implement your edit logic for your module
+
+            } catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="FilesStatus">
+      <declaration><![CDATA[public class FilesStatus]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FilesStatus()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="18" sc="3" el="20" ec="4">FilesStatus.cs</location>
+            <body hash="0161c46de6c5ac3081f76634fcda532f"><![CDATA[public FilesStatus ()
+		{
+		}]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="extension">
+          <declaration><![CDATA[public string extension]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="file_id">
+          <declaration><![CDATA[public int file_id]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="message">
+          <declaration><![CDATA[public string message]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="name">
+          <declaration><![CDATA[public string name]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="progress">
+          <declaration><![CDATA[public string progress]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="size">
+          <declaration><![CDATA[public int size]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="success">
+          <declaration><![CDATA[public bool success]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="thumbnail_url">
+          <declaration><![CDATA[public string thumbnail_url]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="type">
+          <declaration><![CDATA[public string type]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="url">
+          <declaration><![CDATA[public string url]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="FileUploadController">
+      <declaration><![CDATA[public class FileUploadController : DnnController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly IFileManager _fileManager = ComponentBase<IFileManager, FileManager>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="9" el="20" ec="81">FileUploadController.cs</location>
+            <body hash="e4c09cf2bf297cb4d069e31b95171523"><![CDATA[private readonly IFileManager _fileManager = FileManager.Instance;
+        private readonly IFolderManager _folderManager = FolderManager.Instance;]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="IframeSafeJson">
+          <declaration><![CDATA[private JsonResult IframeSafeJson(JsonResult jsonResult)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="56" ec="10">FileUploadController.cs</location>
+            <body hash="701c672d64e2a8b9ceaa378a21a0d204"><![CDATA[{
+            string httpAccept = null;
+            try
+            {
+                httpAccept = Request["HTTP_ACCEPT"];
+            }
+            catch (HttpRequestValidationException)
+            { //swallow error and assume json not supported
+            }
+
+            if (httpAccept == null || !httpAccept.Contains("application.json"))
+            {
+                jsonResult.ContentType = "text/plain";
+            }
+
+            return jsonResult;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsAllowedExtension">
+          <declaration><![CDATA[private static bool IsAllowedExtension(string fileName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="59" sc="9" el="68" ec="10">FileUploadController.cs</location>
+            <body hash="52cd33d0f5448d4cc29a95cb94e5c3df"><![CDATA[{
+            var extension = Path.GetExtension(fileName);
+
+            //regex matches a dot followed by 1 or more chars followed by a semi-colon
+            //regex is meant to block files like "foo.asp;.png" which can take advantage
+            //of a vulnerability in IIS6 which treasts such files as .asp, not .png
+            return !string.IsNullOrEmpty(extension)
+                   && Host.AllowedExtensionWhitelist.IsAllowedExtension(extension)
+                   && !Regex.IsMatch(fileName, @"\..+;");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UploadFile">
+          <declaration><![CDATA[public ActionResult UploadFile()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="26" sc="9" el="37" ec="10">FileUploadController.cs</location>
+            <body hash="79ca86ee08081204aa656307cea70951"><![CDATA[{
+            var statuses = new List<FilesStatus>();
+            try
+            {
+                UploadWholeFile(HttpContext, statuses);
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+            }
+            return IframeSafeJson(Json(statuses));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UploadWholeFile">
+          <declaration><![CDATA[private void UploadWholeFile(HttpContextBase context, ICollection<FilesStatus> statuses)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="115" ec="10">FileUploadController.cs</location>
+            <body hash="e27580ba29b24aaca7df01df4df9e09e"><![CDATA[{
+            for (var i = 0; i < context.Request.Files.Count; i++)
+            {
+                var file = context.Request.Files[i];
+                if (file == null) continue;
+
+                var fileName = Path.GetFileName(file.FileName);
+
+                if (IsAllowedExtension(fileName))
+                {
+                    var userFolder = _folderManager.GetUserFolder(UserInfo);
+
+                    //todo: deal with the case where the exact file name already exists.
+                    var fileInfo = _fileManager.AddFile(userFolder, fileName, file.InputStream, true);
+                    var fileIcon = Entities.Icons.IconController.IconURL("Ext" + fileInfo.Extension, "32x32");
+                    if (!System.IO.File.Exists(Server.MapPath(fileIcon)))
+                    {
+                        fileIcon = Entities.Icons.IconController.IconURL("File", "32x32");
+                    }
+                    statuses.Add(new FilesStatus
+                    {
+                        success = true,
+                        name = fileName,
+                        extension = fileInfo.Extension,
+                        type = fileInfo.ContentType,
+                        size = file.ContentLength,
+                        progress = "1.0",
+                        url = FileManager.Instance.GetUrl(fileInfo),
+                        thumbnail_url = fileIcon,
+                        message = "success",
+                        file_id = fileInfo.FileId,
+                    });
+                }
+                else
+                {
+                    statuses.Add(new FilesStatus
+                    {
+                        success = false,
+                        name = fileName,
+                        message = "File type not allowed."
+                    });
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_fileManager">
+          <declaration><![CDATA[private readonly IFileManager _fileManager = ComponentBase<IFileManager, FileManager>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_folderManager">
+          <declaration><![CDATA[private readonly IFolderManager _folderManager = ComponentBase<IFolderManager, FolderManager>.Instance;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="JournalList">
+      <declaration><![CDATA[public class JournalList : WebControl]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public JournalList()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Render">
+          <declaration><![CDATA[protected override void Render(HtmlTextWriter output)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="63" el="21" ec="10">JournalList.cs</location>
+            <body hash="1b76ae0d96bbe5a7d31787818f2c844a"><![CDATA[{
+            output.Write("Hello World");
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="DisplayMode">
+          <declaration><![CDATA[public int DisplayMode]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="PortalId">
+          <declaration><![CDATA[public int PortalId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ProfileId">
+          <declaration><![CDATA[public int ProfileId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SocialGroupId">
+          <declaration><![CDATA[public int SocialGroupId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="JournalModuleBase">
+      <declaration><![CDATA[public class JournalModuleBase : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public JournalModuleBase()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="EditorEnabled">
+          <declaration><![CDATA[public bool EditorEnabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="13" el="68" ec="14">JournalModuleBase.cs</location>
+            <body hash="26d43717afa52aceb7bb2f37b02edda2"><![CDATA[{
+                if (!Settings.ContainsKey(Constants.JournalEditorEnabled))
+                {
+                    return true;
+                } else
+                {
+                    if (String.IsNullOrEmpty(Settings[Constants.JournalEditorEnabled].ToString()))
+                    {
+                        return true;
+                    } else
+                    {
+                        return (bool)Convert.ToBoolean(Settings[Constants.JournalEditorEnabled].ToString());
+                    }
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="FilterMode">
+          <declaration><![CDATA[public JournalModuleBase.JournalMode FilterMode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="17" el="35" ec="14">JournalModuleBase.cs</location>
+            <body hash="f6019854cf97edd074019a93c4c9d5b5"><![CDATA[{
+                if (!Settings.ContainsKey(Constants.JournalFilterMode)) {
+                    return JournalMode.Auto;
+                } else {
+                    if (String.IsNullOrEmpty(Settings[Constants.JournalFilterMode].ToString())) {
+                        return JournalMode.Auto;
+                    } else {
+                        return (JournalMode)Convert.ToInt16(Settings[Constants.JournalFilterMode].ToString());
+                    }
+                }
+
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupId">
+          <declaration><![CDATA[public int GroupId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="17" el="49" ec="14">JournalModuleBase.cs</location>
+            <body hash="3c7eee8fe73cba936f66e82e5a83cf3a"><![CDATA[{
+                int groupId = -1;
+                if (!String.IsNullOrEmpty(Request.QueryString["groupid"])) {
+                    if (Int32.TryParse(Request.QueryString["groupid"], out groupId)) {
+                        return groupId;
+                    } else {
+                        return -1;
+                    }
+                } else {
+                    return -1;
+                }
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="JournalRouteMapper">
+      <declaration><![CDATA[public class JournalRouteMapper : IServiceRouteMapper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public JournalRouteMapper()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="RegisterRoutes">
+          <declaration><![CDATA[public void RegisterRoutes(IMapRoute mapRouteManager)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="9" el="34" ec="10">JournalRouteMapper.cs</location>
+            <body hash="aff2963722ce4b6f3e5924e9fc92d910"><![CDATA[{
+            mapRouteManager.MapRoute("Journal", "{controller}.ashx/{action}",
+                                  new { Controller = "Services", Action = "Index" },
+                                  new[] { "DotNetNuke.Modules.Journal" });
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="JournalSettingsBase">
+      <declaration><![CDATA[public class JournalSettingsBase : ModuleSettingsBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public JournalSettingsBase()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="MyFiles">
+      <declaration><![CDATA[public class MyFiles : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public MyFiles()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="btnUp_Upload">
+          <declaration><![CDATA[protected void btnUp_Upload(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="65" el="47" ec="10">MyFiles.ascx.cs</location>
+            <body hash="7c3caa0a2b387ca7f8d8df10e13fc69b"><![CDATA[{
+            var folderManager = FolderManager.Instance;
+            var userFolder = folderManager.GetUserFolder(UserInfo);
+
+            string message = string.Empty;
+            IFileInfo fi = null;
+            try {
+                fi = FileManager.Instance.AddFile(userFolder, fileUp.PostedFile.FileName, fileUp.PostedFile.InputStream, true);
+            } catch (PermissionsNotMetException) {
+                message = string.Format(Localization.GetString("InsufficientFolderPermission"), userFolder.FolderPath);
+
+            } catch (NoSpaceAvailableException) {
+                message = string.Format(Localization.GetString("DiskSpaceExceeded"), fileUp.PostedFile.FileName);
+            } catch (InvalidFileExtensionException) {
+                message = string.Format(Localization.GetString("RestrictedFileType"), fileUp.PostedFile.FileName, Host.AllowedExtensionWhitelist.ToDisplayString());
+            } catch {
+                message = string.Format(Localization.GetString("SaveFileError"), fileUp.PostedFile.FileName);
+            }
+            if (String.IsNullOrEmpty(message) && fi != null) {
+                litOut.Text = "<script type=\"text/javascript\">var fileInfo=" + JsonExtensionsWeb.ToJsonString(fi) + ";alert(fileInfo.FileName);</script>";
+                
+            } else {
+                litOut.Text = message;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="InitializeComponent">
+          <declaration><![CDATA[private void InitializeComponent()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="44" el="19" ec="10">MyFiles.ascx.cs</location>
+            <body hash="ddd961afaa74bcb9480894e8b2ffcbec"><![CDATA[{
+            this.Load += new System.EventHandler(this.Page_Load);
+            btnUp.Click += new System.EventHandler(this.btnUp_Upload);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="11" sc="53" el="14" ec="10">MyFiles.ascx.cs</location>
+            <body hash="e6e53dfb76749bfeaf496967e2ea1d91"><![CDATA[{
+            InitializeComponent();
+            base.OnInit(e);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Page_Load">
+          <declaration><![CDATA[protected void Page_Load(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="20" sc="62" el="22" ec="10">MyFiles.ascx.cs</location>
+            <body hash="a65998256cc924e9494d58454a1ec065"><![CDATA[{
+      
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="btnUp">
+          <declaration><![CDATA[protected Button btnUp;]]></declaration>
+          <documentation>
+            <summary>
+ btnUp control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="fileUp">
+          <declaration><![CDATA[protected FileUpload fileUp;]]></declaration>
+          <documentation>
+            <summary>
+ fileUp control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="litOut">
+          <declaration><![CDATA[protected Literal litOut;]]></declaration>
+          <documentation>
+            <summary>
+ litOut control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ServicesController">
+      <declaration><![CDATA[public class ServicesController : DnnController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServicesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CommentDelete">
+          <declaration><![CDATA[public ActionResult CommentDelete(int journalId, int commentId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="335" sc="9" el="356" ec="10">ServicesController.cs</location>
+            <body hash="05e7af320d253ea6c7977ec075ca1c20"><![CDATA[{
+            try
+            {
+                var ci = InternalJournalController.Instance.GetComment(commentId);
+                if (ci == null)
+                {
+                    return Json(new { Result = "delete failed" }, JsonRequestBehavior.AllowGet);
+                }
+                if (ci.UserId == UserInfo.UserID || UserInfo.IsInRole(PortalSettings.AdministratorRoleName))
+                {
+                    InternalJournalController.Instance.DeleteComment(journalId, commentId);
+                    return Json(new { Result = "success" }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { Result = "access denied" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+                return Json(new { Result = "error" });
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CommentLike">
+          <declaration><![CDATA[public ActionResult CommentLike(int journalId, int commentId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="360" sc="9" el="376" ec="10">ServicesController.cs</location>
+            <body hash="c080e9ff689917fd92c72fb420430ff7"><![CDATA[{
+            try
+            {
+                InternalJournalController.Instance.LikeComment(journalId, commentId, UserInfo.UserID, UserInfo.DisplayName);
+                var ji = JournalController.Instance.GetJournalItem(PortalSettings.PortalId, UserInfo.UserID, journalId);
+                var jp = new JournalParser(PortalSettings, ActiveModule.ModuleID, ji.ProfileId, -1, UserInfo);
+                var isLiked = false;
+                var likeList = jp.GetLikeListHTML(ji, ref isLiked);
+                likeList = Utilities.LocalizeControl(likeList);
+                return Json(new { LikeList = likeList, Liked = isLiked }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+                return Json(new { Result = "error" });
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CommentSave">
+          <declaration><![CDATA[public string CommentSave(int journalId, string comment)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="310" sc="9" el="331" ec="10">ServicesController.cs</location>
+            <body hash="aef3752c7ba94a73907854fc761e2257"><![CDATA[{
+            try
+            {
+                var ci = new CommentInfo { JournalId = journalId, Comment = HttpUtility.UrlDecode(comment) };
+                if (ci.Comment.Length > 2000)
+                {
+                    ci.Comment = ci.Comment.Substring(0, 1999);
+                    ci.Comment = Utilities.RemoveHTML(ci.Comment);
+                }
+                ci.UserId = UserInfo.UserID;
+                InternalJournalController.Instance.SaveComment(ci);
+
+                var ji = JournalController.Instance.GetJournalItem(PortalSettings.PortalId, UserInfo.UserID, journalId);
+                var jp = new JournalParser(PortalSettings, ActiveModule.ModuleID, ji.ProfileId, -1, UserInfo);
+                return jp.GetCommentRow(ci);
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+                return string.Empty;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Create">
+          <declaration><![CDATA[public ActionResult Create(string text, int profileId, string journalType, string itemData, string securitySet, int groupId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="131" ec="10">ServicesController.cs</location>
+            <body hash="d48c765010747046e837de2d9fefcdfc"><![CDATA[{
+            try
+            {
+                var journalTypeId = 1;
+                switch (journalType)
+                {
+                    case "link":
+                        journalTypeId = 2;
+                        break;
+                    case "photo":
+                        journalTypeId = 3;
+                        break;
+                    case "file":
+                        journalTypeId = 4;
+                        break;
+                }
+
+                if (profileId == -1)
+                {
+                    profileId = UserInfo.UserID;
+                }
+
+                if (groupId > 0)
+                {
+                    profileId = -1;
+                }
+                
+                var ji = new JournalItem
+                {
+                    JournalId = -1,
+                    JournalTypeId = journalTypeId,
+                    PortalId = PortalSettings.PortalId,
+                    UserId = UserInfo.UserID,
+                    SocialGroupId = groupId,
+                    ProfileId = profileId,
+                    Summary = text,
+                    SecuritySet = securitySet
+                };
+                ji.Title = HttpUtility.HtmlDecode(HttpUtility.UrlDecode(ji.Title));
+                ji.Summary = HttpUtility.HtmlDecode(HttpUtility.UrlDecode(ji.Summary));
+
+                Security.PortalSecurity ps = new Security.PortalSecurity();
+
+                ji.Title = ps.InputFilter(ji.Title, Security.PortalSecurity.FilterFlag.NoScripting);
+                ji.Title = Utilities.RemoveHTML(ji.Title);
+                ji.Title = ps.InputFilter(ji.Title, Security.PortalSecurity.FilterFlag.NoMarkup);
+
+                ji.Summary = ps.InputFilter(ji.Summary, Security.PortalSecurity.FilterFlag.NoScripting);
+                ji.Summary = Utilities.RemoveHTML(ji.Summary);
+                ji.Summary = ps.InputFilter(ji.Summary, Security.PortalSecurity.FilterFlag.NoMarkup);
+
+                if (ji.Summary.Length > 2000)
+                {
+                    ji.Body = ji.Summary;
+                    ji.Summary = null;
+                }
+
+                if (!string.IsNullOrEmpty(itemData))
+                {
+                    ji.ItemData = itemData.FromJson<ItemData>();
+                    ji.ItemData.Description = HttpUtility.UrlDecode(ji.ItemData.Description);
+
+                    if (!string.IsNullOrEmpty(ji.ItemData.Url) && ji.ItemData.Url.StartsWith("fileid="))
+                    {
+                        var fileId = Convert.ToInt32(ji.ItemData.Url.Replace("fileid=", string.Empty).Trim());
+                        var file = FileManager.Instance.GetFile(fileId);
+                        ji.ItemData.Title = file.FileName;
+                        ji.ItemData.Url = string.Format("{0}/LinkClick.aspx?fileticket={1}", Globals.ApplicationPath, UrlUtils.EncryptParameter(UrlUtils.GetParameterValue(ji.ItemData.Url)));
+                    }
+                }
+
+                JournalController.Instance.SaveJournalItem(ji, 1);
+
+                return Json(ji);
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+                return Json(new { Result = "error" });
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Delete">
+          <declaration><![CDATA[public ActionResult Delete(int journalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="149" sc="9" el="173" ec="10">ServicesController.cs</location>
+            <body hash="34e5513c07dc8ff89baefecefb02da9e"><![CDATA[{
+            try
+            {
+                var jc = JournalController.Instance;
+                var ji = jc.GetJournalItem(PortalSettings.PortalId, UserInfo.UserID, journalId);
+
+                if (ji == null)
+                {
+                    return Json(new { Result = "invalid request" }, JsonRequestBehavior.AllowGet);
+                }
+
+                if (ji.UserId == UserInfo.UserID || UserInfo.IsInRole(PortalSettings.AdministratorRoleName))
+                {
+                    jc.DeleteJournalItem(PortalSettings.PortalId, UserInfo.UserID, journalId);
+                    return Json(new { Result = "success" }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { Result = "access denied" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+                return Json(new { Result = "error" });
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetListForProfile">
+          <declaration><![CDATA[public string GetListForProfile(int profileId, int groupId, int rowIndex, int maxRows)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="275" sc="9" el="286" ec="10">ServicesController.cs</location>
+            <body hash="48ecce2077e190ff900e7f259ade1cb2"><![CDATA[{
+            try
+            {
+                var jp = new JournalParser(PortalSettings, ActiveModule.ModuleID, profileId, groupId, UserInfo);
+                return jp.GetList(rowIndex, maxRows);
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+                return string.Empty;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Like">
+          <declaration><![CDATA[public ActionResult Like(int journalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="290" sc="9" el="306" ec="10">ServicesController.cs</location>
+            <body hash="509169d6b5e80737150f10cb6b5195ef"><![CDATA[{
+            try
+            {
+                InternalJournalController.Instance.LikeJournalItem(journalId, UserInfo.UserID, UserInfo.DisplayName);
+                var ji = JournalController.Instance.GetJournalItem(PortalSettings.PortalId, UserInfo.UserID, journalId);
+                var jp = new JournalParser(PortalSettings, ActiveModule.ModuleID, ji.ProfileId, -1, UserInfo);
+                var isLiked = false;
+                var likeList = jp.GetLikeListHTML(ji, ref isLiked);
+                likeList = Utilities.LocalizeControl(likeList);
+                return Json(new { LikeList = likeList, Liked = isLiked }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+                return Json(new { Result = "error" });
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="List">
+          <declaration><![CDATA[public ActionResult List(int profileId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="135" sc="9" el="145" ec="10">ServicesController.cs</location>
+            <body hash="9a8bc7f4d284f675ce70a673c3568ce3"><![CDATA[{
+            try
+            {
+                return Json(InternalJournalController.Instance.GetJournalItemsByProfile(PortalSettings.PortalId, ActiveModule.ModuleID, UserInfo.UserID, profileId, 0, 20));
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+                return Json(new { Result = "error" });
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PreviewURL">
+          <declaration><![CDATA[public ActionResult PreviewURL(string url)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="219" sc="9" el="230" ec="10">ServicesController.cs</location>
+            <body hash="40c99d94488863127d80fedb27235074"><![CDATA[{
+            try
+            {
+                var link = Utilities.GetLinkData(url);
+                return Json(link);
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+                return Json(new { Result = "error" });
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Tags">
+          <declaration><![CDATA[public ActionResult Tags(string search)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="197" sc="9" el="215" ec="10">ServicesController.cs</location>
+            <body hash="38fdf290d72511d26b121ee9a06ff0c1"><![CDATA[{
+            try
+            {
+                var terms = Util.GetTermController().GetTermsByVocabulary(1).Where(t => t.Name.ToLower().Contains(search.ToLower())).Select(term => term.Name);
+
+                var list = new List<object>();
+                foreach (var t in terms)
+                {
+                    list.Add(new { label = t, value = t });
+                }
+
+                return Json(terms);
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+                return Json(new { Result = "error" });
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Upload">
+          <declaration><![CDATA[public ActionResult Upload()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="234" sc="9" el="271" ec="10">ServicesController.cs</location>
+            <body hash="3e38a2142bb7f93141ece1ed2c29f106"><![CDATA[{
+            var sourceFile = Request.Files[0];
+            if (sourceFile == null)
+            {
+                throw new HttpException(400, Localization.GetString("SaveFileError", "''"));
+            }
+
+            var userFolder = FolderManager.Instance.GetUserFolder(UserInfo);
+
+            var message = string.Empty;
+            IFileInfo fi = null;
+            try
+            {
+                fi = FileManager.Instance.AddFile(userFolder, sourceFile.FileName, sourceFile.InputStream, true);
+            }
+            catch (PermissionsNotMetException)
+            {
+                message = string.Format(Localization.GetString("InsufficientFolderPermission"), userFolder.FolderPath);
+            }
+            catch (NoSpaceAvailableException)
+            {
+                message = string.Format(Localization.GetString("DiskSpaceExceeded"), sourceFile.FileName);
+            }
+            catch (InvalidFileExtensionException)
+            {
+                message = string.Format(Localization.GetString("RestrictedFileType"), sourceFile.FileName, Host.AllowedExtensionWhitelist.ToDisplayString());
+            }
+            catch
+            {
+                message = string.Format(Localization.GetString("SaveFileError"), sourceFile.FileName);
+            }
+            if (String.IsNullOrEmpty(message) && fi != null)
+            {
+                return Json(fi);
+            }
+
+            return Json(new { Result = message }, JsonRequestBehavior.AllowGet);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Users">
+          <declaration><![CDATA[public ActionResult Users(string search)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="177" sc="9" el="193" ec="10">ServicesController.cs</location>
+            <body hash="54576c8f685e6edf05f48d607d0292e6"><![CDATA[{
+            try
+            {
+                var totalRecords = 0;
+                var list = new List<object>();
+                foreach (UserInfo u in UserController.GetUsersByUserName(PortalSettings.PortalId, search + '%', 0, 100, ref totalRecords))
+                {
+                    list.Add(new { label = u.DisplayName, value = u.UserID });
+                }
+                return Json(list);
+            }
+            catch (Exception exc)
+            {
+                DnnLog.Error(exc);
+                return Json(new { Result = "error" });
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Settings">
+      <declaration><![CDATA[public class Settings : JournalSettingsBase]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+ The Settings class manages Module Settings
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Settings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindJournalTypes">
+          <declaration><![CDATA[private void BindJournalTypes()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="150" sc="41" el="155" ec="10">Settings.ascx.cs</location>
+            <body hash="5ef4ced522ed119403b4ecc82f90325f"><![CDATA[{
+            foreach (JournalTypeInfo journalTypeInfo in JournalController.Instance.GetJournalTypes(PortalId))
+            {
+                chkJournalFilters.Items.Add(new ListItem(Localization.GetString(journalTypeInfo.JournalType, "~/desktopmodules/journal/app_localresources/sharedresources.resx"), journalTypeInfo.JournalTypeId.ToString()));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadSettings">
+          <declaration><![CDATA[public override void LoadSettings()]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ LoadSettings loads the settings from the Database and displays them
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="40" sc="45" el="106" ec="10">Settings.ascx.cs</location>
+            <body hash="84a184301a31a6c49dcc05b402157575"><![CDATA[{
+            try {
+                if (Page.IsPostBack == false) {
+                    BindJournalTypes();
+                    //Check for existing settings and use those on this page
+                    if (Settings.ContainsKey(Constants.DefaultPageSize)) {
+                        drpDefaultPageSize.SelectedIndex = drpDefaultPageSize.Items.IndexOf(drpDefaultPageSize.Items.FindByValue(Settings[Constants.DefaultPageSize].ToString()));
+                    } else {
+                        drpDefaultPageSize.SelectedIndex = drpDefaultPageSize.Items.IndexOf(drpDefaultPageSize.Items.FindByValue("20"));
+                        
+                    }
+                    if (Settings.ContainsKey(Constants.MaxCharacters)) {
+                        drpMaxMessageLength.SelectedIndex = drpMaxMessageLength.Items.IndexOf(drpMaxMessageLength.Items.FindByValue(Settings[Constants.MaxCharacters].ToString()));
+                    } else {
+                        drpMaxMessageLength.SelectedIndex = drpMaxMessageLength.Items.IndexOf(drpMaxMessageLength.Items.FindByValue("250"));
+
+                    }
+                    if (Settings.ContainsKey(Constants.AllowFiles)) {
+                        chkAllowFiles.Checked = Convert.ToBoolean(Settings[Constants.AllowFiles].ToString());
+                    } else {
+                        chkAllowFiles.Checked = true;
+                    }
+                    if (Settings.ContainsKey(Constants.AllowPhotos)) {
+                        chkAllowPhotos.Checked = Convert.ToBoolean(Settings[Constants.AllowPhotos].ToString());
+                    } else {
+                        chkAllowPhotos.Checked = true;
+                    }
+                    if (Settings.ContainsKey(Constants.JournalEditorEnabled))
+                    {
+                        chkEnableEditor.Checked = Convert.ToBoolean(Settings[Constants.JournalEditorEnabled].ToString());
+                    } else
+                    {
+                        chkEnableEditor.Checked = true;
+                    }
+                    if (chkEnableEditor.Checked == false)
+                    {
+                        chkAllowFiles.Enabled = false;
+                        chkAllowPhotos.Enabled = false;
+                    }
+                    foreach (ListItem li in chkJournalFilters.Items) {
+                        li.Selected = true;
+                    }
+                    if (Settings.ContainsKey(Constants.JournalFilters)) {
+                        if (String.IsNullOrEmpty(Settings[Constants.JournalFilters].ToString())) {
+                            foreach (ListItem li in chkJournalFilters.Items) {
+                                li.Selected = true;
+                            }
+                        } else {
+                            foreach (ListItem li in chkJournalFilters.Items) {
+                                li.Selected = false;
+                            }
+                            foreach (string s in Settings[Constants.JournalFilters].ToString().Split(';')) {
+                                foreach (ListItem li in chkJournalFilters.Items) {
+                                    if (li.Value == s) {
+                                        li.Selected = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            } catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSettings">
+          <declaration><![CDATA[public override void UpdateSettings()]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ UpdateSettings saves the modified settings to the Database
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="113" sc="47" el="146" ec="10">Settings.ascx.cs</location>
+            <body hash="2df11d91f8a7aa0f6dbe44232898f118"><![CDATA[{
+            try {
+                ModuleController modules = new ModuleController();
+                modules.UpdateModuleSetting(this.ModuleId, Constants.DefaultPageSize, drpDefaultPageSize.SelectedItem.Value);
+                modules.UpdateModuleSetting(this.ModuleId, Constants.AllowFiles, chkAllowFiles.Checked.ToString());
+                modules.UpdateModuleSetting(this.ModuleId, Constants.AllowPhotos, chkAllowPhotos.Checked.ToString());
+                modules.UpdateModuleSetting(this.ModuleId, Constants.JournalEditorEnabled, chkEnableEditor.Checked.ToString());
+                modules.UpdateModuleSetting(this.ModuleId, Constants.MaxCharacters, drpMaxMessageLength.SelectedItem.Value);
+                string journalTypes = "";
+                bool allTypes = true;
+                foreach (ListItem li in chkJournalFilters.Items) {
+                    if (!li.Selected) {
+                        allTypes = false;
+                    }
+                }
+                var jc = InternalJournalController.Instance;
+                jc.DeleteFilters(PortalId, ModuleId);
+
+                foreach (ListItem li in chkJournalFilters.Items) {
+                    if (li.Selected) {
+                        if (!allTypes) {
+                            jc.SaveFilters(PortalId, ModuleId, Convert.ToInt32(li.Value));
+                            journalTypes += li.Value + ";";
+                        }
+                        
+                    }
+                }
+                modules.UpdateModuleSetting(this.ModuleId, Constants.JournalFilters, journalTypes);
+
+            } catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="chkAllowFiles">
+          <declaration><![CDATA[protected CheckBox chkAllowFiles;]]></declaration>
+          <documentation>
+            <summary>
+ chkAllowFiles control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkAllowPhotos">
+          <declaration><![CDATA[protected CheckBox chkAllowPhotos;]]></declaration>
+          <documentation>
+            <summary>
+ chkAllowPhotos control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkEnableEditor">
+          <declaration><![CDATA[protected CheckBox chkEnableEditor;]]></declaration>
+          <documentation>
+            <summary>
+ chkEnableEditor control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkJournalFilters">
+          <declaration><![CDATA[protected CheckBoxList chkJournalFilters;]]></declaration>
+          <documentation>
+            <summary>
+ chkJournalFilters control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="drpDefaultPageSize">
+          <declaration><![CDATA[protected DropDownList drpDefaultPageSize;]]></declaration>
+          <documentation>
+            <summary>
+ drpDefaultPageSize control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="drpMaxMessageLength">
+          <declaration><![CDATA[protected DropDownList drpMaxMessageLength;]]></declaration>
+          <documentation>
+            <summary>
+ drpMaxMessageLength control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UserFolderHelper">
+      <declaration><![CDATA[public class UserFolderHelper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UserFolderHelper(PortalSettings portalSettings)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="9" el="36" ec="10">UserFolderHelper.cs</location>
+            <body hash="ea00cb26974257e130f93393a18861d0"><![CDATA[public UserFolderHelper(PortalSettings portalSettings)
+        {
+            UserFolder = FolderManager.Instance.GetUserFolder(portalSettings.UserInfo);
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="UserFolder">
+          <declaration><![CDATA[public IFolderInfo UserFolder]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="UserFolderPath">
+          <declaration><![CDATA[public string UserFolderPath]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="13" el="53" ec="14">UserFolderHelper.cs</location>
+            <body hash="3bf9e7e92314e7fe548ca73f5f925ec6"><![CDATA[{
+                return UserFolder.FolderPath;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="UserFolderPhysicalPath">
+          <declaration><![CDATA[public string UserFolderPhysicalPath]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="13" el="45" ec="14">UserFolderHelper.cs</location>
+            <body hash="9a31c63a58cd0ea475d96f9fd88c1ceb"><![CDATA[{
+                return UserFolder.PhysicalPath;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="View">
+      <declaration><![CDATA[public class View : JournalModuleBase]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+ The ViewJournal class displays the content
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public int PageSize = 20;]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="34" sc="9" el="40" ec="39">View.ascx.cs</location>
+            <body hash="7f4daf3a542934a41fcb5b1174cce0f4"><![CDATA[public int PageSize = 20;
+        public bool AllowPhotos = true;
+        public bool AllowFiles = true;
+        public int MaxMessageLength = 250;
+        public bool CanRender = true;
+        public bool ShowEditor = true;
+        public bool CanComment = true;]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="InitializeComponent">
+          <declaration><![CDATA[private void InitializeComponent()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="111" sc="44" el="113" ec="10">View.ascx.cs</location>
+            <body hash="c013940a408bbf6e8b29beca9d25c8d4"><![CDATA[{
+            this.Load += new System.EventHandler(this.Page_Load);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="53" el="109" ec="10">View.ascx.cs</location>
+            <body hash="f74ecee1fd7e43aa035a43e1631aedbd"><![CDATA[{
+            ServicesFramework.Instance.RequestAjaxAntiForgerySupport();
+            
+            ClientResourceManager.RegisterScript(this.Page, "~/DesktopModules/Journal/Scripts/journal.js");
+            ClientResourceManager.RegisterScript(this.Page, "~/DesktopModules/Journal/Scripts/journalcomments.js");
+            ClientResourceManager.RegisterScript(this.Page, "~/Resources/Shared/Scripts/json2.js");
+
+            if (!Request.IsAuthenticated)
+            {
+                ShowEditor = false;
+            } else
+            {
+                ShowEditor = EditorEnabled;
+            }
+           
+            ctlJournalList.Enabled = true;
+            ctlJournalList.ProfileId = -1;
+            ctlJournalList.PageSize = 20;
+            ctlJournalList.ModuleId = ModuleId;
+            
+
+            var moduleController = new ModuleController();
+            foreach (var module in moduleController.GetTabModules(TabId).Values) {
+                if (module.ModuleDefinition.FriendlyName == "Social Groups") {
+                    if (GroupId == -1 && FilterMode == JournalMode.Auto) {
+                        ShowEditor = false;
+                        ctlJournalList.Enabled = false;
+                    }
+                    if (GroupId > 0) {
+                        RoleController roleController = new RoleController();
+                        RoleInfo roleInfo = roleController.GetRole(GroupId, PortalId);
+                        if (roleInfo != null) {
+                            if (UserInfo.IsInRole(roleInfo.RoleName)) {
+                                ShowEditor = true;
+                                CanComment = true;
+                            } else {
+                                ShowEditor = false;
+                                CanComment = false;
+                            }
+                            
+                            if (roleInfo.IsPublic == false && ShowEditor == false) {
+                                ctlJournalList.Enabled = false;                               
+                            }
+                            if (roleInfo.IsPublic == true && ShowEditor == false) {
+                                ctlJournalList.Enabled = true;
+                            }
+                            if (roleInfo.IsPublic && ShowEditor) {
+                                ctlJournalList.Enabled = true;
+                            }
+                        } else {
+                            ShowEditor = false;
+                            ctlJournalList.Enabled = false;
+                        }
+                    }
+                   
+                }
+            }
+            if (!String.IsNullOrEmpty(Request.QueryString["userId"])) {
+                ctlJournalList.ProfileId = Convert.ToInt32(Request.QueryString["userId"]);
+            } else if (GroupId > 0) {
+                ctlJournalList.SocialGroupId = Convert.ToInt32(Request.QueryString["groupId"]);
+            }
+            
+         
+            InitializeComponent();
+            base.OnInit(e);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Page_Load">
+          <declaration><![CDATA[private void Page_Load(object sender, EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Page_Load runs when the control is loaded
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="121" sc="67" el="164" ec="10">View.ascx.cs</location>
+            <body hash="05c1b92149a23d5f066594ab4e89c156"><![CDATA[{
+            try {
+               
+                if (Settings.ContainsKey(Constants.DefaultPageSize)) {
+                    PageSize = Convert.ToInt16(Settings[Constants.DefaultPageSize]);
+                }
+                if (Settings.ContainsKey(Constants.MaxCharacters)) {
+                    MaxMessageLength = Convert.ToInt16(Settings[Constants.MaxCharacters]);
+                }
+                if (Settings.ContainsKey(Constants.AllowPhotos)) {
+                    AllowPhotos = Convert.ToBoolean(Settings[Constants.AllowPhotos]);
+                }
+                if (Settings.ContainsKey(Constants.AllowFiles)) {
+                    AllowFiles = Convert.ToBoolean(Settings[Constants.AllowFiles]);
+                }
+                var path = Common.Globals.ApplicationPath;
+                path = path.EndsWith("/") ? path : path + "/";
+                path += "DesktopModules/Journal/";
+
+                litScripts.Text = "var pagesize=" + PageSize.ToString();
+                litScripts.Text += ";var profilePage='" + DotNetNuke.Common.Globals.NavigateURL(PortalSettings.UserTabId, string.Empty, new String[] { "userId=xxx" }) + "'";
+                litScripts.Text += ";var maxlength=" + MaxMessageLength.ToString();
+                litScripts.Text += ";var baseUrl='" + path + "'"; 
+                litScripts.Text += ";var resxLike='" + Utilities.GetSharedResource("{resx:like}") + "'";
+                litScripts.Text += ";var resxUnLike='" + Utilities.GetSharedResource("{resx:unlike}") + "'";
+                if (!String.IsNullOrEmpty(Request.QueryString["userId"])) {
+                    litScripts.Text += ";var pid=" + Convert.ToInt32(Request.QueryString["userId"]).ToString();
+                    litScripts.Text += ";var gid=-1";
+                    ctlJournalList.ProfileId = Convert.ToInt32(Request.QueryString["userId"]);
+                    ctlJournalList.PageSize = PageSize;
+                } else if (GroupId > 0) {
+                    litScripts.Text += ";var pid=-1";
+                    litScripts.Text += ";var gid=" + GroupId.ToString();
+                    ctlJournalList.SocialGroupId = GroupId;
+                    ctlJournalList.PageSize = PageSize;
+                } else {
+                    litScripts.Text += ";var pid=-1";
+                    litScripts.Text += ";var gid=-1";
+                }
+            } catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="AllowFiles">
+          <declaration><![CDATA[public bool AllowFiles = true;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="AllowPhotos">
+          <declaration><![CDATA[public bool AllowPhotos = true;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="CanComment">
+          <declaration><![CDATA[public bool CanComment = true;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="CanRender">
+          <declaration><![CDATA[public bool CanRender = true;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ctlJournalList">
+          <declaration><![CDATA[protected JournalListControl ctlJournalList;]]></declaration>
+          <documentation>
+            <summary>
+ ctlJournalList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="litScripts">
+          <declaration><![CDATA[protected Literal litScripts;]]></declaration>
+          <documentation>
+            <summary>
+ litScripts control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="MaxMessageLength">
+          <declaration><![CDATA[public int MaxMessageLength = 250;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="PageSize">
+          <declaration><![CDATA[public int PageSize = 20;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ShowEditor">
+          <declaration><![CDATA[public bool ShowEditor = true;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Journal.Components">
+    <class name="Constants">
+      <declaration><![CDATA[public class Constants]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Constants()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="AllowedFileTypes">
+          <declaration><![CDATA[internal const string AllowedFileTypes = "Journal_AllowedFileTypes";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="AllowFiles">
+          <declaration><![CDATA[internal const string AllowFiles = "Journal_AllowFiles";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="AllowPhotos">
+          <declaration><![CDATA[internal const string AllowPhotos = "Journal_AllowPhotos";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="DefaultPageSize">
+          <declaration><![CDATA[internal const string DefaultPageSize = "Journal_PageSize";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="DefaultSecurity">
+          <declaration><![CDATA[internal const string DefaultSecurity = "Journal_DefaultSecurity";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="JournalEditorEnabled">
+          <declaration><![CDATA[internal const string JournalEditorEnabled = "Journal_EditorEnabled";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="JournalFilterMode">
+          <declaration><![CDATA[internal const string JournalFilterMode = "Journal_Mode";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="JournalFilters">
+          <declaration><![CDATA[internal const string JournalFilters = "Journal_Filters";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MaxCharacters">
+          <declaration><![CDATA[internal const string MaxCharacters = "Journal_MaxCharacters";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="SharedResourcesPath">
+          <declaration><![CDATA[internal const string SharedResourcesPath = "~/DesktopModules/Journal/App_LocalResources/SharedResources.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="FeatureController">
+      <declaration><![CDATA[public class FeatureController]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+ The Controller class for Journal
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public FeatureController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ExportModule">
+          <declaration><![CDATA[public string ExportModule(int ModuleID)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ ExportModule implements the IPortable ExportModule Interface
+ </summary>
+ <param name="ModuleID">The Id of the module to be exported</param>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="39" sc="50" el="58" ec="101">Components\FeatureController.cs</location>
+            <body hash="ffbf33866ee9f46b19c9b55f37f418ec"><![CDATA[{
+            //string strXML = "";
+
+            //List<JournalInfo> colJournals = GetJournals(ModuleID);
+            //if (colJournals.Count != 0)
+            //{
+            //    strXML += "<Journals>";
+
+            //    foreach (JournalInfo objJournal in colJournals)
+            //    {
+            //        strXML += "<Journal>";
+            //        strXML += "<content>" + DotNetNuke.Common.Utilities.XmlUtils.XMLEncode(objJournal.Content) + "</content>";
+            //        strXML += "</Journal>";
+            //    }
+            //    strXML += "</Journals>";
+            //}
+
+            //return strXML;
+
+            throw new System.NotImplementedException("The method or operation is not implemented.");]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSearchItems">
+          <declaration><![CDATA[public SearchItemInfoCollection GetSearchItems(ModuleInfo ModInfo)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetSearchItems implements the ISearchable Interface
+ </summary>
+ <param name="ModInfo">The ModuleInfo for the module to be Indexed</param>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="90" sc="131" el="103" ec="101">Components\FeatureController.cs</location>
+            <body hash="74010501bd29fe13570976a78a62ff18"><![CDATA[{
+            //SearchItemInfoCollection SearchItemCollection = new SearchItemInfoCollection();
+
+            //List<JournalInfo> colJournals = GetJournals(ModInfo.ModuleID);
+
+            //foreach (JournalInfo objJournal in colJournals)
+            //{
+            //    SearchItemInfo SearchItem = new SearchItemInfo(ModInfo.ModuleTitle, objJournal.Content, objJournal.CreatedByUser, objJournal.CreatedDate, ModInfo.ModuleID, objJournal.ItemId.ToString(), objJournal.Content, "ItemId=" + objJournal.ItemId.ToString());
+            //    SearchItemCollection.Add(SearchItem);
+            //}
+
+            //return SearchItemCollection;
+
+            throw new System.NotImplementedException("The method or operation is not implemented.");]]></body>
+          </codeblock>
+        </method>
+        <method name="ImportModule">
+          <declaration><![CDATA[public void ImportModule(int ModuleID, string Content, string Version, int UserId)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ ImportModule implements the IPortable ImportModule Interface
+ </summary>
+ <param name="ModuleID">The Id of the module to be imported</param>
+ <param name="Content">The content to be imported</param>
+ <param name="Version">The version of the module to be imported</param>
+ <param name="UserId">The Id of the user performing the import</param>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="70" sc="92" el="81" ec="101">Components\FeatureController.cs</location>
+            <body hash="1f37ab3fbf91d0fb535fe3ad8710e39a"><![CDATA[{
+            //XmlNode xmlJournals = DotNetNuke.Common.Globals.GetContent(Content, "Journals");
+            //foreach (XmlNode xmlJournal in xmlJournals.SelectNodes("Journal"))
+            //{
+            //    JournalInfo objJournal = new JournalInfo();
+            //    objJournal.ModuleId = ModuleID;
+            //    objJournal.Content = xmlJournal.SelectSingleNode("content").InnerText;
+            //    objJournal.CreatedByUser = UserID;
+            //    AddJournal(objJournal);
+            //}
+
+            throw new System.NotImplementedException("The method or operation is not implemented.");]]></body>
+          </codeblock>
+        </method>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string Version)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ UpgradeModule implements the IUpgradeable Interface
+ </summary>
+ <param name="Version">The current version of the module</param>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="112" sc="53" el="113" ec="101">Components\FeatureController.cs</location>
+            <body hash="0b7d17ac4fd219aa9a12400b9eeac2b8"><![CDATA[{
+            throw new System.NotImplementedException("The method or operation is not implemented.");]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ImageInfo">
+      <declaration><![CDATA[public class ImageInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ImageInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Title">
+          <declaration><![CDATA[public string Title]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="URL">
+          <declaration><![CDATA[public string URL]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="JournalControl">
+      <declaration><![CDATA[public class JournalControl : IPropertyAccess]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public JournalControl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetProperty">
+          <declaration><![CDATA[public string GetProperty(string propertyName, string format, CultureInfo formatProvider, UserInfo accessingUser, Scope accessLevel, ref bool propertyNotFound)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="18" sc="205" el="41" ec="10">Components\JournalControl.cs</location>
+            <body hash="a8953eda1730083d89df09275e4b4e18"><![CDATA[{
+            string OutputFormat = string.Empty;
+            if (format == string.Empty) {
+                OutputFormat = "g";
+            } else {
+                OutputFormat = format;
+            }
+            propertyName = propertyName.ToLowerInvariant();
+            switch (propertyName) {
+                case "commentlink":
+                    return CommentLink;
+                case "likelink":
+                    return LikeLink;
+                case "likelist":
+                    return LikeList;
+                case "commentarea":
+                    return CommentArea;
+                case "authornamelink":
+                    return AuthorNameLink;
+            }
+
+            propertyNotFound = true;
+            return string.Empty;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AuthorNameLink">
+          <declaration><![CDATA[public string AuthorNameLink]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Cacheability">
+          <declaration><![CDATA[public CacheLevel Cacheability]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="9" sc="17" el="11" ec="14">Components\JournalControl.cs</location>
+            <body hash="fd6c23dcecd20da90e8271c1ecf9c547"><![CDATA[{
+                return CacheLevel.fullyCacheable;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="CommentArea">
+          <declaration><![CDATA[public string CommentArea]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="CommentLink">
+          <declaration><![CDATA[public string CommentLink]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LikeLink">
+          <declaration><![CDATA[public string LikeLink]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LikeList">
+          <declaration><![CDATA[public string LikeList]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="JournalItemTokenReplace">
+      <declaration><![CDATA[public class JournalItemTokenReplace : BaseCustomTokenReplace]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public JournalItemTokenReplace(JournalItem journalItem, JournalControl journalControl)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="10" sc="9" el="23" ec="10">Components\JournalItemPropertyAccess.cs</location>
+            <body hash="a38f8c153d85d664a1998710cd35d9ac"><![CDATA[public JournalItemTokenReplace(JournalItem journalItem, JournalControl journalControl) {
+            PropertySource["journalitem"] = journalItem;
+            PropertySource["journalcontrol"] = journalControl;
+            if (journalItem.ItemData != null) {
+                PropertySource["journaldata"] = journalItem.ItemData;
+            }
+            if (journalItem.JournalAuthor != null) {
+                PropertySource["journalauthor"] = journalItem.JournalAuthor;
+            }
+           
+            
+            
+
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ReplaceJournalItemTokens">
+          <declaration><![CDATA[public string ReplaceJournalItemTokens(string source)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="63" el="26" ec="10">Components\JournalItemPropertyAccess.cs</location>
+            <body hash="6951f83825d6c653ee078f7324eb0b3f"><![CDATA[{
+            return base.ReplaceTokens(source);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="JournalParser">
+      <declaration><![CDATA[public class JournalParser]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private string url = "";]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="25" sc="9" el="43" ec="4">Components\JournalParser.cs</location>
+            <body hash="f40b8a441699ec52e78e668b8b2bb3db"><![CDATA[private string url = "";
+        private bool isAdmin = false;
+        string resxPath = "~/DesktopModules/Journal/App_LocalResources/SharedResources.resx";
+		public JournalParser(PortalSettings portalSettings, int moduleId, int profileId, int socialGroupId, UserInfo userInfo) {
+			PortalSettings = portalSettings;
+            ModuleId = moduleId;
+			ProfileId = profileId;
+			SocialGroupId = socialGroupId;
+			CurrentUser = userInfo;
+            url = PortalSettings.DefaultPortalAlias;
+            if (string.IsNullOrEmpty(url)) {
+                url = HttpContext.Current.Request.Url.Host;
+            }
+            if (HttpContext.Current.Request.IsSecureConnection) {
+                url = "https://" + url;
+            } else {
+                url = "http://" + url;
+            }
+		}]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetCommentAreaHTML">
+          <declaration><![CDATA[internal string GetCommentAreaHTML(int JournalId, IList<CommentInfo> comments)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="261" sc="88" el="279" ec="10">Components\JournalParser.cs</location>
+            <body hash="419aeefdbc8aac1e997e68d19518d482"><![CDATA[{
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("<ul class=\"jcmt\" id=\"jcmt-{0}\">", JournalId);
+            foreach(CommentInfo ci in comments) {
+                if (ci.JournalId == JournalId) {
+                    sb.Append(GetCommentRow(ci));
+                }
+            }
+            if (CurrentUser.UserID > 0) {
+                sb.AppendFormat("<li id=\"jcmt-{0}-txtrow\" class=\"cmteditarea\">", JournalId);
+                sb.AppendFormat("<textarea id=\"jcmt-{0}-txt\" class=\"cmteditor\"></textarea>", JournalId);
+                sb.Append("<div class=\"editorPlaceholder\">{resx:leavecomment}</div></li>");
+                sb.AppendFormat("<li class=\"cmtbtn\">", JournalId);
+                sb.Append("<a href=\"#\">{resx:comment}</a></li>");
+            }
+            
+            sb.Append("</ul>");
+            return sb.ToString();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCommentRow">
+          <declaration><![CDATA[internal string GetCommentRow(CommentInfo comment)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="280" sc="60" el="299" ec="10">Components\JournalParser.cs</location>
+            <body hash="2137e348ab0ba393f8702ed25825c5b8"><![CDATA[{
+            StringBuilder sb = new StringBuilder();
+            string pic = string.Format(Globals.UserProfilePicFormattedUrl(), comment.UserId, 32, 32);
+            sb.AppendFormat("<li id=\"cmt-{0}\">", comment.CommentId);
+            if (comment.UserId == CurrentUser.UserID || isAdmin) {
+                sb.Append("<div class=\"miniclose\"></div>");
+            }
+            sb.AppendFormat("<img src=\"{0}\" />", pic);
+            sb.Append("<p>");
+            string userUrl = DotNetNuke.Common.Globals.NavigateURL(PortalSettings.UserTabId, string.Empty, new String[] { "userId=" + comment.UserId });
+            sb.AppendFormat("<a href=\"{1}\">{0}</a>", comment.DisplayName, userUrl);
+            sb.Append(comment.Comment.Replace("\n","<br />"));
+            var timeFrame = Common.Utilities.DateUtils.CalculateDateForDisplay(comment.DateCreated);
+            comment.DateCreated = CurrentUser.LocalTime(comment.DateCreated);
+            sb.AppendFormat("<abbr title=\"{0}\">{1}</abbr>", comment.DateCreated, timeFrame);
+  
+            sb.Append("</p>");
+            sb.Append("</li>");
+            return sb.ToString();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetJournalTemplate">
+          <declaration><![CDATA[internal string GetJournalTemplate(string journalType, JournalItem ji)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="158" sc="80" el="182" ec="10">Components\JournalParser.cs</location>
+            <body hash="29689e0797b81375bf3431d455f0d55e"><![CDATA[{
+            string template = Services.Localization.Localization.GetString("journal_" + journalType, resxPath);
+            if (String.IsNullOrEmpty(template))
+            {
+                template = Services.Localization.Localization.GetString("journal_generic", resxPath);
+            }
+
+            template = Regex.Replace(template, "\\[BaseUrl\\]", url, RegexOptions.IgnoreCase);
+            template = template.Replace("[journalitem:action]", Services.Localization.Localization.GetString(journalType + ".Action", resxPath));
+            string pattern = "{CanComment}(.*?){/CanComment}";
+            string replacement = string.Empty;
+            if (CurrentUser.UserID > 0 && SocialGroupId <= 0) {
+                replacement = "$1";
+            }
+            if (CurrentUser.UserID > 0 && ji.SocialGroupId > 0) {
+                if (CurrentUser.IsInRole(ji.JournalOwner.Name)) {
+                    replacement = "$1";
+                } else {
+                    replacement = string.Empty;
+                }
+            }
+            template = Regex.Replace(template, pattern, replacement, RegexOptions.IgnoreCase);
+
+            return template;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLikeListHTML">
+          <declaration><![CDATA[internal string GetLikeListHTML(JournalItem ji, ref bool isLiked)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="183" sc="69" el="260" ec="4">Components\JournalParser.cs</location>
+            <body hash="60a9ae0d181f2ecbb7a7a227dcdceabf"><![CDATA[{
+			StringBuilder sb = new StringBuilder();
+            isLiked = false;
+			if (ji.JournalXML == null) {
+				return string.Empty;
+			}
+			XmlNodeList xLikes = ji.JournalXML.DocumentElement.SelectNodes("//likes/u");
+			if (xLikes == null){
+				return string.Empty;
+			}
+			 foreach(XmlNode xLike in xLikes) {
+				if (Convert.ToInt32(xLike.Attributes["uid"].Value.ToString()) == CurrentUser.UserID){
+					ji.CurrentUserLikes = true;
+                    isLiked = true;
+					break;
+				}
+
+			}
+			 int xc = 0;
+			sb.Append("<div class=\"likes\">");
+			if (xLikes.Count == 1 && ji.CurrentUserLikes) {
+				sb.Append("{resx:youlikethis}");
+			} else if (xLikes.Count > 1) {
+				if (ji.CurrentUserLikes) {
+					sb.Append("{resx:you}");
+					xc += 1;
+				}
+				foreach (XmlNode l in xLikes) {
+					int UserId = Convert.ToInt32(l.Attributes["uid"].Value.ToString());
+					string Name = l.Attributes["un"].Value.ToString();
+					if (!(UserId == CurrentUser.UserID)) {
+						if (xc < xLikes.Count - 1 & xc > 0) {
+							sb.Append(", ");
+						} else if (xc > 0 & xc < xLikes.Count & xc < 3) {
+							sb.Append(" {resx:and} ");
+						} else if (xc >= 3) {
+							int diff = (xLikes.Count - xc);
+							sb.Append(" {resx:and} " + (xLikes.Count - xc).ToString());
+							if (diff > 1) {
+								sb.Append(" {resx:others}");
+							} else {
+								sb.Append(" {resx:other}");
+							}
+							break; // TODO: might not be correct. Was : Exit For
+						}
+						sb.AppendFormat("<span id=\"user-{0}\" class=\"juser\">{1}</span>", UserId.ToString(), Name);
+						xc += 1;
+					}
+				}
+				if (xc == 1) {
+					sb.Append(" {resx:likesthis}");
+				} else if (xc>1 && isLiked) {
+					sb.Append(" {resx:likethis}");
+				}
+
+		} else {
+			foreach (XmlNode l in xLikes) {
+				int UserId = Convert.ToInt32(l.Attributes["uid"].Value.ToString());
+				string Name = l.Attributes["un"].Value.ToString();
+				sb.AppendFormat("<span id=\"user-{0}\" class=\"juser\">{1}</span>", UserId.ToString(), Name);
+				xc += 1;
+				if (xc == xLikes.Count - 1) {
+					sb.Append(" {resx:and} ");
+				} else if (xc < xLikes.Count - 1) {
+					sb.Append(", ");
+				}
+			}
+			if (xc == 1) {
+				sb.Append(" {resx:likesthis}");
+			} else if (xc>1 && isLiked) {
+				sb.Append(" {resx:likethis}");
+			}
+		}
+
+		   
+			sb.Append("</div>");
+			return sb.ToString();
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="GetList">
+          <declaration><![CDATA[public string GetList(int currentIndex, int rows)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="53" el="157" ec="4">Components\JournalParser.cs</location>
+            <body hash="6894fcd940741824d242aac46822427c"><![CDATA[{
+            if (CurrentUser.UserID > 0) {
+                isAdmin = CurrentUser.IsInRole(PortalSettings.AdministratorRoleName);
+            }
+			var jc = InternalJournalController.Instance;
+			var sb = new StringBuilder();
+			
+            string statusTemplate = Services.Localization.Localization.GetString("journal_status", resxPath);
+            string linkTemplate = Services.Localization.Localization.GetString("journal_link", resxPath);
+            string photoTemplate = Services.Localization.Localization.GetString("journal_photo", resxPath);
+            string fileTemplate = Services.Localization.Localization.GetString("journal_file", resxPath);
+
+            string rowTemplate = string.Empty;
+			
+
+            statusTemplate = Regex.Replace(statusTemplate, "\\[BaseUrl\\]", url, RegexOptions.IgnoreCase);
+            linkTemplate = Regex.Replace(linkTemplate, "\\[BaseUrl\\]", url, RegexOptions.IgnoreCase);
+            photoTemplate = Regex.Replace(photoTemplate, "\\[BaseUrl\\]", url, RegexOptions.IgnoreCase);
+            fileTemplate = Regex.Replace(fileTemplate, "\\[BaseUrl\\]", url, RegexOptions.IgnoreCase);
+
+            
+			string Comment = Localization.GetString("comment", resxPath);
+			string Comments = Localization.GetString("Comments", resxPath);
+            IList<JournalItem> journalList;
+            if (ProfileId > 0) {
+                journalList = jc.GetJournalItemsByProfile(PortalSettings.PortalId, ModuleId, CurrentUser.UserID, ProfileId, currentIndex, rows);
+            } else if (SocialGroupId > 0) {
+                journalList = jc.GetJournalItemsByGroup(PortalSettings.PortalId, ModuleId, CurrentUser.UserID, SocialGroupId, currentIndex, rows);
+            } else {
+                journalList = jc.GetJournalItems(PortalSettings.PortalId, ModuleId, CurrentUser.UserID, currentIndex, rows);
+            }
+            
+
+            string journalIds = "";
+            foreach(JournalItem ji in journalList){
+                journalIds +=ji.JournalId.ToString() + ';';
+            }
+
+            IList<CommentInfo> comments = jc.GetCommentsByJournalIds(journalIds);
+
+			foreach (JournalItem ji in journalList) {
+                string pattern = "{CanComment}(.*?){/CanComment}";
+                string replacement = string.Empty;
+                if (CurrentUser.UserID > 0 && SocialGroupId <= 0) {
+                   replacement = "$1";
+                }
+                if (CurrentUser.UserID > 0 && ji.SocialGroupId > 0) {
+                    if (CurrentUser.IsInRole(ji.JournalOwner.Name)) {
+                        replacement = "$1";
+                    } else {
+                        replacement = string.Empty;
+                    }
+                }
+                if (ji.JournalType == "status") {
+                    rowTemplate = statusTemplate;
+                    rowTemplate = Regex.Replace(rowTemplate, pattern, replacement, RegexOptions.IgnoreCase);
+                } else if (ji.JournalType == "link") {
+                    rowTemplate = linkTemplate;
+                    rowTemplate = Regex.Replace(rowTemplate, pattern, replacement, RegexOptions.IgnoreCase);
+                } else if (ji.JournalType == "photo") {
+                    rowTemplate = photoTemplate;
+                    rowTemplate = Regex.Replace(rowTemplate, pattern, replacement, RegexOptions.IgnoreCase);
+                } else if (ji.JournalType == "file") {
+                    rowTemplate = fileTemplate;
+                    rowTemplate = Regex.Replace(rowTemplate, pattern, replacement, RegexOptions.IgnoreCase);
+                } else {
+                    rowTemplate = GetJournalTemplate(ji.JournalType, ji);
+                }
+
+                
+                
+				Components.JournalControl ctl = new Components.JournalControl();
+				
+                bool isLiked = false;
+                ctl.LikeList = GetLikeListHTML(ji, ref isLiked);
+                ctl.LikeLink = String.Empty;
+                ctl.CommentLink = String.Empty;
+                
+                ctl.AuthorNameLink = "<a href=\"" + DotNetNuke.Common.Globals.NavigateURL(PortalSettings.UserTabId, string.Empty, new String[] {"userId=" + ji.JournalAuthor.Id.ToString()}) + "\">" + ji.JournalAuthor.Name + "</a>";
+                if (CurrentUser.UserID > 0) {
+                    ctl.CommentLink = "<a href=\"#\" id=\"cmtbtn-" + ji.JournalId + "\">" + Comment + "</a>";
+                    if (isLiked) {
+                        ctl.LikeLink = "<a href=\"#\" id=\"like-" + ji.JournalId + "\">{resx:unlike}</a>";
+                    } else {
+                        ctl.LikeLink = "<a href=\"#\" id=\"like-" + ji.JournalId + "\">{resx:like}</a>";
+                    }
+                }
+                
+                ctl.CommentArea = GetCommentAreaHTML(ji.JournalId, comments);
+				ji.TimeFrame = Common.Utilities.DateUtils.CalculateDateForDisplay(ji.DateCreated);
+                ji.DateCreated = CurrentUser.LocalTime(ji.DateCreated);
+ 
+                if (ji.Summary != null)
+                {
+                    ji.Summary = ji.Summary.Replace("\n", "<br />");
+                }
+                
+                if (ji.Body != null)
+                {
+                    ji.Body = ji.Body.Replace(Environment.NewLine, "<br />");
+                }
+				Components.JournalItemTokenReplace tokenReplace = new Components.JournalItemTokenReplace(ji, ctl);
+				string tmp = tokenReplace.ReplaceJournalItemTokens(rowTemplate);
+                tmp = tmp.Replace("<br>", "<br />");
+                sb.Append("<div class=\"journalrow\" id=\"jid-" + ji.JournalId + "\">");
+                if (isAdmin || CurrentUser.UserID == ji.UserId) {
+                    sb.Append("<div class=\"minidel\" onclick=\"journalDelete(this);\"></div>");
+                }
+				sb.Append(tmp);
+				sb.Append("</div>");
+			}
+          
+			return Utilities.LocalizeControl(sb.ToString());
+		}]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="isAdmin">
+          <declaration><![CDATA[private bool isAdmin = false;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="resxPath">
+          <declaration><![CDATA[private string resxPath = "~/DesktopModules/Journal/App_LocalResources/SharedResources.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="url">
+          <declaration><![CDATA[private string url = "";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="CurrentUser">
+          <declaration><![CDATA[private UserInfo CurrentUser]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="journalList">
+          <declaration><![CDATA[private List<JournalItem> journalList]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ModuleId">
+          <declaration><![CDATA[private int ModuleId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="PortalSettings">
+          <declaration><![CDATA[private PortalSettings PortalSettings]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ProfileId">
+          <declaration><![CDATA[private int ProfileId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SocialGroupId">
+          <declaration><![CDATA[private int SocialGroupId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="LinkInfo">
+      <declaration><![CDATA[public class LinkInfo]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public LinkInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="Description">
+          <declaration><![CDATA[public string Description]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Images">
+          <declaration><![CDATA[public List<ImageInfo> Images]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Title">
+          <declaration><![CDATA[public string Title]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="URL">
+          <declaration><![CDATA[public string URL]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Utilities">
+      <declaration><![CDATA[public class Utilities]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Utilities()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetImageFromURL">
+          <declaration><![CDATA[internal static Bitmap GetImageFromURL(string url)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="60" el="47" ec="10">Components\Utilities.cs</location>
+            <body hash="0bed8ee36c3af3d1a02e589e3ac7ca98"><![CDATA[{
+            string sImgName = string.Empty;
+            System.Net.WebRequest myRequest = default(System.Net.WebRequest);
+            Bitmap bmp = null;
+            try {
+                myRequest = System.Net.WebRequest.Create(url);
+                myRequest.Proxy = null;
+                using (WebResponse myResponse = myRequest.GetResponse()) {
+                    using (Stream myStream = myResponse.GetResponseStream()) {
+                        string sContentType = myResponse.ContentType;
+                        string sExt = string.Empty;
+                        if (sContentType.Contains("png")) {
+                            sExt = ".png";
+                        } else if (sContentType.Contains("jpg")) {
+                            sExt = ".jpg";
+                        } else if (sContentType.Contains("jpeg")) {
+                            sExt = ".jpg";
+                        } else if (sContentType.Contains("gif")) {
+                            sExt = ".gif";
+                        }
+                        if (!string.IsNullOrEmpty(sExt)) {
+                            bmp = new Bitmap(myStream);
+                        }
+
+                    }
+                }
+
+                return bmp;
+
+
+            } catch {
+                return null;
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLinkData">
+          <declaration><![CDATA[internal static LinkInfo GetLinkData(string URL)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="58" el="165" ec="10">Components\Utilities.cs</location>
+            <body hash="1d446a6a29ecf2e2e8d378be5e3c0b98"><![CDATA[{
+            string sPage = GetPageFromURL(URL, string.Empty, string.Empty);
+            LinkInfo link = new LinkInfo();
+            if (string.IsNullOrEmpty(sPage)) {
+                return link;
+            }
+            string sTitle = string.Empty;
+            string sDescription = string.Empty;
+            string sImage = string.Empty;
+            
+            link.URL = URL;
+            link.Images = new List<ImageInfo>();
+            Match m = Regex.Match(sPage, "<(title)[^>]*?>((?:.|\\n)*?)</\\s*\\1\\s*>", RegexOptions.IgnoreCase & RegexOptions.Multiline);
+            if (m.Success) {
+                link.Title = m.Groups[2].ToString().Trim();
+            }
+            //
+            Regex regExp = new Regex("<meta\\s*(?:(?:\\b(\\w|-)+\\b\\s*(?:=\\s*(?:\"[^\"]*\"|'[^']*'|[^\"'<> ]+)\\s*)?)*)/?\\s*>", RegexOptions.IgnoreCase & RegexOptions.Multiline);
+            MatchCollection matches = default(MatchCollection);
+            matches = regExp.Matches(sPage);
+            int i = 0;
+            foreach (Match match in matches) {
+                string sTempDesc = match.Groups[0].Value;
+                Regex subReg = new Regex("<meta[\\s]+[^>]*?(((name|property)*?[\\s]?=[\\s\\x27\\x22]+(.*?)[\\x27\\x22]+.*?)|(content*?[\\s]?=[\\s\\x27\\x22]+(.*?)[\\x27\\x22]+.*?))((content*?[\\s]?=[\\s\\x27\\x22]+(.*?)[\\x27\\x22]+.*?>)|(name*?[\\s]?=[\\s\\x27\\x22]+(.*?)[\\x27\\x22]+.*?>)|>)", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Singleline);
+                foreach (Match subM in subReg.Matches(sTempDesc)) {
+                    if (subM.Groups[4].Value.ToUpperInvariant() == "OG:DESCRIPTION") {
+                        link.Description = subM.Groups[9].Value;
+                    } else if (subM.Groups[4].Value.ToUpperInvariant() == "DESCRIPTION".ToUpperInvariant()) {
+                        link.Description = subM.Groups[9].Value;
+                    }
+                    if (subM.Groups[4].Value.ToUpperInvariant() == "OG:TITLE") {
+                        link.Title = subM.Groups[9].Value;
+                    }
+                    
+                    if (subM.Groups[4].Value.ToUpperInvariant() == "OG:IMAGE") {
+                        sImage = subM.Groups[9].Value;
+                        ImageInfo img = new ImageInfo();
+                        img.URL = sImage;
+                        link.Images.Add(img);
+                        i += 1;
+                    }
+                }
+            }
+            if (!string.IsNullOrEmpty(link.Description)) {
+                link.Description = HttpUtility.HtmlDecode(link.Description);
+                link.Description = HttpUtility.UrlDecode(link.Description);
+                link.Description = RemoveHTML(link.Description);
+            }
+            if (!string.IsNullOrEmpty(link.Title)) {
+                link.Title = link.Title.Replace("&amp;", "&");
+            }
+            regExp = new Regex("<img[\\s]+[^>]*?((alt*?[\\s]?=[\\s\\x27\\x22]+(.*?)[\\x27\\x22]+.*?)|(src*?[\\s]?=[\\s\\x27\\x22]+(.*?)[\\x27\\x22]+.*?))((src*?[\\s]?=[\\s\\x27\\x22]+(.*?)[\\x27\\x22]+.*?>)|(alt*?[\\s]?=[\\s\\x27\\x22]+(.*?)[\\x27\\x22]+.*?>)|>)", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Singleline);
+            matches = regExp.Matches(sPage);
+
+            string imgList = string.Empty;
+            string hostUrl = string.Empty;
+            if (!URL.Contains("http")) {
+                URL = "http://" + URL;
+            } 
+            Uri uri = new Uri(URL);
+            hostUrl = uri.Host;
+            if (URL.Contains("https:")) {
+                hostUrl = "https://" + hostUrl;
+            } else {
+                hostUrl = "http://" + hostUrl;
+            }
+            foreach (Match match in matches) {
+                string sImg = match.Groups[5].Value;
+                if (string.IsNullOrEmpty(sImg)) {
+                    sImg = match.Groups[8].Value;
+                }
+                if (!string.IsNullOrEmpty(sImg)) {
+                    if (!sImg.Contains("http")) {
+                        sImg = hostUrl + sImg;
+                    }
+                  
+                    ImageInfo img = new ImageInfo();
+                    img.URL = sImg;
+                    if (!imgList.Contains(sImg)) {
+                        Bitmap bmp = Utilities.GetImageFromURL(sImg);
+                        if ((bmp != null)) {
+                            if (bmp.Height > 25 & bmp.Height < 500 & bmp.Width > 25 & bmp.Width < 500) {
+                                link.Images.Add(img);
+                                imgList += sImg;
+                                i += 1;
+
+                            }
+                        }
+                    }
+                    if (i == 10) {
+                        break; // TODO: might not be correct. Was : Exit For
+                    }
+                }
+
+            }
+            return link;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPageFromURL">
+          <declaration><![CDATA[internal static string GetPageFromURL(string url, string username, string password)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="166" sc="93" el="205" ec="10">Components\Utilities.cs</location>
+            <body hash="de9e7b671b80d2cddd24aef0c5457e23"><![CDATA[{
+
+            url = PrepareURL(url);
+            HttpWebRequest objWebRequest = default(HttpWebRequest);
+            HttpWebResponse objWebResponse = default(HttpWebResponse);
+            CookieContainer cookies = new CookieContainer();
+            Uri objURI = new Uri(url);
+            objWebRequest = (HttpWebRequest)HttpWebRequest.Create(objURI);
+            objWebRequest.KeepAlive = false;
+            objWebRequest.Proxy = null;
+            objWebRequest.CookieContainer = cookies;
+            if (!string.IsNullOrEmpty(username) & !string.IsNullOrEmpty(password)) {
+                NetworkCredential nc = new NetworkCredential(username, password);
+                objWebRequest.Credentials = nc;
+            }
+            string sHTML = string.Empty;
+            try {
+                objWebResponse = (HttpWebResponse)objWebRequest.GetResponse();
+                Encoding enc = Encoding.UTF8;
+
+
+                string contentType = objWebResponse.ContentType;
+
+                if ((objWebRequest.HaveResponse == true) & objWebResponse.StatusCode == HttpStatusCode.OK) {
+                    objWebResponse.Cookies = objWebRequest.CookieContainer.GetCookies(objWebRequest.RequestUri);
+                    using (Stream objStream = objWebResponse.GetResponseStream()) {
+                        using (StreamReader objStreamReader = new StreamReader(objStream, enc)) {
+                            sHTML = objStreamReader.ReadToEnd();
+                            objStreamReader.Close();
+                        }
+                        objStream.Close();
+                    }
+                }
+                objWebResponse.Close();
+            } catch (Exception ex) {
+                Services.Exceptions.Exceptions.LogException(ex);
+            }
+            
+            return sHTML;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSharedResource">
+          <declaration><![CDATA[public static string GetSharedResource(string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="227" sc="60" el="235" ec="10">Components\Utilities.cs</location>
+            <body hash="aef2fd72138c4f29db220beffdff1d7e"><![CDATA[{
+            string sValue = key;
+            sValue = DotNetNuke.Services.Localization.Localization.GetString(key, Constants.SharedResourcesPath);
+            if (sValue == string.Empty) {
+                return key;
+            } else {
+                return sValue;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LocalizeControl">
+          <declaration><![CDATA[public static string LocalizeControl(string controlText)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="207" sc="66" el="226" ec="10">Components\Utilities.cs</location>
+            <body hash="3c8cb566afd31801280108cf14d397fb"><![CDATA[{
+            string sKey = "";
+            string sReplace = "";
+            string pattern = "(\\{resx:.+?\\})";
+            Regex regExp = new Regex(pattern);
+            MatchCollection matches = default(MatchCollection);
+            matches = regExp.Matches(controlText);
+            foreach (Match match in matches) {
+                sKey = match.Value;
+                sReplace = GetSharedResource(sKey);
+                
+                string newValue = match.Value;
+                if (!string.IsNullOrEmpty(sReplace)) {
+                    newValue = sReplace;
+                }
+                controlText = controlText.Replace(sKey, newValue);
+            }
+
+            return controlText;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PrepareURL">
+          <declaration><![CDATA[internal static string PrepareURL(string url)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="55" el="68" ec="10">Components\Utilities.cs</location>
+            <body hash="0de9a2e98510e1d060b647d8301f696c"><![CDATA[{
+            url = url.Trim();
+            if (!url.StartsWith("http")) {
+                url = "http://" + url;
+            }
+            if (url.Contains("https://")) {
+                url = url.Replace("https://", "http://");
+            }
+            if (url.Contains("http://http://")) {
+                url = url.Replace("http://http://", "http://");
+            }
+            if (!(url.IndexOf("http://") == 0)) {
+                url = "http://" + url;
+            }
+            Uri objURI = null;
+
+            objURI = new Uri(url);
+            return url;
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveHTML">
+          <declaration><![CDATA[public static string RemoveHTML(string sText)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="238" sc="9" el="254" ec="10">Components\Utilities.cs</location>
+            <body hash="478b6d42528064dbcea3b244df43c37e"><![CDATA[{
+            if (string.IsNullOrEmpty(sText))
+            {
+                return string.Empty;
+            }
+            sText = HttpUtility.HtmlDecode(sText);
+            sText = HttpUtility.UrlDecode(sText);
+            sText = sText.Trim();
+            if (string.IsNullOrEmpty(sText))
+            {
+                return string.Empty;
+            }
+            string pattern = "<(.|\\n)*?>";
+            sText = Regex.Replace(sText, pattern, string.Empty, RegexOptions.IgnoreCase);
+            sText = HttpUtility.HtmlEncode(sText);
+            return sText;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Journal.Controls">
+    <class name="JournalListControl">
+      <declaration><![CDATA[public class JournalListControl : WebControl]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public JournalListControl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Render">
+          <declaration><![CDATA[protected override void Render(HtmlTextWriter output)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="63" el="48" ec="10">JournalListControl.cs</location>
+            <body hash="afda0fb9ab3cf1461a7db49709251f69"><![CDATA[{
+            if (Enabled) {
+                if (CurrentIndex < 0) {
+                    CurrentIndex = 0;
+                }
+                JournalParser jp = new JournalParser(portalSettings, ModuleId, ProfileId, SocialGroupId, userInfo);
+                output.Write(jp.GetList(CurrentIndex, PageSize));
+            }
+            
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CurrentIndex">
+          <declaration><![CDATA[public int CurrentIndex]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="ModuleId">
+          <declaration><![CDATA[public int ModuleId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="PageSize">
+          <declaration><![CDATA[public int PageSize]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="portalSettings">
+          <declaration><![CDATA[public PortalSettings portalSettings]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="17" el="26" ec="14">JournalListControl.cs</location>
+            <body hash="dd2e106762367af17314815faca0cf19"><![CDATA[{
+                return PortalController.GetCurrentPortalSettings();
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ProfileId">
+          <declaration><![CDATA[public int ProfileId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="SocialGroupId">
+          <declaration><![CDATA[public int SocialGroupId]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="userInfo">
+          <declaration><![CDATA[public UserInfo userInfo]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="17" el="32" ec="14">JournalListControl.cs</location>
+            <body hash="9543ef0a6638c2fc2198ab6f36250d9e"><![CDATA[{
+                return UserController.GetCurrentUserInfo();
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

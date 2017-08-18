@@ -1,0 +1,4101 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.PersonaBar.Security.dll" version="01.01.00" generated="2017-08-10 12:34:37Z" generationTime="5.5549389">
+  <namespace name="Dnn.PersonaBar.Security.Components">
+    <class name="AuditChecks">
+      <declaration><![CDATA[public class AuditChecks]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public AuditChecks()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="12" sc="9" el="38" ec="10">Components\AuditChecks.cs</location>
+            <body hash="bb50874051b4f10afc7b1f3a6df5bcea"><![CDATA[public AuditChecks()
+        {
+            var checks = new List<IAuditCheck>
+            {
+                new CheckDebug(),
+                new CheckTracing(),
+                new CheckBiography(),
+                new CheckSiteRegistration(),
+                new CheckRarelyUsedSuperuser(),
+                new CheckSuperuserOldPassword(),
+                new CheckUnexpectedExtensions(),
+                new CheckDefaultPage(),
+                new CheckModuleHeaderAndFooter(),
+                new CheckPasswordFormat(),
+                new CheckDiskAcccessPermissions(),
+                new CheckSqlRisk(),
+                new CheckAllowableFileExtensions(),
+                new CheckHiddenSystemFiles(),
+            };
+
+            if (Globals.NETFrameworkVersion <= new Version(4, 5, 1))
+            {
+                checks.Insert(2, new CheckViewstatemac());
+            }
+
+            _auditChecks = checks.AsReadOnly();
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="DoChecks">
+          <declaration><![CDATA[public List<CheckResult> DoChecks()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="49" ec="10">Components\AuditChecks.cs</location>
+            <body hash="c6c937534f6d5159a650c0f71548635a"><![CDATA[{
+            var results = new List<CheckResult>();
+            foreach (var check in _auditChecks)
+            {
+                var result = check.Execute();
+                results.Add(result);
+            }
+            return results;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_auditChecks">
+          <declaration><![CDATA[private readonly IEnumerable<IAuditCheck> _auditChecks;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckResult">
+      <declaration><![CDATA[public class CheckResult]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckResult(SeverityEnum severity, string checkname)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="9" sc="9" el="14" ec="10">Components\CheckResult.cs</location>
+            <body hash="fa5e68b3eae48f63ee9a3f0b542aec5b"><![CDATA[public CheckResult(SeverityEnum severity, string checkname)
+        {
+            Severity = severity;
+            CheckName = checkname;
+            Notes = new List<string>();
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CheckName">
+          <declaration><![CDATA[public string CheckName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="35" el="17" ec="39">Components\CheckResult.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="17" sc="40" el="17" ec="44">Components\CheckResult.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CheckNameText">
+          <declaration><![CDATA[public string CheckNameText]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="13" el="43" ec="14">Components\CheckResult.cs</location>
+            <body hash="8adf8f924dfac0f2cb135424740aed4c"><![CDATA[{
+
+                return CheckName + " : " + Localization.GetString(CheckName + "Name", LocalResourceFile);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="FailureText">
+          <declaration><![CDATA[public string FailureText]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LocalResourceFile">
+          <declaration><![CDATA[private string LocalResourceFile]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Notes">
+          <declaration><![CDATA[public IList<string> Notes]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="38" el="46" ec="42">Components\CheckResult.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="46" sc="43" el="46" ec="47">Components\CheckResult.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Reason">
+          <declaration><![CDATA[public string Reason]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="22" sc="13" el="24" ec="14">Components\CheckResult.cs</location>
+            <body hash="d57c7a8878b4290c261d29394196b7e2"><![CDATA[{
+                return Localization.GetString(CheckName + "Reason", LocalResourceFile);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Severity">
+          <declaration><![CDATA[public SeverityEnum Severity]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="40" el="16" ec="44">Components\CheckResult.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="16" sc="45" el="16" ec="49">Components\CheckResult.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SuccessText">
+          <declaration><![CDATA[public string SuccessText]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckViewstatemac">
+      <declaration><![CDATA[public class CheckViewstatemac : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckViewstatemac()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="10" sc="9" el="33" ec="10">Components\Checks\CheckViewstatemac.cs</location>
+            <body hash="5862e4386490c36292a756c9b6374dfd"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckViewstatemac");
+            try
+            {
+                var page = HttpContext.Current.Handler as Page;
+
+                if (page != null)
+                {
+                    if (page.EnableViewStateMac == false)
+                    {
+                        result.Severity = SeverityEnum.Failure;
+                    }
+                    else
+                    {
+                        result.Severity = SeverityEnum.Pass;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="IAuditCheck">
+      <declaration><![CDATA[public interface IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[CheckResult Execute();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SecurityController">
+      <declaration><![CDATA[public class SecurityController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SecurityController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddChildNodes">
+          <declaration><![CDATA[private void AddChildNodes(TabDto parentNode, PortalInfo portal, string cultureCode)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="128" sc="9" el="151" ec="10">Components\SecurityController.cs</location>
+            <body hash="6c98b5064b9e5104b7f79b31a6a38438"><![CDATA[{
+            if (parentNode.ChildTabs != null)
+            {
+                parentNode.ChildTabs.Clear();
+                int parentId;
+                int.TryParse(parentNode.TabId, out parentId);
+                var tabs = GetFilteredTabs(TabController.Instance.GetTabsByPortal(portal.PortalID).WithCulture(cultureCode, true)).WithParentId(parentId);
+
+                foreach (var tab in tabs)
+                {
+                    if (tab.ParentId == parentId)
+                    {
+                        var node = new TabDto
+                        {
+                            Name = tab.TabName,
+                            TabId = tab.TabID.ToString(CultureInfo.InvariantCulture),
+                            ParentTabId = tab.ParentId
+                        };
+                        AddChildNodes(node, portal, cultureCode);
+                        parentNode.ChildTabs.Add(node);
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAdminUsers">
+          <declaration><![CDATA[public IList<UserRoleInfo> GetAdminUsers(int portalId, string cultureCode = "")]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="9" el="69" ec="10">Components\SecurityController.cs</location>
+            <body hash="0d498e3ede185810d62c185f8f6256a9"><![CDATA[{
+            var activeLanguage = string.IsNullOrEmpty(cultureCode)
+                ? LocaleController.Instance.GetDefaultLocale(portalId).Code
+                : cultureCode;
+            var portal = PortalController.Instance.GetPortal(portalId, activeLanguage);
+            var adminUsers = RoleController.Instance.GetUserRoles(portalId, null, portal.AdministratorRoleName);
+
+            return adminUsers;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAuthenticationProviders">
+          <declaration><![CDATA[public IEnumerable<string> GetAuthenticationProviders()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="58" ec="10">Components\SecurityController.cs</location>
+            <body hash="a82de3fe92383e4c6c9666b15af12e48"><![CDATA[{
+            var authSystems = AuthenticationController.GetEnabledAuthenticationServices();
+            UserControl uc = new UserControl();
+            var authProviders = (from authProvider in authSystems
+                let authLoginControl = (AuthenticationLoginBase) uc.LoadControl("~/" + authProvider.LoginControlSrc)
+                let oAuthLoginControl = authLoginControl as OAuthLoginBase
+                where oAuthLoginControl == null && authLoginControl.Enabled
+                select authProvider.AuthenticationType);
+
+            return authProviders;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFilteredTabs">
+          <declaration><![CDATA[private TabCollection GetFilteredTabs(TabCollection tabs)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="154" sc="9" el="157" ec="10">Components\SecurityController.cs</location>
+            <body hash="8a146617dcb37b8c4fc2dee26680cff5"><![CDATA[{
+            var filteredTabs = tabs.Where(kvp => !kvp.Value.IsSystem && !kvp.Value.IsDeleted && !kvp.Value.DisableLink).Select(kvp => kvp.Value);
+            return new TabCollection(filteredTabs);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetModifiedSettings">
+          <declaration><![CDATA[public List<DataTable> GetModifiedSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="109" sc="9" el="123" ec="10">Components\SecurityController.cs</location>
+            <body hash="3833abda2f7a0385776fe1c18c3e402d"><![CDATA[{
+            var tables = new List<DataTable>();
+            var reader = DataProvider.Instance().ExecuteReader("SecurityAnalyzer_GetModifiedSettings");
+            if (reader != null)
+            {
+                do
+                {
+                    var table = new DataTable { Locale = CultureInfo.CurrentCulture };
+                    table.Load(reader);
+                    tables.Add(table);
+                }
+                while (!reader.IsClosed); 
+            }
+            return tables;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPortalTabs">
+          <declaration><![CDATA[public TabDto GetPortalTabs(int portalId, string cultureCode, bool isMultiLanguage)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="106" ec="10">Components\SecurityController.cs</location>
+            <body hash="2aa542dd8b00a842ab523603883563ab"><![CDATA[{
+            if (string.IsNullOrEmpty(cultureCode))
+            {
+                cultureCode = LocaleController.Instance.GetDefaultLocale(portalId).Code;
+            }
+
+            var rootNode = new TabDto
+            {
+                Name = PortalSettings.PortalName,
+                TabId = Null.NullInteger.ToString(CultureInfo.InvariantCulture),
+                ParentTabId = Null.NullInteger,
+                ChildTabs = new List<TabDto>()
+            };
+
+            var portalInfo = PortalController.Instance.GetPortal(portalId);
+            var tabs = TabController.GetPortalTabs(isMultiLanguage ? TabController.GetTabsBySortOrder(portalId, portalInfo.DefaultLanguage, true) : TabController.GetTabsBySortOrder(portalId, cultureCode, true), Null.NullInteger, false, "<" + Localization.GetString("None_Specified") + ">", true, false, true, false, false).Where(t => !t.IsSystem).ToList();
+            foreach (var tab in tabs)
+            {
+                if (tab.Level == 0 && tab.TabID != portalInfo.AdminTabId)
+                {
+                    var node = new TabDto
+                    {
+                        Name = tab.TabName,
+                        TabId = tab.TabID.ToString(CultureInfo.InvariantCulture),
+                        ParentTabId = tab.ParentId,
+                        ChildTabs = new List<TabDto>()
+                    };
+
+                    AddChildNodes(node, portalInfo, cultureCode);
+                    rootNode.ChildTabs.Add(node);
+                }
+            }
+
+            return rootNode;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="PortalSettings">
+          <declaration><![CDATA[private static PortalSettings PortalSettings]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="57" el="45" ec="109">Components\SecurityController.cs</location>
+            <body hash="9a9acd53c40c448eb883c37aefbb294b"><![CDATA[PortalController.Instance.GetCurrentPortalSettings(]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SeverityEnum">
+      <declaration><![CDATA[public enum SeverityEnum]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="Failure">
+          <declaration><![CDATA[public const SeverityEnum Failure = 2;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Pass">
+          <declaration><![CDATA[public const SeverityEnum Pass = 0;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Unverified">
+          <declaration><![CDATA[public const SeverityEnum Unverified = 3;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Warning">
+          <declaration><![CDATA[public const SeverityEnum Warning = 1;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Utility">
+      <declaration><![CDATA[public class Utility]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Utility()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static Utility()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="18" sc="9" el="29" ec="11">Components\Utility.cs</location>
+            <body hash="463d3fa0fc91e6a2d37a2dabec9214ab"><![CDATA[private static readonly IList<Regex> ExcludedFilePathRegexList = new List<Regex>()
+        {
+            new Regex(Regex.Escape("\\App_Data\\ClientDependency"), RegexOptions.Compiled | RegexOptions.IgnoreCase),
+            new Regex(Regex.Escape("\\App_Data\\Search"), RegexOptions.Compiled | RegexOptions.IgnoreCase),
+            new Regex(Regex.Escape("\\d+-System\\Cache\\Pages"), RegexOptions.Compiled | RegexOptions.IgnoreCase),
+            new Regex(Regex.Escape("\\d+-System\\Thumbnailsy"), RegexOptions.Compiled | RegexOptions.IgnoreCase),
+            new Regex(Regex.Escape("\\Portals\\_default\\Logs"), RegexOptions.Compiled | RegexOptions.IgnoreCase),
+            new Regex(Regex.Escape("\\App_Data\\_imagecache"), RegexOptions.Compiled | RegexOptions.IgnoreCase),
+            new Regex(Regex.Escape(AppDomain.CurrentDomain.BaseDirectory + "Default.aspx"), RegexOptions.Compiled | RegexOptions.IgnoreCase),
+            new Regex(Regex.Escape(AppDomain.CurrentDomain.BaseDirectory + "Default.aspx.cs"), RegexOptions.Compiled | RegexOptions.IgnoreCase),
+            new Regex(Regex.Escape(AppDomain.CurrentDomain.BaseDirectory + "web.config"), RegexOptions.Compiled | RegexOptions.IgnoreCase),
+        };]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CleanUpInstallerFiles">
+          <declaration><![CDATA[public static void CleanUpInstallerFiles()]]></declaration>
+          <documentation>
+            <summary>
+     delete unnedded installwizard files
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="66" ec="10">Components\Utility.cs</location>
+            <body hash="bee50a7af1ecbb3538a5b62dd8edc90a"><![CDATA[{
+            var files = new List<string>
+            {
+                "DotNetNuke.install.config",
+                "DotNetNuke.install.config.resources",
+                "InstallWizard.aspx",
+                "InstallWizard.aspx.cs",
+                "InstallWizard.aspx.designer.cs",
+                "UpgradeWizard.aspx",
+                "UpgradeWizard.aspx.cs",
+                "UpgradeWizard.aspx.designer.cs",
+                "Install.aspx",
+                "Install.aspx.cs",
+                "Install.aspx.designer.cs",
+            };
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    FileSystemUtils.DeleteFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Install\\" + file));
+                }
+                catch (Exception)
+                {
+                    //do nothing.
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FindUnexpectedExtensions">
+          <declaration><![CDATA[public static IEnumerable<string> FindUnexpectedExtensions()]]></declaration>
+          <documentation>
+            <summary>
+     search all website files for files with a potential dangerous extension
+ </summary>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="139" sc="9" el="143" ec="10">Components\Utility.cs</location>
+            <body hash="eaefc5084f43de2ada88d597307302ab"><![CDATA[{
+            var files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.*", SearchOption.AllDirectories)
+            .Where(s => s.EndsWith(".asp", StringComparison.InvariantCultureIgnoreCase) || s.EndsWith(".php", StringComparison.InvariantCultureIgnoreCase));
+            return files;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FineHiddenSystemFiles">
+          <declaration><![CDATA[public static IEnumerable<string> FineHiddenSystemFiles()]]></declaration>
+          <documentation>
+            <summary>
+     search all website files which are hidden or system.
+ </summary>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="150" sc="9" el="163" ec="10">Components\Utility.cs</location>
+            <body hash="3fae82440b140fd5d25278eabdeed6bf"><![CDATA[{
+            var files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.*", SearchOption.AllDirectories)
+            .Where(f =>
+            {
+                if (Path.GetFileName(f)?.Equals("thumbs.db", StringComparison.InvariantCultureIgnoreCase) == true)
+                {
+                    return false;
+                }
+
+                var attributes = File.GetAttributes(f);
+                return attributes.HasFlag(FileAttributes.Hidden) || attributes.HasFlag(FileAttributes.System);
+            });
+            return files;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetApplicationType">
+          <declaration><![CDATA[public static string GetApplicationType()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="227" sc="9" el="240" ec="10">Components\Utility.cs</location>
+            <body hash="955ac60b27af9438c9a6e50e80e18e29"><![CDATA[{
+            switch (DotNetNukeContext.Current.Application.Name)
+            {
+                case "DNNCORP.CE":
+                    return "Platform";
+                case "DNNCORP.XE":
+                case "DNNCORP.PE":
+                    return "Content";
+                case "DNNCORP.SOCIAL":
+                    return "Social";
+                default:
+                    return "Platform";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetApplicationVersion">
+          <declaration><![CDATA[public static string GetApplicationVersion()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="222" sc="9" el="224" ec="10">Components\Utility.cs</location>
+            <body hash="28431d54c5c67d21b34379a93988e1c9"><![CDATA[{
+            return DotNetNukeContext.Current.Application.Version.ToString(3);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFileCheckSum">
+          <declaration><![CDATA[public static string GetFileCheckSum(string fileName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="211" sc="9" el="219" ec="10">Components\Utility.cs</location>
+            <body hash="42d908087f9ffaabd8964abc8ba31a10"><![CDATA[{
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(fileName))
+                {
+                    return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLower();
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFileText">
+          <declaration><![CDATA[private static string GetFileText(string name)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="87" ec="10">Components\Utility.cs</location>
+            <body hash="a179ed738f487bb8fb361f7578b69e13"><![CDATA[{
+            var fileContents = String.Empty;
+            try
+            {
+                // If the file has been deleted since we took  
+                // the snapshot, ignore it and return the empty string. 
+                if (IsReadable(name))
+                {
+                    fileContents = File.ReadAllText(name);
+                }
+            }
+            catch (Exception)
+            {
+                
+                //might be a locking issue
+            }
+          
+            return fileContents;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLastModifiedExecutableFiles">
+          <declaration><![CDATA[public static IList<FileInfo> GetLastModifiedExecutableFiles()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="254" sc="9" el="276" ec="10">Components\Utility.cs</location>
+            <body hash="32aa019336d21b9f415293b861139d7c"><![CDATA[{
+            var executableExtensions = new List<string>() {".asp", ".aspx", ".php"};
+            var files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.*", SearchOption.AllDirectories)
+                .Where(f =>
+                {
+                    var extension = Path.GetExtension(f);
+                    return extension != null && executableExtensions.Contains(extension.ToLowerInvariant());
+                }).ToList();
+            files.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Default.aspx.cs"));
+            files.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "web.config"));
+
+            var defaultPage = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Default.aspx");
+            if (!files.Contains(defaultPage))
+            {
+                files.Add(defaultPage);
+            }
+
+            return files
+            .Select(f => new FileInfo(f))
+            .OrderByDescending(f => f.LastWriteTime)
+            .Take(ModifiedFilesCount).ToList();
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLastModifiedFiles">
+          <declaration><![CDATA[public static IList<FileInfo> GetLastModifiedFiles()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="243" sc="9" el="251" ec="10">Components\Utility.cs</location>
+            <body hash="851ef1519920251973d8b1d5400d7fd2"><![CDATA[{
+            var files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.*", SearchOption.AllDirectories)
+                .Where(f => !ExcludedFilePathRegexList.Any(r => r.IsMatch(f)))
+                .Select(f => new FileInfo(f))
+                .OrderByDescending(f => f.LastWriteTime)
+                .Take(ModifiedFilesCount).ToList();
+
+            return files;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsReadable">
+          <declaration><![CDATA[private static bool IsReadable(string name)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="90" sc="9" el="103" ec="10">Components\Utility.cs</location>
+            <body hash="68b56c6e551e18f832f2120692614772"><![CDATA[{
+            if (!File.Exists(name))
+            {
+                return false;
+            }
+
+            var file = new FileInfo(name);
+            if (file.Length > MaxFileSize) //when file large than 10M, then don't read it.
+            {
+                return false;
+            }
+
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadFileSumData">
+          <declaration><![CDATA[public static XmlDocument LoadFileSumData()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="190" sc="9" el="208" ec="10">Components\Utility.cs</location>
+            <body hash="8fe8d0ccec57195dbb66869698e4c72c"><![CDATA[{
+            using (
+                var stream =
+                    Assembly.GetExecutingAssembly()
+                        .GetManifestResourceStream("Dnn.PersonaBar.Security.Components.Resources.sums.resources"))
+            {
+                if (stream != null)
+                {
+                    var xmlDocument = new XmlDocument();
+                    xmlDocument.Load(stream);
+
+                    return xmlDocument;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SearchDatabase">
+          <declaration><![CDATA[public static List<object> SearchDatabase(string searchText)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="166" sc="9" el="187" ec="10">Components\Utility.cs</location>
+            <body hash="4fbebde5468de2687b12c7f1330ec8e9"><![CDATA[{
+            List<object> results = new List<object>();
+            var dataProvider = DataProvider.Instance();
+
+            try
+            {
+                var dr = dataProvider.ExecuteReader("SecurityAnalyzer_SearchAllTables", searchText);
+                while (dr.Read())
+                {
+
+                    results.Add(new
+                    {
+                        ColumnName = dr["ColumnName"],
+                        ColumnValue = dr["ColumnValue"]
+                    });
+                }
+            }
+            catch
+            {
+            }
+            return results;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SearchFiles">
+          <declaration><![CDATA[public static IEnumerable<object> SearchFiles(string searchText)]]></declaration>
+          <documentation>
+            <summary>
+     search all files in the website for matching text
+ </summary>
+ <param name="searchText">the matching text</param>
+ <returns>ienumerable of file names</returns></documentation>
+          <codeblock>
+            <location sl="111" sc="9" el="132" ec="10">Components\Utility.cs</location>
+            <body hash="e7cec4bd2a5768b0a5f11ea8f8cadd91"><![CDATA[{
+            try
+            {
+                var dir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+                IEnumerable<FileInfo> fileList = dir.GetFiles("*.*", SearchOption.AllDirectories);
+                var queryMatchingFiles =
+                    from file in fileList
+                    let fileText = GetFileText(file.FullName)
+                    where fileText.IndexOf(searchText, StringComparison.InvariantCultureIgnoreCase) > -1
+                    select file;
+                return queryMatchingFiles.Select(f => new
+                {
+                    FileName = f.Name,
+                    LastWriteTime = f.LastWriteTime.ToString(CultureInfo.InvariantCulture)
+                });
+            }
+            catch
+            {
+                //suppress any unexpected error
+            }
+            return null;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="ExcludedFilePathRegexList">
+          <declaration><![CDATA[private static readonly IList<Regex> ExcludedFilePathRegexList = new List<Regex>]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MaxFileSize">
+          <declaration><![CDATA[private const long MaxFileSize = 10485760L;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ModifiedFilesCount">
+          <declaration><![CDATA[private const int ModifiedFilesCount = 50;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Security.Components.Checks">
+    <class name="CheckAllowableFileExtensions">
+      <declaration><![CDATA[public class CheckAllowableFileExtensions : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckAllowableFileExtensions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="9" sc="9" el="30" ec="10">Components\Checks\CheckAllowableFileExtensions.cs</location>
+            <body hash="f7d665090c9b272e2bb75802414a9c10"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckAllowableFileExtensions");
+            try
+            {
+                if (Host.AllowedExtensionWhitelist.IsAllowedExtension("asp")
+                        || Host.AllowedExtensionWhitelist.IsAllowedExtension("aspx")
+                        || Host.AllowedExtensionWhitelist.IsAllowedExtension("php"))
+                {
+                    result.Severity = SeverityEnum.Failure;
+                    result.Notes.Add("Extensions: " + Host.AllowedExtensionWhitelist.ToDisplayString());
+                }
+                else
+                {
+                    result.Severity = SeverityEnum.Pass;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckBiography">
+      <declaration><![CDATA[public class CheckBiography : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckBiography()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="11" sc="9" el="35" ec="10">Components\Checks\CheckBiography.cs</location>
+            <body hash="1938545a9e09cbddad570827d57787e9"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckBiography");
+            try
+            {
+                var portalController = new PortalController();
+                var controller = new ListController();
+
+                var richTextDataType = controller.GetListEntryInfo("DataType", "RichText");
+                result.Severity = SeverityEnum.Pass;
+                foreach (PortalInfo portal in portalController.GetPortals())
+                {
+                    var pd = ProfileController.GetPropertyDefinitionByName(portal.PortalID, "Biography");
+                    if (pd != null && pd.DataType == richTextDataType.EntryID)
+                    {
+                        result.Severity = SeverityEnum.Failure;
+                        result.Notes.Add("Portal:" + portal.PortalName);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckDebug">
+      <declaration><![CDATA[public class CheckDebug : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckDebug()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="8" sc="9" el="16" ec="10">Components\Checks\CheckDebug.cs</location>
+            <body hash="c0d613f54a270c74b01f0a7af4a49ad0"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckDebug")
+            {
+                Severity = HttpContext.Current.IsDebuggingEnabled
+                    ? SeverityEnum.Warning
+                    : SeverityEnum.Pass
+            };
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckDefaultPage">
+      <declaration><![CDATA[public class CheckDefaultPage : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckDefaultPage()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CheckDefaultPageModified">
+          <declaration><![CDATA[private bool CheckDefaultPageModified(out IList<string> modifiedFiles)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="9" el="80" ec="10">Components\Checks\CheckDefaultPage.cs</location>
+            <body hash="6244e7766a2b3b91c8d24e986fb05b93"><![CDATA[{
+            modifiedFiles = new List<string>();
+
+            var sumData = Utility.LoadFileSumData();
+
+            var appVersion = Utility.GetApplicationVersion();
+            var appType = Utility.GetApplicationType();
+
+            var dataNodes = sumData.SelectNodes("/checksums/sum[@version=\"" + appVersion + "\"][@type=\"" + appType + "\"]");
+            if (dataNodes == null || dataNodes.Count == 0)
+            {
+                return true; //when no record matched, need notify user to update the module.
+            }
+
+            var fileModified = false;
+            foreach (XmlNode node in dataNodes)
+            {
+                var fileName = node.Attributes["name"].Value;
+                var sum = node.Attributes["sum"].Value;
+                var file = Path.Combine(Globals.ApplicationMapPath, fileName);
+                if (!File.Exists(file) || Utility.GetFileCheckSum(file) != sum)
+                {
+                    fileModified = true;
+                    modifiedFiles.Add(fileName);
+                }
+            }
+
+            return fileModified;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="9" el="49" ec="10">Components\Checks\CheckDefaultPage.cs</location>
+            <body hash="f6c5f05b9eb0bfbacc624ed812c1c09d"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckDefaultPage");
+            try
+            {
+                IList<string> modifiedFiles;
+                var fileModified = CheckDefaultPageModified(out modifiedFiles);
+                if (fileModified)
+                {
+                    if (modifiedFiles.Count == 0)
+                    {
+                        if (DotNetNukeContext.Current.Application.Version.Major > 6)
+                        {
+                            result.Notes.Add("There is no data available about your current installation, please upgrade this module to it's latest version.");
+                        }
+                        else
+                        {
+                            fileModified = false;
+                        }
+                    }
+
+                    result.Severity = SeverityEnum.Failure;
+                    foreach (var filename in modifiedFiles)
+                    {
+                        result.Notes.Add("file:" + filename);
+                    }
+                }
+                else
+                {
+                    result.Severity = SeverityEnum.Pass;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckDiskAcccessPermissions">
+      <declaration><![CDATA[public class CheckDiskAcccessPermissions : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckDiskAcccessPermissions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CheckAccessToDrives">
+          <declaration><![CDATA[private static IList<string> CheckAccessToDrives()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="9" el="71" ec="10">Components\Checks\CheckDiskAcccessPermissions.cs</location>
+            <body hash="57bafc10657de0578c030da016c6e67b"><![CDATA[{
+            var errors = new List<string>();
+            try
+            {
+                var dir = new DirectoryInfo(Globals.ApplicationMapPath);
+                while (dir.Parent != null)
+                {
+                    dir = dir.Parent;
+                    var permissions = CheckPermissionOnDir(dir);
+                    if (permissions.AnyYes)
+                    {
+                        errors.Add(GetPermissionText(dir, permissions));
+                    }
+                }
+
+                var drives = DriveInfo.GetDrives();
+                foreach (var drive in drives.Where(d => d.IsReady && d.RootDirectory.Name != dir.Root.Name))
+                {
+                    var driveType = drive.DriveType;
+                    if (driveType == DriveType.Fixed || driveType == DriveType.Network)
+                    {
+                        var dir2 = drive.RootDirectory;
+                        var permissions = CheckPermissionOnDir(dir2);
+                        if (permissions.AnyYes)
+                        {
+                            errors.Add(GetPermissionText(dir2, permissions));
+                        }
+                    }
+                }
+            }
+            catch (IOException)
+            {
+                // e.g., a disk error or a drive was not ready
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // The caller does not have the required permission.
+            }
+            return errors;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CheckPermissionOnDir">
+          <declaration><![CDATA[private static CheckDiskAcccessPermissions.Permissions CheckPermissionOnDir(DirectoryInfo dir)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="80" sc="9" el="119" ec="10">Components\Checks\CheckDiskAcccessPermissions.cs</location>
+            <body hash="6ecb60443382d073a3e62d7bf4fd6bfc"><![CDATA[{
+            var permissions = new Permissions(No);
+            var disSecurity = dir.GetAccessControl(AccessControlSections.Access);
+            var accessRules = disSecurity.GetAccessRules(true, true, typeof(SecurityIdentifier));
+            var poolIdentity = WindowsIdentity.GetCurrent();
+            if (poolIdentity.User != null && poolIdentity.Groups != null)
+            {
+                foreach (FileSystemAccessRule rule in accessRules)
+                {
+                    if (poolIdentity.User.Value == rule.IdentityReference.Value || poolIdentity.Groups.Contains(rule.IdentityReference))
+                    {
+                        if ((rule.FileSystemRights & (FileSystemRights.CreateDirectories | FileSystemRights.CreateFiles)) != 0)
+                            if (rule.AccessControlType == AccessControlType.Allow)
+                                permissions.Create = Yes;
+                            else
+                                permissions.SetThenLockCreate(No);
+
+                        if ((rule.FileSystemRights & (FileSystemRights.Modify | FileSystemRights.WriteData)) != 0)
+                            if (rule.AccessControlType == AccessControlType.Allow)
+                                permissions.Write = Yes;
+                            else
+                                permissions.SetThenLockWrite(No);
+
+                        if ((rule.FileSystemRights & (FileSystemRights.Read | FileSystemRights.ReadData)) != 0)
+                            if (rule.AccessControlType == AccessControlType.Allow)
+                                permissions.Read = Yes;
+                            else
+                                permissions.SetThenLockRead(No);
+
+                        if ((rule.FileSystemRights & (FileSystemRights.Delete | FileSystemRights.DeleteSubdirectoriesAndFiles)) != 0)
+                            if (rule.AccessControlType == AccessControlType.Allow)
+                                permissions.Delete = Yes;
+                            else
+                                permissions.SetThenLockDelete(No);
+                    }
+                }
+            }
+
+            return permissions;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="14" sc="9" el="27" ec="10">Components\Checks\CheckDiskAcccessPermissions.cs</location>
+            <body hash="df4a480453b1a8db0d1995e993674734"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckDiskAccess");
+            var accessErrors = CheckAccessToDrives();
+            if (accessErrors.Count == 0)
+            {
+                result.Severity = SeverityEnum.Pass;
+            }
+            else
+            {
+                result.Severity = SeverityEnum.Warning;
+                result.Notes = accessErrors;
+            }
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetPermissionText">
+          <declaration><![CDATA[private static string GetPermissionText(DirectoryInfo dir, CheckDiskAcccessPermissions.Permissions permissions)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="9" el="77" ec="10">Components\Checks\CheckDiskAcccessPermissions.cs</location>
+            <body hash="0edf453653c223c50d3a78433bff780c"><![CDATA[{
+            return string.Format(@"{0} - Read:{1}, Write:{2}, Create:{3}, Delete:{4}",
+                dir.FullName, permissions.Read, permissions.Write, permissions.Create, permissions.Delete);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="No">
+          <declaration><![CDATA[private const char No = 'N';]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Yes">
+          <declaration><![CDATA[private const char Yes = 'Y';]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckHiddenSystemFiles">
+      <declaration><![CDATA[public class CheckHiddenSystemFiles : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckHiddenSystemFiles()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="9" sc="9" el="32" ec="10">Components\Checks\CheckHiddenSystemFiles.cs</location>
+            <body hash="5c7fbb5f834ac38e88e1b99c997f7444"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckHiddenSystemFiles");
+            try
+            {
+                var investigatefiles = Utility.FineHiddenSystemFiles();
+                if (investigatefiles.Any())
+                {
+                    result.Severity = SeverityEnum.Failure;
+                    foreach (var filename in investigatefiles)
+                    {
+                        result.Notes.Add("file:" + filename);
+                    }
+                }
+                else
+                {
+                    result.Severity = SeverityEnum.Pass;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckModuleHeaderAndFooter">
+      <declaration><![CDATA[public class CheckModuleHeaderAndFooter : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckModuleHeaderAndFooter()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="10" sc="9" el="41" ec="10">Components\Checks\CheckModuleHeaderAndFooter.cs</location>
+            <body hash="79b5671236e09fc43cbdb8e297291175"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckModuleHeaderAndFooter");
+            try
+            {
+                var dr = DataProvider.Instance().ExecuteReader("SecurityAnalyzer_GetModulesHasHeaderFooter");
+                result.Severity = SeverityEnum.Pass;
+                while (dr.Read())
+                {
+                    result.Severity = SeverityEnum.Warning;
+                    var note = string.Format("<b>TabId:</b> {0}, Module Id: {1}", dr["TabId"], dr["ModuleId"]);
+                    var headerValue = dr["Header"].ToString();
+                    var footerValue = dr["Footer"].ToString();
+                    if (!string.IsNullOrEmpty(headerValue))
+                    {
+                        note += string.Format("<br />Header: {0}", HttpUtility.HtmlEncode(headerValue));
+                    }
+                    if (!string.IsNullOrEmpty(footerValue))
+                    {
+                        note += string.Format("<br />Footer: {0}", HttpUtility.HtmlEncode(footerValue));
+                    }
+                    note += "< br />";
+
+                    result.Notes.Add(note);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckPasswordFormat">
+      <declaration><![CDATA[public class CheckPasswordFormat : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckPasswordFormat()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="9" sc="9" el="29" ec="10">Components\Checks\CheckPasswordFormat.cs</location>
+            <body hash="bea702ad2a5533ce00a36519570df981"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckPasswordFormat");
+            try
+            {
+                var format = MembershipProvider.Instance().PasswordFormat;
+                if (format == PasswordFormat.Hashed)
+                {
+                    result.Severity = SeverityEnum.Pass;
+                }
+                else
+                {
+                    result.Notes.Add("Setting:" + format.ToString());
+                    result.Severity = SeverityEnum.Failure;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckRarelyUsedSuperuser">
+      <declaration><![CDATA[public class CheckRarelyUsedSuperuser : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckRarelyUsedSuperuser()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="9" sc="9" el="32" ec="10">Components\Checks\CheckRarelyUsedSuperuser.cs</location>
+            <body hash="58a55fe7fa1b47b37edbadc9f827a10e"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckRarelyUsedSuperuser");
+            try
+            {
+                var totalRecords = 0;
+
+                var superUsers = UserController.GetUsers(-1, 1, int.MaxValue, ref totalRecords, true, true);
+                result.Severity = SeverityEnum.Pass;
+                foreach (UserInfo user  in superUsers)
+                {
+                    if (DateTime.Now.AddMonths(-6) > user.Membership.LastLoginDate ||
+                        DateTime.Now.AddMonths(-6) > user.Membership.LastActivityDate)
+                    {
+                        result.Severity = SeverityEnum.Warning;
+                        result.Notes.Add("Superuser:" + user.Username);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckSiteRegistration">
+      <declaration><![CDATA[public class CheckSiteRegistration : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckSiteRegistration()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="9" sc="9" el="31" ec="10">Components\Checks\CheckSiteRegistration.cs</location>
+            <body hash="c7a9c9438f4f8aae7574fb2440929322"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckSiteRegistration");
+            try
+            {
+                var portalController = new PortalController();
+                result.Severity = SeverityEnum.Pass;
+                foreach (PortalInfo portal in portalController.GetPortals())
+                {
+                    //check for public registration
+                    if (portal.UserRegistration == 2)
+                    {
+                        result.Severity = SeverityEnum.Warning;
+                        result.Notes.Add("Portal:" + portal.PortalName);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckSqlRisk">
+      <declaration><![CDATA[public class CheckSqlRisk : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckSqlRisk()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="9" el="40" ec="10">Components\Checks\CheckSqlRisk.cs</location>
+            <body hash="e0ec57aa5568c2cbc7fe1bd4275d931e"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckSqlRisk");
+            IList<string> checkList = new List<string>()
+            {
+                "SysAdmin",
+                "ExecuteCommand",
+                "GetFolderTree",
+                "CheckFileExists",
+                "RegRead"
+            };
+
+            result.Severity = SeverityEnum.Pass;
+            foreach (var name in checkList)
+            {
+                if (!VerifyScript(name))
+                {
+                    result.Severity = SeverityEnum.Warning;
+                    result.Notes.Add(Localization.GetString(name + ".Error", LocalResourceFile));
+                }
+            }
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadScript">
+          <declaration><![CDATA[public static string LoadScript(string name)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="9" el="80" ec="10">Components\Checks\CheckSqlRisk.cs</location>
+            <body hash="994638fca4748c953dbfc0fbc522f6ce"><![CDATA[{
+            var resourceName = string.Format("Dnn.PersonaBar.Security.Components.Resources.{0}.resources", name);
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+            {
+                if (stream != null)
+                {
+                    var script = new StreamReader(stream).ReadToEnd();
+                    return script.Replace("%SiteRoot%", Globals.ApplicationMapPath);
+                }
+
+                return null;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="VerifyScript">
+          <declaration><![CDATA[private static bool VerifyScript(string name)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="9" el="65" ec="10">Components\Checks\CheckSqlRisk.cs</location>
+            <body hash="9e2552ffefc972a2b189f416f64f8e96"><![CDATA[{
+            try
+            {
+                var script = LoadScript(name);
+                if (!string.IsNullOrEmpty(script))
+                {
+                    using (var reader = DataProvider.Instance().ExecuteSQL(script))
+                    {
+                        if (reader != null && reader.Read())
+                        {
+                            int affectCount;
+                            int.TryParse(reader[0].ToString(), out affectCount);
+                            return affectCount == 0;
+                        }
+                    }
+                }
+            }
+            catch (SqlException)
+            {
+                //ignore; return no failure
+            }
+            return true;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="LocalResourceFile">
+          <declaration><![CDATA[private string LocalResourceFile]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckSuperuserOldPassword">
+      <declaration><![CDATA[public class CheckSuperuserOldPassword : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckSuperuserOldPassword()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="9" sc="9" el="31" ec="10">Components\Checks\CheckSuperuserOldPassword.cs</location>
+            <body hash="f0b42e4d4a489cd5d6b71aeba7995cf7"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckSuperuserOldPassword");
+            try
+            {
+                var totalRecords = 0;
+
+                var superUsers = UserController.GetUsers(-1, 1, int.MaxValue, ref totalRecords, true, true);
+                result.Severity = SeverityEnum.Pass;
+                foreach (UserInfo user  in superUsers)
+                {
+                    if (DateTime.Now.AddMonths(-6) > user.Membership.LastPasswordChangeDate)
+                    {
+                        result.Severity = SeverityEnum.Warning;
+                        result.Notes.Add("Superuser:" + user.Username);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckTracing">
+      <declaration><![CDATA[public class CheckTracing : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckTracing()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AppLevelTraceEnabled">
+          <declaration><![CDATA[private bool AppLevelTraceEnabled()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="60" ec="10">Components\Checks\CheckTracing.cs</location>
+            <body hash="4a7a99a72924af3f048fc1cf7f9562be"><![CDATA[{
+            const string outputCacheSettingsKey = "system.web/trace";
+            var section = WebConfigurationManager.GetSection(outputCacheSettingsKey) as TraceSection;
+            if (section != null)
+            {
+                return section.Enabled;
+            }
+
+            return false;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="EnableTrace">
+          <declaration><![CDATA[private bool EnableTrace()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="9" el="26" ec="10">Components\Checks\CheckTracing.cs</location>
+            <body hash="021203bd593b0e6cce8cbb7704db2328"><![CDATA[{
+            return PageLevelTraceEnabled() || AppLevelTraceEnabled();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="15" sc="9" el="21" ec="10">Components\Checks\CheckTracing.cs</location>
+            <body hash="e5415606045643b5fa62bd67be01868e"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckTracing");
+
+            result.Severity = EnableTrace() ? SeverityEnum.Failure : SeverityEnum.Pass;
+
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PageLevelTraceEnabled">
+          <declaration><![CDATA[private bool PageLevelTraceEnabled()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="9" el="48" ec="10">Components\Checks\CheckTracing.cs</location>
+            <body hash="8aebc4eb49d61313f90cd4803abae6b7"><![CDATA[{
+            try
+            {
+                var defaultPagePath = Path.Combine(Globals.ApplicationMapPath, "Default.aspx");
+                using (var reader = new StreamReader(File.OpenRead(defaultPagePath)))
+                {
+                    var pageDefine = reader.ReadLine();
+                    if (!string.IsNullOrEmpty(pageDefine))
+                    {
+                        return pageDefine.ToLowerInvariant().Contains("trace=\"true\"");
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="CheckUnexpectedExtensions">
+      <declaration><![CDATA[public class CheckUnexpectedExtensions : IAuditCheck]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CheckUnexpectedExtensions()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Execute">
+          <declaration><![CDATA[public CheckResult Execute()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="9" sc="9" el="32" ec="10">Components\Checks\CheckUnexpectedExtensions.cs</location>
+            <body hash="873cebfa29d817c785457ea0f15a2142"><![CDATA[{
+            var result = new CheckResult(SeverityEnum.Unverified, "CheckUnexpectedExtensions");
+            try
+            {
+                var investigatefiles = Utility.FindUnexpectedExtensions();
+                if (investigatefiles.Count() > 0)
+                {
+                    result.Severity = SeverityEnum.Failure;
+                    foreach (var filename in investigatefiles)
+                    {
+                        result.Notes.Add("file:" + filename);
+                    }
+                }
+                else
+                {
+                    result.Severity = SeverityEnum.Pass;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return result;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Security.MenuControllers">
+    <class name="SecurityMenuController">
+      <declaration><![CDATA[public class SecurityMenuController : IMenuItemController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SecurityMenuController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetSettings">
+          <declaration><![CDATA[public IDictionary<string, object> GetSettings(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="22" sc="9" el="26" ec="10">MenuControllers\SecurityMenuController.cs</location>
+            <body hash="5ed46893a78362d630a49113ef535d5c"><![CDATA[{
+            var settings = new Dictionary<string, object>();
+            settings.Add("isHost", UserController.Instance.GetCurrentUserInfo().IsSuperUser);
+            return settings;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateParameters">
+          <declaration><![CDATA[public void UpdateParameters(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="12" sc="9" el="13" ec="10">MenuControllers\SecurityMenuController.cs</location>
+            <body hash="539fa760ca172337a931519768c64187"><![CDATA[{
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Visible">
+          <declaration><![CDATA[public bool Visible(MenuItem menuItem)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="9" el="19" ec="10">MenuControllers\SecurityMenuController.cs</location>
+            <body hash="d4c78a0d5351d270343f678a4a02cf22"><![CDATA[{
+            var user = UserController.Instance.GetCurrentUserInfo();
+            return user.IsSuperUser || user.IsInRole(PortalSettings.Current?.AdministratorRoleName);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Security.Services">
+    <class name="SecurityController">
+      <declaration><![CDATA[public class SecurityController : PersonaBarApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[private readonly SecurityController _controller = new SecurityController();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="9" el="46" ec="106">Services\SecurityController.cs</location>
+            <body hash="0c80dbbd8879b8e2465b1af7253f98d6"><![CDATA[private readonly Components.SecurityController _controller = new Components.SecurityController()]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static SecurityController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="47" ec="169">Services\SecurityController.cs</location>
+            <body hash="54586254ddb5ada37b1cbf6eaf1233f3"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SecurityController));
+        private readonly Components.SecurityController _controller = new Components.SecurityController();
+        private static readonly string LocalResourcesFile = Path.Combine("~/DesktopModules/admin/Dnn.PersonaBar/Modules/Dnn.Security/App_LocalResources/Security.resx");]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddPortalAlias">
+          <declaration><![CDATA[private string AddPortalAlias(string portalAlias, int portalId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="1025" sc="9" el="1040" ec="10">Services\SecurityController.cs</location>
+            <body hash="3aed9f5cfa6998243d927e34e7856cff"><![CDATA[{
+            if (!String.IsNullOrEmpty(portalAlias))
+            {
+                if (portalAlias.IndexOf("://", StringComparison.Ordinal) != -1)
+                {
+                    portalAlias = portalAlias.Remove(0, portalAlias.IndexOf("://", StringComparison.Ordinal) + 3);
+                }
+                var alias = PortalAliasController.Instance.GetPortalAlias(portalAlias, portalId);
+                if (alias == null)
+                {
+                    alias = new PortalAliasInfo { PortalID = portalId, HTTPAlias = portalAlias };
+                    PortalAliasController.Instance.AddPortalAlias(alias);
+                }
+            }
+            return portalAlias;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteIpFilter">
+          <declaration><![CDATA[public HttpResponseMessage DeleteIpFilter(int filterId)]]></declaration>
+          <documentation>POST: api/Security/DeleteIpFilter
+ <summary>
+ Deletes an IP filter
+ </summary>
+ <param name="filterId"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="287" sc="9" el="310" ec="10">Services\SecurityController.cs</location>
+            <body hash="549c542b3aa22779e1e93bdb34feb7a0"><![CDATA[{
+            try
+            {
+                IList<IPFilterInfo> currentRules = IPFilterController.Instance.GetIPFilters();
+                List<IPFilterInfo> currentWithDeleteRemoved = (from p in currentRules where p.IPFilterID != filterId select p).ToList();
+
+                if (IPFilterController.Instance.CanIPStillAccess(HttpContext.Current.Request.UserHostAddress, currentWithDeleteRemoved) == false)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, string.Format(Localization.GetString("CannotDelete.Text", LocalResourcesFile)));
+                }
+                else
+                {
+                    var ipf = new IPFilterInfo();
+                    ipf.IPFilterID = filterId;
+                    IPFilterController.Instance.DeleteIPFilter(ipf);
+                    return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+                }
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DisplayDate">
+          <declaration><![CDATA[private string DisplayDate(DateTime userDate)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="1043" sc="9" el="1047" ec="10">Services\SecurityController.cs</location>
+            <body hash="8c39fdeac88324d21785880ade48b1a5"><![CDATA[{
+            var date = Null.NullString;
+            date = !Null.IsNull(userDate) ? userDate.ToString(CultureInfo.InvariantCulture) : "";
+            return date;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetAuditCheckResults">
+          <declaration><![CDATA[public HttpResponseMessage GetAuditCheckResults()]]></declaration>
+          <documentation>GET: api/Security/GetAuditCheckResults
+ <summary>
+ Gets audit check results
+ </summary>
+ <returns>audit check results</returns></documentation>
+          <codeblock>
+            <location sl="812" sc="9" el="830" ec="10">Services\SecurityController.cs</location>
+            <body hash="9b763358c1ad0c1bd2eaa4e38669c947"><![CDATA[{
+            try
+            {
+                var audit = new AuditChecks();
+                var results = audit.DoChecks();
+                var response = new
+                {
+                    Success = true,
+                    Results = results
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetBasicLoginSettings">
+          <declaration><![CDATA[public HttpResponseMessage GetBasicLoginSettings(string cultureCode)]]></declaration>
+          <documentation>GET: api/Security/GetBasicLoginSettings
+ <summary>
+ Gets portal's basic login settings
+ </summary>
+ <param name="cultureCode"></param>
+ <returns>Portal's basic login settings</returns></documentation>
+          <codeblock>
+            <location sl="60" sc="9" el="116" ec="10">Services\SecurityController.cs</location>
+            <body hash="a4870ee368e2868855ff5b4cd5e0844c"><![CDATA[{
+            try
+            {
+                cultureCode = string.IsNullOrEmpty(cultureCode)
+                    ? LocaleController.Instance.GetCurrentLocale(PortalId).Code
+                    : cultureCode;
+
+                var portal = PortalController.Instance.GetPortal(PortalId, cultureCode);
+                var portalSettings = new PortalSettings(portal);
+
+                dynamic settings = new ExpandoObject();
+                settings.DefaultAuthProvider = PortalController.GetPortalSetting("DefaultAuthProvider", PortalId, "DNN");
+                settings.PrimaryAdministratorId = PortalSettings.Current.AdministratorId;
+                settings.RedirectAfterLoginTabId = ValidateTabId(portalSettings.Registration.RedirectAfterLogin);
+                settings.RedirectAfterLoginTabName = GetTabName(portalSettings.Registration.RedirectAfterLogin);
+                settings.RedirectAfterLoginTabPath = GetTabPath(portalSettings.Registration.RedirectAfterLogin);
+                settings.RedirectAfterLogoutTabId = ValidateTabId(portalSettings.Registration.RedirectAfterLogout);
+                settings.RedirectAfterLogoutTabName = GetTabName(portalSettings.Registration.RedirectAfterLogout);
+                settings.RedirectAfterLogoutTabPath = GetTabPath(portalSettings.Registration.RedirectAfterLogout);
+                settings.RequireValidProfileAtLogin = PortalController.GetPortalSettingAsBoolean("Security_RequireValidProfileAtLogin", PortalId, true);
+                settings.CaptchaLogin = PortalController.GetPortalSettingAsBoolean("Security_CaptchaLogin", PortalId, false);
+                settings.CaptchaRetrivePassword = PortalController.GetPortalSettingAsBoolean("Security_CaptchaRetrivePassword", PortalId, false);
+                settings.CaptchaChangePassword = PortalController.GetPortalSettingAsBoolean("Security_CaptchaChangePassword", PortalId, false);
+                settings.HideLoginControl = PortalSettings.HideLoginControl;
+                settings.cultureCode = cultureCode;
+
+                var authProviders = _controller.GetAuthenticationProviders().Select(v => new
+                {
+                    Name = v,
+                    Value = v
+                }).ToList();
+
+                var adminUsers = _controller.GetAdminUsers(PortalId).Select(v => new
+                {
+                    v.UserID,
+                    v.FullName
+                }).ToList();
+
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        Settings = settings,
+                        AuthProviders = authProviders,
+                        Administrators = adminUsers
+                    }
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetFilePath">
+          <declaration><![CDATA[private string GetFilePath(string filePath)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="1050" sc="9" el="1053" ec="10">Services\SecurityController.cs</location>
+            <body hash="b20a03607779b36fd89de8f851668f19"><![CDATA[{
+            var path = Regex.Replace(filePath, Regex.Escape(Globals.ApplicationMapPath), string.Empty, RegexOptions.IgnoreCase);
+            return path.TrimStart('\\');
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetIpFilter">
+          <declaration><![CDATA[public HttpResponseMessage GetIpFilter(int filterId)]]></declaration>
+          <documentation>GET: api/Security/GetIpFilter
+ <summary>
+ Gets an IP filter
+ </summary>
+ <param name="filterId"></param>
+ <returns>IP filter</returns></documentation>
+          <codeblock>
+            <location sl="206" sc="9" el="229" ec="10">Services\SecurityController.cs</location>
+            <body hash="f13fbd5b31fad01fb7a1b45cbfa60c3b"><![CDATA[{
+            try
+            {
+                IPFilterInfo filter = IPFilterController.Instance.GetIPFilter(filterId);
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        filter.IPAddress,
+                        filter.IPFilterID,
+                        filter.RuleType,
+                        filter.SubnetMask
+                    }
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetIpFilters">
+          <declaration><![CDATA[public HttpResponseMessage GetIpFilters()]]></declaration>
+          <documentation>GET: api/Security/GetIpFilters
+ <summary>
+ Gets list of IP filters
+ </summary>
+ <param></param>
+ <returns>List of IP filters</returns></documentation>
+          <codeblock>
+            <location sl="169" sc="9" el="195" ec="10">Services\SecurityController.cs</location>
+            <body hash="665900a81bec4396ac59330415f9e5fb"><![CDATA[{
+            try
+            {
+                var filters = IPFilterController.Instance.GetIPFilters().Select(v => new
+                {
+                    v.IPFilterID,
+                    IPFilter = NetworkUtils.FormatAsCidr(v.IPAddress, v.SubnetMask),
+                    v.RuleType
+                }).ToList();
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        Filters = filters,
+                        EnableIPChecking = Host.EnableIPChecking
+                    }
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLastModifiedFiles">
+          <declaration><![CDATA[public HttpResponseMessage GetLastModifiedFiles()]]></declaration>
+          <documentation>GET: api/Security/GetLastModifiedFiles
+ <summary>
+ Gets recently modified files
+ </summary>
+ <returns>last modified files</returns></documentation>
+          <codeblock>
+            <location sl="913" sc="9" el="943" ec="10">Services\SecurityController.cs</location>
+            <body hash="b5e2bf050a91ffe007ace2a460e6e46c"><![CDATA[{
+            try
+            {
+                var highRiskFiles = Utility.GetLastModifiedExecutableFiles().Select(f => new
+                {
+                    FilePath = GetFilePath(f.FullName),
+                    LastWriteTime = DisplayDate(f.LastWriteTime)
+                });
+                var lowRiskFiles = Utility.GetLastModifiedFiles().Select(f => new
+                {
+                    FilePath = GetFilePath(f.FullName),
+                    LastWriteTime = DisplayDate(f.LastWriteTime)
+                });
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        HighRiskFiles = highRiskFiles,
+                        LowRiskFiles = lowRiskFiles
+                    }
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetLastModifiedSettings">
+          <declaration><![CDATA[public HttpResponseMessage GetLastModifiedSettings()]]></declaration>
+          <documentation>GET: api/Security/GetRecentlyModifiedSettings
+ <summary>
+ Gets last modified settings
+ </summary>
+ <returns>last modified settings</returns></documentation>
+          <codeblock>
+            <location sl="953" sc="9" el="1018" ec="10">Services\SecurityController.cs</location>
+            <body hash="3e746aa524faa1cc6657648a16a7a6f3"><![CDATA[{
+            try
+            {
+                var settings = _controller.GetModifiedSettings();
+                var portalSettings = (from DataRow dr in settings[0].Rows
+                                      select new SettingsDto
+                                      {
+                                          PortalId = Convert.ToInt32(dr["PortalID"] != DBNull.Value ? dr["PortalID"] : Null.NullInteger),
+                                          SettingName = Convert.ToString(dr["SettingName"]),
+                                          SettingValue = Convert.ToString(dr["SettingValue"]),
+                                          LastModifiedByUserId = Convert.ToInt32(dr["LastModifiedByUserID"]),
+                                          LastModifiedOnDate = DisplayDate(Convert.ToDateTime(dr["LastModifiedOnDate"]))
+                                      }).ToList();
+
+                var hostSettings = (from DataRow dr in settings[1].Rows
+                                    select new SettingsDto
+                                    {
+                                        SettingName = Convert.ToString(dr["SettingName"]),
+                                        SettingValue = Convert.ToString(dr["SettingValue"]),
+                                        LastModifiedByUserId = Convert.ToInt32(dr["LastModifiedByUserID"]),
+                                        LastModifiedOnDate = DisplayDate(Convert.ToDateTime(dr["LastModifiedOnDate"]))
+                                    }).ToList();
+
+                var tabSettings = (from DataRow dr in settings[2].Rows
+                                   select new SettingsDto
+                                   {
+                                       TabId = Convert.ToInt32(dr["TabID"]),
+                                       PortalId = Convert.ToInt32(dr["PortalID"] != DBNull.Value ? dr["PortalID"] : Null.NullInteger),
+                                       SettingName = Convert.ToString(dr["SettingName"]),
+                                       SettingValue = Convert.ToString(dr["SettingValue"]),
+                                       LastModifiedByUserId = Convert.ToInt32(dr["LastModifiedByUserID"]),
+                                       LastModifiedOnDate = DisplayDate(Convert.ToDateTime(dr["LastModifiedOnDate"]))
+                                   }).ToList();
+
+                var moduleSettings = (from DataRow dr in settings[3].Rows
+                                      select new SettingsDto
+                                      {
+                                          ModuleId = Convert.ToInt32(dr["ModuleID"]),
+                                          PortalId = Convert.ToInt32(dr["PortalID"] != DBNull.Value ? dr["PortalID"] : Null.NullInteger),
+                                          Type = Convert.ToString(dr["Type"]),
+                                          SettingName = Convert.ToString(dr["SettingName"]),
+                                          SettingValue = Convert.ToString(dr["SettingValue"]),
+                                          LastModifiedByUserId = Convert.ToInt32(dr["LastModifiedByUserID"]),
+                                          LastModifiedOnDate = DisplayDate(Convert.ToDateTime(dr["LastModifiedOnDate"]))
+                                      }).ToList();
+
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        PortalSettings = portalSettings,
+                        HostSettings = hostSettings,
+                        TabSettings = tabSettings,
+                        ModuleSettings = moduleSettings
+                    }
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetMemberSettings">
+          <declaration><![CDATA[public HttpResponseMessage GetMemberSettings()]]></declaration>
+          <documentation>GET: api/Security/GetMemberSettings
+ <summary>
+ Gets portal's member settings
+ </summary>
+ <returns>Portal's member settings</returns></documentation>
+          <codeblock>
+            <location sl="324" sc="9" el="354" ec="10">Services\SecurityController.cs</location>
+            <body hash="65fbd9ff82b3445a17264b227982f947"><![CDATA[{
+            try
+            {
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        Settings = new
+                        {
+                            Host.MembershipResetLinkValidity,
+                            Host.AdminMembershipResetLinkValidity,
+                            Host.EnablePasswordHistory,
+                            Host.MembershipNumberPasswords,
+                            Host.EnableBannedList,
+                            Host.EnableStrengthMeter,
+                            Host.EnableIPChecking,
+                            Host.PasswordExpiry,
+                            Host.PasswordExpiryReminder
+                        }
+                    }
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetOtherSettings">
+          <declaration><![CDATA[public HttpResponseMessage GetOtherSettings()]]></declaration>
+          <documentation>GET: api/Security/GetOtherSettings
+ <summary>
+ Gets host other settings
+ </summary>
+ <returns>Portal's ssl settings</returns></documentation>
+          <codeblock>
+            <location sl="731" sc="9" el="760" ec="10">Services\SecurityController.cs</location>
+            <body hash="def6d809d46b3622206cf4fc0f22e1b5"><![CDATA[{
+            try
+            {
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        Settings = new
+                        {
+                            Host.ShowCriticalErrors,
+                            Host.DebugMode,
+                            Host.RememberCheckbox,
+                            Host.AutoAccountUnlockDuration,
+                            Host.AsyncTimeout,
+                            MaxUploadSize = Config.GetMaxUploadSize() / (1024 * 1024),
+                            RangeUploadSize = Config.GetRequestFilterSize(),
+                            AllowedExtensionWhitelist = Host.AllowedExtensionWhitelist.ToStorageString()
+                        }
+                    }
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetRegistrationSettings">
+          <declaration><![CDATA[public HttpResponseMessage GetRegistrationSettings()]]></declaration>
+          <documentation>GET: api/Security/GetRegistrationSettings
+ <summary>
+ Gets portal's registration settings
+ </summary>
+ <returns>Portal's registration settings</returns></documentation>
+          <codeblock>
+            <location sl="395" sc="9" el="460" ec="10">Services\SecurityController.cs</location>
+            <body hash="71edec74d1bfede1ad9c77682bde2816"><![CDATA[{
+            try
+            {
+                var userRegistrationOptions = new List<KeyValuePair<string, int>>();
+                userRegistrationOptions.Add(new KeyValuePair<string, int>(Localization.GetString("None", LocalResourcesFile), 0));
+                userRegistrationOptions.Add(new KeyValuePair<string, int>(Localization.GetString("Private", LocalResourcesFile), 1));
+                userRegistrationOptions.Add(new KeyValuePair<string, int>(Localization.GetString("Public", LocalResourcesFile), 2));
+                userRegistrationOptions.Add(new KeyValuePair<string, int>(Localization.GetString("Verified", LocalResourcesFile), 3));
+
+                var registrationFormTypeOptions = new List<KeyValuePair<string, int>>();
+                registrationFormTypeOptions.Add(new KeyValuePair<string, int>(Localization.GetString("Standard", LocalResourcesFile), 0));
+                registrationFormTypeOptions.Add(new KeyValuePair<string, int>(Localization.GetString("Custom", LocalResourcesFile), 1));
+
+                var activeLanguage = LocaleController.Instance.GetDefaultLocale(PortalId).Code;
+                var portal = PortalController.Instance.GetPortal(PortalId, activeLanguage);
+
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        Settings = new
+                        {
+                            portal.UserRegistration,
+                            EnableRegisterNotification = PortalController.GetPortalSettingAsBoolean("EnableRegisterNotification", PortalId, true),
+                            UseAuthenticationProviders = PortalController.GetPortalSettingAsBoolean("Registration_UseAuthProviders", PortalId, false),
+                            ExcludedTerms = PortalController.GetPortalSetting("Registration_ExcludeTerms", PortalId, string.Empty),
+                            UseProfanityFilter = PortalController.GetPortalSettingAsBoolean("Registration_UseProfanityFilter", PortalId, false),
+                            PortalSettings.Registration.RegistrationFormType,
+                            PortalSettings.Registration.RegistrationFields,
+                            UseEmailAsUsername = PortalController.GetPortalSettingAsBoolean("Registration_UseEmailAsUserName", PortalId, false),
+                            RequireUniqueDisplayName = PortalController.GetPortalSettingAsBoolean("Registration_RequireUniqueDisplayName", PortalId, false),
+                            DisplayNameFormat = PortalController.GetPortalSetting("Security_DisplayNameFormat", PortalId, string.Empty),
+                            UserNameValidation = PortalController.GetPortalSetting("Security_UserNameValidation", PortalId, Globals.glbUserNameRegEx),
+                            EmailAddressValidation = PortalController.GetPortalSetting("Security_EmailValidation", PortalId, Globals.glbEmailRegEx),
+                            UseRandomPassword = PortalController.GetPortalSettingAsBoolean("Registration_RandomPassword", PortalId, false),
+                            RequirePasswordConfirmation = PortalController.GetPortalSettingAsBoolean("Registration_RequireConfirmPassword", PortalId, true),
+                            RequireValidProfile = PortalController.GetPortalSettingAsBoolean("Security_RequireValidProfile", PortalId, false),
+                            UseCaptchaRegister = PortalController.GetPortalSettingAsBoolean("Security_CaptchaRegister", PortalId, false),
+                            RedirectAfterRegistrationTabId = ValidateTabId(PortalSettings.Registration.RedirectAfterRegistration),
+                            RedirectAfterRegistrationTabName = GetTabName(PortalSettings.Registration.RedirectAfterRegistration),
+                            RedirectAfterRegistrationTabPath = GetTabPath(PortalSettings.Registration.RedirectAfterRegistration),
+                            RequiresUniqueEmail = MembershipProviderConfig.RequiresUniqueEmail.ToString(CultureInfo.InvariantCulture),
+                            PasswordFormat = MembershipProviderConfig.PasswordFormat.ToString(),
+                            PasswordRetrievalEnabled = MembershipProviderConfig.PasswordRetrievalEnabled.ToString(CultureInfo.InvariantCulture),
+                            PasswordResetEnabled = MembershipProviderConfig.PasswordResetEnabled.ToString(CultureInfo.InvariantCulture),
+                            MinPasswordLength = MembershipProviderConfig.MinPasswordLength.ToString(CultureInfo.InvariantCulture),
+                            MinNonAlphanumericCharacters = MembershipProviderConfig.MinNonAlphanumericCharacters.ToString(CultureInfo.InvariantCulture),
+                            RequiresQuestionAndAnswer = MembershipProviderConfig.RequiresQuestionAndAnswer.ToString(CultureInfo.InvariantCulture),
+                            MembershipProviderConfig.PasswordStrengthRegularExpression,
+                            MaxInvalidPasswordAttempts = MembershipProviderConfig.MaxInvalidPasswordAttempts.ToString(CultureInfo.InvariantCulture),
+                            PasswordAttemptWindow = MembershipProviderConfig.PasswordAttemptWindow.ToString(CultureInfo.InvariantCulture)
+                        },
+                        UserRegistrationOptions = userRegistrationOptions,
+                        RegistrationFormTypeOptions = registrationFormTypeOptions
+                    }
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSecurityBulletins">
+          <declaration><![CDATA[public HttpResponseMessage GetSecurityBulletins()]]></declaration>
+          <documentation>GET: api/Security/GetSecurityBulletins
+ <summary>
+ Gets security bulletins
+ </summary>
+ <returns>Security bulletins</returns></documentation>
+          <codeblock>
+            <location sl="648" sc="9" el="717" ec="10">Services\SecurityController.cs</location>
+            <body hash="3a4b061c1e141b61605049811019c643"><![CDATA[{
+            try
+            {
+                var plartformVersion = System.Reflection.Assembly.LoadFrom(Globals.ApplicationMapPath + @"\bin\DotNetNuke.dll").GetName().Version;
+                string sRequest = string.Format("http://update.dotnetnuke.com/security.aspx?type={0}&name={1}&version={2}",
+                    DotNetNukeContext.Current.Application.Type,
+                    "DNNCORP.CE",
+                    Globals.FormatVersion(plartformVersion, "00", 3, ""));
+
+                //format for display with "." delimiter
+                string sVersion = Globals.FormatVersion(plartformVersion, "00", 3, ".");
+
+                // make remote request
+                Stream oStream = null;
+                try
+                {
+                    HttpWebRequest oRequest = Globals.GetExternalRequest(sRequest);
+                    oRequest.Timeout = 10000; // 10 seconds
+                    WebResponse oResponse = oRequest.GetResponse();
+                    oStream = oResponse.GetResponseStream();
+                }
+                catch (Exception oExc)
+                {
+                    // connectivity issues
+                    if (PortalSecurity.IsInRoles(PortalSettings.AdministratorRoleId.ToString()))
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, string.Format(Localization.GetString("RequestFailed_Admin.Text", LocalResourcesFile), sRequest));
+                    }
+                    else
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, Localization.GetString("RequestFailed_User.Text", LocalResourcesFile) + oExc.Message);
+                    }
+                }
+
+                // load XML document
+                StreamReader oReader = new StreamReader(oStream);
+                XmlDocument oDoc = new XmlDocument();
+                oDoc.LoadXml(oReader.ReadToEnd());
+
+                List<object> items = new List<object>();
+                foreach (XmlNode selectNode in oDoc.SelectNodes(BULLETIN_XMLNODE_PATH))
+                {
+                    items.Add(new
+                    {
+                        Title = selectNode.SelectSingleNode("title") != null ? selectNode.SelectSingleNode("title").InnerText : "",
+                        Link = selectNode.SelectSingleNode("link") != null ? selectNode.SelectSingleNode("link").InnerText : "",
+                        Description = selectNode.SelectSingleNode("description") != null ? selectNode.SelectSingleNode("description").InnerText : "",
+                        Author = selectNode.SelectSingleNode("author") != null ? selectNode.SelectSingleNode("author").InnerText : "",
+                        PubDate = selectNode.SelectSingleNode("pubDate") != null ? selectNode.SelectSingleNode("pubDate").InnerText.Split(' ')[0] : ""
+                    });
+                }
+
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        PlatformVersion = sVersion,
+                        SecurityBulletins = items
+                    }
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSslSettings">
+          <declaration><![CDATA[public HttpResponseMessage GetSslSettings()]]></declaration>
+          <documentation>GET: api/Security/GetSslSettings
+ <summary>
+ Gets portal's SSL settings
+ </summary>
+ <returns>Portal's ssl settings</returns></documentation>
+          <codeblock>
+            <location sl="571" sc="9" el="601" ec="10">Services\SecurityController.cs</location>
+            <body hash="47ba6ca6ba4fd292af9f4cf351a6fd52"><![CDATA[{
+            try
+            {
+                dynamic settings = new ExpandoObject();
+                settings.SSLEnabled = PortalController.GetPortalSettingAsBoolean("SSLEnabled", PortalId, false);
+                settings.SSLEnforced = PortalController.GetPortalSettingAsBoolean("SSLEnforced", PortalId, false);
+                settings.SSLURL = PortalController.GetPortalSetting("SSLURL", PortalId, Null.NullString);
+                settings.STDURL = PortalController.GetPortalSetting("STDURL", PortalId, Null.NullString);
+
+                if (UserInfo.IsSuperUser)
+                {
+                    settings.SSLOffloadHeader = HostController.Instance.GetString("SSLOffloadHeader", "");
+                }
+
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        Settings = settings
+                    }
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSuperuserActivities">
+          <declaration><![CDATA[public HttpResponseMessage GetSuperuserActivities()]]></declaration>
+          <documentation>GET: api/Security/GetAuditCheckResults
+ <summary>
+ Gets audit check results
+ </summary>
+ <returns>audit check results</returns></documentation>
+          <codeblock>
+            <location sl="840" sc="9" el="871" ec="10">Services\SecurityController.cs</location>
+            <body hash="7ec89e6a482904562b894df3e7852760"><![CDATA[{
+            try
+            {
+                var users = UserController.GetUsers(true, true, -1).Cast<UserInfo>().Select(u => new
+                {
+                    u.Username,
+                    u.FirstName,
+                    u.LastName,
+                    u.DisplayName,
+                    u.Email,
+                    CreatedDate = DisplayDate(u.Membership.CreatedDate),
+                    LastLoginDate = DisplayDate(u.Membership.LastLoginDate),
+                    LastActivityDate = DisplayDate(u.Membership.LastActivityDate)
+                }).ToList();
+
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        Activities = users
+                    }
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTabName">
+          <declaration><![CDATA[private string GetTabName(int tabId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="469" sc="9" el="479" ec="10">Services\SecurityController.cs</location>
+            <body hash="2ce75c064b4bd40891a807463b14ac11"><![CDATA[{
+            if (tabId == Null.NullInteger)
+            {
+                return "";
+            }
+            else
+            {
+                var tab = TabController.Instance.GetTab(tabId, PortalId);
+                return tab != null ? tab.TabName : "";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTabPath">
+          <declaration><![CDATA[private string GetTabPath(int tabId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="482" sc="9" el="492" ec="10">Services\SecurityController.cs</location>
+            <body hash="32bb5e160e7f34efe217a2541e3cb276"><![CDATA[{
+            if (tabId == Null.NullInteger)
+            {
+                return "";
+            }
+            else
+            {
+                var tab = TabController.Instance.GetTab(tabId, PortalId);
+                return tab != null ? tab.TabPath : "";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SearchFileSystemAndDatabase">
+          <declaration><![CDATA[public HttpResponseMessage SearchFileSystemAndDatabase(string term)]]></declaration>
+          <documentation>GET: api/Security/SearchFileSystemAndDatabase
+ <summary>
+ Searchs file system and database
+ </summary>
+ <returns>Searchs file system and database</returns></documentation>
+          <codeblock>
+            <location sl="881" sc="9" el="903" ec="10">Services\SecurityController.cs</location>
+            <body hash="0dcb043fe66772ec221d3e81eb9d0595"><![CDATA[{
+            try
+            {
+                var foundinfiles = Utility.SearchFiles(term);
+                var foundindb = Utility.SearchDatabase(term);
+                var response = new
+                {
+                    Success = true,
+                    Results = new
+                    {
+                        FoundInFiles = foundinfiles,
+                        FoundInDatabase = foundindb
+                    }
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, response);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateBasicLoginSettings">
+          <declaration><![CDATA[public HttpResponseMessage UpdateBasicLoginSettings(UpdateBasicLoginSettingsRequest request)]]></declaration>
+          <documentation>POST: api/Security/UpdateBasicLoginSettings
+ <summary>
+ Updates an existing log settings
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="127" sc="9" el="154" ec="10">Services\SecurityController.cs</location>
+            <body hash="04379fb8b2440850a4f160de8e9cebd4"><![CDATA[{
+            try
+            {
+                var cultureCode = string.IsNullOrEmpty(request.CultureCode)
+                    ? LocaleController.Instance.GetCurrentLocale(PortalId).Code
+                    : request.CultureCode;
+
+                var portalInfo = PortalController.Instance.GetPortal(PortalId);
+                portalInfo.AdministratorId = Convert.ToInt32(request.PrimaryAdministratorId);
+                PortalController.Instance.UpdatePortalInfo(portalInfo);
+
+                PortalController.UpdatePortalSetting(PortalId, "DefaultAuthProvider", request.DefaultAuthProvider);
+                PortalController.UpdatePortalSetting(PortalId, "Redirect_AfterLogin", request.RedirectAfterLoginTabId.ToString(), cultureCode);
+                PortalController.UpdatePortalSetting(PortalId, "Redirect_AfterLogout", request.RedirectAfterLogoutTabId.ToString(), cultureCode);
+                PortalController.UpdatePortalSetting(PortalId, "Security_RequireValidProfile", request.RequireValidProfileAtLogin.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "Security_CaptchaLogin", request.CaptchaLogin.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "Security_CaptchaRetrivePassword", request.CaptchaRetrivePassword.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "Security_CaptchaChangePassword", request.CaptchaChangePassword.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "HideLoginControl", request.HideLoginControl.ToString(), false);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateIpFilter">
+          <declaration><![CDATA[public HttpResponseMessage UpdateIpFilter(UpdateIpFilterRequest request)]]></declaration>
+          <documentation>POST: api/Security/UpdateIpFilter
+ <summary>
+ Updates an IP filter
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="241" sc="9" el="275" ec="10">Services\SecurityController.cs</location>
+            <body hash="8540150492c3a7b4c465f6936fb019bd"><![CDATA[{
+            try
+            {
+                var ipf = new IPFilterInfo();
+                ipf.IPAddress = request.IPAddress;
+                ipf.SubnetMask = request.SubnetMask;
+                ipf.RuleType = request.RuleType;
+
+                if ((ipf.IPAddress == "127.0.0.1" || ipf.IPAddress == "localhost" || ipf.IPAddress == "::1" || ipf.IPAddress == "*") && ipf.RuleType == 2)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, string.Format(Localization.GetString("CannotDeleteLocalhost.Text", LocalResourcesFile)));
+                }
+
+                if (IPFilterController.Instance.IsAllowableDeny(HttpContext.Current.Request.UserHostAddress, ipf) == false)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, string.Format(Localization.GetString("CannotDeleteIPInUse.Text", LocalResourcesFile)));
+                }
+
+                if (request.IPFilterID > 0)
+                {
+                    ipf.IPFilterID = request.IPFilterID;
+                    IPFilterController.Instance.UpdateIPFilter(ipf);
+                }
+                else
+                {
+                    IPFilterController.Instance.AddIPFilter(ipf);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateMemberSettings">
+          <declaration><![CDATA[public HttpResponseMessage UpdateMemberSettings(UpdateMemberSettingsRequest request)]]></declaration>
+          <documentation>POST: api/Security/UpdateMemberSettings
+ <summary>
+ Updates member settings
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="366" sc="9" el="386" ec="10">Services\SecurityController.cs</location>
+            <body hash="614f229d40e37c39144a1413003df587"><![CDATA[{
+            try
+            {
+                HostController.Instance.Update("EnableBannedList", request.EnableBannedList ? "Y" : "N", false);
+                HostController.Instance.Update("EnableStrengthMeter", request.EnableStrengthMeter ? "Y" : "N", false);
+                HostController.Instance.Update("EnableIPChecking", request.EnableIPChecking ? "Y" : "N", false);
+                HostController.Instance.Update("EnablePasswordHistory", request.EnablePasswordHistory ? "Y" : "N", false);
+                HostController.Instance.Update("MembershipResetLinkValidity", request.MembershipResetLinkValidity.ToString(), false);
+                HostController.Instance.Update("AdminMembershipResetLinkValidity", request.AdminMembershipResetLinkValidity.ToString(), false);
+                HostController.Instance.Update("MembershipNumberPasswords", request.MembershipNumberPasswords.ToString(), false);
+                HostController.Instance.Update("PasswordExpiry", request.PasswordExpiry.ToString());
+                HostController.Instance.Update("PasswordExpiryReminder", request.PasswordExpiryReminder.ToString());
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateOtherSettings">
+          <declaration><![CDATA[public HttpResponseMessage UpdateOtherSettings(UpdateOtherSettingsRequest request)]]></declaration>
+          <documentation>POST: api/Security/UpdateOtherSettings
+ <summary>
+ Updates other settings
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="772" sc="9" el="798" ec="10">Services\SecurityController.cs</location>
+            <body hash="4f26acdc15f71f954b185eb79f05fed9"><![CDATA[{
+            try
+            {
+                HostController.Instance.Update("ShowCriticalErrors", request.ShowCriticalErrors ? "Y" : "N", false);
+                HostController.Instance.Update("DebugMode", request.DebugMode ? "True" : "False", false);
+                HostController.Instance.Update("RememberCheckbox", request.RememberCheckbox ? "Y" : "N", false);
+                HostController.Instance.Update("AutoAccountUnlockDuration", request.AutoAccountUnlockDuration.ToString(), false);
+                HostController.Instance.Update("AsyncTimeout", request.AsyncTimeout.ToString(), false);
+                HostController.Instance.Update("FileExtensions", request.AllowedExtensionWhitelist, false);
+
+                var maxCurrentRequest = Config.GetMaxUploadSize();
+                var maxUploadByMb = request.MaxUploadSize * 1024 * 1024;
+                if (maxCurrentRequest != maxUploadByMb)
+                {
+                    Config.SetMaxUploadSize(maxUploadByMb);
+                }
+
+                DataCache.ClearCache();
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateRegistrationSettings">
+          <declaration><![CDATA[public HttpResponseMessage UpdateRegistrationSettings(UpdateRegistrationSettingsRequest request)]]></declaration>
+          <documentation>POST: api/Security/UpdateRegistrationSettings
+ <summary>
+ Updates registration settings
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="503" sc="9" el="558" ec="10">Services\SecurityController.cs</location>
+            <body hash="49ad9dc78aa1459237903c5865b916bd"><![CDATA[{
+            try
+            {
+                if (request.RegistrationFormType == 1)
+                {
+                    var setting = request.RegistrationFields;
+                    if (!setting.Contains("Email"))
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, Localization.GetString("NoEmail", LocalResourcesFile));
+                    }
+
+                    if (!setting.Contains("DisplayName") && request.RequireUniqueDisplayName)
+                    {
+                        PortalController.UpdatePortalSetting(PortalId, "Registration_RegistrationFormType", "0", false);
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, Localization.GetString("NoDisplayName", LocalResourcesFile));
+                    }
+
+                    PortalController.UpdatePortalSetting(PortalId, "Registration_RegistrationFields", setting);
+                }
+                PortalController.UpdatePortalSetting(PortalId, "Registration_RegistrationFormType", request.RegistrationFormType.ToString(), false);
+
+                if (request.UseEmailAsUsername && UserController.GetDuplicateEmailCount() > 0)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, Localization.GetString("ContainsDuplicateAddresses", LocalResourcesFile));
+                }
+                else
+                {
+                    PortalController.UpdatePortalSetting(PortalId, "Registration_UseEmailAsUserName", request.UseEmailAsUsername.ToString(), false);
+                }
+
+                var portalInfo = PortalController.Instance.GetPortal(PortalId);
+                portalInfo.UserRegistration = Convert.ToInt32(request.UserRegistration);
+                PortalController.Instance.UpdatePortalInfo(portalInfo);
+
+                PortalController.UpdatePortalSetting(PortalId, "EnableRegisterNotification", request.EnableRegisterNotification.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "Registration_UseAuthProviders", request.UseAuthenticationProviders.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "Registration_ExcludeTerms", request.ExcludedTerms, false);
+                PortalController.UpdatePortalSetting(PortalId, "Registration_UseProfanityFilter", request.UseProfanityFilter.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "Registration_RequireUniqueDisplayName", request.RequireUniqueDisplayName.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "Security_DisplayNameFormat", request.DisplayNameFormat, false);
+                PortalController.UpdatePortalSetting(PortalId, "Security_UserNameValidation", request.UserNameValidation, false);
+                PortalController.UpdatePortalSetting(PortalId, "Security_EmailValidation", request.EmailAddressValidation, false);
+                PortalController.UpdatePortalSetting(PortalId, "Registration_RandomPassword", request.UseRandomPassword.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "Registration_RequireConfirmPassword", request.RequirePasswordConfirmation.ToString(), true);
+                PortalController.UpdatePortalSetting(PortalId, "Security_RequireValidProfile", request.RequireValidProfile.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "Security_CaptchaRegister", request.UseCaptchaRegister.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "Redirect_AfterRegistration", request.RedirectAfterRegistrationTabId.ToString(), LocaleController.Instance.GetCurrentLocale(PortalId).Code);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSslSettings">
+          <declaration><![CDATA[public HttpResponseMessage UpdateSslSettings(UpdateSslSettingsRequest request)]]></declaration>
+          <documentation>POST: api/Security/UpdateSslSettings
+ <summary>
+ Updates SSL settings
+ </summary>
+ <param name="request"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="612" sc="9" el="634" ec="10">Services\SecurityController.cs</location>
+            <body hash="5c842e0c5d730eae5ab4c9d7530a1464"><![CDATA[{
+            try
+            {
+                PortalController.UpdatePortalSetting(PortalId, "SSLEnabled", request.SSLEnabled.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "SSLEnforced", request.SSLEnforced.ToString(), false);
+                PortalController.UpdatePortalSetting(PortalId, "SSLURL", AddPortalAlias(request.SSLURL, PortalId), false);
+                PortalController.UpdatePortalSetting(PortalId, "STDURL", AddPortalAlias(request.STDURL, PortalId), false);
+
+                if (UserInfo.IsSuperUser)
+                {
+                    HostController.Instance.Update("SSLOffloadHeader", request.SSLOffloadHeader);
+                }
+
+                DataCache.ClearPortalCache(PortalId, false);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new { Success = true });
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ValidateTabId">
+          <declaration><![CDATA[private int ValidateTabId(int tabId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="463" sc="9" el="466" ec="10">Services\SecurityController.cs</location>
+            <body hash="006422694d1a698b3f0b854a87241c05"><![CDATA[{
+            var tab = TabController.Instance.GetTab(tabId, PortalId);
+            return tab?.TabID ?? Null.NullInteger;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_controller">
+          <declaration><![CDATA[private readonly SecurityController _controller = new SecurityController();]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="BULLETIN_XMLNODE_PATH">
+          <declaration><![CDATA[private const string BULLETIN_XMLNODE_PATH = "//channel/item";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="LocalResourcesFile">
+          <declaration><![CDATA[private static readonly string LocalResourcesFile = Path.Combine(new string[]]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SecurityController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.PersonaBar.Security.Services.Dto">
+    <class name="SettingsDto">
+      <declaration><![CDATA[public class SettingsDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SettingsDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="LastModifiedByUserId">
+          <declaration><![CDATA[public int LastModifiedByUserId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="43" el="49" ec="47">Services\Dto\SettingsDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="49" sc="48" el="49" ec="52">Services\Dto\SettingsDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="LastModifiedOnDate">
+          <declaration><![CDATA[public string LastModifiedOnDate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="44" el="51" ec="48">Services\Dto\SettingsDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="51" sc="49" el="51" ec="53">Services\Dto\SettingsDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ModuleId">
+          <declaration><![CDATA[public int ModuleId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="31" el="47" ec="35">Services\Dto\SettingsDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="47" sc="36" el="47" ec="40">Services\Dto\SettingsDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalId">
+          <declaration><![CDATA[public int PortalId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="31" el="43" ec="35">Services\Dto\SettingsDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="36" el="43" ec="40">Services\Dto\SettingsDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SettingName">
+          <declaration><![CDATA[public string SettingName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="37" el="37" ec="41">Services\Dto\SettingsDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="42" el="37" ec="46">Services\Dto\SettingsDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SettingValue">
+          <declaration><![CDATA[public string SettingValue]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="38" el="39" ec="42">Services\Dto\SettingsDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="39" sc="43" el="39" ec="47">Services\Dto\SettingsDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TabId">
+          <declaration><![CDATA[public int TabId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="28" el="45" ec="32">Services\Dto\SettingsDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="45" sc="33" el="45" ec="37">Services\Dto\SettingsDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Type">
+          <declaration><![CDATA[public string Type]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="30" el="41" ec="34">Services\Dto\SettingsDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="41" sc="35" el="41" ec="39">Services\Dto\SettingsDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="TabDto">
+      <declaration><![CDATA[public class TabDto]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public TabDto()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ChildTabs">
+          <declaration><![CDATA[public IList<TabDto> ChildTabs]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="42" el="43" ec="46">Services\Dto\TabDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="47" el="43" ec="51">Services\Dto\TabDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Name">
+          <declaration><![CDATA[public string Name]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="30" el="37" ec="34">Services\Dto\TabDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="35" el="37" ec="39">Services\Dto\TabDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ParentTabId">
+          <declaration><![CDATA[public int ParentTabId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="34" el="41" ec="38">Services\Dto\TabDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="41" sc="39" el="41" ec="43">Services\Dto\TabDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TabId">
+          <declaration><![CDATA[public string TabId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="31" el="39" ec="35">Services\Dto\TabDto.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="39" sc="36" el="39" ec="40">Services\Dto\TabDto.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateBasicLoginSettingsRequest">
+      <declaration><![CDATA[public class UpdateBasicLoginSettingsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateBasicLoginSettingsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CaptchaChangePassword">
+          <declaration><![CDATA[public bool CaptchaChangePassword]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="45" el="53" ec="49">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="53" sc="50" el="53" ec="54">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CaptchaLogin">
+          <declaration><![CDATA[public bool CaptchaLogin]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="36" el="49" ec="40">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="49" sc="41" el="49" ec="45">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CaptchaRetrivePassword">
+          <declaration><![CDATA[public bool CaptchaRetrivePassword]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="46" el="51" ec="50">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="51" sc="51" el="51" ec="55">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="CultureCode">
+          <declaration><![CDATA[public string CultureCode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="37" el="37" ec="41">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="42" el="37" ec="46">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="DefaultAuthProvider">
+          <declaration><![CDATA[public string DefaultAuthProvider]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="45" el="39" ec="49">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="39" sc="50" el="39" ec="54">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="HideLoginControl">
+          <declaration><![CDATA[public bool HideLoginControl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="40" el="55" ec="44">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="55" sc="45" el="55" ec="49">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PrimaryAdministratorId">
+          <declaration><![CDATA[public int PrimaryAdministratorId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="45" el="41" ec="49">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="41" sc="50" el="41" ec="54">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RedirectAfterLoginTabId">
+          <declaration><![CDATA[public int RedirectAfterLoginTabId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="46" el="43" ec="50">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="51" el="43" ec="55">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RedirectAfterLogoutTabId">
+          <declaration><![CDATA[public int RedirectAfterLogoutTabId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="47" el="45" ec="51">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="45" sc="52" el="45" ec="56">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RequireValidProfileAtLogin">
+          <declaration><![CDATA[public bool RequireValidProfileAtLogin]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="47" sc="50" el="47" ec="54">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="47" sc="55" el="47" ec="59">Services\Dto\UpdateBasicLoginSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateIpFilterRequest">
+      <declaration><![CDATA[public class UpdateIpFilterRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateIpFilterRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="IPAddress">
+          <declaration><![CDATA[public string IPAddress]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="37" sc="35" el="37" ec="39">Services\Dto\UpdateIpFilterRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="37" sc="40" el="37" ec="44">Services\Dto\UpdateIpFilterRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="IPFilterID">
+          <declaration><![CDATA[public int IPFilterID]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="43" sc="33" el="43" ec="37">Services\Dto\UpdateIpFilterRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="43" sc="38" el="43" ec="42">Services\Dto\UpdateIpFilterRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RuleType">
+          <declaration><![CDATA[public int RuleType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="31" el="41" ec="35">Services\Dto\UpdateIpFilterRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="41" sc="36" el="41" ec="40">Services\Dto\UpdateIpFilterRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SubnetMask">
+          <declaration><![CDATA[public string SubnetMask]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="36" el="39" ec="40">Services\Dto\UpdateIpFilterRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="39" sc="41" el="39" ec="45">Services\Dto\UpdateIpFilterRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateMemberSettingsRequest">
+      <declaration><![CDATA[public class UpdateMemberSettingsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateMemberSettingsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AdminMembershipResetLinkValidity">
+          <declaration><![CDATA[public int AdminMembershipResetLinkValidity]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="55" el="40" ec="59">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="40" sc="60" el="40" ec="64">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="EnableBannedList">
+          <declaration><![CDATA[public bool EnableBannedList]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="40" el="46" ec="44">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="46" sc="45" el="46" ec="49">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="EnableIPChecking">
+          <declaration><![CDATA[public bool EnableIPChecking]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="40" el="50" ec="44">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="50" sc="45" el="50" ec="49">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="EnablePasswordHistory">
+          <declaration><![CDATA[public bool EnablePasswordHistory]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="45" el="42" ec="49">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="42" sc="50" el="42" ec="54">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="EnableStrengthMeter">
+          <declaration><![CDATA[public bool EnableStrengthMeter]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="43" el="48" ec="47">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="48" sc="48" el="48" ec="52">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="MembershipNumberPasswords">
+          <declaration><![CDATA[public int MembershipNumberPasswords]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="48" el="44" ec="52">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="44" sc="53" el="44" ec="57">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="MembershipResetLinkValidity">
+          <declaration><![CDATA[public int MembershipResetLinkValidity]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="50" el="38" ec="54">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="38" sc="55" el="38" ec="59">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PasswordExpiry">
+          <declaration><![CDATA[public int PasswordExpiry]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="37" el="52" ec="41">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="52" sc="42" el="52" ec="46">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PasswordExpiryReminder">
+          <declaration><![CDATA[public int PasswordExpiryReminder]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="45" el="54" ec="49">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="54" sc="50" el="54" ec="54">Services\Dto\UpdateMemberSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateOtherSettingsRequest">
+      <declaration><![CDATA[public class UpdateOtherSettingsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateOtherSettingsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="AllowedExtensionWhitelist">
+          <declaration><![CDATA[public string AllowedExtensionWhitelist]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="51" el="50" ec="55">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="50" sc="56" el="50" ec="60">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="AsyncTimeout">
+          <declaration><![CDATA[public int AsyncTimeout]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="35" el="46" ec="39">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="46" sc="40" el="46" ec="44">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="AutoAccountUnlockDuration">
+          <declaration><![CDATA[public int AutoAccountUnlockDuration]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="48" el="44" ec="52">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="44" sc="53" el="44" ec="57">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="DebugMode">
+          <declaration><![CDATA[public bool DebugMode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="33" el="40" ec="37">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="40" sc="38" el="40" ec="42">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="MaxUploadSize">
+          <declaration><![CDATA[public long MaxUploadSize]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="37" el="48" ec="41">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="48" sc="42" el="48" ec="46">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RememberCheckbox">
+          <declaration><![CDATA[public bool RememberCheckbox]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="40" el="42" ec="44">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="42" sc="45" el="42" ec="49">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ShowCriticalErrors">
+          <declaration><![CDATA[public bool ShowCriticalErrors]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="42" el="38" ec="46">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="38" sc="47" el="38" ec="51">Services\Dto\UpdateOtherSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateRegistrationSettingsRequest">
+      <declaration><![CDATA[public class UpdateRegistrationSettingsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateRegistrationSettingsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="DisplayNameFormat">
+          <declaration><![CDATA[public string DisplayNameFormat]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="43" el="54" ec="47">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="54" sc="48" el="54" ec="52">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="EmailAddressValidation">
+          <declaration><![CDATA[public string EmailAddressValidation]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="48" el="58" ec="52">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="58" sc="53" el="58" ec="57">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="EnableRegisterNotification">
+          <declaration><![CDATA[public bool EnableRegisterNotification]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="50" el="70" ec="54">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="70" sc="55" el="70" ec="59">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ExcludedTerms">
+          <declaration><![CDATA[public string ExcludedTerms]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="39" el="42" ec="43">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="42" sc="44" el="42" ec="48">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RedirectAfterRegistrationTabId">
+          <declaration><![CDATA[public int RedirectAfterRegistrationTabId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="53" el="68" ec="57">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="68" sc="58" el="68" ec="62">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RegistrationFields">
+          <declaration><![CDATA[public string RegistrationFields]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="44" el="48" ec="48">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="48" sc="49" el="48" ec="53">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RegistrationFormType">
+          <declaration><![CDATA[public int RegistrationFormType]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="43" el="46" ec="47">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="46" sc="48" el="46" ec="52">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RequirePasswordConfirmation">
+          <declaration><![CDATA[public bool RequirePasswordConfirmation]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="62" sc="51" el="62" ec="55">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="62" sc="56" el="62" ec="60">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RequireUniqueDisplayName">
+          <declaration><![CDATA[public bool RequireUniqueDisplayName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="48" el="50" ec="52">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="50" sc="53" el="50" ec="57">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RequireValidProfile">
+          <declaration><![CDATA[public bool RequireValidProfile]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="64" sc="43" el="64" ec="47">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="64" sc="48" el="64" ec="52">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UseAuthenticationProviders">
+          <declaration><![CDATA[public bool UseAuthenticationProviders]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="50" el="40" ec="54">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="40" sc="55" el="40" ec="59">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UseCaptchaRegister">
+          <declaration><![CDATA[public bool UseCaptchaRegister]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="42" el="66" ec="46">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="66" sc="47" el="66" ec="51">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UseEmailAsUsername">
+          <declaration><![CDATA[public bool UseEmailAsUsername]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="42" el="52" ec="46">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="52" sc="47" el="52" ec="51">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UseProfanityFilter">
+          <declaration><![CDATA[public bool UseProfanityFilter]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="42" el="44" ec="46">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="44" sc="47" el="44" ec="51">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UseRandomPassword">
+          <declaration><![CDATA[public bool UseRandomPassword]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="60" sc="41" el="60" ec="45">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="60" sc="46" el="60" ec="50">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UserNameValidation">
+          <declaration><![CDATA[public string UserNameValidation]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="44" el="56" ec="48">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="56" sc="49" el="56" ec="53">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="UserRegistration">
+          <declaration><![CDATA[public string UserRegistration]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="42" el="38" ec="46">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="38" sc="47" el="38" ec="51">Services\Dto\UpdateRegistrationSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="UpdateSslSettingsRequest">
+      <declaration><![CDATA[public class UpdateSslSettingsRequest]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public UpdateSslSettingsRequest()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="SSLEnabled">
+          <declaration><![CDATA[public bool SSLEnabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="34" el="38" ec="38">Services\Dto\UpdateSslSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="38" sc="39" el="38" ec="43">Services\Dto\UpdateSslSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SSLEnforced">
+          <declaration><![CDATA[public bool SSLEnforced]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="35" el="40" ec="39">Services\Dto\UpdateSslSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="40" sc="40" el="40" ec="44">Services\Dto\UpdateSslSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SSLOffloadHeader">
+          <declaration><![CDATA[public string SSLOffloadHeader]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="42" el="46" ec="46">Services\Dto\UpdateSslSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="46" sc="47" el="46" ec="51">Services\Dto\UpdateSslSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SSLURL">
+          <declaration><![CDATA[public string SSLURL]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="32" el="42" ec="36">Services\Dto\UpdateSslSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="42" sc="37" el="42" ec="41">Services\Dto\UpdateSslSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="STDURL">
+          <declaration><![CDATA[public string STDURL]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="32" el="44" ec="36">Services\Dto\UpdateSslSettingsRequest.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="44" sc="37" el="44" ec="41">Services\Dto\UpdateSslSettingsRequest.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

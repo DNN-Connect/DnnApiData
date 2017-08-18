@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.Modules.GoogleAnalytics.dll" version="08.00.02" generated="2017-06-19 23:14:13Z" generationTime="1.1315018">
+  <namespace name="Dnn.Modules.GoogleAnalytics">
+    <class name="GoogleAnalyticsSettings">
+      <declaration><![CDATA[public class GoogleAnalyticsSettings : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GoogleAnalyticsSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="82" ec="10">GoogleAnalyticsSettings.ascx.cs</location>
+            <body hash="5c6e40f04610dd29e06bdb805403ac3b"><![CDATA[{
+            base.OnLoad(e);
+
+            cmdUpdate.Click += OnUpdateClick;
+
+            try
+            {
+                if (Page.IsPostBack == false)
+                {
+                    var config = AnalyticsConfiguration.GetConfig("GoogleAnalytics");
+                    if (config != null)
+                    {
+                        var trackingId = "";
+                        var urlParameter = "";
+                        var trackForAdmin = true;
+                        foreach (AnalyticsSetting setting in config.Settings)
+                        {
+                            switch (setting.SettingName.ToLower())
+                            {
+                                case "trackingid":
+                                    trackingId = setting.SettingValue;
+                                    break;
+                                case "urlparameter":
+                                    urlParameter = setting.SettingValue;
+                                    break;
+                                case "trackforadmin":
+                                    if (!bool.TryParse(setting.SettingValue, out trackForAdmin))
+                                    {
+                                        trackForAdmin = true;
+                                    }
+                                    break;
+                            }
+                        }
+                        txtTrackingId.Text = trackingId;
+                        txtUrlParameter.Text = urlParameter;
+                        chkTrackForAdmin.Checked = trackForAdmin;
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnUpdateClick">
+          <declaration><![CDATA[protected void OnUpdateClick(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="85" sc="9" el="109" ec="10">GoogleAnalyticsSettings.ascx.cs</location>
+            <body hash="da63fd04de0a2b439c19dc2073a33d1c"><![CDATA[{
+            try
+            {
+                var config = new AnalyticsConfiguration();
+                var setting = new AnalyticsSetting();
+                config.Settings = new AnalyticsSettingCollection();
+                setting.SettingName = "TrackingId";
+                setting.SettingValue = txtTrackingId.Text;
+                config.Settings.Add(setting);
+                setting = new AnalyticsSetting();
+                setting.SettingName = "UrlParameter";
+                setting.SettingValue = txtUrlParameter.Text;
+                config.Settings.Add(setting);
+                setting = new AnalyticsSetting();
+                setting.SettingName = "TrackForAdmin";
+                setting.SettingValue = chkTrackForAdmin.Checked.ToString().ToLowerInvariant();
+                config.Settings.Add(setting);
+                AnalyticsConfiguration.SaveConfig("GoogleAnalytics", config);
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("Updated", LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess);
+            }
+            catch (Exception exc)
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="chkTrackForAdmin">
+          <declaration><![CDATA[protected CheckBox chkTrackForAdmin;]]></declaration>
+          <documentation>
+            <summary>
+ chkTrackForAdmin control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cmdUpdate">
+          <declaration><![CDATA[protected LinkButton cmdUpdate;]]></declaration>
+          <documentation>
+            <summary>
+ cmdUpdate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblTrackForAdmin">
+          <declaration><![CDATA[protected UserControl lblTrackForAdmin;]]></declaration>
+          <documentation>
+            <summary>
+ lblTrackForAdmin control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblTrackingId">
+          <declaration><![CDATA[protected UserControl lblTrackingId;]]></declaration>
+          <documentation>
+            <summary>
+ lblTrackingId control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblUrlParameter">
+          <declaration><![CDATA[protected UserControl lblUrlParameter;]]></declaration>
+          <documentation>
+            <summary>
+ lblUrlParameter control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtTrackingId">
+          <declaration><![CDATA[protected TextBox txtTrackingId;]]></declaration>
+          <documentation>
+            <summary>
+ txtTrackingId control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtUrlParameter">
+          <declaration><![CDATA[protected TextBox txtUrlParameter;]]></declaration>
+          <documentation>
+            <summary>
+ txtUrlParameter control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.GoogleAnalytics.Components">
+    <class name="BusinessController">
+      <declaration><![CDATA[public class BusinessController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="55" ec="10">Components\BusinessController.cs</location>
+            <body hash="67abc96a144fec1e91cc1f2ff9dacb31"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "08.00.00":
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

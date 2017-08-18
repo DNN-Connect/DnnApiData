@@ -1,0 +1,853 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="Dnn.Modules.SiteWizard.dll" version="09.00.00" generated="2017-06-19 23:55:29Z" generationTime="1.5378411">
+  <namespace name="Dnn.Modules.SiteWizard">
+    <class name="SiteWizard">
+      <declaration><![CDATA[public class SiteWizard : PortalModuleBase]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+ The SiteWizard Wizard is a user-friendly Wizard that leads the user through the
+ process of setting up a new site
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SiteWizard()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static SiteWizard()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="6" el="55" ec="97">SiteWizard.ascx.cs</location>
+            <body hash="0266f76225f1a10fa1e53ae0f49114c4"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (SiteWizard))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindContainers">
+          <declaration><![CDATA[private void BindContainers()]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ BindContainers manages the containers
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="79" sc="9" el="110" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="4fb4446e53196429f218bbd08e385414"><![CDATA[{
+            ctlPortalContainer.Clear();
+
+            if (chkIncludeAll.Checked)
+            {
+                GetContainers(ContainerType.All, "", "");
+            }
+            else
+            {
+                if (!String.IsNullOrEmpty(ctlPortalSkin.SkinSrc))
+                {
+                    string strFolder;
+                    string strContainerFolder = ctlPortalSkin.SkinSrc.Substring(0, ctlPortalSkin.SkinSrc.LastIndexOf("/", StringComparison.Ordinal));
+                    if (strContainerFolder.StartsWith("[G]"))
+                    {
+                        strContainerFolder = strContainerFolder.Replace("[G]Skins/", "Containers\\");
+                        strFolder = Globals.HostMapPath + strContainerFolder;
+                        GetContainers(ContainerType.Folder, "[G]", strFolder);
+                    }
+                    else
+                    {
+                        strContainerFolder = strContainerFolder.Replace("[L]Skins/", "Containers\\");
+                        strFolder = PortalSettings.HomeDirectoryMapPath + strContainerFolder;
+                        GetContainers(ContainerType.Folder, "[L]", strFolder);
+                    }
+                }
+                else
+                {
+                    GetContainers(ContainerType.Portal, "", "");
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateListItem">
+          <declaration><![CDATA[private ListItem CreateListItem(PortalController.PortalTemplateInfo template)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="201" sc="9" el="215" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="fc8d2a4143119f71a6a0874e1c39e90d"><![CDATA[{
+            string text, value;
+            if (string.IsNullOrEmpty(template.CultureCode))
+            {
+                text = template.Name;
+                value = Path.GetFileName(template.TemplateFilePath);
+            }
+            else
+            {
+                text = string.Format("{0} - {1}", template.Name, template.CultureCode);
+                value = string.Format("{0}|{1}", Path.GetFileName(template.TemplateFilePath), template.CultureCode);
+            }
+
+            return new ListItem(text, value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetContainers">
+          <declaration><![CDATA[private void GetContainers(SiteWizard.ContainerType type, string skinType, string strFolder)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetContainers gets the containers and binds the lists to the controls
+ the buttons
+ </summary>
+ <remarks>
+ </remarks>
+ <param name="type">An enum indicating what type of containers to load</param>
+ <param name="skinType">A string that identifies whether the skin is Host "[G]" or Site "[L]"</param>
+ <param name="strFolder">The folder to search for skins</param>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="124" sc="9" el="144" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="0a109644333b4af5cb31b347ded2d069"><![CDATA[{
+
+            //Configure SkinControl
+            ctlPortalContainer.Columns = 3;
+            ctlPortalContainer.SkinRoot = SkinController.RootContainer;
+            switch (type)
+            {
+                case ContainerType.Folder:
+                    ctlPortalContainer.LoadSkins(strFolder, skinType, false);
+                    break;
+                case ContainerType.Portal:
+                    ctlPortalContainer.LoadPortalSkins(false);
+                    break;
+                case ContainerType.Host:
+                    ctlPortalContainer.LoadHostSkins(false);
+                    break;
+                case ContainerType.All:
+                    ctlPortalContainer.LoadAllSkins(false);
+                    break;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSkins">
+          <declaration><![CDATA[private void GetSkins()]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetSkins gets the skins and containers and binds the lists to the controls
+ the buttons
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="155" sc="9" el="161" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="f5129798bf8f7c796e8794c98de25e83"><![CDATA[{
+
+            //Configure SkinControl
+            ctlPortalSkin.Columns = 3;
+            ctlPortalSkin.SkinRoot = SkinController.RootSkin;
+            ctlPortalSkin.LoadAllSkins(false);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetTemplates">
+          <declaration><![CDATA[private void GetTemplates()]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ GetTemplates gets the skins and containers and binds the lists to the control
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="171" sc="9" el="179" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="1c986e906dcbb6e3649b73091255a59b"><![CDATA[{
+            var templates = PortalController.Instance.GetAvailablePortalTemplates();
+            templates = templates.OrderBy(x => x, new TemplateDisplayComparer()).ToList();
+
+            foreach (var template in templates)
+            {
+                lstTemplate.Items.Add(CreateListItem(template));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadPortalTemplateInfoForSelectedItem">
+          <declaration><![CDATA[private PortalController.PortalTemplateInfo LoadPortalTemplateInfoForSelectedItem()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="357" sc="9" el="361" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="8cbaeb56ac5f16716771b3e4bede9bfd"><![CDATA[{
+            var values = lstTemplate.SelectedItem.Value.Split('|');
+
+            return PortalController.Instance.GetPortalTemplate(Path.Combine(TestableGlobals.Instance.HostMapPath, values[0]), values.Length > 1 ? values[1] : null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnIncludeAllCheckChanged">
+          <declaration><![CDATA[protected void OnIncludeAllCheckChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ chkIncludeAll_CheckedChanged runs when include all containers checkbox status is changed
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="293" sc="9" el="295" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="386899ff85e230b12275ae89e5e7504e"><![CDATA[{
+            BindContainers();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Page_Load runs when the control is loaded
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="244" sc="9" el="283" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="fa050e2936f5f45f8da320a7459dfc5c"><![CDATA[{
+            base.OnLoad(e);
+
+            chkIncludeAll.CheckedChanged += OnIncludeAllCheckChanged;
+            chkTemplate.CheckedChanged += OnTemplateCheckChanged;
+            lstTemplate.SelectedIndexChanged += OnTemplateSelectedIndexChanged;
+            Wizard.ActiveStepChanged += OnWizardActiveStepChanged;
+            Wizard.FinishButtonClick += OnWizardFinishedClick;
+            Wizard.NextButtonClick += OnWizardNextClick;
+
+            try
+            {
+                if (!Page.IsPostBack)
+                {
+                    //Get Templates for Page 1
+                    GetTemplates();
+                    chkTemplate.Checked = false;
+                    lstTemplate.Enabled = false;
+
+                    //Get Skins for Pages 2
+                    GetSkins();
+
+                    //Get Details for Page 4
+                    var objPortal = PortalController.Instance.GetPortal(PortalId);
+                    txtPortalName.Text = objPortal.PortalName;
+                    txtDescription.Text = objPortal.Description;
+                    txtKeyWords.Text = objPortal.KeyWords;
+
+                    //Get Details for Page 5
+                    ctlLogo.FilePath = objPortal.LogoFile;
+                    ctlLogo.FileFilter = Globals.glbImageFileTypes;
+
+                    UseTemplate();
+                }
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnTemplateCheckChanged">
+          <declaration><![CDATA[protected void OnTemplateCheckChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ chkTemplate_CheckedChanged runs when use template checkbox status is changed
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="305" sc="9" el="311" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="62b95d1f0a828b78a1085fe73e87cbdf"><![CDATA[{
+            if (chkTemplate.Checked)
+            {
+                lstTemplate.SelectedIndex = -1;
+            }
+            UseTemplate();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnTemplateSelectedIndexChanged">
+          <declaration><![CDATA[protected void OnTemplateSelectedIndexChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ lstTemplate_SelectedIndexChanged runs when the selected template is changed
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="321" sc="9" el="354" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="8cad401735a9a5c2c521daf5fcb181c7"><![CDATA[{
+            if (lstTemplate.SelectedIndex > -1)
+            {
+                try
+                {
+                    var template = LoadPortalTemplateInfoForSelectedItem();
+                    if(!string.IsNullOrEmpty(template.Description))
+                    {
+                        lblTemplateDescription.Text = template.Description;
+                    }
+
+                    var xmlDoc = new XmlDocument();
+                    xmlDoc.Load(template.TemplateFilePath);
+                    XmlNode node = xmlDoc.SelectSingleNode("//portal/portalDesktopModules");
+                    if (node != null)
+                    {
+                        var message = PortalController.CheckDesktopModulesInstalled(node.CreateNavigator());
+                        if (!string.IsNullOrEmpty(message))
+                        {
+                            message = string.Format(LocalizeString("ModulesNotInstalled"), message);
+                            DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, message, ModuleMessage.ModuleMessageType.YellowWarning);
+                        }
+                    }
+                }
+                catch (Exception exc)
+                {
+                    Logger.Error(exc);
+                }
+            }
+            else
+            {
+                lblTemplateDescription.Text = "";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnWizardActiveStepChanged">
+          <declaration><![CDATA[protected void OnWizardActiveStepChanged(object sender, EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Wizard_ActiveStepChanged runs when the Wizard page has been changed
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="371" sc="9" el="378" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="3be1493fbd5462ff71117244159aaea3"><![CDATA[{
+            switch (Wizard.ActiveStepIndex)
+            {
+                case 3:
+                    BindContainers();
+                    break;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnWizardFinishedClick">
+          <declaration><![CDATA[protected void OnWizardFinishedClick(object sender, WizardNavigationEventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Wizard_FinishButtonClick runs when the Finish Button on the Wizard is clicked.
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="388" sc="9" el="429" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="afccffff5c8ee5fe24c818e157d23ff3"><![CDATA[{
+            //use Portal Template to update portal content pages
+            if (lstTemplate.SelectedIndex != -1)
+            {
+                var template = LoadPortalTemplateInfoForSelectedItem();
+
+                //process zip resource file if present
+                PortalController.Instance.ProcessResourceFileExplicit(PortalSettings.HomeDirectoryMapPath, template.ResourceFilePath);
+
+                //Process Template
+                switch (optMerge.SelectedValue)
+                {
+                    case "Ignore":
+                        PortalController.Instance.ParseTemplate(PortalId, template, PortalSettings.AdministratorId, PortalTemplateModuleAction.Ignore, false);
+                        break;
+                    case "Replace":
+                        PortalController.Instance.ParseTemplate(PortalId, template, PortalSettings.AdministratorId, PortalTemplateModuleAction.Replace, false);
+                        break;
+                    case "Merge":
+                        PortalController.Instance.ParseTemplate(PortalId, template, PortalSettings.AdministratorId, PortalTemplateModuleAction.Merge, false);
+                        break;
+                }
+            }
+			
+            //update Portal info in the database
+            PortalInfo objPortal = PortalController.Instance.GetPortal(PortalId);
+            objPortal.Description = txtDescription.Text;
+            objPortal.KeyWords = txtKeyWords.Text;
+            objPortal.PortalName = txtPortalName.Text;
+            objPortal.LogoFile = String.Format("FileID={0}", ctlLogo.FileID);
+            PortalController.Instance.UpdatePortalInfo(objPortal);
+
+            //Set Portal Skin
+            SkinController.SetSkin(SkinController.RootSkin, PortalId, SkinType.Portal, ctlPortalSkin.SkinSrc);
+            SkinController.SetSkin(SkinController.RootSkin, PortalId, SkinType.Admin, ctlPortalSkin.SkinSrc);
+
+            //Set Portal Container
+            SkinController.SetSkin(SkinController.RootContainer, PortalId, SkinType.Portal, ctlPortalContainer.SkinSrc);
+            SkinController.SetSkin(SkinController.RootContainer, PortalId, SkinType.Admin, ctlPortalContainer.SkinSrc);
+
+            Response.Redirect(Globals.NavigateURL(objPortal.HomeTabId), true);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnWizardNextClick">
+          <declaration><![CDATA[protected void OnWizardNextClick(object sender, WizardNavigationEventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Wizard_NextButtonClickruns when the next Button is clicked.  It provides
+ a mechanism for cancelling the page change if certain conditions aren't met.
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="440" sc="9" el="470" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="d5f14a3c1782f89e88670a200494baa1"><![CDATA[{
+            switch (e.CurrentStepIndex)
+            {
+                case 1: //Templates
+                    //Before we leave Page 1, the user must have selected a Portal
+                    if (lstTemplate.SelectedIndex == -1)
+                    {
+                        if (chkTemplate.Checked)
+                        {
+                            e.Cancel = true;
+                            DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("TemplateRequired", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError);
+                        }
+                    }
+                    else
+                    {
+						//Check Template Validity before proceeding
+                        string schemaFilename = Server.MapPath("DesktopModules/Admin/Portals/portal.template.xsd");
+                        var template = LoadPortalTemplateInfoForSelectedItem();
+                        var xval = new PortalTemplateValidator();
+                        if (!xval.Validate(template.TemplateFilePath, schemaFilename))
+                        {
+                            var message = string.Format(Localization.GetString("InvalidTemplate", LocalResourceFile), Path.GetFileName(template.TemplateFilePath));
+                            DotNetNuke.UI.Skins.Skin.AddModuleMessage(this, message, ModuleMessage.ModuleMessageType.RedError);
+                            //Cancel Page move if invalid template
+                            e.Cancel = true;
+                        }
+                    }
+                    break;
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UseTemplate">
+          <declaration><![CDATA[private void UseTemplate()]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ UseTemplate sets the page ready to select a Template
+ </summary>
+ <remarks>
+ </remarks>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="225" sc="9" el="230" ec="10">SiteWizard.ascx.cs</location>
+            <body hash="594d21a39945e40a56cbb456bcea1c02"><![CDATA[{
+            lstTemplate.Enabled = chkTemplate.Checked;
+            optMerge.Enabled = chkTemplate.Checked;
+            //lblMergeModule.Enabled = chkTemplate.Checked;
+            lblMergeWarning.Enabled = chkTemplate.Checked;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="chkIncludeAll">
+          <declaration><![CDATA[protected CheckBox chkIncludeAll;]]></declaration>
+          <documentation>
+            <summary>
+ chkIncludeAll control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkTemplate">
+          <declaration><![CDATA[protected CheckBox chkTemplate;]]></declaration>
+          <documentation>
+            <summary>
+ chkTemplate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ctlLogo">
+          <declaration><![CDATA[protected DnnFilePicker ctlLogo;]]></declaration>
+          <documentation>
+            <summary>
+ ctlLogo control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ctlPortalContainer">
+          <declaration><![CDATA[protected SkinThumbNailControl ctlPortalContainer;]]></declaration>
+          <documentation>
+            <summary>
+ ctlPortalContainer control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ctlPortalSkin">
+          <declaration><![CDATA[protected SkinThumbNailControl ctlPortalSkin;]]></declaration>
+          <documentation>
+            <summary>
+ ctlPortalSkin control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblDescription">
+          <declaration><![CDATA[protected UserControl lblDescription;]]></declaration>
+          <documentation>
+            <summary>
+ lblDescription control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblHelp">
+          <declaration><![CDATA[protected Label lblHelp;]]></declaration>
+          <documentation>
+            <summary>
+ lblHelp control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblKeyWords">
+          <declaration><![CDATA[protected UserControl lblKeyWords;]]></declaration>
+          <documentation>
+            <summary>
+ lblKeyWords control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblLogo">
+          <declaration><![CDATA[protected UserControl lblLogo;]]></declaration>
+          <documentation>
+            <summary>
+ lblLogo control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblMergeModule">
+          <declaration><![CDATA[protected UserControl lblMergeModule;]]></declaration>
+          <documentation>
+            <summary>
+ lblMergeModule control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblMergeWarning">
+          <declaration><![CDATA[protected Label lblMergeWarning;]]></declaration>
+          <documentation>
+            <summary>
+ lblMergeWarning control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblPortalName">
+          <declaration><![CDATA[protected UserControl lblPortalName;]]></declaration>
+          <documentation>
+            <summary>
+ lblPortalName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblTemplateDescription">
+          <declaration><![CDATA[protected Label lblTemplateDescription;]]></declaration>
+          <documentation>
+            <summary>
+ lblTemplateDescription control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblTemplateList">
+          <declaration><![CDATA[protected UserControl lblTemplateList;]]></declaration>
+          <documentation>
+            <summary>
+ lblTemplateList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblTemplateMessage">
+          <declaration><![CDATA[protected UserControl lblTemplateMessage;]]></declaration>
+          <documentation>
+            <summary>
+ lblTemplateMessage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblWizardTitle">
+          <declaration><![CDATA[protected Label lblWizardTitle;]]></declaration>
+          <documentation>
+            <summary>
+ lblWizardTitle control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(SiteWizard));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="lstTemplate">
+          <declaration><![CDATA[protected ListBox lstTemplate;]]></declaration>
+          <documentation>
+            <summary>
+ lstTemplate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="optMerge">
+          <declaration><![CDATA[protected RadioButtonList optMerge;]]></declaration>
+          <documentation>
+            <summary>
+ optMerge control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtDescription">
+          <declaration><![CDATA[protected TextBox txtDescription;]]></declaration>
+          <documentation>
+            <summary>
+ txtDescription control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtKeyWords">
+          <declaration><![CDATA[protected TextBox txtKeyWords;]]></declaration>
+          <documentation>
+            <summary>
+ txtKeyWords control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtPortalName">
+          <declaration><![CDATA[protected TextBox txtPortalName;]]></declaration>
+          <documentation>
+            <summary>
+ txtPortalName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Wizard">
+          <declaration><![CDATA[protected Wizard Wizard;]]></declaration>
+          <documentation>
+            <summary>
+ Wizard control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="wizComplete">
+          <declaration><![CDATA[protected WizardStep wizComplete;]]></declaration>
+          <documentation>
+            <summary>
+ wizComplete control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="wizContainer">
+          <declaration><![CDATA[protected WizardStep wizContainer;]]></declaration>
+          <documentation>
+            <summary>
+ wizContainer control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="wizDetails">
+          <declaration><![CDATA[protected WizardStep wizDetails;]]></declaration>
+          <documentation>
+            <summary>
+ wizDetails control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="wizIntroduction">
+          <declaration><![CDATA[protected WizardStep wizIntroduction;]]></declaration>
+          <documentation>
+            <summary>
+ wizIntroduction control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="wizSkin">
+          <declaration><![CDATA[protected WizardStep wizSkin;]]></declaration>
+          <documentation>
+            <summary>
+ wizSkin control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="wizTemplate">
+          <declaration><![CDATA[protected WizardStep wizTemplate;]]></declaration>
+          <documentation>
+            <summary>
+ wizTemplate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="Dnn.Modules.SiteWizard.Components">
+    <class name="SiteWizardController">
+      <declaration><![CDATA[public class SiteWizardController : IUpgradeable]]></declaration>
+      <documentation>
+        <summary>
+
+ </summary>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SiteWizardController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+            <summary>
+
+ </summary>
+ <param name="version"></param>
+ <returns></returns></documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="54" ec="10">Components\SiteWizardController.cs</location>
+            <body hash="67abc96a144fec1e91cc1f2ff9dacb31"><![CDATA[{
+            try
+            {
+                switch (version)
+                {
+                    case "08.00.00":
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

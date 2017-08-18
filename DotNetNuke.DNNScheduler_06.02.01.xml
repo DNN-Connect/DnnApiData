@@ -1,0 +1,476 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.DNNScheduler.dll" version="06.02.01" generated="2017-06-19 00:23:13Z" generationTime="1.3180979">
+  <namespace name="DotNetNuke.Services.Scheduling.DNNScheduling">
+    <class name="DataProvider">
+      <declaration><![CDATA[public abstract class DataProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[protected DataProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddSchedule">
+          <declaration><![CDATA[public abstract int AddSchedule(string TypeFullName, int TimeLapse, string TimeLapseMeasurement, int RetryTimeLapse, string RetryTimeLapseMeasurement, int RetainHistoryNum, string AttachToEvent, bool CatchUpEnabled, bool Enabled, string ObjectDependencies, string Servers, int CreatedByUserID, string FriendlyName);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="AddScheduleHistory">
+          <declaration><![CDATA[public abstract int AddScheduleHistory(int ScheduleID, DateTime StartDate, string Server);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="AddScheduleItemSetting">
+          <declaration><![CDATA[public abstract void AddScheduleItemSetting(int ScheduleID, string Name, string Value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteSchedule">
+          <declaration><![CDATA[public abstract void DeleteSchedule(int ScheduleID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNextScheduledTask">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetNextScheduledTask(string Server);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetSchedule();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetSchedule(string Server);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetSchedule(int ScheduleID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetSchedule(string TypeFullName, string Server);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleByEvent">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetScheduleByEvent(string EventName, string Server);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleHistory">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetScheduleHistory(int ScheduleID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleItemSettings">
+          <declaration><![CDATA[public abstract System.Data.IDataReader GetScheduleItemSettings(int ScheduleID);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="Instance">
+          <declaration><![CDATA[public static DataProvider Instance()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="9" el="40" ec="10">DataProvider.cs</location>
+            <body hash="701f2fc6864bad5aedc27bc491a46cbf"><![CDATA[{
+            return ComponentFactory.GetComponent<DataProvider>();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeScheduleHistory">
+          <declaration><![CDATA[public abstract void PurgeScheduleHistory();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSchedule">
+          <declaration><![CDATA[public abstract void UpdateSchedule(int ScheduleID, string TypeFullName, int TimeLapse, string TimeLapseMeasurement, int RetryTimeLapse, string RetryTimeLapseMeasurement, int RetainHistoryNum, string AttachToEvent, bool CatchUpEnabled, bool Enabled, string ObjectDependencies, string Servers, int LastModifiedByUserID, string FriendlyName);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateScheduleHistory">
+          <declaration><![CDATA[public abstract void UpdateScheduleHistory(int ScheduleHistoryID, DateTime EndDate, bool Succeeded, string LogNotes, DateTime NextStart);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="SqlDataProvider">
+      <declaration><![CDATA[public class SqlDataProvider : DataProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SqlDataProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddSchedule">
+          <declaration><![CDATA[public override int AddSchedule(string TypeFullName, int TimeLapse, string TimeLapseMeasurement, int RetryTimeLapse, string RetryTimeLapseMeasurement, int RetainHistoryNum, string AttachToEvent, bool CatchUpEnabled, bool Enabled, string ObjectDependencies, string Servers, int CreatedByUserID, string FriendlyName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="9" el="100" ec="10">SqlDataProvider.cs</location>
+            <body hash="12d2ce6897cd1c7c14107f5a989313d9"><![CDATA[{
+            return
+                Convert.ToInt32(SqlHelper.ExecuteScalar(ConnectionString,
+                                                        DatabaseOwner + ObjectQualifier + "AddSchedule",
+                                                        TypeFullName,
+                                                        TimeLapse,
+                                                        TimeLapseMeasurement,
+                                                        RetryTimeLapse,
+                                                        RetryTimeLapseMeasurement,
+                                                        RetainHistoryNum,
+                                                        AttachToEvent,
+                                                        CatchUpEnabled,
+                                                        Enabled,
+                                                        ObjectDependencies,
+                                                        GetNull(Servers),
+                                                        CreatedByUserID,
+                                                        FriendlyName));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddScheduleHistory">
+          <declaration><![CDATA[public override int AddScheduleHistory(int ScheduleID, DateTime StartDate, string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="103" sc="9" el="105" ec="10">SqlDataProvider.cs</location>
+            <body hash="1e9875bf13da1078fee36595adc2d761"><![CDATA[{
+            return Convert.ToInt32(SqlHelper.ExecuteScalar(ConnectionString, DatabaseOwner + ObjectQualifier + "AddScheduleHistory", ScheduleID, FixDate(StartDate), Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddScheduleItemSetting">
+          <declaration><![CDATA[public override void AddScheduleItemSetting(int ScheduleID, string Name, string Value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="108" sc="9" el="110" ec="10">SqlDataProvider.cs</location>
+            <body hash="02b3bb77917d0cf0e99d33d79e2b86d3"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "AddScheduleItemSetting", ScheduleID, Name, Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteSchedule">
+          <declaration><![CDATA[public override void DeleteSchedule(int ScheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="113" sc="9" el="115" ec="10">SqlDataProvider.cs</location>
+            <body hash="7fc78247933ecc8c0df1e90bd375c244"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "DeleteSchedule", ScheduleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="FixDate">
+          <declaration><![CDATA[private DateTime FixDate(DateTime dateToFix)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="62" sc="9" el="69" ec="10">SqlDataProvider.cs</location>
+            <body hash="b8ca9d59a181798b6c5bf97bc069626c"><![CDATA[{
+			//Fix for Sql Dates having a minimum value of 1/1/1753
+            if (dateToFix < SqlDateTime.MinValue.Value)
+            {
+                dateToFix = SqlDateTime.MinValue.Value;
+            }
+            return dateToFix;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNextScheduledTask">
+          <declaration><![CDATA[public override System.Data.IDataReader GetNextScheduledTask(string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="118" sc="9" el="120" ec="10">SqlDataProvider.cs</location>
+            <body hash="f396fd77b168fc90bf7a32d29badda38"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetScheduleNextTask", GetNull(Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetNull">
+          <declaration><![CDATA[private object GetNull(object Field)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="79" ec="10">SqlDataProvider.cs</location>
+            <body hash="a6309ddc58819ffad9dbc732a4e3b0ed"><![CDATA[{
+            object nullValue = Null.GetNull(Field, DBNull.Value);
+            if (nullValue is DateTime)
+            {
+                nullValue = FixDate((DateTime) nullValue);
+            }
+            return nullValue;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public override System.Data.IDataReader GetSchedule()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="123" sc="9" el="125" ec="10">SqlDataProvider.cs</location>
+            <body hash="5456b00ca40d9d45ae21ea2ecf3539c0"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetSchedule", DBNull.Value);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public override System.Data.IDataReader GetSchedule(string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="128" sc="9" el="130" ec="10">SqlDataProvider.cs</location>
+            <body hash="7608ae178a52fb2219b432fbd348f306"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetSchedule", GetNull(Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public override System.Data.IDataReader GetSchedule(int ScheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="133" sc="9" el="135" ec="10">SqlDataProvider.cs</location>
+            <body hash="9eafb2e24886f0e8a5e0cdc16798c71c"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetScheduleByScheduleID", ScheduleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSchedule">
+          <declaration><![CDATA[public override System.Data.IDataReader GetSchedule(string TypeFullName, string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="138" sc="9" el="140" ec="10">SqlDataProvider.cs</location>
+            <body hash="b9fd1aff18ae18bde110044dfa3cdded"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetScheduleByTypeFullName", TypeFullName, GetNull(Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleByEvent">
+          <declaration><![CDATA[public override System.Data.IDataReader GetScheduleByEvent(string EventName, string Server)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="143" sc="9" el="145" ec="10">SqlDataProvider.cs</location>
+            <body hash="2fdd5ae8f2da6d1a331acc90a3aad309"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetScheduleByEvent", EventName, GetNull(Server));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleHistory">
+          <declaration><![CDATA[public override System.Data.IDataReader GetScheduleHistory(int ScheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="148" sc="9" el="150" ec="10">SqlDataProvider.cs</location>
+            <body hash="d5ecf064000238f4233a03c041d7de10"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetScheduleHistory", ScheduleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetScheduleItemSettings">
+          <declaration><![CDATA[public override System.Data.IDataReader GetScheduleItemSettings(int ScheduleID)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="153" sc="9" el="155" ec="10">SqlDataProvider.cs</location>
+            <body hash="14a018f5406f6f5be0245a02de1a5011"><![CDATA[{
+            return SqlHelper.ExecuteReader(ConnectionString, DatabaseOwner + ObjectQualifier + "GetScheduleItemSettings", ScheduleID);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="PurgeScheduleHistory">
+          <declaration><![CDATA[public override void PurgeScheduleHistory()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="158" sc="9" el="160" ec="10">SqlDataProvider.cs</location>
+            <body hash="896c0de81839da7dbb7f407da7e9e8ed"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "PurgeScheduleHistory");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSchedule">
+          <declaration><![CDATA[public override void UpdateSchedule(int ScheduleID, string TypeFullName, int TimeLapse, string TimeLapseMeasurement, int RetryTimeLapse, string RetryTimeLapseMeasurement, int RetainHistoryNum, string AttachToEvent, bool CatchUpEnabled, bool Enabled, string ObjectDependencies, string Servers, int LastModifiedByUserID, string FriendlyName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="164" sc="9" el="181" ec="10">SqlDataProvider.cs</location>
+            <body hash="edae3f15a540753504ee8fb96aefdfaf"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                                      DatabaseOwner + ObjectQualifier + "UpdateSchedule",
+                                      ScheduleID,
+                                      TypeFullName,
+                                      TimeLapse,
+                                      TimeLapseMeasurement,
+                                      RetryTimeLapse,
+                                      RetryTimeLapseMeasurement,
+                                      RetainHistoryNum,
+                                      AttachToEvent,
+                                      CatchUpEnabled,
+                                      Enabled,
+                                      ObjectDependencies,
+                                      GetNull(Servers),
+                                      LastModifiedByUserID,
+                                      FriendlyName);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateScheduleHistory">
+          <declaration><![CDATA[public override void UpdateScheduleHistory(int ScheduleHistoryID, DateTime EndDate, bool Succeeded, string LogNotes, DateTime NextStart)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="184" sc="9" el="186" ec="10">SqlDataProvider.cs</location>
+            <body hash="2dac13e1e1cf7b01e4aecb0b1cedac16"><![CDATA[{
+            SqlHelper.ExecuteNonQuery(ConnectionString, DatabaseOwner + ObjectQualifier + "UpdateScheduleHistory", ScheduleHistoryID, GetNull(EndDate), GetNull(Succeeded), LogNotes, GetNull(NextStart));
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="ConnectionString">
+          <declaration><![CDATA[public string ConnectionString]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="13" el="42" ec="14">SqlDataProvider.cs</location>
+            <body hash="61151ce45d4793ebf981479d49e758f7"><![CDATA[{
+                return Data.DataProvider.Instance().ConnectionString;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DatabaseOwner">
+          <declaration><![CDATA[public string DatabaseOwner]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="13" el="50" ec="14">SqlDataProvider.cs</location>
+            <body hash="bd934314ce26dbfaf12e2df8b461cfb5"><![CDATA[{
+                return Data.DataProvider.Instance().DatabaseOwner;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="ObjectQualifier">
+          <declaration><![CDATA[public string ObjectQualifier]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="13" el="58" ec="14">SqlDataProvider.cs</location>
+            <body hash="ac915bd13f657a9577e9d532c24a42b4"><![CDATA[{
+                return Data.DataProvider.Instance().ObjectQualifier;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Sitemap.BigSitemapProvider.dll" version="06.01.05" generated="2017-06-18 21:46:40Z" generationTime="1.006246">
+  <namespace name="DotNetNuke.Sitemap">
+    <class name="BigSitemapProvider">
+      <declaration><![CDATA[public class BigSitemapProvider : SitemapProvider]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public BigSitemapProvider()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetPageUrl">
+          <declaration><![CDATA[private SitemapUrl GetPageUrl(int index)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="59" ec="10">BigSitemapProvider.cs</location>
+            <body hash="0d1534a9510dfc0fd678ee0d23dfef98"><![CDATA[{
+            var pageUrl = new SitemapUrl();
+            pageUrl.Url = string.Format("http://mysite/page_{0}.aspx", index);
+            pageUrl.Priority = 0.5F;
+            pageUrl.LastModified = DateTime.Now;
+            pageUrl.ChangeFrequency = SitemapChangeFrequency.Daily;
+
+            return pageUrl;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetUrls">
+          <declaration><![CDATA[public override List<SitemapUrl> GetUrls(int portalId, PortalSettings ps, string version)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="39" sc="9" el="47" ec="10">BigSitemapProvider.cs</location>
+            <body hash="48478bc2d4b10f99522af3e206319a56"><![CDATA[{
+            var urls = new List<SitemapUrl>();
+            for (int i = 0; i <= 50; i++)
+            {
+                urls.Add(GetPageUrl(i));
+            }
+
+            return urls;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

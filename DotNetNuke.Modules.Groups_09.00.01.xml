@@ -1,0 +1,4180 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Modules.Groups.dll" version="09.00.01" generated="2017-06-19 20:39:19Z" generationTime="3.6770199">
+  <namespace name="DotNetNuke.Entities.Groups">
+    <class name="Content">
+      <declaration><![CDATA[public class Content]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Content()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CreateContentItem">
+          <declaration><![CDATA[internal ContentItem CreateContentItem(RoleInfo objItem, int tabId)]]></declaration>
+          <documentation>
+            <summary>
+ This should only run after the Post exists in the data store.
+ </summary>
+ <returns>The newly created ContentItemID from the data store.</returns>
+ <remarks>This is for the first question in the thread. Not for replies or items with ParentID &gt; 0.</remarks></documentation>
+          <codeblock>
+            <location sl="17" sc="77" el="49" ec="10">Components\Content.cs</location>
+            <body hash="cc216ac85af5e7c6d7eaa5f35a86da46"><![CDATA[{
+            var typeController = new ContentTypeController();
+            string contentTypeName = "DNNCorp_SocialGroup";
+            if (objItem.RoleID > 0) {
+                contentTypeName = "DNNCorp_SocialGroup";
+            }
+            var colContentTypes = (from t in typeController.GetContentTypes() where t.ContentType == contentTypeName select t);
+            int contentTypeID;
+
+            if (colContentTypes.Count() > 0) {
+                var contentType = colContentTypes.Single();
+                contentTypeID = contentType == null ? CreateContentType(contentTypeName) : contentType.ContentTypeId;
+            } else {
+                contentTypeID = CreateContentType(contentTypeName);
+            }
+
+            var objContent = new ContentItem {
+                Content = objItem.RoleName,
+                ContentTypeId = contentTypeID,
+                Indexed = false,
+                ContentKey = "GroupId=" + objItem.RoleID,
+                ModuleID = -1,
+                TabID = tabId
+            };
+
+            objContent.ContentItemId = Util.GetContentController().AddContentItem(objContent);
+
+            // Add Terms
+            //var cntTerm = new Terms();
+            //cntTerm.ManageQuestionTerms(objPost, objContent);
+
+            return objContent;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreateContentType">
+          <declaration><![CDATA[private static int CreateContentType(string ContentTypeName)]]></declaration>
+          <documentation>
+            <summary>
+ Creates a Content Type (for taxonomy) in the data store.
+ </summary>
+ <returns>The primary key value of the new ContentType.</returns></documentation>
+          <codeblock>
+            <location sl="110" sc="70" el="115" ec="10">Components\Content.cs</location>
+            <body hash="26492ed356887ac1a2398673aec99a7a"><![CDATA[{
+            var typeController = new ContentTypeController();
+            var objContentType = new ContentType { ContentType = ContentTypeName };
+
+            return typeController.AddContentType(objContentType);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteContentItem">
+          <declaration><![CDATA[internal void DeleteContentItem(int contentItemID)]]></declaration>
+          <documentation>
+            <summary>
+ This removes a content item associated with a question/thread from the data store. Should run every time an entire thread is deleted.
+ </summary>
+ <param name="contentItemID"></param></documentation>
+          <codeblock>
+            <location sl="73" sc="60" el="83" ec="10">Components\Content.cs</location>
+            <body hash="cba57c866fc66acaf46dbb9dc6bb2cfc"><![CDATA[{
+            if (contentItemID <= Null.NullInteger) return;
+            var objContent = Util.GetContentController().GetContentItem(contentItemID);
+            if (objContent == null) return;
+
+            // remove any metadata/terms associated first (perhaps we should just rely on ContentItem cascade delete here?)
+            //var cntTerms = new Terms();
+            //cntTerms.RemoveQuestionTerms(objContent);
+
+            Util.GetContentController().DeleteContentItem(objContent);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetContentTypeID">
+          <declaration><![CDATA[internal static int GetContentTypeID(string ContentTypeName)]]></declaration>
+          <documentation>
+            <summary>
+ This is used to determine the ContentTypeID (part of the Core API) based on this module's content type. If the content type doesn't exist yet for the module, it is created.
+ </summary>
+ <returns>The primary key value (ContentTypeID) from the core API's Content Types table.</returns></documentation>
+          <codeblock>
+            <location sl="89" sc="70" el="102" ec="10">Components\Content.cs</location>
+            <body hash="660e361283c3e0a888414d170d84a26e"><![CDATA[{
+            var typeController = new ContentTypeController();
+            var colContentTypes = (from t in typeController.GetContentTypes() where t.ContentType == ContentTypeName select t);
+            int contentTypeId;
+
+            if (colContentTypes.Count() > 0) {
+                var contentType = colContentTypes.Single();
+                contentTypeId = contentType == null ? CreateContentType(ContentTypeName) : contentType.ContentTypeId;
+            } else {
+                contentTypeId = CreateContentType(ContentTypeName);
+            }
+
+            return contentTypeId;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateContentItem">
+          <declaration><![CDATA[internal void UpdateContentItem(RoleInfo objItem, int tabId)]]></declaration>
+          <documentation>
+            <summary>
+ This is used to update the content in the ContentItems table. Should be called when a question is updated.
+ </summary>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="70" el="67" ec="10">Components\Content.cs</location>
+            <body hash="4e6e1e580f4b46cc2fe2f07532f17607"><![CDATA[{
+            ContentItem objContent = null; //Util.GetContentController().;
+
+            if (objContent == null) return;
+            objContent.Content = objItem.RoleName;
+            objContent.TabID = tabId;
+            objContent.ContentKey = "GroupId=" + objItem.RoleID; // we reset this just in case the page changed.
+
+            Util.GetContentController().UpdateContentItem(objContent);
+
+            // Update Terms
+            //var cntTerm = new Terms();
+            //cntTerm.ManageQuestionTerms(objPost, objContent);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GroupInfo">
+      <declaration><![CDATA[public class GroupInfo : RoleInfo, IPropertyAccess]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GroupInfo()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="41" sc="9" el="43" ec="10">Components\GroupInfo.cs</location>
+            <body hash="8c9da6582f090dd8080dbf0453d86e99"><![CDATA[public GroupInfo() {
+        
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GroupInfo(RoleInfo roleInfo)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="9" el="57" ec="10">Components\GroupInfo.cs</location>
+            <body hash="12d454a6e34096838c9fbc77c35f04af"><![CDATA[public GroupInfo(RoleInfo roleInfo) {
+            RoleID = roleInfo.RoleID;
+            RoleName = roleInfo.RoleName;
+            Description = roleInfo.Description;
+            PortalID = roleInfo.PortalID;
+            SecurityMode = roleInfo.SecurityMode;
+            ServiceFee = roleInfo.ServiceFee;
+            RSVPCode = roleInfo.RSVPCode;
+
+          
+
+
+
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetString">
+          <declaration><![CDATA[private string GetString(string keyName, string defaultValue)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="141" sc="71" el="150" ec="10">Components\GroupInfo.cs</location>
+            <body hash="72a5de6c2788ba85bc025e47eb3e38fd"><![CDATA[{
+            if (Settings == null) {
+                return defaultValue;
+            }
+            if (Settings.ContainsKey(keyName)) {
+                return Settings[keyName];
+            } else {
+                return defaultValue;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SetString">
+          <declaration><![CDATA[private void SetString(string keyName, string value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="151" sc="62" el="157" ec="10">Components\GroupInfo.cs</location>
+            <body hash="2d9578af27b4c982bb4cd99ced17c4d1"><![CDATA[{
+            if (Settings.ContainsKey(keyName)) {
+                Settings[keyName] = value;
+            } else {
+                Settings.Add(keyName, value);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="City">
+          <declaration><![CDATA[public string City]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="84" sc="17" el="86" ec="14">Components\GroupInfo.cs</location>
+            <body hash="7f64bf0630921cd4dcf90b84b6724356"><![CDATA[{
+                return GetString("City", string.Empty);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="87" sc="17" el="89" ec="14">Components\GroupInfo.cs</location>
+            <body hash="1d04ccca2f67b48cf3dd79bc1d7d8600"><![CDATA[{
+                SetString("City", value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Country">
+          <declaration><![CDATA[public string Country]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="102" sc="17" el="104" ec="14">Components\GroupInfo.cs</location>
+            <body hash="9efa6fba5eaebe114ab3598745cc8c40"><![CDATA[{
+                return GetString("Country", string.Empty);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="105" sc="17" el="107" ec="14">Components\GroupInfo.cs</location>
+            <body hash="f67d43f9ed8a88c51c83088a4310d2af"><![CDATA[{
+                SetString("Country",value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Featured">
+          <declaration><![CDATA[public bool Featured]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="130" sc="17" el="132" ec="14">Components\GroupInfo.cs</location>
+            <body hash="adf30e7ee511c3616367af864cc9d2fc"><![CDATA[{
+                return Convert.ToBoolean(GetString("Featured","false"));
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="133" sc="17" el="135" ec="14">Components\GroupInfo.cs</location>
+            <body hash="ab75c8405feab7df0b554ac10f078bdc"><![CDATA[{
+                SetString("Featured", value.ToString());
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="PostalCode">
+          <declaration><![CDATA[public string PostalCode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="111" sc="17" el="113" ec="14">Components\GroupInfo.cs</location>
+            <body hash="0bc89f7e2b5451a4b61c78d32edb59c2"><![CDATA[{
+                return GetString("PostalCode", string.Empty);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="114" sc="17" el="116" ec="14">Components\GroupInfo.cs</location>
+            <body hash="4b66eb00a70db10839630da62c63884c"><![CDATA[{
+                SetString("PostalCode",value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Region">
+          <declaration><![CDATA[public string Region]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="93" sc="17" el="95" ec="14">Components\GroupInfo.cs</location>
+            <body hash="57dece14a2812cfe9bcbc8e1bb0ae271"><![CDATA[{
+                return GetString("Region", string.Empty);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="96" sc="17" el="98" ec="14">Components\GroupInfo.cs</location>
+            <body hash="3d9e8cfdf6796bed1a46230d675d7645"><![CDATA[{
+                SetString("Region",value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Street">
+          <declaration><![CDATA[public string Street]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="17" el="78" ec="14">Components\GroupInfo.cs</location>
+            <body hash="a0067b04ab9529468ecc51a5007f2338"><![CDATA[{
+                return GetString("Street", string.Empty);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="79" sc="17" el="81" ec="14">Components\GroupInfo.cs</location>
+            <body hash="1f9a2e88060785675ccef9863ff83167"><![CDATA[{
+                SetString("Street",value);
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="Website">
+          <declaration><![CDATA[public string Website]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="120" sc="17" el="122" ec="14">Components\GroupInfo.cs</location>
+            <body hash="69df8ec519bffdcb61b4d6abaf9d54c0"><![CDATA[{
+                return GetString("Website", string.Empty);
+            }]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="123" sc="17" el="125" ec="14">Components\GroupInfo.cs</location>
+            <body hash="b3e3fa162797c771787142eb301832a1"><![CDATA[{
+                SetString("Website",value);
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Groups">
+    <class name="Create">
+      <declaration><![CDATA[public class Create : GroupsModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Create()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Cancel_Click">
+          <declaration><![CDATA[private void Cancel_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="42" ec="10">Create.ascx.cs</location>
+            <body hash="5c56ce19f7dfcf8f43c08ab1b99dfb6b"><![CDATA[{
+            Response.Redirect(ModuleContext.NavigateUrl(TabId, string.Empty, false, null));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Create_Click">
+          <declaration><![CDATA[private void Create_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="44" sc="9" el="163" ec="10">Create.ascx.cs</location>
+            <body hash="2fd1da135f663442d903f918b2e179cc"><![CDATA[{
+            var ps = new Security.PortalSecurity();
+            txtGroupName.Text = ps.InputFilter(txtGroupName.Text, Security.PortalSecurity.FilterFlag.NoScripting);
+            txtGroupName.Text = ps.InputFilter(txtGroupName.Text, Security.PortalSecurity.FilterFlag.NoMarkup);
+
+            txtDescription.Text = ps.InputFilter(txtDescription.Text, Security.PortalSecurity.FilterFlag.NoScripting);
+            txtDescription.Text = ps.InputFilter(txtDescription.Text, Security.PortalSecurity.FilterFlag.NoMarkup);
+            if (RoleController.Instance.GetRoleByName(PortalId, txtGroupName.Text) != null)
+            {
+                lblInvalidGroupName.Visible = true;
+                return;
+            }
+
+
+            var modRoles = new List<RoleInfo>();
+			var modUsers = new List<UserInfo>();
+            foreach (ModulePermissionInfo modulePermissionInfo in ModulePermissionController.GetModulePermissions(ModuleId, TabId))
+            {
+                if (modulePermissionInfo.PermissionKey == "MODGROUP" && modulePermissionInfo.AllowAccess)
+                {
+	                if (modulePermissionInfo.RoleID > int.Parse(Globals.glbRoleNothing))
+	                {
+                        modRoles.Add(RoleController.Instance.GetRoleById(PortalId, modulePermissionInfo.RoleID));
+	                }
+					else if (modulePermissionInfo.UserID > Null.NullInteger)
+					{
+						modUsers.Add(UserController.GetUserById(PortalId, modulePermissionInfo.UserID));
+					}
+                }
+            }
+
+            var roleInfo = new RoleInfo()
+            {
+                PortalID = PortalId,
+                RoleName = txtGroupName.Text,
+                Description = txtDescription.Text,
+                SecurityMode = SecurityMode.SocialGroup,
+                Status = RoleStatus.Approved,
+                IsPublic = rdAccessTypePublic.Checked
+            };
+            var userRoleStatus = RoleStatus.Pending;
+            if (GroupModerationEnabled)
+            {
+                roleInfo.Status = RoleStatus.Pending;
+                userRoleStatus = RoleStatus.Pending;
+            }
+            else
+            {
+                userRoleStatus = RoleStatus.Approved;
+            }
+
+            var objModulePermissions = new ModulePermissionCollection(CBO.FillCollection(DataProvider.Instance().GetModulePermissionsByModuleID(ModuleId, -1), typeof(ModulePermissionInfo)));
+            if (ModulePermissionController.HasModulePermission(objModulePermissions, "MODGROUP"))
+            {
+                roleInfo.Status = RoleStatus.Approved;
+                userRoleStatus = RoleStatus.Approved;
+            }
+
+	        var roleGroupId = DefaultRoleGroupId;
+	        if (roleGroupId < Null.NullInteger)
+	        {
+		        roleGroupId = Null.NullInteger;
+	        }
+			roleInfo.RoleGroupID = roleGroupId;
+
+            roleInfo.RoleID = RoleController.Instance.AddRole(roleInfo);
+            roleInfo = RoleController.Instance.GetRoleById(PortalId, roleInfo.RoleID);
+
+	        var groupUrl = Globals.NavigateURL(GroupViewTabId, "", new String[] {"groupid=" + roleInfo.RoleID.ToString()});
+			if (groupUrl.StartsWith("http://") || groupUrl.StartsWith("https://"))
+			{
+				const int startIndex = 8; // length of https://
+				groupUrl = groupUrl.Substring(groupUrl.IndexOf("/", startIndex, StringComparison.InvariantCultureIgnoreCase));
+			}
+			roleInfo.Settings.Add("URL", groupUrl);
+
+            roleInfo.Settings.Add("GroupCreatorName", UserInfo.DisplayName);
+            roleInfo.Settings.Add("ReviewMembers", chkMemberApproved.Checked.ToString());
+
+            RoleController.Instance.UpdateRoleSettings(roleInfo, true);
+	    if (inpFile.PostedFile != null && inpFile.PostedFile.ContentLength > 0)
+            {
+                IFileManager _fileManager = FileManager.Instance;
+                IFolderManager _folderManager = FolderManager.Instance;
+                var rootFolderPath = PathUtils.Instance.FormatFolderPath(PortalSettings.HomeDirectory);
+
+                IFolderInfo groupFolder = _folderManager.GetFolder(PortalSettings.PortalId, "Groups/" + roleInfo.RoleID);
+                if (groupFolder == null)
+                {
+                    groupFolder = _folderManager.AddFolder(PortalSettings.PortalId, "Groups/" + roleInfo.RoleID);
+                }
+                if (groupFolder != null)
+                {
+                    var fileName = Path.GetFileName(inpFile.PostedFile.FileName);
+                    var fileInfo = _fileManager.AddFile(groupFolder, fileName, inpFile.PostedFile.InputStream, true);
+                    roleInfo.IconFile = "FileID=" + fileInfo.FileId;
+                    RoleController.Instance.UpdateRole(roleInfo);
+                }
+            }
+
+            var notifications = new Notifications();
+
+
+            RoleController.Instance.AddUserRole(PortalId, UserId, roleInfo.RoleID, userRoleStatus, true, Null.NullDate, Null.NullDate);
+            if (roleInfo.Status == RoleStatus.Pending)
+            {
+                //Send notification to Group Moderators to approve/reject group.
+                notifications.AddGroupNotification(Constants.GroupPendingNotification, GroupViewTabId, ModuleId, roleInfo, UserInfo, modRoles, modUsers);
+            }
+            else
+            {
+                //Send notification to Group Moderators informing of new group.
+                notifications.AddGroupNotification(Constants.GroupCreatedNotification, GroupViewTabId, ModuleId, roleInfo, UserInfo, modRoles, modUsers);
+
+                //Add entry to journal.
+                GroupUtilities.CreateJournalEntry(roleInfo, UserInfo);
+            }
+
+            Response.Redirect(Globals.NavigateURL(GroupViewTabId, "", new String[] { "groupid=" + roleInfo.RoleID.ToString() }));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="InitializeComponent">
+          <declaration><![CDATA[private void InitializeComponent()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="9" el="31" ec="10">Create.ascx.cs</location>
+            <body hash="388f7abf98a815b2bbe1287320e9c3b2"><![CDATA[{
+            Load += Page_Load;
+            btnCreate.Click += Create_Click;
+            btnCancel.Click += Cancel_Click;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="9" el="24" ec="10">Create.ascx.cs</location>
+            <body hash="e6e53dfb76749bfeaf496967e2ea1d91"><![CDATA[{
+            InitializeComponent();
+            base.OnInit(e);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Page_Load">
+          <declaration><![CDATA[protected void Page_Load(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="35" sc="9" el="37" ec="10">Create.ascx.cs</location>
+            <body hash="66c95663109c1ef5c77b9efffea46404"><![CDATA[{
+            JavaScript.RequestRegistration(CommonJs.DnnPlugins);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="btnCancel">
+          <declaration><![CDATA[protected LinkButton btnCancel;]]></declaration>
+          <documentation>
+            <summary>
+ btnCancel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="btnCreate">
+          <declaration><![CDATA[protected LinkButton btnCreate;]]></declaration>
+          <documentation>
+            <summary>
+ btnCreate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkMemberApproved">
+          <declaration><![CDATA[protected CheckBox chkMemberApproved;]]></declaration>
+          <documentation>
+            <summary>
+ chkMemberApproved control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="inpFile">
+          <declaration><![CDATA[protected FileUpload inpFile;]]></declaration>
+          <documentation>
+            <summary>
+ inpFile control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblInvalidGroupName">
+          <declaration><![CDATA[protected Label lblInvalidGroupName;]]></declaration>
+          <documentation>
+            <summary>
+ lblInvalidGroupName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rdAccessTypePrivate">
+          <declaration><![CDATA[protected RadioButton rdAccessTypePrivate;]]></declaration>
+          <documentation>
+            <summary>
+ rdAccessTypePrivate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rdAccessTypePublic">
+          <declaration><![CDATA[protected RadioButton rdAccessTypePublic;]]></declaration>
+          <documentation>
+            <summary>
+ rdAccessTypePublic control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="reqGroupName">
+          <declaration><![CDATA[protected RequiredFieldValidator reqGroupName;]]></declaration>
+          <documentation>
+            <summary>
+ reqGroupName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtDescription">
+          <declaration><![CDATA[protected TextBox txtDescription;]]></declaration>
+          <documentation>
+            <summary>
+ txtDescription control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtGroupName">
+          <declaration><![CDATA[protected TextBox txtGroupName;]]></declaration>
+          <documentation>
+            <summary>
+ txtGroupName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="valGroupName">
+          <declaration><![CDATA[protected RegularExpressionValidator valGroupName;]]></declaration>
+          <documentation>
+            <summary>
+ valGroupName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GroupEdit">
+      <declaration><![CDATA[public class GroupEdit : GroupsModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GroupEdit()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Cancel_Click">
+          <declaration><![CDATA[private void Cancel_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="9" el="74" ec="10">GroupEdit.ascx.cs</location>
+            <body hash="c59cb00cc9523dceee7a4156903e2e87"><![CDATA[{
+            Response.Redirect(ModuleContext.NavigateUrl(TabId, "", false, new String[] { "groupid=" + GroupId.ToString() }));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="InitializeComponent">
+          <declaration><![CDATA[private void InitializeComponent()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="20" sc="9" el="24" ec="10">GroupEdit.ascx.cs</location>
+            <body hash="a09b2a1c2d0582ab9273f506b4118667"><![CDATA[{
+            Load += Page_Load;
+            btnSave.Click += Save_Click;
+            btnCancel.Click += Cancel_Click;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="14" sc="9" el="17" ec="10">GroupEdit.ascx.cs</location>
+            <body hash="e6e53dfb76749bfeaf496967e2ea1d91"><![CDATA[{
+            InitializeComponent();
+            base.OnInit(e);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Page_Load">
+          <declaration><![CDATA[protected void Page_Load(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="9" el="70" ec="10">GroupEdit.ascx.cs</location>
+            <body hash="00faf6e991206e09eaee9bafa6a3ca44"><![CDATA[{
+            JavaScript.RequestRegistration(CommonJs.DnnPlugins);
+
+            imgGroup.Src = Page.ResolveUrl("~/DesktopModules/SocialGroups/Images/") + "sample-group-profile.jpg";
+            if (!Page.IsPostBack && GroupId > 0)
+            {
+                var roleInfo = RoleController.Instance.GetRoleById(PortalId, GroupId);
+
+                if (roleInfo != null)
+                {
+                    if (!UserInfo.IsInRole(PortalSettings.AdministratorRoleName))
+                    {
+                        if (roleInfo.CreatedByUserID != UserInfo.UserID)
+                        {
+                            Response.Redirect(ModuleContext.NavigateUrl(TabId, "", false, new String[] { "groupid=" + GroupId.ToString() }));
+                        }
+                    }
+
+                    txtGroupName.Visible = !roleInfo.IsSystemRole;
+                    reqGroupName.Enabled = !roleInfo.IsSystemRole;
+
+                    if(!roleInfo.IsSystemRole)
+                        txtGroupName.Text = roleInfo.RoleName;
+                    else
+                        litGroupName.Text = roleInfo.RoleName;
+                    
+                    txtDescription.Text = roleInfo.Description;
+                    rdAccessTypePrivate.Checked = !roleInfo.IsPublic;
+                    rdAccessTypePublic.Checked = roleInfo.IsPublic;
+                    
+
+                    if (roleInfo.Settings.ContainsKey("ReviewMembers"))
+                    {
+                        chkMemberApproved.Checked = Convert.ToBoolean(roleInfo.Settings["ReviewMembers"].ToString());
+                    }
+                    imgGroup.Src = roleInfo.PhotoURL;
+                }
+                else
+                {
+                    Response.Redirect(ModuleContext.NavigateUrl(TabId, "", false));
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Save_Click">
+          <declaration><![CDATA[private void Save_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="77" sc="9" el="146" ec="10">GroupEdit.ascx.cs</location>
+            <body hash="a26311af519405c7508fac6317f04b2d"><![CDATA[{
+            if (GroupId > 0)
+            {
+                Security.PortalSecurity ps = new Security.PortalSecurity();
+
+                txtGroupName.Text = ps.InputFilter(txtGroupName.Text, Security.PortalSecurity.FilterFlag.NoScripting);
+                txtGroupName.Text = ps.InputFilter(txtGroupName.Text, Security.PortalSecurity.FilterFlag.NoMarkup);
+                txtDescription.Text = ps.InputFilter(txtDescription.Text, Security.PortalSecurity.FilterFlag.NoScripting);
+                txtDescription.Text = ps.InputFilter(txtDescription.Text, Security.PortalSecurity.FilterFlag.NoMarkup);
+
+                var roleInfo = RoleController.Instance.GetRoleById(PortalId, GroupId);
+                if (roleInfo != null)
+                {
+
+                    if (txtGroupName.Visible) //if this is visible assume that we're editing the groupname
+                    {
+                        if (txtGroupName.Text != roleInfo.RoleName)
+                        {
+                            if (RoleController.Instance.GetRoleByName(PortalId, txtGroupName.Text) != null)
+                            {
+                                lblInvalidGroupName.Visible = true;
+                                return;
+                            }
+                        }
+                    }
+
+                    if(!roleInfo.IsSystemRole)
+                    {
+                        roleInfo.RoleName = txtGroupName.Text;
+                    }
+                    
+                    roleInfo.Description = txtDescription.Text;
+                    roleInfo.IsPublic = rdAccessTypePublic.Checked;
+
+                    if (roleInfo.Settings.ContainsKey("ReviewMembers"))
+                        roleInfo.Settings["ReviewMembers"] = chkMemberApproved.Checked.ToString();
+                    else
+                        roleInfo.Settings.Add("ReviewMembers", chkMemberApproved.Checked.ToString());
+
+                    RoleController.Instance.UpdateRoleSettings(roleInfo, true);
+                    RoleController.Instance.UpdateRole(roleInfo);
+
+                    if (inpFile.PostedFile.ContentLength > 0)
+                    {
+                        IFileManager _fileManager = FileManager.Instance;
+                        IFolderManager _folderManager = FolderManager.Instance;
+                        var rootFolderPath = PathUtils.Instance.FormatFolderPath(PortalSettings.HomeDirectory);
+
+                        IFolderInfo groupFolder = _folderManager.GetFolder(PortalSettings.PortalId, "Groups/" + roleInfo.RoleID);
+                        if (groupFolder == null)
+                        {
+                            groupFolder = _folderManager.AddFolder(PortalSettings.PortalId, "Groups/" + roleInfo.RoleID);
+                        }
+                        if (groupFolder != null)
+                        {
+                            var fileName = Path.GetFileName(inpFile.PostedFile.FileName);
+                            var fileInfo = _fileManager.AddFile(groupFolder, fileName, inpFile.PostedFile.InputStream, true);
+                            roleInfo.IconFile = "FileID=" + fileInfo.FileId;
+                            RoleController.Instance.UpdateRole(roleInfo);
+                        }
+                    }
+
+                    //Clear Roles Cache
+                    DataCache.RemoveCache("GetRoles");
+
+                }
+
+                Response.Redirect(Globals.NavigateURL(TabId, "", new String[] { "groupid=" + GroupId.ToString() }));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="btnCancel">
+          <declaration><![CDATA[protected LinkButton btnCancel;]]></declaration>
+          <documentation>
+            <summary>
+ btnCancel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="btnSave">
+          <declaration><![CDATA[protected LinkButton btnSave;]]></declaration>
+          <documentation>
+            <summary>
+ btnSave control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkMemberApproved">
+          <declaration><![CDATA[protected CheckBox chkMemberApproved;]]></declaration>
+          <documentation>
+            <summary>
+ chkMemberApproved control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="imgGroup">
+          <declaration><![CDATA[protected HtmlImage imgGroup;]]></declaration>
+          <documentation>
+            <summary>
+ imgGroup control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="inpFile">
+          <declaration><![CDATA[protected FileUpload inpFile;]]></declaration>
+          <documentation>
+            <summary>
+ inpFile control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lblInvalidGroupName">
+          <declaration><![CDATA[protected Label lblInvalidGroupName;]]></declaration>
+          <documentation>
+            <summary>
+ lblInvalidGroupName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="litGroupName">
+          <declaration><![CDATA[protected Literal litGroupName;]]></declaration>
+          <documentation>
+            <summary>
+ litGroupName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rdAccessTypePrivate">
+          <declaration><![CDATA[protected RadioButton rdAccessTypePrivate;]]></declaration>
+          <documentation>
+            <summary>
+ rdAccessTypePrivate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rdAccessTypePublic">
+          <declaration><![CDATA[protected RadioButton rdAccessTypePublic;]]></declaration>
+          <documentation>
+            <summary>
+ rdAccessTypePublic control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="reqGroupName">
+          <declaration><![CDATA[protected RequiredFieldValidator reqGroupName;]]></declaration>
+          <documentation>
+            <summary>
+ reqGroupName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtDescription">
+          <declaration><![CDATA[protected TextBox txtDescription;]]></declaration>
+          <documentation>
+            <summary>
+ txtDescription control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtGroupName">
+          <declaration><![CDATA[protected TextBox txtGroupName;]]></declaration>
+          <documentation>
+            <summary>
+ txtGroupName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="valGroupName">
+          <declaration><![CDATA[protected RegularExpressionValidator valGroupName;]]></declaration>
+          <documentation>
+            <summary>
+ valGroupName control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GroupsModuleBase">
+      <declaration><![CDATA[public class GroupsModuleBase : PortalModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GroupsModuleBase()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetClearFilterUrl">
+          <declaration><![CDATA[public string GetClearFilterUrl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="269" sc="9" el="271" ec="10">GroupsModuleBase.cs</location>
+            <body hash="fe0f2cb8a7f06f8745a0f3d022629783"><![CDATA[{
+            return Globals.NavigateURL(TabId, "");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetCreateUrl">
+          <declaration><![CDATA[public string GetCreateUrl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="264" sc="9" el="266" ec="10">GroupsModuleBase.cs</location>
+            <body hash="bce0344d72d3e8e037cd4c72313af4f8"><![CDATA[{
+            return ModuleContext.EditUrl("Create"); //.NavigateUrl(GroupCreateTabId,"",true,null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetEditUrl">
+          <declaration><![CDATA[public string GetEditUrl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="274" sc="9" el="276" ec="10">GroupsModuleBase.cs</location>
+            <body hash="e4b47afbfbb7aa89d879930ee77c2a7c"><![CDATA[{
+            return ModuleContext.EditUrl("GroupId", GroupId.ToString("D"), "Edit");
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CanCreate">
+          <declaration><![CDATA[public bool CanCreate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="175" sc="13" el="185" ec="14">GroupsModuleBase.cs</location>
+            <body hash="949d24330e023ed00ebca60888a2c0bb"><![CDATA[{
+                if (Request.IsAuthenticated)
+                {
+                    if (UserInfo.IsSuperUser)
+                    {
+                        return true;
+                    }
+                    return ModulePermissionController.HasModulePermission(ModuleConfiguration.ModulePermissions, "CREATEGROUP");
+                }
+                return false;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DefaultGroupMode">
+          <declaration><![CDATA[public string DefaultGroupMode]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="153" sc="13" el="159" ec="14">GroupsModuleBase.cs</location>
+            <body hash="2b9230c923e7e82f9a23f79d417f6063"><![CDATA[{
+                if (Settings.ContainsKey(Constants.DefautlGroupViewMode))
+                {
+                    return Settings[Constants.DefautlGroupViewMode].ToString();
+                }
+                return "";
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="DefaultRoleGroupId">
+          <declaration><![CDATA[public int DefaultRoleGroupId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="13" el="96" ec="14">GroupsModuleBase.cs</location>
+            <body hash="0f65ed13f1fb09058401368cee167b8b"><![CDATA[{
+	            var roleGroupId = Null.NullInteger;
+                if (Settings.ContainsKey(Constants.DefaultRoleGroupSetting))
+                {
+                    int id;
+                    if (int.TryParse(Settings[Constants.DefaultRoleGroupSetting].ToString(), out id))
+                        roleGroupId = id;
+                }
+
+                return roleGroupId; // -2 is for "< All Roles >"
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupId">
+          <declaration><![CDATA[public int GroupId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="70" sc="13" el="81" ec="14">GroupsModuleBase.cs</location>
+            <body hash="47ac51c82273be047aaf41c36558ff44"><![CDATA[{
+                int groupId = -1;
+                if (string.IsNullOrEmpty(Request.QueryString["GroupId"]))
+                {
+                    return groupId;
+                }
+                if (int.TryParse(Request.QueryString["GroupId"], out groupId))
+                {
+                    return groupId;
+                }
+                return -1;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupListFilter">
+          <declaration><![CDATA[public string GroupListFilter]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="191" sc="13" el="193" ec="14">GroupsModuleBase.cs</location>
+            <body hash="cea94b2e9715051cc2c127ea705db60d"><![CDATA[{
+                return Request.QueryString["Filter"];
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupListPageSize">
+          <declaration><![CDATA[public int GroupListPageSize]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="199" sc="13" el="208" ec="14">GroupsModuleBase.cs</location>
+            <body hash="9058b4949bd8d562017923ff54256d65"><![CDATA[{
+                if (Settings.ContainsKey(Constants.GroupListPageSize))
+                {
+                    if (!string.IsNullOrEmpty(Settings[Constants.GroupListPageSize].ToString()))
+                    {
+                        return Convert.ToInt32(Settings[Constants.GroupListPageSize].ToString());
+                    }
+                }
+                return 20;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupListSearchEnabled">
+          <declaration><![CDATA[public bool GroupListSearchEnabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="213" sc="13" el="225" ec="14">GroupsModuleBase.cs</location>
+            <body hash="5aee9458046772a47bdbcc8ada7c6160"><![CDATA[{
+                var enableSearch = false;
+
+                if (Settings.ContainsKey(Constants.GroupListSearchEnabled))
+                {
+                    if (!string.IsNullOrEmpty(Settings[Constants.GroupListSearchEnabled].ToString()))
+                    {
+                        bool.TryParse(Settings[Constants.GroupListSearchEnabled].ToString(), out enableSearch);
+                    }
+                }
+
+                return enableSearch;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupListSortDirection">
+          <declaration><![CDATA[public string GroupListSortDirection]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="237" sc="13" el="239" ec="14">GroupsModuleBase.cs</location>
+            <body hash="ca721749b8061057ad23ad07e813cb82"><![CDATA[{
+                return Settings.ContainsKey(Constants.GroupListSortDirection) ? Settings[Constants.GroupListSortDirection].ToString() : "";
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupListSortField">
+          <declaration><![CDATA[public string GroupListSortField]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="230" sc="13" el="232" ec="14">GroupsModuleBase.cs</location>
+            <body hash="be34d1b5ca93900835f213cd54f35a7f"><![CDATA[{
+                return Settings.ContainsKey(Constants.GroupListSortField) ? Settings[Constants.GroupListSortField].ToString() : "";
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupListTabId">
+          <declaration><![CDATA[public int GroupListTabId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="101" sc="13" el="107" ec="14">GroupsModuleBase.cs</location>
+            <body hash="674343646c5045a248c20ad15a71a37a"><![CDATA[{
+                if (Settings.ContainsKey(Constants.GroupListPage))
+                {
+                    return Convert.ToInt32(Settings[Constants.GroupListPage].ToString());
+                }
+                return TabId;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupListTemplate">
+          <declaration><![CDATA[public string GroupListTemplate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="138" sc="13" el="148" ec="14">GroupsModuleBase.cs</location>
+            <body hash="bbfe3fb3d26883362972a4e4ef8a0ef1"><![CDATA[{
+                string template = LocalizeString("GroupListTemplate.Text");
+                if (Settings.ContainsKey(Constants.GroupListTemplate))
+                {
+                    if (!string.IsNullOrEmpty(Settings[Constants.GroupListTemplate].ToString()))
+                    {
+                        template = Settings[Constants.GroupListTemplate].ToString();
+                    }
+                }
+                return template;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupListUserGroupsOnly">
+          <declaration><![CDATA[public bool GroupListUserGroupsOnly]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="244" sc="13" el="256" ec="14">GroupsModuleBase.cs</location>
+            <body hash="79f1f9e37608b664369fb88717a21f5f"><![CDATA[{
+                var userGroupsOnly = false;
+
+                if (Settings.ContainsKey(Constants.GroupListUserGroupsOnly))
+                {
+                    if (!string.IsNullOrEmpty(Settings[Constants.GroupListUserGroupsOnly].ToString()))
+                    {
+                        bool.TryParse(Settings[Constants.GroupListUserGroupsOnly].ToString(), out userGroupsOnly);
+                    }
+                }
+
+                return userGroupsOnly;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupModerationEnabled">
+          <declaration><![CDATA[public bool GroupModerationEnabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="164" sc="13" el="170" ec="14">GroupsModuleBase.cs</location>
+            <body hash="3301b2e83e3995260e885742a1a48b91"><![CDATA[{
+                if (Settings.ContainsKey(Constants.GroupModerationEnabled))
+                {
+                    return Convert.ToBoolean(Settings[Constants.GroupModerationEnabled].ToString());
+                }
+                return false;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupViewTabId">
+          <declaration><![CDATA[public int GroupViewTabId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="112" sc="13" el="118" ec="14">GroupsModuleBase.cs</location>
+            <body hash="13e39ce684a3e2223fcf90a1cf058f1e"><![CDATA[{
+                if (Settings.ContainsKey(Constants.GroupViewPage))
+                {
+                    return Convert.ToInt32(Settings[Constants.GroupViewPage].ToString());
+                }
+                return TabId;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupViewTemplate">
+          <declaration><![CDATA[public string GroupViewTemplate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="123" sc="13" el="133" ec="14">GroupsModuleBase.cs</location>
+            <body hash="49abda1418019de342691e79e8bf272f"><![CDATA[{
+                string template = LocalizeString("GroupViewTemplate.Text");
+                if (Settings.ContainsKey(Constants.GroupViewTemplate))
+                {
+                    if (!string.IsNullOrEmpty(Settings[Constants.GroupViewTemplate].ToString()))
+                    {
+                        template = Settings[Constants.GroupViewTemplate].ToString();
+                    }
+                }
+                return template;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="LoadView">
+          <declaration><![CDATA[public GroupsModuleBase.GroupMode LoadView]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="13" el="65" ec="14">GroupsModuleBase.cs</location>
+            <body hash="0f08414ef0ce0b438953d49ad53a0a9b"><![CDATA[{
+                var mode = GroupMode.Setup;
+                if (Settings.ContainsKey(Constants.GroupLoadView))
+                {
+                    switch (Settings[Constants.GroupLoadView].ToString())
+                    {
+                        case "List":
+                            mode = GroupMode.List;
+                            break;
+                        case "View":
+                            mode = GroupMode.View;
+                            break;
+                    }
+                }
+                return mode;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GroupsSettingsBase">
+      <declaration><![CDATA[public class GroupsSettingsBase : ModuleSettingsBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GroupsSettingsBase()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GroupView">
+      <declaration><![CDATA[public class GroupView : GroupsModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GroupView()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Page_Load">
+          <declaration><![CDATA[protected void Page_Load(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="22" sc="9" el="66" ec="10">GroupView.ascx.cs</location>
+            <body hash="4ce17bb27edf4216f55088edabd5f867"><![CDATA[{
+
+            RoleInfo role = RoleController.Instance.GetRole(PortalId, r => r.SecurityMode != SecurityMode.SecurityRole && r.RoleID == GroupId);
+            if (role == null && GroupId > 0)
+            {
+                UI.Skins.Skin.AddModuleMessage(this, Localization.GetString("GroupIdNotFound", Constants.SharedResourcesPath), ModuleMessage.ModuleMessageType.YellowWarning);
+            }
+
+            if (role == null && (UserInfo.IsInRole(PortalSettings.AdministratorRoleName) || UserInfo.IsSuperUser))
+            {
+                role = new RoleInfo();
+                role.RoleID = -1;
+                role.RoleName = Localization.GetString("Sample_RoleName", LocalResourceFile);
+                role.Description = Localization.GetString("Sample_RoleDescription", LocalResourceFile);
+
+            }
+
+            if (role == null)
+                litOutput.Text = string.Empty;
+            else
+            {
+                var resxPath = Constants.SharedResourcesPath;
+
+                var template = GroupViewTemplate;
+                template = template.Replace("{resx:posts}", Localization.GetString("posts", resxPath));
+                template = template.Replace("{resx:members}", Localization.GetString("members", resxPath));
+                template = template.Replace("{resx:photos}", Localization.GetString("photos", resxPath));
+                template = template.Replace("{resx:documents}", Localization.GetString("documents", resxPath));
+
+                template = template.Replace("{resx:Join}", Localization.GetString("Join", resxPath));
+                template = template.Replace("{resx:JoinGroup}", Localization.GetString("JoinGroup", resxPath));
+                template = template.Replace("{resx:Pending}", Localization.GetString("Pending", resxPath));
+                template = template.Replace("{resx:LeaveGroup}", Localization.GetString("LeaveGroup", resxPath));
+                template = template.Replace("{resx:EditGroup}", Localization.GetString("EditGroup", resxPath));
+                template = template.Replace("[GroupViewTabId]", GroupViewTabId.ToString());
+
+
+                var groupParser = new GroupViewParser(PortalSettings, role, UserInfo, template, TabId);
+                groupParser.GroupEditUrl = GetEditUrl();
+                
+                litOutput.Text = groupParser.ParseView();
+
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="litOutput">
+          <declaration><![CDATA[protected Literal litOutput;]]></declaration>
+          <documentation>
+            <summary>
+ litOutput control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="List">
+      <declaration><![CDATA[public class List : GroupsModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public List()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="btnSearch_Click">
+          <declaration><![CDATA[protected void btnSearch_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="53" ec="10">List.ascx.cs</location>
+            <body hash="8ad12e990acee36cc24a1b375333dc7c"><![CDATA[{
+            if(!Page.IsValid) return;
+
+            Response.Redirect(Globals.NavigateURL(TabId, "", "filter=" + txtFilter.Text.Trim()));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Page_Load">
+          <declaration><![CDATA[protected void Page_Load(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="11" sc="9" el="46" ec="10">List.ascx.cs</location>
+            <body hash="7a95d743f9ffd2d54b7054d262833acc"><![CDATA[{
+            ServicesFramework.Instance.RequestAjaxAntiForgerySupport();
+
+            panelSearch.Visible = GroupListSearchEnabled;
+
+            ctlGroupList.TabId = TabId;
+            ctlGroupList.GroupViewTabId = GroupViewTabId;
+            ctlGroupList.RoleGroupId = DefaultRoleGroupId;
+            ctlGroupList.PageSize = GroupListPageSize;
+            ctlGroupList.DisplayCurrentUserGroups = GroupListUserGroupsOnly;
+            ctlGroupList.SearchFilter = GroupListFilter;
+            ctlGroupList.SortField = GroupListSortField;
+            ctlGroupList.SortDirection = GroupListSortDirection;
+
+            if (!string.IsNullOrEmpty(GroupListSortField))
+            {
+                ctlGroupList.SortField = GroupListSortField;
+            }
+
+            if (!string.IsNullOrEmpty(GroupListSortDirection))
+            {
+                ctlGroupList.SortDirection = GroupListSortDirection;
+            }
+
+
+            if (!String.IsNullOrEmpty(GroupListTemplate))
+            {
+                ctlGroupList.ItemTemplate = GroupListTemplate;
+            }
+
+            if (!string.IsNullOrEmpty(GroupListFilter))
+            {
+                txtFilter.Text = GroupListFilter;
+            }
+
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="btnSearch">
+          <declaration><![CDATA[protected LinkButton btnSearch;]]></declaration>
+          <documentation>
+            <summary>
+ btnSearch control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="ctlGroupList">
+          <declaration><![CDATA[protected GroupListControl ctlGroupList;]]></declaration>
+          <documentation>
+            <summary>
+ ctlGroupList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="panelSearch">
+          <declaration><![CDATA[protected Panel panelSearch;]]></declaration>
+          <documentation>
+            <summary>
+ panelSearch control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtFilter">
+          <declaration><![CDATA[protected TextBox txtFilter;]]></declaration>
+          <documentation>
+            <summary>
+ txtFilter control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ListSettings">
+      <declaration><![CDATA[public class ListSettings : GroupsSettingsBase]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+ The Settings class manages Module Settings
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ListSettings()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindGroups">
+          <declaration><![CDATA[private void BindGroups()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="153" sc="35" el="161" ec="10">ListSettings.ascx.cs</location>
+            <body hash="b1d3d64f915667cde442d4e74c6e5a6f"><![CDATA[{
+            var arrGroups = RoleController.GetRoleGroups(PortalId);
+			drpRoleGroup.Items.Add(new ListItem(Localization.GetString("AllRoles"), "-2"));
+            drpRoleGroup.Items.Add(new ListItem(Localization.GetString("GlobalRoles"), "-1"));
+
+            foreach (RoleGroupInfo roleGroup in arrGroups) {
+                drpRoleGroup.Items.Add(new ListItem(roleGroup.RoleGroupName, roleGroup.RoleGroupID.ToString()));
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BindPages">
+          <declaration><![CDATA[private void BindPages()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="162" sc="34" el="187" ec="10">ListSettings.ascx.cs</location>
+            <body hash="6545858f3197f359dbbc2f3a853afb08"><![CDATA[{
+            foreach (ModuleInfo moduleInfo in ModuleController.Instance.GetModules(PortalId)) 
+            {
+                if (moduleInfo.DesktopModule.ModuleName.Contains("Social Groups") && moduleInfo.IsDeleted == false)
+                {
+                    TabInfo tabInfo = TabController.Instance.GetTab(moduleInfo.TabID, PortalId, false);
+                    if (tabInfo != null) 
+                    {
+                        if (tabInfo.IsDeleted == false) 
+                        {
+                            foreach (KeyValuePair<string, ModuleDefinitionInfo> def in moduleInfo.DesktopModule.ModuleDefinitions) 
+                            {
+                                if (moduleInfo.ModuleDefinition.FriendlyName == def.Key) 
+                                {
+                                    if (drpGroupViewPage.Items.FindByValue(tabInfo.TabID.ToString()) == null) 
+                                    {
+                                        drpGroupViewPage.Items.Add(new ListItem(tabInfo.TabName + " - " + def.Key, tabInfo.TabID.ToString()));
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LoadSettings">
+          <declaration><![CDATA[public override void LoadSettings()]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ LoadSettings loads the settings from the Database and displays them
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="59" sc="9" el="123" ec="10">ListSettings.ascx.cs</location>
+            <body hash="314a3d39610cfb8bc3271a4fa9f59022"><![CDATA[{
+            try
+            {
+                if (Page.IsPostBack == false)
+                {
+                    BindGroups();
+                    BindPages();
+                    
+                    if (Settings.ContainsKey(Constants.DefaultRoleGroupSetting)) {
+                        drpRoleGroup.SelectedIndex = drpRoleGroup.Items.IndexOf(drpRoleGroup.Items.FindByValue(Settings[Constants.DefaultRoleGroupSetting].ToString()));
+                    }
+
+                    if (Settings.ContainsKey(Constants.GroupViewPage)) {
+                        drpGroupViewPage.SelectedIndex = drpGroupViewPage.Items.IndexOf(drpGroupViewPage.Items.FindByValue(Settings[Constants.GroupViewPage].ToString()));
+                    }
+
+                    if (Settings.ContainsKey(Constants.GroupListTemplate)) {
+                        txtListTemplate.Text = Settings[Constants.GroupListTemplate].ToString();
+                    }
+
+                    if (Settings.ContainsKey(Constants.GroupViewTemplate))
+                    {
+                        txtViewTemplate.Text = Settings[Constants.GroupViewTemplate].ToString();
+                    }
+
+                    if (Settings.ContainsKey(Constants.GroupModerationEnabled)) 
+                    {
+                        chkGroupModeration.Checked = Convert.ToBoolean(Settings[Constants.GroupModerationEnabled].ToString());
+                    }
+
+                    if (Settings.ContainsKey(Constants.GroupLoadView)) {
+                        drpViewMode.SelectedIndex = drpViewMode.Items.IndexOf(drpViewMode.Items.FindByValue(Settings[Constants.GroupLoadView].ToString()));
+                    }
+
+                    if (Settings.ContainsKey(Constants.GroupListPageSize))
+                    {
+                        txtPageSize.Text = Settings[Constants.GroupListPageSize].ToString();
+                    }
+
+                    if (Settings.ContainsKey(Constants.GroupListUserGroupsOnly))
+                    {
+                        chkUserGroups.Checked = Convert.ToBoolean(Settings[Constants.GroupListUserGroupsOnly].ToString());
+                    }
+
+                    if (Settings.ContainsKey(Constants.GroupListSearchEnabled))
+                    {
+                        chkEnableSearch.Checked = Convert.ToBoolean(Settings[Constants.GroupListSearchEnabled].ToString());
+                    }
+
+                    if (Settings.ContainsKey(Constants.GroupListSortField))
+                    {
+                        lstSortField.SelectedIndex = lstSortField.Items.IndexOf(lstSortField.Items.FindByValue(Settings[Constants.GroupListSortField].ToString()));
+                    }
+
+                    if (Settings.ContainsKey(Constants.GroupListSortDirection))
+                    {
+                        radSortDirection.SelectedIndex = radSortDirection.Items.IndexOf(radSortDirection.Items.FindByValue(Settings[Constants.GroupListSortDirection].ToString()));
+                    }
+                }
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpdateSettings">
+          <declaration><![CDATA[public override void UpdateSettings()]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ UpdateSettings saves the modified settings to the Database
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="131" sc="9" el="150" ec="10">ListSettings.ascx.cs</location>
+            <body hash="9a86af982a40ff196d53dbdf0d3c60b5"><![CDATA[{
+            try
+            {
+                ModuleController.Instance.UpdateTabModuleSetting(this.TabModuleId, Constants.DefaultRoleGroupSetting, drpRoleGroup.SelectedItem.Value);
+                ModuleController.Instance.UpdateTabModuleSetting(this.TabModuleId, Constants.GroupViewPage, drpGroupViewPage.SelectedItem.Value);
+                ModuleController.Instance.UpdateTabModuleSetting(this.TabModuleId, Constants.GroupListTemplate, txtListTemplate.Text);
+                ModuleController.Instance.UpdateTabModuleSetting(this.TabModuleId, Constants.GroupViewTemplate, txtViewTemplate.Text);
+                ModuleController.Instance.UpdateTabModuleSetting(this.TabModuleId, Constants.GroupModerationEnabled, chkGroupModeration.Checked.ToString());
+                ModuleController.Instance.UpdateTabModuleSetting(this.TabModuleId, Constants.GroupLoadView, drpViewMode.SelectedItem.Value);
+                ModuleController.Instance.UpdateTabModuleSetting(this.TabModuleId, Constants.GroupListPageSize, txtPageSize.Text);
+                ModuleController.Instance.UpdateTabModuleSetting(this.TabModuleId, Constants.GroupListSearchEnabled, chkEnableSearch.Checked.ToString());
+                ModuleController.Instance.UpdateTabModuleSetting(this.TabModuleId, Constants.GroupListSortField, lstSortField.SelectedItem.Value);
+                ModuleController.Instance.UpdateTabModuleSetting(this.TabModuleId, Constants.GroupListSortDirection, radSortDirection.SelectedItem.Value);
+                ModuleController.Instance.UpdateTabModuleSetting(this.TabModuleId, Constants.GroupListUserGroupsOnly, chkUserGroups.Checked.ToString());
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="chkEnableSearch">
+          <declaration><![CDATA[protected CheckBox chkEnableSearch;]]></declaration>
+          <documentation>
+            <summary>
+ chkEnableSearch control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkGroupModeration">
+          <declaration><![CDATA[protected CheckBox chkGroupModeration;]]></declaration>
+          <documentation>
+            <summary>
+ chkGroupModeration control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="chkUserGroups">
+          <declaration><![CDATA[protected CheckBox chkUserGroups;]]></declaration>
+          <documentation>
+            <summary>
+ chkUserGroups control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="drpGroupViewPage">
+          <declaration><![CDATA[protected DropDownList drpGroupViewPage;]]></declaration>
+          <documentation>
+            <summary>
+ drpGroupViewPage control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="drpRoleGroup">
+          <declaration><![CDATA[protected DropDownList drpRoleGroup;]]></declaration>
+          <documentation>
+            <summary>
+ drpRoleGroup control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="drpViewMode">
+          <declaration><![CDATA[protected DropDownList drpViewMode;]]></declaration>
+          <documentation>
+            <summary>
+ drpViewMode control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="lstSortField">
+          <declaration><![CDATA[protected DropDownList lstSortField;]]></declaration>
+          <documentation>
+            <summary>
+ lstSortField control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="radSortDirection">
+          <declaration><![CDATA[protected RadioButtonList radSortDirection;]]></declaration>
+          <documentation>
+            <summary>
+ radSortDirection control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="rangePageSize">
+          <declaration><![CDATA[protected RangeValidator rangePageSize;]]></declaration>
+          <documentation>
+            <summary>
+ rangePageSize control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtListTemplate">
+          <declaration><![CDATA[protected TextBox txtListTemplate;]]></declaration>
+          <documentation>
+            <summary>
+ txtListTemplate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtPageSize">
+          <declaration><![CDATA[protected TextBox txtPageSize;]]></declaration>
+          <documentation>
+            <summary>
+ txtPageSize control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="txtViewTemplate">
+          <declaration><![CDATA[protected TextBox txtViewTemplate;]]></declaration>
+          <documentation>
+            <summary>
+ txtViewTemplate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Loader">
+      <declaration><![CDATA[public class Loader : GroupsModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Loader()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Page_Load">
+          <declaration><![CDATA[protected void Page_Load(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="11" sc="62" el="28" ec="10">Loader.ascx.cs</location>
+            <body hash="9e7753eb10ed6a6070f55e405c515c37"><![CDATA[{
+            string path = Constants.ModulePath;
+            switch (LoadView) {
+                case GroupMode.Setup:
+                    path += "Setup.ascx";
+                    break;
+                case GroupMode.List:
+                    path += "List.ascx";
+                    break;
+                case GroupMode.View:
+                    path += "GroupView.ascx";
+                    break;
+            }
+            GroupsModuleBase ctl = new GroupsModuleBase();
+            ctl = (GroupsModuleBase)LoadControl(path);
+            ctl.ModuleConfiguration = this.ModuleConfiguration;
+            plhContent.Controls.Add(ctl);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="plhContent">
+          <declaration><![CDATA[protected PlaceHolder plhContent;]]></declaration>
+          <documentation>
+            <summary>
+ plhContent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ModerationServiceController">
+      <declaration><![CDATA[public class ModerationServiceController : DnnApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ModerationServiceController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ModerationServiceController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="6" el="48" ec="114">ModerationServiceController.cs</location>
+            <body hash="0e33f6e9e7d15654f4de2a598140db7b"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (ModerationServiceController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ApproveGroup">
+          <declaration><![CDATA[public HttpResponseMessage ApproveGroup(ModerationServiceController.NotificationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="9" el="98" ec="10">ModerationServiceController.cs</location>
+            <body hash="a84b32f0a3597a592d618619fbb72487"><![CDATA[{
+            try
+            {
+                var recipient = InternalMessagingController.Instance.GetMessageRecipient(postData.NotificationId, UserInfo.UserID);
+                if (recipient == null) return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unable to locate recipient");
+
+                var notification = NotificationsController.Instance.GetNotification(postData.NotificationId);
+                ParseKey(notification.Context);
+                if (_roleInfo == null)
+                {
+                    return  Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unable to locate role");
+                }
+                if (!IsMod())
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Not Authorized!");
+                }
+                _roleInfo.Status = RoleStatus.Approved;
+                RoleController.Instance.UpdateRole(_roleInfo);
+                var roleCreator = UserController.GetUserById(PortalSettings.PortalId, _roleInfo.CreatedByUserID);
+                //Update the original creator's role
+                RoleController.Instance.UpdateUserRole(PortalSettings.PortalId, roleCreator.UserID, _roleInfo.RoleID, RoleStatus.Approved, true, false);
+                GroupUtilities.CreateJournalEntry(_roleInfo, roleCreator);
+
+                var notifications = new Notifications();
+                var siteAdmin = UserController.GetUserById(PortalSettings.PortalId, PortalSettings.AdministratorId);
+                notifications.AddGroupNotification(Constants.GroupApprovedNotification, _tabId, _moduleId, _roleInfo, siteAdmin, new List<RoleInfo> { _roleInfo });
+                NotificationsController.Instance.DeleteAllNotificationRecipients(postData.NotificationId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ApproveMember">
+          <declaration><![CDATA[public HttpResponseMessage ApproveMember(ModerationServiceController.NotificationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="231" sc="9" el="271" ec="10">ModerationServiceController.cs</location>
+            <body hash="12219d87b5964283fd6d03896ed0f8f0"><![CDATA[{
+            try
+            {
+                var recipient = InternalMessagingController.Instance.GetMessageRecipient(postData.NotificationId, UserInfo.UserID);
+                if (recipient == null) return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unable to locate recipient");
+
+                var notification = NotificationsController.Instance.GetNotification(postData.NotificationId);
+                ParseKey(notification.Context);
+                if (_memberId <= 0)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unable to locate Member");
+                }
+
+                if (_roleInfo == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unable to locate Role");
+                }
+
+                var member = UserController.GetUserById(PortalSettings.PortalId, _memberId);
+
+                if (member != null)
+                {
+                    var memberRoleInfo = RoleController.Instance.GetUserRole(PortalSettings.PortalId, _memberId, _roleInfo.RoleID);
+                    memberRoleInfo.Status = RoleStatus.Approved;
+                    RoleController.Instance.UpdateUserRole(PortalSettings.PortalId, _memberId, _roleInfo.RoleID, RoleStatus.Approved, false, false);
+                    
+                    var notifications = new Notifications();
+                    var groupOwner = UserController.GetUserById(PortalSettings.PortalId, _roleInfo.CreatedByUserID);
+                    notifications.AddMemberNotification(Constants.MemberApprovedNotification, _tabId, _moduleId, _roleInfo, groupOwner, member);
+                    NotificationsController.Instance.DeleteAllNotificationRecipients(postData.NotificationId);
+
+                    return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+                }
+            } catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+
+            return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unknown Error");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="IsMod">
+          <declaration><![CDATA[private bool IsMod()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="340" sc="9" el="343" ec="10">ModerationServiceController.cs</location>
+            <body hash="befd2e9fa8acdc10f751cd52ba2069f3"><![CDATA[{
+            var objModulePermissions = new ModulePermissionCollection(CBO.FillCollection(DataProvider.Instance().GetModulePermissionsByModuleID(_moduleId, -1), typeof(ModulePermissionInfo)));
+            return ModulePermissionController.HasModulePermission(objModulePermissions, "MODGROUP");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="JoinGroup">
+          <declaration><![CDATA[public HttpResponseMessage JoinGroup(ModerationServiceController.RoleDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="141" sc="9" el="182" ec="10">ModerationServiceController.cs</location>
+            <body hash="6f49cd09c2f957e65425dca1f3de6a79"><![CDATA[{
+            try
+            {
+                if (UserInfo.UserID >= 0 && postData.RoleId > -1)
+                {
+                    _roleInfo = RoleController.Instance.GetRoleById(PortalSettings.PortalId, postData.RoleId);
+                    if (_roleInfo != null)
+                    {
+
+                        var requireApproval = false;
+
+                        if(_roleInfo.Settings.ContainsKey("ReviewMembers"))
+                            requireApproval = Convert.ToBoolean(_roleInfo.Settings["ReviewMembers"]);
+
+
+                        if ((_roleInfo.IsPublic || UserInfo.IsInRole(PortalSettings.AdministratorRoleName)) && !requireApproval)
+                        {
+                            RoleController.Instance.AddUserRole(PortalSettings.PortalId, UserInfo.UserID, _roleInfo.RoleID, RoleStatus.Approved, false, Null.NullDate, Null.NullDate);
+                            RoleController.Instance.UpdateRole(_roleInfo);
+
+                            var url = Globals.NavigateURL(postData.GroupViewTabId, "", new[] { "groupid=" + _roleInfo.RoleID });
+                            return Request.CreateResponse(HttpStatusCode.OK, new { Result = "success", URL = url });
+                        
+                        }
+                        if (_roleInfo.IsPublic && requireApproval)
+                        {
+                            RoleController.Instance.AddUserRole(PortalSettings.PortalId, UserInfo.UserID, _roleInfo.RoleID, RoleStatus.Pending, false, Null.NullDate, Null.NullDate);
+                            var notifications = new Notifications();
+                            notifications.AddGroupOwnerNotification(Constants.MemberPendingNotification, _tabId, _moduleId, _roleInfo, UserInfo);
+                            return Request.CreateResponse(HttpStatusCode.OK, new { Result = "success", URL = string.Empty });
+                        }
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+
+            return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unknown Error");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="LeaveGroup">
+          <declaration><![CDATA[public HttpResponseMessage LeaveGroup(ModerationServiceController.RoleDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="195" sc="9" el="226" ec="10">ModerationServiceController.cs</location>
+            <body hash="1e3fd91363749424e00e4130b26cd263"><![CDATA[{
+            var success = false;
+
+            try
+            {
+                if (UserInfo.UserID >= 0 && postData.RoleId > 0)
+                {
+                    _roleInfo = RoleController.Instance.GetRoleById(PortalSettings.PortalId, postData.RoleId);
+
+                    if (_roleInfo != null)
+                    {
+                        if (UserInfo.IsInRole(_roleInfo.RoleName))
+                        {
+                            RoleController.DeleteUserRole(UserInfo, _roleInfo, PortalSettings, false);
+                        }
+                        success = true;
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+
+            if(success)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            
+            return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unknown Error");
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ParseKey">
+          <declaration><![CDATA[private void ParseKey(string key)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="316" sc="9" el="337" ec="10">ModerationServiceController.cs</location>
+            <body hash="928c4fd0225064b6f253aafd11e69936"><![CDATA[{
+            _tabId = -1;
+            _moduleId = -1;
+            _roleId = -1;
+            _memberId = -1;
+            _roleInfo = null;
+            if (!String.IsNullOrEmpty(key))
+            {
+                string[] keys = key.Split(':');
+                _tabId = Convert.ToInt32(keys[0]);
+                _moduleId = Convert.ToInt32(keys[1]);
+                _roleId = Convert.ToInt32(keys[2]);
+                if (keys.Length > 3)
+                {
+                    _memberId = Convert.ToInt32(keys[3]);
+                }
+            }
+            if (_roleId > 0)
+            {
+                _roleInfo = RoleController.Instance.GetRoleById(PortalSettings.PortalId, _roleId);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RejectGroup">
+          <declaration><![CDATA[public HttpResponseMessage RejectGroup(ModerationServiceController.NotificationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="103" sc="9" el="134" ec="10">ModerationServiceController.cs</location>
+            <body hash="d72db476805561a418fcb209d0d34843"><![CDATA[{
+            try
+            {
+                var recipient = InternalMessagingController.Instance.GetMessageRecipient(postData.NotificationId, UserInfo.UserID);
+                if (recipient == null) return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unable to locate recipient");
+
+                var notification = NotificationsController.Instance.GetNotification(postData.NotificationId);
+                ParseKey(notification.Context);
+                if (_roleInfo == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unable to locate role");
+                }
+                if (!IsMod())
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Not Authorized!");
+                }
+                var notifications = new Notifications();
+                var roleCreator = UserController.GetUserById(PortalSettings.PortalId, _roleInfo.CreatedByUserID);
+                var siteAdmin = UserController.GetUserById(PortalSettings.PortalId, PortalSettings.AdministratorId);
+                notifications.AddGroupNotification(Constants.GroupRejectedNotification, _tabId, _moduleId, _roleInfo, siteAdmin, new List<RoleInfo> { _roleInfo }, roleCreator);
+
+                var role = RoleController.Instance.GetRole(PortalSettings.PortalId, r => r.RoleID == _roleId);
+                RoleController.Instance.DeleteRole(role);
+                NotificationsController.Instance.DeleteAllNotificationRecipients(postData.NotificationId);
+                return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RejectMember">
+          <declaration><![CDATA[public HttpResponseMessage RejectMember(ModerationServiceController.NotificationDTO postData)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="275" sc="9" el="313" ec="10">ModerationServiceController.cs</location>
+            <body hash="3993cff460f9f66c65e651bf67b87bc7"><![CDATA[{
+            try
+            {
+                var recipient = InternalMessagingController.Instance.GetMessageRecipient(postData.NotificationId, UserInfo.UserID);
+                if (recipient == null) return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unable to locate recipient");
+
+                var notification = NotificationsController.Instance.GetNotification(postData.NotificationId);
+                ParseKey(notification.Context);
+                if (_memberId <= 0)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unable to locate Member");
+                }
+                if (_roleInfo == null)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unable to locate Role");
+                }
+
+                var member = UserController.GetUserById(PortalSettings.PortalId, _memberId);
+
+
+
+                if (member != null)
+                {
+                    RoleController.DeleteUserRole(member, _roleInfo, PortalSettings, false) ;
+                    var notifications = new Notifications();
+                    var groupOwner = UserController.GetUserById(PortalSettings.PortalId, _roleInfo.CreatedByUserID);
+                    notifications.AddMemberNotification(Constants.MemberRejectedNotification, _tabId, _moduleId, _roleInfo, groupOwner, member);
+                    NotificationsController.Instance.DeleteAllNotificationRecipients(postData.NotificationId);
+
+                    return Request.CreateResponse(HttpStatusCode.OK, new {Result = "success"});
+                }
+            } catch (Exception exc)
+            {
+                Logger.Error(exc);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+
+            return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unknown Error");
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_memberId">
+          <declaration><![CDATA[private int _memberId;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_moduleId">
+          <declaration><![CDATA[private int _moduleId;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_roleId">
+          <declaration><![CDATA[private int _roleId;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_roleInfo">
+          <declaration><![CDATA[private RoleInfo _roleInfo;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_tabId">
+          <declaration><![CDATA[private int _tabId;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ModerationServiceController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ServiceRouteMapper">
+      <declaration><![CDATA[public class ServiceRouteMapper : IServiceRouteMapper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServiceRouteMapper()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="RegisterRoutes">
+          <declaration><![CDATA[public void RegisterRoutes(IMapRoute mapRouteManager)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="9" el="31" ec="10">Components\GroupsRouteMapper.cs</location>
+            <body hash="6b26a43bc9fadbd455db9376dccdc903"><![CDATA[{
+            mapRouteManager.MapHttpRoute("SocialGroups", "default", "{controller}/{action}", new[] { "DotNetNuke.Modules.Groups" });
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Setup">
+      <declaration><![CDATA[public class Setup : GroupsModuleBase]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Setup()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddModule">
+          <declaration><![CDATA[private int AddModule(TabInfo tab, int portalId, string moduleName, string pane)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="170" sc="9" el="214" ec="10">Setup.ascx.cs</location>
+            <body hash="d8ee639b7f1e922cfdd0ba763916df8d"><![CDATA[{
+			var module = ModuleController.Instance.GetTabModules(tab.TabID).Values.SingleOrDefault(m => m.DesktopModule.ModuleName == moduleName);
+            int id = -1;
+            if (module == null)
+            {
+                int desktopModuleId = GetDesktopModuleId(portalId, moduleName);
+                int moduleId = -1;
+                if (desktopModuleId > -1)
+                {
+                    if (moduleId <= 0)
+                    {
+                        moduleId = AddNewModule(tab, string.Empty, desktopModuleId, pane, 0, string.Empty);
+                    }
+                    id = moduleId;
+                    ModuleInfo mi = ModuleController.Instance.GetModule(moduleId, tab.TabID, false);
+                    if (moduleName == "Social Groups")
+                    {
+                        ModuleController.Instance.UpdateTabModuleSetting(mi.TabModuleID, Constants.GroupLoadView, GroupMode.View.ToString());
+                        ModuleController.Instance.UpdateTabModuleSetting(mi.TabModuleID, Constants.GroupListPage, tab.TabID.ToString(CultureInfo.InvariantCulture));
+                    }
+                    if (moduleName == "Console")
+                    {
+                        ModuleController.Instance.UpdateModuleSetting(mi.ModuleID, "AllowSizeChange", "False");
+                        ModuleController.Instance.UpdateModuleSetting(mi.ModuleID, "AllowViewChange", "False");
+                        ModuleController.Instance.UpdateModuleSetting(mi.ModuleID, "IncludeParent", "True");
+                        ModuleController.Instance.UpdateModuleSetting(mi.ModuleID, "Mode", "Group");
+                        ModuleController.Instance.UpdateModuleSetting(mi.ModuleID, "DefaultSize", "IconNone");
+                        ModuleController.Instance.UpdateModuleSetting(mi.ModuleID, "ParentTabID", tab.TabID.ToString(CultureInfo.InvariantCulture));
+                    }
+                    if (moduleName == "DotNetNuke.Modules.MemberDirectory")
+                    {
+                        ModuleController.Instance.UpdateModuleSetting(mi.ModuleID, "FilterBy", "Group");
+                        ModuleController.Instance.UpdateModuleSetting(mi.ModuleID, "FilterPropertyValue", "");
+                        ModuleController.Instance.UpdateModuleSetting(mi.ModuleID, "FilterValue", "-1");
+                        ModuleController.Instance.UpdateTabModuleSetting(mi.TabModuleID, "DisplaySearch", "False");
+                    }
+                }
+            }
+            else
+            {
+                id = module.ModuleID;
+            }
+
+            return id;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddModulePermission">
+          <declaration><![CDATA[private ModulePermissionInfo AddModulePermission(ModuleInfo objModule, PermissionInfo permission, int roleId, int userId, bool allowAccess)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="302" sc="9" el="322" ec="10">Setup.ascx.cs</location>
+            <body hash="8adeb34dfad84ee1cafe60598f34efd9"><![CDATA[{
+            var objModulePermission = new ModulePermissionInfo();
+            objModulePermission.ModuleID = objModule.ModuleID;
+            objModulePermission.PermissionID = permission.PermissionID;
+            objModulePermission.RoleID = roleId;
+            objModulePermission.UserID = userId;
+            objModulePermission.PermissionKey = permission.PermissionKey;
+            objModulePermission.AllowAccess = allowAccess;
+
+            // add the permission to the collection
+            if (objModule.ModulePermissions == null)
+            {
+                objModule.ModulePermissions = new ModulePermissionCollection();
+            }
+            if (!objModule.ModulePermissions.Contains(objModulePermission))
+            {
+                objModule.ModulePermissions.Add(objModulePermission);
+            }
+
+            return objModulePermission;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddNewModule">
+          <declaration><![CDATA[private int AddNewModule(TabInfo tab, string title, int desktopModuleId, string paneName, int permissionType, string align)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="223" sc="9" el="299" ec="10">Setup.ascx.cs</location>
+            <body hash="d6c4c0f9539ced28587cf459428da24a"><![CDATA[{
+            TabPermissionCollection objTabPermissions = tab.TabPermissions;
+            var objPermissionController = new PermissionController();
+            int j;
+
+            foreach (ModuleDefinitionInfo objModuleDefinition in ModuleDefinitionController.GetModuleDefinitionsByDesktopModuleID(desktopModuleId).Values)
+            {
+                var objModule = new ModuleInfo();
+                objModule.Initialize(tab.PortalID);
+
+                objModule.PortalID = tab.PortalID;
+                objModule.TabID = tab.TabID;
+                if (string.IsNullOrEmpty(title))
+                {
+                    objModule.ModuleTitle = objModuleDefinition.FriendlyName;
+                }
+                else
+                {
+                    objModule.ModuleTitle = title;
+                }
+                objModule.PaneName = paneName;
+                objModule.ModuleDefID = objModuleDefinition.ModuleDefID;
+                objModule.CacheTime = 0;
+                objModule.InheritViewPermissions = true;
+                objModule.DisplayTitle = false;
+
+                // get the default module view permissions
+                ArrayList arrSystemModuleViewPermissions = objPermissionController.GetPermissionByCodeAndKey("SYSTEM_MODULE_DEFINITION", "VIEW");
+
+                // get the permissions from the page
+                foreach (TabPermissionInfo objTabPermission in objTabPermissions)
+                {
+                    if (objTabPermission.PermissionKey == "VIEW" && permissionType == 0)
+                    {
+                        //Don't need to explicitly add View permisisons if "Same As Page"
+                        continue;
+                    }
+
+                    // get the system module permissions for the permissionkey
+                    ArrayList arrSystemModulePermissions = objPermissionController.GetPermissionByCodeAndKey("SYSTEM_MODULE_DEFINITION", objTabPermission.PermissionKey);
+                    // loop through the system module permissions
+                    for (j = 0; j <= arrSystemModulePermissions.Count - 1; j++)
+                    {
+                        // create the module permission
+                        PermissionInfo objSystemModulePermission = default(PermissionInfo);
+                        objSystemModulePermission = (PermissionInfo) arrSystemModulePermissions[j];
+                        if (objSystemModulePermission.PermissionKey == "VIEW" && permissionType == 1 && objTabPermission.PermissionKey != "EDIT")
+                        {
+                            //Only Page Editors get View permissions if "Page Editors Only"
+                            continue;
+                        }
+
+                        ModulePermissionInfo objModulePermission = AddModulePermission(objModule,
+                                                                                       objSystemModulePermission,
+                                                                                       objTabPermission.RoleID,
+                                                                                       objTabPermission.UserID,
+                                                                                       objTabPermission.AllowAccess);
+
+                        // ensure that every EDIT permission which allows access also provides VIEW permission
+                        if (objModulePermission.PermissionKey == "EDIT" & objModulePermission.AllowAccess)
+                        {
+                            ModulePermissionInfo objModuleViewperm = AddModulePermission(objModule,
+                                                                                         (PermissionInfo) arrSystemModuleViewPermissions[0],
+                                                                                         objModulePermission.RoleID,
+                                                                                         objModulePermission.UserID,
+                                                                                         true);
+                        }
+                    }
+                }
+
+                objModule.AllTabs = false;
+                objModule.Alignment = align;
+
+                return ModuleController.Instance.AddModule(objModule);
+            }
+            return -1;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="btGo_Click">
+          <declaration><![CDATA[public void btGo_Click(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="9" el="98" ec="10">Setup.ascx.cs</location>
+            <body hash="f2442f1b139547279d778c6885c4e6c6"><![CDATA[{
+            //Setup Child Page - Main View/Activity
+            TabInfo tab = CreatePage(PortalSettings.ActiveTab, PortalId, TabId, "Group Activity", false);
+
+            //Add Module to Child Page
+            int groupViewModuleId = AddModule(tab, PortalId, "Social Groups", "ContentPane");
+            int journalModuleId = AddModule(tab, PortalId, "Journal", "ContentPane");
+            int consoleId = AddModule(tab, PortalId, "Console", "RightPane");
+
+            ModuleInfo groupConsoleModule = ModuleController.Instance.GetModule(consoleId, tab.TabID, false);
+            TabInfo memberTab = CreatePage(PortalSettings.ActiveTab, PortalId, tab.TabID, "Members", true);
+            ModuleController.Instance.CopyModule(groupConsoleModule, memberTab, "RightPane", true);
+
+            ModuleInfo groupViewModule = ModuleController.Instance.GetModule(groupViewModuleId, tab.TabID, false);
+            ModuleController.Instance.CopyModule(groupViewModule, memberTab, "ContentPane", true);
+            AddModule(memberTab, PortalId, "DotNetNuke.Modules.MemberDirectory", "ContentPane");
+
+
+            //List Settings
+            ModuleController.Instance.UpdateTabModuleSetting(TabModuleId, Constants.GroupLoadView, GroupMode.List.ToString());
+            ModuleController.Instance.UpdateTabModuleSetting(TabModuleId, Constants.GroupViewPage, tab.TabID.ToString(CultureInfo.InvariantCulture));
+
+			//Default Social Groups
+	        var defaultGroup = RoleController.GetRoleGroupByName(PortalId, Constants.DefaultGroupName);
+	        var groupId = -2;
+			if (defaultGroup != null)
+			{
+				groupId = defaultGroup.RoleGroupID;
+			}
+			else
+			{
+				var groupInfo = new RoleGroupInfo();
+                groupInfo.PortalID = PortalId;
+                groupInfo.RoleGroupName = Constants.DefaultGroupName;
+                groupInfo.Description = Constants.DefaultGroupName;
+				groupId = RoleController.AddRoleGroup(groupInfo);
+			}
+            ModuleController.Instance.UpdateTabModuleSetting(TabModuleId, Constants.DefaultRoleGroupSetting, groupId.ToString());
+
+            Response.Redirect(Request.RawUrl);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CreatePage">
+          <declaration><![CDATA[private TabInfo CreatePage(TabInfo tab, int portalId, int parentTabId, string tabName, bool includeInMenu)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="101" sc="9" el="143" ec="10">Setup.ascx.cs</location>
+            <body hash="58e7fceea74f0c22b03e10067aa24891"><![CDATA[{
+            var newTab = TabController.Instance.GetTabsByPortal(portalId).WithTabNameAndParentId(tabName, parentTabId);
+            if (newTab == null)
+            {
+                int id = -1;
+                newTab = new TabInfo();
+
+                if (tab != null)
+                {
+                    foreach (TabPermissionInfo t in tab.TabPermissions)
+                    {
+                        var tNew = new TabPermissionInfo
+                        {
+                            AllowAccess = t.AllowAccess,
+                            DisplayName = t.DisplayName,
+                            ModuleDefID = t.ModuleDefID,
+                            PermissionCode = t.PermissionCode,
+                            PermissionID = t.PermissionID,
+                            PermissionKey = t.PermissionKey,
+                            PermissionName = t.PermissionName,
+                            RoleID = t.RoleID,
+                            RoleName = t.RoleName,
+                            TabID = -1,
+                            TabPermissionID = -1,
+                            UserID = t.UserID,
+                            Username = t.Username
+                        };
+                        newTab.TabPermissions.Add(tNew);
+                    }
+                }
+
+                newTab.ParentId = parentTabId;
+                newTab.PortalID = portalId;
+                newTab.TabName = tabName;
+                newTab.Title = tabName;
+                newTab.IsVisible = includeInMenu;
+                newTab.SkinSrc = GetSkin();
+
+                id = TabController.Instance.AddTab(newTab);
+                newTab = TabController.Instance.GetTab(id, portalId, true);
+            }
+            return newTab;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetDesktopModuleId">
+          <declaration><![CDATA[private int GetDesktopModuleId(int portalId, string moduleName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="217" sc="9" el="220" ec="10">Setup.ascx.cs</location>
+            <body hash="bca3e5061993a663db270f34a54852ea"><![CDATA[{
+            DesktopModuleInfo info = DesktopModuleController.GetDesktopModuleByModuleName(moduleName, portalId);
+            return info == null ? -1 : info.DesktopModuleID;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GetSkin">
+          <declaration><![CDATA[private string GetSkin()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="146" sc="9" el="167" ec="10">Setup.ascx.cs</location>
+            <body hash="d9aaef79ac4721da207a785bd050a45e"><![CDATA[{
+            //attempt to find and load a  skin from the assigned skinned source
+            var skinSource = PortalSettings.DefaultPortalSkin;
+
+            var tab = TabController.Instance.GetTab(TabId, PortalId, false);
+
+            if (!string.IsNullOrEmpty(tab.SkinSrc))
+            {
+                skinSource = tab.SkinSrc;
+            }
+            else
+            {
+                skinSource = SkinController.FormatSkinPath(skinSource) + "groups.ascx";
+                var physicalSkinFile = SkinController.FormatSkinSrc(skinSource, PortalSettings);
+
+                if (!File.Exists(HttpContext.Current.Server.MapPath(physicalSkinFile)))
+                {
+                    skinSource = ""; //this will load the default skin
+                }
+            }
+            return skinSource;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Page_Load">
+          <declaration><![CDATA[protected void Page_Load(object sender, EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="55" ec="10">Setup.ascx.cs</location>
+            <body hash="9eb8147952eabd8801a83355576a29c3"><![CDATA[{
+            btnGo.Visible = Request.IsAuthenticated;
+            btnGo.Enabled = Request.IsAuthenticated;
+            btnGo.Click += btGo_Click;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="btnGo">
+          <declaration><![CDATA[protected LinkButton btnGo;]]></declaration>
+          <documentation>
+            <summary>
+ btnGo control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Utilities">
+      <declaration><![CDATA[public class Utilities]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Utilities()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddParams">
+          <declaration><![CDATA[public static string[] AddParams(string param, string[] currParams)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="22" sc="9" el="29" ec="10">Components\Utilities.cs</location>
+            <body hash="9385ecc30efb23f6616ed357b7b3a835"><![CDATA[{
+            var tmpParams = new string[] { param };
+            var intLength = tmpParams.Length;
+            var currLength = currParams.Length;
+            Array.Resize(ref tmpParams, (intLength + currLength));
+            currParams.CopyTo(tmpParams, intLength);
+            return tmpParams;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="NavigateUrl">
+          <declaration><![CDATA[public static string NavigateUrl(int TabId, string[] @params)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="18" sc="9" el="20" ec="10">Components\Utilities.cs</location>
+            <body hash="a086d5eddcd4c2f2cadab8b3b5ad6a17"><![CDATA[{
+            return Common.Globals.NavigateURL(TabId, "", @params);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ParseTokenWrapper">
+          <declaration><![CDATA[internal static string ParseTokenWrapper(string Template, string Token, bool Condition)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="7" sc="97" el="16" ec="10">Components\Utilities.cs</location>
+            <body hash="b7c4d102ec3578eede4eac2163ddc3ce"><![CDATA[{
+            var pattern = "(\\[" + Token + "\\](.*?)\\[\\/" + Token + "\\])";
+            var regExp = RegexUtils.GetCachedRegex(pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            var matches = regExp.Matches(Template);
+            foreach (Match match in matches)
+            {
+                Template = Template.Replace(match.Value, Condition ? match.Groups[2].Value : string.Empty);
+            }
+            return Template;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="View">
+      <declaration><![CDATA[public class View : GroupsModuleBase]]></declaration>
+      <documentation>-----------------------------------------------------------------------------
+ <summary>
+ The ViewSocialGroups class displays the content
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public View()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="InitializeComponent">
+          <declaration><![CDATA[private void InitializeComponent()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="58" sc="9" el="60" ec="10">View.ascx.cs</location>
+            <body hash="c1e37ab25fd7ea77c2add14715dccac9"><![CDATA[{
+            Load += Page_Load;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="52" sc="9" el="55" ec="10">View.ascx.cs</location>
+            <body hash="e6e53dfb76749bfeaf496967e2ea1d91"><![CDATA[{
+            InitializeComponent();
+            base.OnInit(e);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Page_Load">
+          <declaration><![CDATA[private void Page_Load(object sender, EventArgs e)]]></declaration>
+          <documentation>-----------------------------------------------------------------------------
+ <summary>
+ Page_Load runs when the control is loaded
+ </summary>
+ -----------------------------------------------------------------------------</documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="88" ec="10">View.ascx.cs</location>
+            <body hash="7b6f50f671cb41e5d75683240a737893"><![CDATA[{
+            try
+            {
+                JavaScript.RequestRegistration(CommonJs.DnnPlugins);
+                if (GroupId < 0) {
+                    if (TabId != GroupListTabId && !UserInfo.IsInRole(PortalSettings.AdministratorRoleName)) {
+                       Response.Redirect(Globals.NavigateURL(GroupListTabId));
+                    }
+                }
+                GroupsModuleBase ctl = (GroupsModuleBase)LoadControl(ControlPath);
+                ctl.ModuleConfiguration = this.ModuleConfiguration;
+                plhContent.Controls.Clear();
+                plhContent.Controls.Add(ctl);
+                
+            }
+            catch (Exception exc) //Module failed to load
+            {
+                Exceptions.ProcessModuleLoadException(this, exc);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="plhContent">
+          <declaration><![CDATA[protected PlaceHolder plhContent;]]></declaration>
+          <documentation>
+            <summary>
+ plhContent control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Groups.Components">
+    <class name="Constants">
+      <declaration><![CDATA[public class Constants]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Constants()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="DefaultGroupName">
+          <declaration><![CDATA[internal const string DefaultGroupName = "Social Groups";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="DefaultRoleGroupSetting">
+          <declaration><![CDATA[internal const string DefaultRoleGroupSetting = "DefaultRoleGroup_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="DefautlGroupViewMode">
+          <declaration><![CDATA[internal const string DefautlGroupViewMode = "DefaultGroupViewMode_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupApprovedNotification">
+          <declaration><![CDATA[internal const string GroupApprovedNotification = "GroupApprovedNotification";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupCreatedNotification">
+          <declaration><![CDATA[internal const string GroupCreatedNotification = "GroupCreatedNotification";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupListPage">
+          <declaration><![CDATA[internal const string GroupListPage = "GroupListPage_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupListPageSize">
+          <declaration><![CDATA[internal const string GroupListPageSize = "GroupListPageSize_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupListSearchEnabled">
+          <declaration><![CDATA[internal const string GroupListSearchEnabled = "GroupListSearchEnabled_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupListSortDirection">
+          <declaration><![CDATA[internal const string GroupListSortDirection = "GroupListSortDirection_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupListSortField">
+          <declaration><![CDATA[internal const string GroupListSortField = "GroupListSortField_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupListTemplate">
+          <declaration><![CDATA[internal const string GroupListTemplate = "GroupListTemplate_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupListUserGroupsOnly">
+          <declaration><![CDATA[internal const string GroupListUserGroupsOnly = "GroupListUserGroupsOnly_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupLoadView">
+          <declaration><![CDATA[internal const string GroupLoadView = "GroupLoadView_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupModerationEnabled">
+          <declaration><![CDATA[internal const string GroupModerationEnabled = "GroupModerationEnabled_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupPendingNotification">
+          <declaration><![CDATA[internal const string GroupPendingNotification = "GroupPendingNotification";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupRejectedNotification">
+          <declaration><![CDATA[internal const string GroupRejectedNotification = "GroupRejectedNotification";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupViewPage">
+          <declaration><![CDATA[internal const string GroupViewPage = "GroupViewPage_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GroupViewTemplate">
+          <declaration><![CDATA[internal const string GroupViewTemplate = "GroupViewTemplate_Setting";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MemberApprovedNotification">
+          <declaration><![CDATA[internal const string MemberApprovedNotification = "GroupMemberApprovedNotification";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MemberJoinedNotification">
+          <declaration><![CDATA[internal const string MemberJoinedNotification = "MemberJoinedNotification";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MemberPendingNotification">
+          <declaration><![CDATA[internal const string MemberPendingNotification = "GroupMemberPendingNotification";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="MemberRejectedNotification">
+          <declaration><![CDATA[internal const string MemberRejectedNotification = "GroupMemberRejectedNotification";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="ModulePath">
+          <declaration><![CDATA[internal const string ModulePath = "~/DesktopModules/SocialGroups/";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="SharedResourcesPath">
+          <declaration><![CDATA[internal const string SharedResourcesPath = "~/DesktopModules/SocialGroups/App_LocalResources/SharedResources.resx";]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GroupItemTokenReplace">
+      <declaration><![CDATA[public class GroupItemTokenReplace : BaseCustomTokenReplace]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GroupItemTokenReplace(RoleInfo groupInfo)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="9" el="16" ec="10">Components\GroupItemPropertyAccess.cs</location>
+            <body hash="01d05429daf2c790e1f06d6ee9ec37f6"><![CDATA[public GroupItemTokenReplace(RoleInfo groupInfo)
+        {
+            PropertySource["groupitem"] = groupInfo;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ReplaceGroupItemTokens">
+          <declaration><![CDATA[public string ReplaceGroupItemTokens(string source)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="61" el="19" ec="10">Components\GroupItemPropertyAccess.cs</location>
+            <body hash="6951f83825d6c653ee078f7324eb0b3f"><![CDATA[{
+            return base.ReplaceTokens(source);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GroupMemberType">
+      <declaration><![CDATA[internal class GroupMemberType]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GroupMemberType()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="GroupMemberTypeId">
+          <declaration><![CDATA[public int GroupMemberTypeId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="28" sc="40" el="28" ec="44">Components\GroupMemberType.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="28" sc="45" el="28" ec="49">Components\GroupMemberType.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupMemberTypeName">
+          <declaration><![CDATA[public string GroupMemberTypeName]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="29" sc="45" el="29" ec="49">Components\GroupMemberType.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="29" sc="50" el="29" ec="54">Components\GroupMemberType.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GroupsBusinessController">
+      <declaration><![CDATA[public class GroupsBusinessController : IUpgradeable]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GroupsBusinessController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddNotificationTypes">
+          <declaration><![CDATA[private void AddNotificationTypes()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="90" sc="9" el="181" ec="10">Components\GroupsBusinessController.cs</location>
+            <body hash="ca9ee3341fb6e092082c3c45532a068c"><![CDATA[{
+            var actions = new List<NotificationTypeAction>();
+            
+            //DesktopModule should not be null
+            var deskModuleId = DesktopModuleController.GetDesktopModuleByFriendlyName("Social Groups").DesktopModuleID;
+
+            //GroupPendingNotification
+            var type = new NotificationType { Name = "GroupPendingNotification", Description = "Group Pending Notification", DesktopModuleId = deskModuleId};
+            if (NotificationsController.Instance.GetNotificationType(type.Name) == null)
+            {
+                actions.Add(new NotificationTypeAction
+                                {
+                                    NameResourceKey = "Approve",
+                                    DescriptionResourceKey = "ApproveGroup",
+                                    APICall = "API/SocialGroups/ModerationService/ApproveGroup"
+                                });
+                actions.Add(new NotificationTypeAction
+                                {
+                                    NameResourceKey = "RejectGroup",
+                                    DescriptionResourceKey = "RejectGroup",
+                                    APICall = "API/SocialGroups/ModerationService/RejectGroup"
+                                });
+                NotificationsController.Instance.CreateNotificationType(type);
+                NotificationsController.Instance.SetNotificationTypeActions(actions, type.NotificationTypeId);
+            }
+
+            //GroupApprovedNotification
+            type = new NotificationType { Name = "GroupApprovedNotification", Description = "Group Approved Notification", DesktopModuleId = deskModuleId };
+            if (NotificationsController.Instance.GetNotificationType(type.Name) == null)
+            {
+                NotificationsController.Instance.CreateNotificationType(type);
+            }
+
+            //GroupCreatedNotification
+            type = new NotificationType { Name = "GroupCreatedNotification", Description = "Group Created Notification", DesktopModuleId = deskModuleId };
+            if (NotificationsController.Instance.GetNotificationType(type.Name) == null)
+            {
+                actions.Clear();
+                actions.Add(new NotificationTypeAction
+                                {
+                                    NameResourceKey = "RejectGroup",
+                                    DescriptionResourceKey = "RejectGroup",
+                                    ConfirmResourceKey = "DeleteItem",
+                                    APICall = "API/SocialGroups/ModerationService/RejectGroup"
+                                });
+                NotificationsController.Instance.CreateNotificationType(type);
+                NotificationsController.Instance.SetNotificationTypeActions(actions, type.NotificationTypeId);
+            }
+
+            //GroupRejectedNotification
+            type = new NotificationType { Name = "GroupRejectedNotification", Description = "Group Rejected Notification", DesktopModuleId = deskModuleId };
+            if (NotificationsController.Instance.GetNotificationType(type.Name) == null)
+            {
+                NotificationsController.Instance.CreateNotificationType(type);
+            }
+
+            //GroupMemberPendingNotification
+            type = new NotificationType { Name = "GroupMemberPendingNotification", Description = "Group Member Pending Notification", DesktopModuleId = deskModuleId };
+            if (NotificationsController.Instance.GetNotificationType(type.Name) == null)
+            {
+                actions.Clear();
+                actions.Add(new NotificationTypeAction
+                                {
+                                    NameResourceKey = "Approve",
+                                    DescriptionResourceKey = "ApproveGroupMember",
+                                    ConfirmResourceKey = "",
+                                    APICall = "API/SocialGroups/ModerationService/ApproveMember"
+                                });
+                actions.Add(new NotificationTypeAction
+                                {
+                                    NameResourceKey = "RejectMember",
+                                    DescriptionResourceKey = "RejectGroupMember",
+                                    APICall = "API/SocialGroups/ModerationService/RejectMember"
+                                });
+                NotificationsController.Instance.CreateNotificationType(type);
+                NotificationsController.Instance.SetNotificationTypeActions(actions, type.NotificationTypeId);
+            }
+
+            //GroupMemberApprovedNotification
+            type = new NotificationType { Name = "GroupMemberApprovedNotification", Description = "Group Member Notification", DesktopModuleId = deskModuleId };
+            if (NotificationsController.Instance.GetNotificationType(type.Name) == null)
+            {
+                NotificationsController.Instance.CreateNotificationType(type);
+            }
+
+            //GroupMemberRejectedNotification
+            type = new NotificationType { Name = "GroupMemberRejectedNotification", Description = "Group Rejected Notification", DesktopModuleId = deskModuleId };
+            if (NotificationsController.Instance.GetNotificationType(type.Name) == null)
+            {
+                NotificationsController.Instance.CreateNotificationType(type);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ConvertNotificationTypeActionsFor700">
+          <declaration><![CDATA[private static void ConvertNotificationTypeActionsFor700()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="9" el="71" ec="10">Components\GroupsBusinessController.cs</location>
+            <body hash="bd73a312c4b8728f76940cb9ad3f0171"><![CDATA[{
+            var notificationTypeNames = new[] { "GroupPendingNotification", "GroupApprovedNotification", "GroupCreatedNotification", "GroupRejectedNotification", "GroupMemberPendingNotification", "GroupMemberApprovedNotification", "GroupMemberRejectedNotification" };
+
+            foreach (var name in notificationTypeNames)
+            {
+                var nt = NotificationsController.Instance.GetNotificationType(name);
+
+                var actions = NotificationsController.Instance.GetNotificationTypeActions(nt.NotificationTypeId).ToList();
+
+                if (actions.Any())
+                {
+
+                    foreach (var action in actions)
+                    {
+                        action.APICall = action.APICall.Replace(".ashx", "");
+                        NotificationsController.Instance.DeleteNotificationTypeAction(action.NotificationTypeActionId);
+                    }
+
+                    NotificationsController.Instance.SetNotificationTypeActions(actions, nt.NotificationTypeId);
+                }
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RemoveRejectActionForCreatedNotification">
+          <declaration><![CDATA[private void RemoveRejectActionForCreatedNotification()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="74" sc="9" el="87" ec="10">Components\GroupsBusinessController.cs</location>
+            <body hash="e427d9395ad157568bc9fb4f26d584a3"><![CDATA[{
+            var notificationType = NotificationsController.Instance.GetNotificationType(Constants.GroupCreatedNotification);
+            if(notificationType == null)
+            {
+                return;
+            }
+
+            var action = NotificationsController.Instance.GetNotificationTypeAction(notificationType.NotificationTypeId, "RejectGroup");
+            if(action == null)
+            {
+                return;
+            }
+            NotificationsController.Instance.DeleteNotificationTypeAction(action.NotificationTypeActionId);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string version)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="32" sc="9" el="47" ec="10">Components\GroupsBusinessController.cs</location>
+            <body hash="66b8a0ae68b58e179af9f4b723cbe081"><![CDATA[{
+            switch (version)
+            {
+                case "06.02.00":
+                    AddNotificationTypes();
+                    break;
+                case "06.02.04":
+                    RemoveRejectActionForCreatedNotification();
+                    break;
+                case "07.00.00":
+                    ConvertNotificationTypeActionsFor700();
+                    break;
+            }
+
+            return string.Empty;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GroupUtilities">
+      <declaration><![CDATA[public class GroupUtilities]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GroupUtilities()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="CreateJournalEntry">
+          <declaration><![CDATA[public static void CreateJournalEntry(RoleInfo roleInfo, UserInfo createdBy)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="40" sc="9" el="73" ec="10">Components\GroupUtilities.cs</location>
+            <body hash="acfd1950488d667917891bf72f96bc60"><![CDATA[{
+            var journalController = JournalController.Instance;
+            var journalItem = new JournalItem();
+            
+            string url = "";
+            
+            if (roleInfo.Settings.ContainsKey("URL"))
+            {
+                url = roleInfo.Settings["URL"];
+            }
+
+            journalItem.PortalId = roleInfo.PortalID;
+            journalItem.ProfileId = createdBy.UserID;
+            journalItem.UserId = createdBy.UserID;
+            journalItem.Title = roleInfo.RoleName;
+            journalItem.ItemData = new ItemData {Url = url};
+            journalItem.SocialGroupId = roleInfo.RoleID;
+            journalItem.Summary = roleInfo.Description;
+            journalItem.Body = null;
+            journalItem.JournalTypeId = journalController.GetJournalType("groupcreate").JournalTypeId;
+            journalItem.ObjectKey = string.Format("groupcreate:{0}:{1}", roleInfo.RoleID.ToString(CultureInfo.InvariantCulture), createdBy.UserID.ToString(CultureInfo.InvariantCulture));
+            
+            if (journalController.GetJournalItemByKey(roleInfo.PortalID, journalItem.ObjectKey) != null)
+                journalController.DeleteJournalItemByKey(roleInfo.PortalID, journalItem.ObjectKey);
+            
+            
+            journalItem.SecuritySet = string.Empty;
+            
+            if (roleInfo.IsPublic)
+                journalItem.SecuritySet += "E,";
+            
+            
+            journalController.SaveJournalItem(journalItem, null);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="GroupViewParser">
+      <declaration><![CDATA[public class GroupViewParser]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GroupViewParser(PortalSettings portalSettings, RoleInfo roleInfo, UserInfo currentUser, string template, int groupViewTabId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="23" sc="9" el="30" ec="10">Components\GroupViewParser.cs</location>
+            <body hash="ed68d8eb0d879e79b517562d21c846c2"><![CDATA[public GroupViewParser(PortalSettings portalSettings, RoleInfo roleInfo, UserInfo currentUser, string template, int groupViewTabId)
+        {
+            PortalSettings = portalSettings;
+            RoleInfo = roleInfo;
+            CurrentUser = currentUser;
+            Template = template;
+            GroupViewTabId = groupViewTabId;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="ParseView">
+          <declaration><![CDATA[public string ParseView()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="9" el="97" ec="10">Components\GroupViewParser.cs</location>
+            <body hash="42cf81d96a443cb4ee7b13939c602015"><![CDATA[{
+            var membershipPending = false;
+            var isOwner = false;
+
+            if (HttpContext.Current.Request.IsAuthenticated)
+            {
+                var userRoleInfo = CurrentUser.Social.Roles.FirstOrDefault(r => r.RoleID == RoleInfo.RoleID);
+
+                if (userRoleInfo != null)
+                {
+                    isOwner = userRoleInfo.IsOwner;
+                    if (userRoleInfo.Status == RoleStatus.Pending)
+                    {
+                        membershipPending = true;
+                    }
+                }
+                if (RoleInfo.CreatedByUserID == CurrentUser.UserID || CurrentUser.IsSuperUser)
+                {
+                    isOwner = true;
+                }
+            }
+
+            var editUrl = Localization.GetString("GroupEditUrl", Constants.SharedResourcesPath);
+
+            if (isOwner)
+            {
+
+                Template = Template.Replace("[GROUPEDITBUTTON]", String.Format(editUrl, GroupEditUrl));
+                Template = Utilities.ParseTokenWrapper(Template, "IsNotOwner", false);
+                Template = Utilities.ParseTokenWrapper(Template, "IsOwner", true);
+            }
+            else if (CurrentUser.IsInRole(RoleInfo.RoleName))
+            {
+                Template = Utilities.ParseTokenWrapper(Template, "IsNotOwner", true);
+                Template = Utilities.ParseTokenWrapper(Template, "IsOwner", false);
+            }
+
+            Template = Utilities.ParseTokenWrapper(Template, "IsNotOwner", false);
+            Template = Utilities.ParseTokenWrapper(Template, "IsOwner", false);
+
+            if (CurrentUser.IsInRole(RoleInfo.RoleName) || !HttpContext.Current.Request.IsAuthenticated || membershipPending)
+                Template = Utilities.ParseTokenWrapper(Template, "IsNotMember", false);
+            else
+                Template = Utilities.ParseTokenWrapper(Template, "IsNotMember", true);
+
+            if (CurrentUser.IsInRole(RoleInfo.RoleName))
+            {
+                Template = Utilities.ParseTokenWrapper(Template, "IsMember", true);
+                Template = Utilities.ParseTokenWrapper(Template, "IsPendingMember", false);
+            }
+            else
+                Template = Utilities.ParseTokenWrapper(Template, "IsMember", false);
+
+            Template = Utilities.ParseTokenWrapper(Template, "AllowJoin", RoleInfo.IsPublic);
+
+            Template = Template.Replace("[GROUPEDITBUTTON]", String.Empty);
+
+            var url = Globals.NavigateURL(GroupViewTabId, "", new String[] { "groupid=" + RoleInfo.RoleID.ToString() });
+            
+            Template = Utilities.ParseTokenWrapper(Template, "IsPendingMember", membershipPending);
+            Template = Template.Replace("[groupviewurl]", url);
+            Components.GroupItemTokenReplace tokenReplace = new Components.GroupItemTokenReplace(RoleInfo);
+            Template = tokenReplace.ReplaceGroupItemTokens(Template);
+            return Template;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CurrentUser">
+          <declaration><![CDATA[private UserInfo CurrentUser]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="18" sc="32" el="18" ec="36">Components\GroupViewParser.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="18" sc="37" el="18" ec="41">Components\GroupViewParser.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupEditUrl">
+          <declaration><![CDATA[public string GroupEditUrl]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="21" sc="38" el="21" ec="42">Components\GroupViewParser.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="21" sc="43" el="21" ec="47">Components\GroupViewParser.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupViewTabId">
+          <declaration><![CDATA[public int GroupViewTabId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="20" sc="37" el="20" ec="41">Components\GroupViewParser.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="20" sc="42" el="20" ec="46">Components\GroupViewParser.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalSettings">
+          <declaration><![CDATA[private PortalSettings PortalSettings]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="16" sc="41" el="16" ec="45">Components\GroupViewParser.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="16" sc="46" el="16" ec="50">Components\GroupViewParser.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RoleInfo">
+          <declaration><![CDATA[private RoleInfo RoleInfo]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="29" el="17" ec="33">Components\GroupViewParser.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="17" sc="34" el="17" ec="38">Components\GroupViewParser.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="Template">
+          <declaration><![CDATA[public string Template]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="19" sc="34" el="19" ec="38">Components\GroupViewParser.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="19" sc="39" el="19" ec="43">Components\GroupViewParser.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="Notifications">
+      <declaration><![CDATA[public class Notifications]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public Notifications()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddGroupNotification">
+          <declaration><![CDATA[internal virtual Notification AddGroupNotification(string notificationTypeName, int tabId, int moduleId, RoleInfo group, UserInfo initiatingUser, IList<RoleInfo> moderators)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="13" sc="9" el="15" ec="10">Components\Notifications.cs</location>
+            <body hash="ea38a6501310bc590a3c5cc25feff1cd"><![CDATA[{
+            return AddGroupNotification(notificationTypeName, tabId, moduleId, group, initiatingUser, moderators, null as UserInfo);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddGroupNotification">
+          <declaration><![CDATA[internal virtual Notification AddGroupNotification(string notificationTypeName, int tabId, int moduleId, RoleInfo group, UserInfo initiatingUser, IList<RoleInfo> moderators, UserInfo recipient)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="17" sc="3" el="19" ec="4">Components\Notifications.cs</location>
+            <body hash="599b9e57c3f32a3b5e5df9a96e1c711f"><![CDATA[{
+			return AddGroupNotification(notificationTypeName, tabId, moduleId, group, initiatingUser, moderators, recipient == null ? null : new List<UserInfo> { recipient });
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="AddGroupNotification">
+          <declaration><![CDATA[internal virtual Notification AddGroupNotification(string notificationTypeName, int tabId, int moduleId, RoleInfo group, UserInfo initiatingUser, IList<RoleInfo> moderators, IList<UserInfo> recipients)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="20" sc="211" el="46" ec="10">Components\Notifications.cs</location>
+            <body hash="2f250b815cac20973c32b41650a8d0f4"><![CDATA[{
+            var notificationType = NotificationsController.Instance.GetNotificationType(notificationTypeName);
+            var tokenReplace = new GroupItemTokenReplace(group);
+
+            var subject = Localization.GetString(notificationTypeName + ".Subject", Constants.SharedResourcesPath);
+            subject = tokenReplace.ReplaceGroupItemTokens(subject);
+
+            var body = Localization.GetString(notificationTypeName + ".Body", Constants.SharedResourcesPath);
+            
+            body = tokenReplace.ReplaceGroupItemTokens(body);
+            body = body.Replace("Public.Text", Localization.GetString("Public.Text", Constants.SharedResourcesPath));
+            body = body.Replace("Private.Text", Localization.GetString("Private.Text", Constants.SharedResourcesPath));
+
+            bool dismiss = notificationTypeName != Constants.GroupPendingNotification;
+            var notification = new Notification
+                                   {
+                                       NotificationTypeID = notificationType.NotificationTypeId,
+                                       Subject = subject,
+                                       Body = body,
+                                       IncludeDismissAction = dismiss,
+                                       SenderUserID = initiatingUser.UserID,
+                                       Context = String.Format("{0}:{1}:{2}", tabId, moduleId, group.RoleID)
+                                   };
+            NotificationsController.Instance.SendNotification(notification, initiatingUser.PortalID, moderators, recipients);
+
+            return notification;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddGroupOwnerNotification">
+          <declaration><![CDATA[internal virtual Notification AddGroupOwnerNotification(string notificationTypeName, int tabId, int moduleId, RoleInfo group, UserInfo initiatingUser)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="9" el="90" ec="10">Components\Notifications.cs</location>
+            <body hash="b9dc16d548c17106433c57763d273bec"><![CDATA[{
+            var notificationType = NotificationsController.Instance.GetNotificationType(notificationTypeName);
+
+            var tokenReplace = new GroupItemTokenReplace(group);
+            
+            var subject = Localization.GetString(notificationTypeName + ".Subject", Constants.SharedResourcesPath);
+            var body = Localization.GetString(notificationTypeName + ".Body", Constants.SharedResourcesPath);
+            subject = subject.Replace("[DisplayName]", initiatingUser.DisplayName);
+            subject = subject.Replace("[ProfileUrl]", Globals.UserProfileURL(initiatingUser.UserID));
+            subject = tokenReplace.ReplaceGroupItemTokens(subject);
+            body = body.Replace("[DisplayName]", initiatingUser.DisplayName);
+            body = body.Replace("[ProfileUrl]", Globals.UserProfileURL(initiatingUser.UserID));
+            body = tokenReplace.ReplaceGroupItemTokens(body);
+            var roleCreator = UserController.GetUserById(group.PortalID, group.CreatedByUserID);
+
+            var roleOwners = new List<UserInfo>();
+
+            foreach (UserInfo userInfo in RoleController.Instance.GetUsersByRole(group.PortalID, group.RoleName))
+            {
+                var userRoleInfo = RoleController.Instance.GetUserRole(group.PortalID, userInfo.UserID, group.RoleID);
+                if (userRoleInfo.IsOwner && userRoleInfo.UserID != group.CreatedByUserID)
+                {
+                    roleOwners.Add(UserController.GetUserById(group.PortalID, userRoleInfo.UserID));
+                }
+            }
+            roleOwners.Add(roleCreator);
+            
+
+
+            //Need to add from sender details
+            var notification = new Notification
+            {
+                NotificationTypeID = notificationType.NotificationTypeId,
+                Subject = subject,
+                Body = body,
+                IncludeDismissAction = true,
+                SenderUserID = initiatingUser.UserID,
+                Context = String.Format("{0}:{1}:{2}:{3}", tabId, moduleId, group.RoleID, initiatingUser.UserID)
+            };
+            NotificationsController.Instance.SendNotification(notification, initiatingUser.PortalID, null, roleOwners);
+
+            return notification;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="AddMemberNotification">
+          <declaration><![CDATA[internal virtual Notification AddMemberNotification(string notificationTypeName, int tabId, int moduleId, RoleInfo group, UserInfo sender, UserInfo recipient)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="91" sc="168" el="118" ec="10">Components\Notifications.cs</location>
+            <body hash="2e3a42655cdd665511c49522ec7ef331"><![CDATA[{
+            var notificationType = NotificationsController.Instance.GetNotificationType(notificationTypeName);
+
+            var subject = Localization.GetString(notificationTypeName + ".Subject", Constants.SharedResourcesPath);
+
+            var body = Localization.GetString(notificationTypeName + ".Body", Constants.SharedResourcesPath);
+            var tokenReplace = new GroupItemTokenReplace(group);
+            subject = subject.Replace("[DisplayName]", recipient.DisplayName);
+            subject = subject.Replace("[ProfileUrl]", Globals.UserProfileURL(recipient.UserID));
+            subject = tokenReplace.ReplaceGroupItemTokens(subject);
+            body = body.Replace("[DisplayName]", recipient.DisplayName);
+            body = body.Replace("[ProfileUrl]", Globals.UserProfileURL(recipient.UserID));
+            body = tokenReplace.ReplaceGroupItemTokens(body);
+
+            //Need to add from sender details
+            var notification = new Notification
+            {
+                NotificationTypeID = notificationType.NotificationTypeId,
+                Subject = subject,
+                Body = body,
+                IncludeDismissAction = true,
+                SenderUserID = sender.UserID,
+                Context = String.Format("{0}:{1}:{2}", tabId, moduleId, group.RoleID)
+            };
+            NotificationsController.Instance.SendNotification(notification, recipient.PortalID, null, new List<UserInfo> { recipient });
+
+            return notification;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Groups.Controls">
+    <class name="GroupListControl">
+      <declaration><![CDATA[public class GroupListControl : WebControl]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public GroupListControl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetOrderByProperty">
+          <declaration><![CDATA[private static object GetOrderByProperty(object obj, string property)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="91" sc="9" el="94" ec="10">GroupListControl.cs</location>
+            <body hash="cee85790afc2c46fcd3229a4bc16001e"><![CDATA[{
+            var propertyInfo = obj.GetType().GetProperty(property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            return propertyInfo == null ? null : propertyInfo.GetValue(obj, null);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="9" el="83" ec="10">GroupListControl.cs</location>
+            <body hash="4dd99aa3ddb87eb07400f7e0d97fe7fc"><![CDATA[{
+            base.OnInit(e);
+            currentUser = UserController.Instance.GetCurrentUserInfo();
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Render">
+          <declaration><![CDATA[protected override void Render(HtmlTextWriter output)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="97" sc="9" el="235" ec="10">GroupListControl.cs</location>
+            <body hash="82754c3824fcb4b22dd36d98ca488ca4"><![CDATA[{
+            var whereCls = new List<Func<RoleInfo, bool>>
+            {
+                grp => grp.SecurityMode != SecurityMode.SecurityRole && grp.Status == RoleStatus.Approved
+            };
+
+            if (RoleGroupId >= -1)
+	        {
+		        whereCls.Add(grp => grp.RoleGroupID == RoleGroupId);
+	        }
+
+            if (DisplayCurrentUserGroups)
+                whereCls.Add(grp => currentUser.IsInRole(grp.RoleName));
+            else
+                whereCls.Add(grp => grp.IsPublic || currentUser.IsInRole(grp.RoleName) || currentUser.IsInRole(PortalSettings.AdministratorRoleName));
+
+            if (!string.IsNullOrEmpty(SearchFilter))
+            {
+                whereCls.Add(grp => grp.RoleName.ToLower().Contains(SearchFilter.ToLower()) || grp.Description.ToLower().Contains(SearchFilter.ToLower()));
+            }
+
+            var roles = RoleController.Instance.GetRoles(PortalSettings.PortalId, grp => TestPredicateGroup(whereCls, grp));
+
+            if (SortDirection.ToLower() == "asc")
+                roles = roles.OrderBy(info => GetOrderByProperty(info, SortField)).ToList();
+            else
+                roles = roles.OrderByDescending(info => GetOrderByProperty(info, SortField)).ToList();
+
+            decimal pages = (decimal)roles.Count / (decimal)PageSize;
+
+
+            output.Write(HeaderTemplate);
+
+
+            ItemTemplate = ItemTemplate.Replace("{resx:posts}", Localization.GetString("posts", Constants.SharedResourcesPath));
+            ItemTemplate = ItemTemplate.Replace("{resx:members}", Localization.GetString("members", Constants.SharedResourcesPath));
+            ItemTemplate = ItemTemplate.Replace("{resx:photos}", Localization.GetString("photos", Constants.SharedResourcesPath));
+            ItemTemplate = ItemTemplate.Replace("{resx:documents}", Localization.GetString("documents", Constants.SharedResourcesPath));
+
+            ItemTemplate = ItemTemplate.Replace("{resx:Join}", Localization.GetString("Join", Constants.SharedResourcesPath));
+            ItemTemplate = ItemTemplate.Replace("{resx:Pending}", Localization.GetString("Pending", Constants.SharedResourcesPath));
+            ItemTemplate = ItemTemplate.Replace("{resx:LeaveGroup}", Localization.GetString("LeaveGroup", Constants.SharedResourcesPath));
+            ItemTemplate = ItemTemplate.Replace("[GroupViewTabId]", GroupViewTabId.ToString());
+            
+            if (roles.Count == 0)
+                output.Write(String.Format("<div class=\"dnnFormMessage dnnFormInfo\"><span>{0}</span></div>", Localization.GetString("NoGroupsFound", Constants.SharedResourcesPath)));
+
+
+            if (!string.IsNullOrEmpty(HttpContext.Current.Request.QueryString["page"]))
+            {
+                CurrentIndex = Convert.ToInt32(HttpContext.Current.Request.QueryString["page"].ToString());
+                CurrentIndex = CurrentIndex - 1;
+            }
+
+            int rowItem = 0;
+            int recordStart = (CurrentIndex * PageSize);
+
+            if (CurrentIndex == 0)
+                recordStart = 0;
+
+
+            for (int x = recordStart; x < (recordStart + PageSize); x++)
+            {
+                if (x > roles.Count - 1)
+                    break;
+
+                var role = roles[x];
+
+                string rowTemplate = ItemTemplate;
+
+                if (rowItem == 0)
+                    output.Write(RowHeaderTemplate);
+
+                var groupParser = new GroupViewParser(PortalSettings, role, currentUser, rowTemplate, GroupViewTabId);
+                output.Write(groupParser.ParseView());
+
+                rowItem += 1;
+
+                if (rowItem == ItemsPerRow)
+                {
+                    output.Write(RowFooterTemplate);
+                    rowItem = 0;
+                }
+            }
+
+            if (rowItem > 0)
+                output.Write(RowFooterTemplate);
+
+
+            output.Write(FooterTemplate);
+
+            int TotalPages = Convert.ToInt32(System.Math.Ceiling(pages));
+
+
+            if (TotalPages == 0)
+                TotalPages = 1;
+
+            string sUrlFormat = "<a href=\"{0}\" class=\"{1}\">{2}</a>";
+            string[] currParams = new string[] { };
+
+            StringBuilder sb = new StringBuilder();
+
+            if (TotalPages > 1)
+            {
+                for (int x = 1; x <= TotalPages; x++)
+                {
+                    string[] @params = new string[] { };
+
+                    if (currParams.Length > 0 & x > 1)
+                    {
+                        @params = Utilities.AddParams("page=" + x.ToString(), currParams);
+                    }
+                    else if (currParams.Length > 0 & x == 1)
+                    {
+                        @params = currParams;
+                    }
+                    else if (x > 1)
+                    {
+                        @params = new string[] { "page=" + x.ToString() };
+                    }
+
+                    string sUrl = Utilities.NavigateUrl(TabId, @params);
+
+                    string cssClass = "pagerItem";
+
+                    if (x - 1 == CurrentIndex)
+                        cssClass = "pagerItemSelected";
+
+
+                    sb.AppendFormat(sUrlFormat, sUrl, cssClass, x.ToString());
+                }
+
+            }
+
+            output.Write("<div class=\"dnnClear groupPager\">");
+            output.Write(sb.ToString());
+            output.Write("</div>");
+
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="TestPredicateGroup">
+          <declaration><![CDATA[private static bool TestPredicateGroup(IEnumerable<Func<RoleInfo, bool>> predicates, RoleInfo ri)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="86" sc="9" el="88" ec="10">GroupListControl.cs</location>
+            <body hash="f53dc05960f0931512e0bca669734348"><![CDATA[{
+            return predicates.All(p => p(ri));
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="currentUser">
+          <declaration><![CDATA[public UserInfo currentUser;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="CurrentIndex">
+          <declaration><![CDATA[public int CurrentIndex]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="35" el="57" ec="39">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="57" sc="40" el="57" ec="44">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="DisplayCurrentUserGroups">
+          <declaration><![CDATA[public bool DisplayCurrentUserGroups]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="48" el="72" ec="52">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="72" sc="53" el="72" ec="57">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="FooterTemplate">
+          <declaration><![CDATA[public string FooterTemplate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="30" sc="40" el="30" ec="44">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="30" sc="45" el="30" ec="49">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="GroupViewTabId">
+          <declaration><![CDATA[public int GroupViewTabId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="76" sc="37" el="76" ec="41">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="76" sc="42" el="76" ec="46">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="HeaderTemplate">
+          <declaration><![CDATA[public string HeaderTemplate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="27" sc="40" el="27" ec="44">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="27" sc="45" el="27" ec="49">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ItemsPerRow">
+          <declaration><![CDATA[public int ItemsPerRow]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="48" sc="34" el="48" ec="38">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="48" sc="39" el="48" ec="43">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="ItemTemplate">
+          <declaration><![CDATA[public string ItemTemplate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="24" sc="38" el="24" ec="42">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="24" sc="43" el="24" ec="47">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PageSize">
+          <declaration><![CDATA[public int PageSize]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="31" el="54" ec="35">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="54" sc="36" el="54" ec="40">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="PortalSettings">
+          <declaration><![CDATA[public PortalSettings PortalSettings]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="13" el="44" ec="14">GroupListControl.cs</location>
+            <body hash="5ab4f2f069ec3680a0fc11e1d9f2b05e"><![CDATA[{
+                return PortalController.Instance.GetCurrentPortalSettings();
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="RoleGroupId">
+          <declaration><![CDATA[public int RoleGroupId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="34" el="51" ec="38">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="51" sc="39" el="51" ec="43">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RowFooterTemplate">
+          <declaration><![CDATA[public string RowFooterTemplate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="36" sc="43" el="36" ec="47">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="36" sc="48" el="36" ec="52">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="RowHeaderTemplate">
+          <declaration><![CDATA[public string RowHeaderTemplate]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="33" sc="43" el="33" ec="47">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="33" sc="48" el="33" ec="52">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SearchFilter">
+          <declaration><![CDATA[public string SearchFilter]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="63" sc="38" el="63" ec="42">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="63" sc="43" el="63" ec="47">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SortDirection">
+          <declaration><![CDATA[public string SortDirection]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="39" el="69" ec="43">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="69" sc="44" el="69" ec="48">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="SortField">
+          <declaration><![CDATA[public string SortField]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="35" el="66" ec="39">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="66" sc="40" el="66" ec="44">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+        <property name="TabId">
+          <declaration><![CDATA[public int TabId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="60" sc="28" el="60" ec="32">GroupListControl.cs</location>
+            <body hash="b5eda0a74558a342cf659187f06f746f"><![CDATA[get]]></body>
+          </codeblock>
+          <codeblock>
+            <location sl="60" sc="33" el="60" ec="37">GroupListControl.cs</location>
+            <body hash="cdaeeeba9b4a4c5ebf042c0215a7bb0e"><![CDATA[set]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>

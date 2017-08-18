@@ -1,0 +1,2616 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<root file="DotNetNuke.Modules.Taxonomy.dll" version="07.01.00" generated="2017-06-19 08:59:01Z" generationTime="2.2503687">
+  <namespace name="DotNetNuke.Modules.Taxonomy">
+    <class name="TaxonomyController">
+      <declaration><![CDATA[public class TaxonomyController : IUpgradeable]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public TaxonomyController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static TaxonomyController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="38" sc="6" el="38" ec="105">Components\TaxonomyController.cs</location>
+            <body hash="75503d148278c21b075e17d41a297b1c"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (TaxonomyController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="UpgradeModule">
+          <declaration><![CDATA[public string UpgradeModule(string Version)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="9" el="79" ec="10">Components\TaxonomyController.cs</location>
+            <body hash="50d52f27578d044cb9c963cd9c27b9f4"><![CDATA[{
+            try
+            {
+                switch (Version)
+                {
+                    case "01.00.00":
+                        ModuleDefinitionInfo moduleDefinition = ModuleDefinitionController.GetModuleDefinitionByFriendlyName("Taxonomy Manager");
+
+                        if (moduleDefinition != null)
+                        {
+                            //Add Module to Admin Page for all Portals
+                            Upgrade.AddAdminPages("Taxonomy",
+                                                  "Manage the Taxonomy for your Site",
+                                                  "~/images/icon_tag_16px.gif",
+                                                  "~/images/icon_tag_32px.gif",
+                                                  true,
+                                                  moduleDefinition.ModuleDefID,
+                                                  "Taxonomy Manager",
+                                                  "~/images/icon_tag_32px.gif",
+                                                  true);
+                        }
+                        break;
+
+                    case "06.00.00":
+                        DesktopModuleInfo desktopModule = DesktopModuleController.GetDesktopModuleByModuleName("DotNetNuke.Taxonomy", Null.NullInteger);
+                        desktopModule.Category = "Admin";
+                        DesktopModuleController.SaveDesktopModule(desktopModule, false, false);
+                        break;
+                }
+                return "Success";
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+
+                return "Failed";
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(TaxonomyController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Taxonomy.Presenters">
+    <class name="CreateVocabularyPresenter">
+      <declaration><![CDATA[public class CreateVocabularyPresenter : ModulePresenter<ICreateVocabularyView, CreateVocabularyModel>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CreateVocabularyPresenter(ICreateVocabularyView createView) : this(createView, new VocabularyController(new DataService()), new ScopeTypeController(new DataService()))]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="51" ec="10">Presenters\CreateVocabularyPresenter.cs</location>
+            <body hash="8e44846dbc81f4c8d8385de94bf468f4"><![CDATA[public CreateVocabularyPresenter(ICreateVocabularyView createView) : this(createView, new VocabularyController(new DataService()), new ScopeTypeController(new DataService()))
+        {
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CreateVocabularyPresenter(ICreateVocabularyView createView, IVocabularyController vocabularyController, IScopeTypeController scopeTypeController) : base(createView)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="9" el="63" ec="10">Presenters\CreateVocabularyPresenter.cs</location>
+            <body hash="fc5cdb03370ef2ddcb9d546ecbbdb6a2"><![CDATA[public CreateVocabularyPresenter(ICreateVocabularyView createView, IVocabularyController vocabularyController, IScopeTypeController scopeTypeController) : base(createView)
+        {
+            Requires.NotNull("vocabularyController", vocabularyController);
+            Requires.NotNull("scopeTypeController", scopeTypeController);
+
+            _vocabularyController = vocabularyController;
+            _scopeTypeController = scopeTypeController;
+
+            View.Save += Save;
+            View.Model.Vocabulary = GetVocabulary();
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GetVocabulary">
+          <declaration><![CDATA[private Vocabulary GetVocabulary()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="90" sc="9" el="101" ec="10">Presenters\CreateVocabularyPresenter.cs</location>
+            <body hash="80e0d3a9c5c75c026c5606348ed163ce"><![CDATA[{
+            var vocabulary = new Vocabulary();
+            var scopeType = IsSuperUser ? ScopeTypeController.GetScopeTypes().Where(s => s.ScopeType == "Application").SingleOrDefault() : ScopeTypeController.GetScopeTypes().Where(s => s.ScopeType == "Portal").SingleOrDefault();
+
+            if (scopeType != null)
+            {
+                vocabulary.ScopeTypeId = scopeType.ScopeTypeId;
+            }
+            vocabulary.Type = VocabularyType.Simple;
+
+            return vocabulary;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="106" sc="9" el="110" ec="10">Presenters\CreateVocabularyPresenter.cs</location>
+            <body hash="b614feebff0807a0f0de2c2387f5ce3d"><![CDATA[{
+            base.OnLoad();
+            View.Model.TaxonomyHomeUrl = Globals.NavigateURL(TabId);
+            View.BindVocabulary(View.Model.Vocabulary, IsSuperUser);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Save">
+          <declaration><![CDATA[public void Save(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="115" sc="9" el="138" ec="10">Presenters\CreateVocabularyPresenter.cs</location>
+            <body hash="44683c8e208ff484af23477ea9d8f25a"><![CDATA[{
+            //Bind Model
+            View.BindVocabulary(View.Model.Vocabulary, IsSuperUser);
+            if (View.Model.Vocabulary.ScopeType.ScopeType == "Portal")
+            {
+                View.Model.Vocabulary.ScopeId = PortalId;
+            }
+
+            //Validate Model
+            var result = Validator.ValidateObject(View.Model.Vocabulary);
+
+            if (result.IsValid)
+            {
+                //Save Vocabulary
+                VocabularyController.AddVocabulary(View.Model.Vocabulary);
+
+                //Redirect to Vocabulary List
+                Response.Redirect(Globals.NavigateURL(TabId));
+            }
+            else
+            {
+                ShowMessage("Validation.Error", ModuleMessage.ModuleMessageType.RedError);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_scopeTypeController">
+          <declaration><![CDATA[private readonly IScopeTypeController _scopeTypeController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_vocabularyController">
+          <declaration><![CDATA[private readonly IVocabularyController _vocabularyController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="ScopeTypeController">
+          <declaration><![CDATA[public IScopeTypeController ScopeTypeController]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="72" sc="13" el="74" ec="14">Presenters\CreateVocabularyPresenter.cs</location>
+            <body hash="dbc5dabc43ae38f2203e6e1bc5084b09"><![CDATA[{
+                return _scopeTypeController;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="VocabularyController">
+          <declaration><![CDATA[public IVocabularyController VocabularyController]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="80" sc="13" el="82" ec="14">Presenters\CreateVocabularyPresenter.cs</location>
+            <body hash="15ab1b3cdd3346834e36a1bea0460405"><![CDATA[{
+                return _vocabularyController;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="EditVocabularyPresenter">
+      <declaration><![CDATA[public class EditVocabularyPresenter : ModulePresenter<IEditVocabularyView, EditVocabularyModel>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditVocabularyPresenter(IEditVocabularyView editView) : this(editView, new VocabularyController(new DataService()), new TermController(new DataService()))]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="51" sc="9" el="53" ec="10">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="3c1e47e65029a53eee5707bc937664f5"><![CDATA[public EditVocabularyPresenter(IEditVocabularyView editView) : this(editView, new VocabularyController(new DataService()), new TermController(new DataService()))
+        {
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditVocabularyPresenter(IEditVocabularyView editView, IVocabularyController vocabularyController, ITermController termController) : base(editView)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="55" sc="9" el="70" ec="10">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="02f55ae26dc9bc387b373b4c5160d541"><![CDATA[public EditVocabularyPresenter(IEditVocabularyView editView, IVocabularyController vocabularyController, ITermController termController) : base(editView)
+        {
+            Requires.NotNull("vocabularyController", vocabularyController);
+            Requires.NotNull("termController", termController);
+
+            _vocabularyController = vocabularyController;
+            _termController = termController;
+
+            View.AddTerm += AddTerm;
+            View.CancelTerm += CancelTerm;
+            View.Delete += DeleteVocabulary;
+            View.DeleteTerm += DeleteTerm;
+            View.Save += SaveVocabulary;
+            View.SaveTerm += SaveTerm;
+            View.SelectTerm += SelectTerm;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="AddTerm">
+          <declaration><![CDATA[public void AddTerm(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="193" sc="9" el="198" ec="10">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="f632687350303683c72967d1ee6e0a81"><![CDATA[{
+            View.Model.Term = new Term(View.Model.Vocabulary.VocabularyId);
+            View.BindTerm(View.Model.Term, View.Model.Terms, IsHeirarchical, false, IsEditEnabled);
+            View.ShowTermEditor(true);
+            View.SetTermEditorMode(true, Null.NullInteger);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="CancelTerm">
+          <declaration><![CDATA[public void CancelTerm(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="201" sc="9" el="205" ec="10">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="605530ad2cee7af9bc1feba5b3e85e62"><![CDATA[{
+            View.Model.Term = null;
+            View.ClearSelectedTerm();
+            View.ShowTermEditor(false);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteTerm">
+          <declaration><![CDATA[public void DeleteTerm(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="208" sc="9" el="211" ec="10">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="a76baf38df6c2cda3baa5f2e238b6284"><![CDATA[{
+            TermController.DeleteTerm(View.Model.Term);
+            RefreshTerms();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="DeleteVocabulary">
+          <declaration><![CDATA[public void DeleteVocabulary(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="214" sc="9" el="217" ec="10">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="1a72dbe15fd65b1239ed64f4dfd08144"><![CDATA[{
+            VocabularyController.DeleteVocabulary(View.Model.Vocabulary);
+            Response.Redirect(Globals.NavigateURL(TabId));
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="169" sc="9" el="177" ec="10">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="4ca97fa61439f32634ae7cfd2c9205ca"><![CDATA[{
+            base.OnInit();
+
+            if (View.Model.Vocabulary == null)
+            {
+                View.Model.Vocabulary = VocabularyController.GetVocabularies().Where(v => v.VocabularyId == VocabularyId).SingleOrDefault();
+                View.Model.Terms = TermController.GetTermsByVocabulary(VocabularyId).ToList();
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="180" sc="9" el="186" ec="10">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="2922b8c55d1c3dfe58d5feacfa66f936"><![CDATA[{
+            base.OnLoad();
+
+            View.Model.CancelUrl = Globals.NavigateURL(TabId);
+            View.BindVocabulary(View.Model.Vocabulary, IsEditEnabled, IsDeleteEnabled, IsSuperUser);
+            View.BindTerms(View.Model.Terms, IsHeirarchical, !IsPostBack);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="RefreshTerms">
+          <declaration><![CDATA[private void RefreshTerms()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="156" sc="9" el="162" ec="10">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="dbf4f8c2213132fa5164930665590ffa"><![CDATA[{
+            View.Model.Terms = TermController.GetTermsByVocabulary(VocabularyId).ToList();
+            View.BindTerms(View.Model.Terms, IsHeirarchical, true);
+            View.Model.Term = null;
+            View.ClearSelectedTerm();
+            View.ShowTermEditor(false);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveTerm">
+          <declaration><![CDATA[public void SaveTerm(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="220" sc="9" el="242" ec="10">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="36cd127421990fc053ac9e8cb18aa188"><![CDATA[{
+            //First Bind the term so we can get the current values from the View
+            View.BindTerm(View.Model.Term, View.Model.Terms, IsHeirarchical, true, IsEditEnabled);
+
+            var result = Validator.ValidateObject(View.Model.Term);
+            if (result.IsValid)
+            {
+                if (View.Model.Term.TermId == Null.NullInteger)
+                {
+                    TermController.AddTerm(View.Model.Term);
+                }
+                else
+                {
+                    TermController.UpdateTerm(View.Model.Term);
+                }
+
+                RefreshTerms();
+            }
+            else
+            {
+                ShowMessage("TermValidationError", ModuleMessage.ModuleMessageType.RedError);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SaveVocabulary">
+          <declaration><![CDATA[public void SaveVocabulary(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="245" sc="9" el="258" ec="10">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="c5c8c4a832a7c21e62fd1c42992a0d6d"><![CDATA[{
+            View.BindVocabulary(View.Model.Vocabulary, IsEditEnabled, IsDeleteEnabled, IsSuperUser);
+
+            var result = Validator.ValidateObject(View.Model.Vocabulary);
+            if (result.IsValid)
+            {
+                VocabularyController.UpdateVocabulary(View.Model.Vocabulary);
+                Response.Redirect(Globals.NavigateURL(TabId));
+            }
+            else
+            {
+                ShowMessage("VocabularyValidationError", ModuleMessage.ModuleMessageType.RedError);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="SelectTerm">
+          <declaration><![CDATA[public void SelectTerm(object sender, TermsEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="261" sc="9" el="266" ec="10">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="5d60534fc55715dd3bb97650112d257f"><![CDATA[{
+            View.Model.Term = e.SelectedTerm;
+            View.BindTerm(View.Model.Term, View.Model.Terms, IsHeirarchical, false, IsEditEnabled);
+            View.ShowTermEditor(true);
+            View.SetTermEditorMode(false, View.Model.Term.TermId);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_termController">
+          <declaration><![CDATA[private readonly ITermController _termController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="_vocabularyController">
+          <declaration><![CDATA[private readonly IVocabularyController _vocabularyController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="IsDeleteEnabled">
+          <declaration><![CDATA[public bool IsDeleteEnabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="79" sc="13" el="89" ec="14">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="33fb04eaa33c053c59b6fbd6f619c4c9"><![CDATA[{
+                var isEnabled = IsEditEnabled;
+                if (isEnabled)
+                {
+                    if (View.Model != null && View.Model.Vocabulary != null && View.Model.Vocabulary.IsSystem)
+                    {
+                        isEnabled = Null.NullBoolean;
+                    }
+                }
+                return isEnabled;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IsEditEnabled">
+          <declaration><![CDATA[public bool IsEditEnabled]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="95" sc="13" el="106" ec="14">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="13a5810ab74fe7ed8ee1d84d57aab414"><![CDATA[{
+                var isEnabled = IsSuperUser;
+                if (!isEnabled)
+                {
+                    //Check Portal Scope
+                    if (View.Model != null && View.Model.Vocabulary != null && View.Model.Vocabulary.ScopeType != null)
+                    {
+                        isEnabled = String.Compare(View.Model.Vocabulary.ScopeType.ScopeType, "Portal", false) == 0;
+                    }
+                }
+                return isEnabled;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="IsHeirarchical">
+          <declaration><![CDATA[public bool IsHeirarchical]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="112" sc="13" el="119" ec="14">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="888193e7beef466cfb0de46c1fd7ccea"><![CDATA[{
+                var isHeirarchical = Null.NullBoolean;
+                if (View.Model.Vocabulary != null)
+                {
+                    isHeirarchical = (View.Model.Vocabulary.Type == VocabularyType.Hierarchy);
+                }
+                return isHeirarchical;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="TermController">
+          <declaration><![CDATA[public ITermController TermController]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="125" sc="13" el="127" ec="14">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="1ab8e33d8d7d85db7123cc368450ecff"><![CDATA[{
+                return _termController;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="VocabularyController">
+          <declaration><![CDATA[public IVocabularyController VocabularyController]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="133" sc="13" el="135" ec="14">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="15ab1b3cdd3346834e36a1bea0460405"><![CDATA[{
+                return _vocabularyController;
+            }]]></body>
+          </codeblock>
+        </property>
+        <property name="VocabularyId">
+          <declaration><![CDATA[public int VocabularyId]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="141" sc="13" el="148" ec="14">Presenters\EditVocabularyPresenter.cs</location>
+            <body hash="53ace0a89896fbde171acaa16e497670"><![CDATA[{
+                var vocabularyId = Null.NullInteger;
+                if (!string.IsNullOrEmpty(Request.Params["VocabularyId"]))
+                {
+                    vocabularyId = Int32.Parse(Request.Params["VocabularyId"]);
+                }
+                return vocabularyId;
+            }]]></body>
+          </codeblock>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="VocabularyListPresenter">
+      <declaration><![CDATA[public class VocabularyListPresenter : ModulePresenter<IVocabularyListView, VocabularyListModel>]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabularyListPresenter(IVocabularyListView view) : this(view, new VocabularyController(new DataService()))]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="53" sc="9" el="55" ec="10">Presenters\VocabularyListPresenter.cs</location>
+            <body hash="128a46ed74d34edade32feebc79c0e1e"><![CDATA[public VocabularyListPresenter(IVocabularyListView view) : this(view, new VocabularyController(new DataService()))
+        {
+        }]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabularyListPresenter(IVocabularyListView listView, IVocabularyController vocabularyController) : base(listView)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="57" sc="9" el="62" ec="10">Presenters\VocabularyListPresenter.cs</location>
+            <body hash="555879f1b974876b00b7bee6dd8477d6"><![CDATA[public VocabularyListPresenter(IVocabularyListView listView, IVocabularyController vocabularyController) : base(listView)
+        {
+            Requires.NotNull("vocabularyController", vocabularyController);
+
+            _vocabularyController = vocabularyController;
+        }]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="GridItemDataBound">
+          <declaration><![CDATA[protected void GridItemDataBound(object sender, GridItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="90" sc="9" el="104" ec="10">Presenters\VocabularyListPresenter.cs</location>
+            <body hash="4b797723f48955e92e11987dffc6a1df"><![CDATA[{
+            if (!(e.Item is GridDataItem)) return;
+            var vocabKey = (int)e.Item.OwnerTableView.DataKeyValues[e.Item.ItemIndex]["VocabularyId"];
+
+            var dataItem = (GridDataItem)e.Item;
+
+            var hlEdit = ((HyperLink)(dataItem)["EditItem"].FindControl("hlEdit"));
+            hlEdit.NavigateUrl = ModuleContext.NavigateUrl(ModuleContext.TabId, "EditVocabulary", false,"mid=" + ModuleContext.ModuleId, "VocabularyId=" + vocabKey);
+            hlEdit.Visible = View.Model.CanEdit;
+
+            var imgEdit = ((Image)(dataItem)["EditItem"].FindControl("imgEdit"));
+            imgEdit.AlternateText = Localization.GetString("Edit", LocalResourceFile);
+            imgEdit.ToolTip = Localization.GetString("Edit", LocalResourceFile);
+            imgEdit.Visible = View.Model.CanEdit;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="GridNeedDataSource">
+          <declaration><![CDATA[protected void GridNeedDataSource(object sender, GridNeedDataSourceEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="9" el="87" ec="10">Presenters\VocabularyListPresenter.cs</location>
+            <body hash="125280e8c0b9cffe20b274939e8d60a5"><![CDATA[{
+            var objGrid = (RadGrid)sender;
+
+            objGrid.DataSource = (from v in _vocabularyController.GetVocabularies() where v.ScopeType.ScopeType == "Application" || (v.ScopeType.ScopeType == "Portal" && v.ScopeId == PortalId) select v).ToList();
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="69" sc="9" el="80" ec="10">Presenters\VocabularyListPresenter.cs</location>
+            <body hash="0cf934cb3d7292cc54c6e9feee7fc1b8"><![CDATA[{
+            base.OnLoad();
+
+            View.Model.CanEdit = ModulePermissionController.HasModulePermission(ModuleContext.Configuration.ModulePermissions, "EDIT");
+            View.Model.NewVocabUrl = (ModuleContext != null)
+                                         ? ModuleContext.NavigateUrl(TabId, "CreateVocabulary", false, "mid=" + ModuleId)
+                                         : Globals.NavigateURL(TabId, "CreateVocabulary", "mid=" + ModuleId);
+            View.ShowAddButton(View.Model.CanEdit);
+            View.GridsNeedDataSource += GridNeedDataSource;
+            View.GridsItemDataBound += GridItemDataBound;
+            View.Refresh();
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="_vocabularyController">
+          <declaration><![CDATA[private readonly IVocabularyController _vocabularyController;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Taxonomy.Services">
+    <class name="SearchResult">
+      <declaration><![CDATA[internal class SearchResult]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public SearchResult()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+        <field name="label">
+          <declaration><![CDATA[public string label;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="value">
+          <declaration><![CDATA[public string value;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="ServicesController">
+      <declaration><![CDATA[public class ServicesController : DnnApiController]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public ServicesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+        <constructor name=".cctor">
+          <declaration><![CDATA[static ServicesController()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="46" sc="6" el="46" ec="105">Services\ServicesController.cs</location>
+            <body hash="2c1d853992e5c22b9d6527c3a700b4b6"><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (ServicesController))]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="Exist">
+          <declaration><![CDATA[public HttpResponseMessage Exist(int vocabularyId, int termId, int parentId, string termName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="71" sc="3" el="83" ec="4">Services\ServicesController.cs</location>
+            <body hash="a1cfde5bfc5016a6ae8ad1389bf8df91"><![CDATA[{
+			var exists = false;
+
+			var controller = new TermController();
+			var vocabulary = new VocabularyController().GetVocabularies().FirstOrDefault(v => v.VocabularyId == vocabularyId);
+			if (vocabulary != null && !string.IsNullOrEmpty(termName))
+			{
+				var terms = controller.GetTermsByVocabulary(vocabularyId);
+				exists = terms.Any(t => t.Name.Equals(termName.Trim(), StringComparison.InvariantCultureIgnoreCase) && t.TermId != termId && (parentId < 0 || t.ParentTermId == parentId));
+			}
+
+			return Request.CreateResponse(HttpStatusCode.OK, exists);
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="Search">
+          <declaration><![CDATA[public HttpResponseMessage Search(int vocabularyId, int termId, int parentId, string termName)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="50" sc="3" el="67" ec="4">Services\ServicesController.cs</location>
+            <body hash="ee79d0474a30f0e26bd755bd6f22d664"><![CDATA[{
+			IList<SearchResult> results = new List<SearchResult>();
+
+			var controller = new TermController();
+			var vocabulary = new VocabularyController().GetVocabularies().FirstOrDefault(v => v.VocabularyId == vocabularyId);
+			if (vocabulary != null && !string.IsNullOrEmpty(termName))
+			{
+				var terms = controller.GetTermsByVocabulary(vocabularyId);
+				var relatedTerms = terms.Where(t => t.Name.ToLowerInvariant().Contains(termName.Trim().ToLowerInvariant()) && t.TermId != termId && (parentId < 0 || t.ParentTermId == parentId));
+
+				foreach (Term term in relatedTerms)
+				{
+					results.Add(new SearchResult(){label = term.Name, value = term.Name});
+				}
+			}
+
+			return Request.CreateResponse(HttpStatusCode.OK, results);
+		}]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="Logger">
+          <declaration><![CDATA[private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(ServicesController));]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="TaxonomyRouteMapper">
+      <declaration><![CDATA[public class TaxonomyRouteMapper : IServiceRouteMapper]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public TaxonomyRouteMapper()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="RegisterRoutes">
+          <declaration><![CDATA[public void RegisterRoutes(IMapRoute mapRouteManager)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="31" sc="9" el="33" ec="10">Services\ServicesRouteMapper.cs</location>
+            <body hash="af5191ef8ceb23e232384abed7fec29c"><![CDATA[{
+			mapRouteManager.MapHttpRoute("Taxonomy", "default", "{controller}/{action}", new[] { "DotNetNuke.Modules.Taxonomy.Services" });
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Taxonomy.Views">
+    <class name="CreateVocabulary">
+      <declaration><![CDATA[public class CreateVocabulary : ModuleView<CreateVocabularyModel>, ICreateVocabularyView, IModuleView<CreateVocabularyModel>, IModuleViewBase, IView<CreateVocabularyModel>, IView]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CreateVocabulary()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="add_Save">
+          <declaration><![CDATA[public void add_Save(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="BindVocabulary">
+          <declaration><![CDATA[public void BindVocabulary(Vocabulary vocabulary, bool showScope)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="42" sc="9" el="45" ec="10">CreateVocabulary.ascx.cs</location>
+            <body hash="a3f8d8cae32bb886847d80869f7cf543"><![CDATA[{
+            editVocabularyControl.BindVocabulary(vocabulary, true, showScope);
+            cancelCreate.NavigateUrl = Model.TaxonomyHomeUrl;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="54" sc="9" el="58" ec="10">CreateVocabulary.ascx.cs</location>
+            <body hash="85cc85e495e21771acf93195d4048f0e"><![CDATA[{
+            base.OnLoad(e);
+
+            saveVocabulary.Click += OnSaveVocabClick;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSaveVocabClick">
+          <declaration><![CDATA[protected void OnSaveVocabClick(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="9" el="66" ec="10">CreateVocabulary.ascx.cs</location>
+            <body hash="06e94aba48db41cbe51a91f0521ccf0f"><![CDATA[{
+            if (Save != null)
+            {
+                Save(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_Save">
+          <declaration><![CDATA[public void remove_Save(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="cancelCreate">
+          <declaration><![CDATA[protected HyperLink cancelCreate;]]></declaration>
+          <documentation>
+            <summary>
+ cancelCreate control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="editVocabularyControl">
+          <declaration><![CDATA[protected EditVocabularyControl editVocabularyControl;]]></declaration>
+          <documentation>
+            <summary>
+ editVocabularyControl control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Save">
+          <declaration><![CDATA[private System.EventHandler Save;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="saveVocabulary">
+          <declaration><![CDATA[protected LinkButton saveVocabulary;]]></declaration>
+          <documentation>
+            <summary>
+ saveVocabulary control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="Save">
+          <declaration><![CDATA[public event System.EventHandler Save;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="EditVocabulary">
+      <declaration><![CDATA[public class EditVocabulary : ModuleView<EditVocabularyModel>, IEditVocabularyView, IModuleView<EditVocabularyModel>, IModuleViewBase, IView<EditVocabularyModel>, IView]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditVocabulary()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="add_AddTerm">
+          <declaration><![CDATA[public void add_AddTerm(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_CancelTerm">
+          <declaration><![CDATA[public void add_CancelTerm(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_Delete">
+          <declaration><![CDATA[public void add_Delete(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_DeleteTerm">
+          <declaration><![CDATA[public void add_DeleteTerm(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_Save">
+          <declaration><![CDATA[public void add_Save(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_SaveTerm">
+          <declaration><![CDATA[public void add_SaveTerm(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_SelectTerm">
+          <declaration><![CDATA[public void add_SelectTerm(System.EventHandler<TermsEventArgs> value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="BindTerm">
+          <declaration><![CDATA[public void BindTerm(Term term, System.Collections.Generic.IEnumerable<Term> terms, bool isHeirarchical, bool loadFromControl, bool editEnabled)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="9" el="58" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="cb2b22190f19b793f82017506a81dc7c"><![CDATA[{
+            editTermControl.BindTerm(term, terms, isHeirarchical, loadFromControl, editEnabled);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BindTerms">
+          <declaration><![CDATA[public void BindTerms(System.Collections.Generic.IEnumerable<Term> terms, bool isHeirarchical, bool dataBind)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="61" sc="9" el="63" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="9bf411fc38a204bca773d84d2201b4b9"><![CDATA[{
+            termsList.BindTerms(terms.ToList(), isHeirarchical, dataBind);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="BindVocabulary">
+          <declaration><![CDATA[public void BindVocabulary(Vocabulary vocabulary, bool editEnabled, bool deleteEnabled, bool showScope)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="66" sc="9" el="74" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="af28402eddaee3102b4560c36757e7fb"><![CDATA[{
+            editVocabularyControl.BindVocabulary(vocabulary, editEnabled, showScope);
+            saveVocabulary.Enabled = editEnabled;
+            deleteVocabulary.Visible = deleteEnabled;
+            addTermButton.Enabled = editEnabled;
+            saveTermButton.Enabled = editEnabled;
+            deleteTermButton.Enabled = editEnabled;
+            cancelEdit.NavigateUrl = Model.CancelUrl;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ClearSelectedTerm">
+          <declaration><![CDATA[public void ClearSelectedTerm()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="77" sc="9" el="81" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="44e28a9f03661a619ea5ef9e8895ba21"><![CDATA[{
+            termsList.ClearSelectedTerm();
+            pnlTermEditor.Visible = false;
+            pnlVocabTerms.Visible = true;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnAddTermClick">
+          <declaration><![CDATA[protected void OnAddTermClick(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="133" sc="9" el="139" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="8fb81d52b2b057c0a7e405627a2f8e2d"><![CDATA[{
+            if (AddTerm != null)
+            {
+                deleteTermButton.Visible = false;
+                AddTerm(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnCancelTermClick">
+          <declaration><![CDATA[protected void OnCancelTermClick(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="142" sc="9" el="147" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="f3c804f301ea6b954bbe98e23acd5a6a"><![CDATA[{
+            if (CancelTerm != null)
+            {
+                CancelTerm(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDeleteTermClick">
+          <declaration><![CDATA[protected void OnDeleteTermClick(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="150" sc="9" el="155" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="7717b37932e1790511f363b2d5205463"><![CDATA[{
+            if (DeleteTerm != null)
+            {
+                DeleteTerm(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnDeleteVocabClick">
+          <declaration><![CDATA[protected void OnDeleteVocabClick(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="158" sc="9" el="163" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="465cf2b98d750c10d78200d1b8cb8274"><![CDATA[{
+            if (Delete != null)
+            {
+                Delete(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnInit">
+          <declaration><![CDATA[protected override void OnInit(System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="110" sc="3" el="114" ec="4">EditVocabulary.ascx.cs</location>
+            <body hash="a5d54c6404fc662a093864fb1e5f3d04"><![CDATA[{
+			base.OnInit(e);
+
+			editVocabularyControl.LocalResourceFile = LocalResourceFile;
+		}]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="117" sc="9" el="130" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="db62088bfd612426106c02bee093d0d0"><![CDATA[{
+            base.OnLoad(e);
+
+            jQuery.RequestDnnPluginsRegistration();
+			ServicesFramework.Instance.RequestAjaxAntiForgerySupport();
+
+            addTermButton.Click += OnAddTermClick;
+            cancelTermButton.Click += OnCancelTermClick;
+            deleteTermButton.Click += OnDeleteTermClick;
+            deleteVocabulary.Click += OnDeleteVocabClick;
+            saveTermButton.Click += OnSaveTermClick;
+            saveVocabulary.Click += OnSaveVocabClick;
+            termsList.SelectedTermChanged += OnTermsListIndexChanged;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSaveTermClick">
+          <declaration><![CDATA[protected void OnSaveTermClick(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="166" sc="9" el="171" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="442ce4c196c1be67a823508e07a544d6"><![CDATA[{
+            if (SaveTerm != null)
+            {
+                SaveTerm(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnSaveVocabClick">
+          <declaration><![CDATA[protected void OnSaveVocabClick(object sender, System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="174" sc="9" el="179" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="06e94aba48db41cbe51a91f0521ccf0f"><![CDATA[{
+            if (Save != null)
+            {
+                Save(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="OnTermsListIndexChanged">
+          <declaration><![CDATA[protected void OnTermsListIndexChanged(object sender, TermsEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="182" sc="9" el="188" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="27868d451fb6b641a7e942547f5aca05"><![CDATA[{
+            if (SelectTerm != null)
+            {
+                deleteTermButton.Visible = true;
+                SelectTerm(this, e);
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_AddTerm">
+          <declaration><![CDATA[public void remove_AddTerm(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_CancelTerm">
+          <declaration><![CDATA[public void remove_CancelTerm(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_Delete">
+          <declaration><![CDATA[public void remove_Delete(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_DeleteTerm">
+          <declaration><![CDATA[public void remove_DeleteTerm(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_Save">
+          <declaration><![CDATA[public void remove_Save(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_SaveTerm">
+          <declaration><![CDATA[public void remove_SaveTerm(System.EventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_SelectTerm">
+          <declaration><![CDATA[public void remove_SelectTerm(System.EventHandler<TermsEventArgs> value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="SetTermEditorMode">
+          <declaration><![CDATA[public void SetTermEditorMode(bool isAddMode, int termId)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="84" sc="9" el="97" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="d679a7679afa4eae48e3b184798e2c4f"><![CDATA[{
+            if (isAddMode)
+            {
+                termLabel.Text = Localization.GetString("NewTerm", LocalResourceFile);
+                saveTermButton.Text = Localization.GetString("NewTerm", LocalResourceFile);
+            }
+            else
+            {
+                termLabel.Text = Localization.GetString("CurrentTerm", LocalResourceFile);
+                saveTermButton.Text = Localization.GetString("CurrentTerm", LocalResourceFile); 
+            }
+
+            deleteVocabulary.Visible = !isAddMode;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="ShowTermEditor">
+          <declaration><![CDATA[public void ShowTermEditor(bool showEditor)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="100" sc="9" el="103" ec="10">EditVocabulary.ascx.cs</location>
+            <body hash="ef32d373b7e073d4d4fc45d0abce35fb"><![CDATA[{
+            pnlTermEditor.Visible = showEditor;
+            pnlVocabTerms.Visible = !showEditor;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="AddTerm">
+          <declaration><![CDATA[private System.EventHandler AddTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="addTermButton">
+          <declaration><![CDATA[protected LinkButton addTermButton;]]></declaration>
+          <documentation>
+            <summary>
+ addTermButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="cancelEdit">
+          <declaration><![CDATA[protected HyperLink cancelEdit;]]></declaration>
+          <documentation>
+            <summary>
+ cancelEdit control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="CancelTerm">
+          <declaration><![CDATA[private System.EventHandler CancelTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="cancelTermButton">
+          <declaration><![CDATA[protected LinkButton cancelTermButton;]]></declaration>
+          <documentation>
+            <summary>
+ cancelTermButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Delete">
+          <declaration><![CDATA[private System.EventHandler Delete;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="DeleteTerm">
+          <declaration><![CDATA[private System.EventHandler DeleteTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="deleteTermButton">
+          <declaration><![CDATA[protected LinkButton deleteTermButton;]]></declaration>
+          <documentation>
+            <summary>
+ deleteTermButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="deleteVocabulary">
+          <declaration><![CDATA[protected LinkButton deleteVocabulary;]]></declaration>
+          <documentation>
+            <summary>
+ deleteVocabulary control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="editTermControl">
+          <declaration><![CDATA[protected EditTermControl editTermControl;]]></declaration>
+          <documentation>
+            <summary>
+ editTermControl control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="editVocabularyControl">
+          <declaration><![CDATA[protected EditVocabularyControl editVocabularyControl;]]></declaration>
+          <documentation>
+            <summary>
+ editVocabularyControl control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="pnlTermEditor">
+          <declaration><![CDATA[protected Panel pnlTermEditor;]]></declaration>
+          <documentation>
+            <summary>
+ pnlTermEditor control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="pnlVocabTerms">
+          <declaration><![CDATA[protected Panel pnlVocabTerms;]]></declaration>
+          <documentation>
+            <summary>
+ pnlVocabTerms control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="Save">
+          <declaration><![CDATA[private System.EventHandler Save;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="SaveTerm">
+          <declaration><![CDATA[private System.EventHandler SaveTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="saveTermButton">
+          <declaration><![CDATA[protected LinkButton saveTermButton;]]></declaration>
+          <documentation>
+            <summary>
+ saveTermButton control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="saveVocabulary">
+          <declaration><![CDATA[protected LinkButton saveVocabulary;]]></declaration>
+          <documentation>
+            <summary>
+ saveVocabulary control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="SelectTerm">
+          <declaration><![CDATA[private System.EventHandler<TermsEventArgs> SelectTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="termLabel">
+          <declaration><![CDATA[protected Label termLabel;]]></declaration>
+          <documentation>
+            <summary>
+ termLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="termsLabel">
+          <declaration><![CDATA[protected DnnFieldLabel termsLabel;]]></declaration>
+          <documentation>
+            <summary>
+ termsLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="termsList">
+          <declaration><![CDATA[protected TermsList termsList;]]></declaration>
+          <documentation>
+            <summary>
+ termsList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="AddTerm">
+          <declaration><![CDATA[public event System.EventHandler AddTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="CancelTerm">
+          <declaration><![CDATA[public event System.EventHandler CancelTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="Delete">
+          <declaration><![CDATA[public event System.EventHandler Delete;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="DeleteTerm">
+          <declaration><![CDATA[public event System.EventHandler DeleteTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="Save">
+          <declaration><![CDATA[public event System.EventHandler Save;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="SaveTerm">
+          <declaration><![CDATA[public event System.EventHandler SaveTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="SelectTerm">
+          <declaration><![CDATA[public event System.EventHandler<TermsEventArgs> SelectTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="ICreateVocabularyView">
+      <declaration><![CDATA[public interface ICreateVocabularyView : IModuleView<CreateVocabularyModel>, IModuleViewBase, IView<CreateVocabularyModel>, IView]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="add_Save">
+          <declaration><![CDATA[void add_Save(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="BindVocabulary">
+          <declaration><![CDATA[void BindVocabulary(Vocabulary vocabulary, bool showScope);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_Save">
+          <declaration><![CDATA[void remove_Save(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="Save">
+          <declaration><![CDATA[event System.EventHandler Save;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="IEditVocabularyView">
+      <declaration><![CDATA[public interface IEditVocabularyView : IModuleView<EditVocabularyModel>, IModuleViewBase, IView<EditVocabularyModel>, IView]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="add_AddTerm">
+          <declaration><![CDATA[void add_AddTerm(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_CancelTerm">
+          <declaration><![CDATA[void add_CancelTerm(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_Delete">
+          <declaration><![CDATA[void add_Delete(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_DeleteTerm">
+          <declaration><![CDATA[void add_DeleteTerm(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_Save">
+          <declaration><![CDATA[void add_Save(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_SaveTerm">
+          <declaration><![CDATA[void add_SaveTerm(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_SelectTerm">
+          <declaration><![CDATA[void add_SelectTerm(System.EventHandler<TermsEventArgs> value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="BindTerm">
+          <declaration><![CDATA[void BindTerm(Term term, System.Collections.Generic.IEnumerable<Term> terms, bool isHeirarchical, bool loadFromControl, bool editEnabled);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="BindTerms">
+          <declaration><![CDATA[void BindTerms(System.Collections.Generic.IEnumerable<Term> terms, bool isHeirarchical, bool dataBind);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="BindVocabulary">
+          <declaration><![CDATA[void BindVocabulary(Vocabulary vocabulary, bool editEnabled, bool deleteEnabled, bool showScope);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ClearSelectedTerm">
+          <declaration><![CDATA[void ClearSelectedTerm();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_AddTerm">
+          <declaration><![CDATA[void remove_AddTerm(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_CancelTerm">
+          <declaration><![CDATA[void remove_CancelTerm(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_Delete">
+          <declaration><![CDATA[void remove_Delete(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_DeleteTerm">
+          <declaration><![CDATA[void remove_DeleteTerm(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_Save">
+          <declaration><![CDATA[void remove_Save(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_SaveTerm">
+          <declaration><![CDATA[void remove_SaveTerm(System.EventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_SelectTerm">
+          <declaration><![CDATA[void remove_SelectTerm(System.EventHandler<TermsEventArgs> value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="SetTermEditorMode">
+          <declaration><![CDATA[void SetTermEditorMode(bool isAddMode, int termId);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ShowTermEditor">
+          <declaration><![CDATA[void ShowTermEditor(bool showEditor);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="AddTerm">
+          <declaration><![CDATA[event System.EventHandler AddTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="CancelTerm">
+          <declaration><![CDATA[event System.EventHandler CancelTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="Delete">
+          <declaration><![CDATA[event System.EventHandler Delete;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="DeleteTerm">
+          <declaration><![CDATA[event System.EventHandler DeleteTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="Save">
+          <declaration><![CDATA[event System.EventHandler Save;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="SaveTerm">
+          <declaration><![CDATA[event System.EventHandler SaveTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="SelectTerm">
+          <declaration><![CDATA[event System.EventHandler<TermsEventArgs> SelectTerm;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="IVocabularyListView">
+      <declaration><![CDATA[public interface IVocabularyListView : IModuleView<VocabularyListModel>, IModuleViewBase, IView<VocabularyListModel>, IView]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+      </constructors>
+      <methods>
+        <method name="add_GridsItemDataBound">
+          <declaration><![CDATA[void add_GridsItemDataBound(GridItemEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_GridsNeedDataSource">
+          <declaration><![CDATA[void add_GridsNeedDataSource(GridNeedDataSourceEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="Refresh">
+          <declaration><![CDATA[void Refresh();]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_GridsItemDataBound">
+          <declaration><![CDATA[void remove_GridsItemDataBound(GridItemEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_GridsNeedDataSource">
+          <declaration><![CDATA[void remove_GridsNeedDataSource(GridNeedDataSourceEventHandler value);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ShowAddButton">
+          <declaration><![CDATA[void ShowAddButton(bool showButton);]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="GridsItemDataBound">
+          <declaration><![CDATA[event GridItemEventHandler GridsItemDataBound;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="GridsNeedDataSource">
+          <declaration><![CDATA[event GridNeedDataSourceEventHandler GridsNeedDataSource;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+    <class name="VocabularyList">
+      <declaration><![CDATA[public class VocabularyList : ModuleView<VocabularyListModel>, IVocabularyListView, IModuleView<VocabularyListModel>, IModuleViewBase, IView<VocabularyListModel>, IView]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabularyList()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="add_GridsItemDataBound">
+          <declaration><![CDATA[public void add_GridsItemDataBound(GridItemEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="add_GridsNeedDataSource">
+          <declaration><![CDATA[public void add_GridsNeedDataSource(GridNeedDataSourceEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="OnLoad">
+          <declaration><![CDATA[protected override void OnLoad(System.EventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="56" sc="9" el="61" ec="10">VocabularyList.ascx.cs</location>
+            <body hash="2d8684251f0cf28f0b61adf78a0ac6dd"><![CDATA[{
+            base.OnLoad(e);
+
+            vocabulariesGrid.NeedDataSource += VocabularyNeedDataSource;
+            vocabulariesGrid.ItemDataBound += VocabularyGridItemDataBound;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="Refresh">
+          <declaration><![CDATA[public void Refresh()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="73" sc="9" el="75" ec="10">VocabularyList.ascx.cs</location>
+            <body hash="070718da392a86b36a572f4972c1422e"><![CDATA[{
+            hlAddVocab.NavigateUrl = Model.NewVocabUrl;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_GridsItemDataBound">
+          <declaration><![CDATA[public void remove_GridsItemDataBound(GridItemEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="remove_GridsNeedDataSource">
+          <declaration><![CDATA[public void remove_GridsNeedDataSource(GridNeedDataSourceEventHandler value)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </method>
+        <method name="ShowAddButton">
+          <declaration><![CDATA[public void ShowAddButton(bool showButton)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="68" sc="9" el="70" ec="10">VocabularyList.ascx.cs</location>
+            <body hash="ffe0e75a1e6ee851891a3aafa14c885e"><![CDATA[{
+            hlAddVocab.Visible = showButton;
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="VocabularyGridItemDataBound">
+          <declaration><![CDATA[protected void VocabularyGridItemDataBound(object sender, GridItemEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="78" sc="9" el="80" ec="10">VocabularyList.ascx.cs</location>
+            <body hash="09ae03d76a87d7d9bf7e25cd482cd2c5"><![CDATA[{
+            GridsItemDataBound(sender, e);
+        }]]></body>
+          </codeblock>
+        </method>
+        <method name="VocabularyNeedDataSource">
+          <declaration><![CDATA[protected void VocabularyNeedDataSource(object sender, GridNeedDataSourceEventArgs e)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="83" sc="9" el="85" ec="10">VocabularyList.ascx.cs</location>
+            <body hash="6a132a5ccd268a57b3789cc122825639"><![CDATA[{
+            GridsNeedDataSource(sender, e);
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="GridsItemDataBound">
+          <declaration><![CDATA[private GridItemEventHandler GridsItemDataBound;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="GridsNeedDataSource">
+          <declaration><![CDATA[private GridNeedDataSourceEventHandler GridsNeedDataSource;]]></declaration>
+          <documentation>
+          </documentation>
+        </field>
+        <field name="hlAddVocab">
+          <declaration><![CDATA[protected HyperLink hlAddVocab;]]></declaration>
+          <documentation>
+            <summary>
+ hlAddVocab control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="titleLabel">
+          <declaration><![CDATA[protected Label titleLabel;]]></declaration>
+          <documentation>
+            <summary>
+ titleLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="vocabulariesGrid">
+          <declaration><![CDATA[protected DnnGrid vocabulariesGrid;]]></declaration>
+          <documentation>
+            <summary>
+ vocabulariesGrid control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+      </properties>
+      <events>
+        <event name="GridsItemDataBound">
+          <declaration><![CDATA[public event GridItemEventHandler GridsItemDataBound;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+        <event name="GridsNeedDataSource">
+          <declaration><![CDATA[public event GridNeedDataSourceEventHandler GridsNeedDataSource;]]></declaration>
+          <documentation>
+          </documentation>
+        </event>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Taxonomy.Views.Controls">
+    <class name="EditTermControl">
+      <declaration><![CDATA[public class EditTermControl : UserControl]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditTermControl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindTerm">
+          <declaration><![CDATA[public void BindTerm(Term term, System.Collections.Generic.IEnumerable<Term> terms, bool isHeirarchical, bool loadFromControl, bool editEnabled)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="49" sc="9" el="86" ec="10">Controls\EditTermControl.ascx.cs</location>
+            <body hash="cd3cc6d982a7e771cc9ef5e7979c33ca"><![CDATA[{
+            //nameValidator.Text = Services.Localization.Localization.GetString("TermName.Required", SharedResourceFile);
+
+            if (loadFromControl)
+            {
+                term.Name = nameTextBox.Text;
+                term.Description = descriptionTextBox.Text;
+                if (isHeirarchical && !string.IsNullOrEmpty(parentTermCombo.SelectedValue))
+                {
+                    term.ParentTermId = Int32.Parse(parentTermCombo.SelectedValue);
+                }
+            }
+            else
+            {
+                nameTextBox.Text = term.Name;
+				nameTextBox.Attributes.Add("data-termid", term.TermId.ToString());
+				nameTextBox.Attributes.Add("data-vocabularyid", term.VocabularyId.ToString());
+                descriptionTextBox.Text = term.Description;
+
+                //Remove this term (and its descendants) from the collection, so we don't get wierd heirarchies
+                var termsList = (from t in terms where !(t.Left >= term.Left && t.Right <= term.Right) select t).ToList();
+				parentTermCombo.Items.Clear();
+	            foreach (var t in termsList)
+	            {
+		            var item = new DnnComboBoxItem(t.Name, t.TermId.ToString());
+					if (term.ParentTermId.HasValue && term.ParentTermId == t.TermId)
+					{
+						item.Selected = true;
+					}
+					parentTermCombo.Items.Add(item);
+	            }
+
+                divParentTerm.Visible = isHeirarchical && termsList.Count > 0;
+                nameTextBox.Enabled = editEnabled;
+                descriptionTextBox.Enabled = editEnabled;
+                parentTermCombo.Enabled = editEnabled;
+            }
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="descriptionFieldLabel">
+          <declaration><![CDATA[protected DnnFieldLabel descriptionFieldLabel;]]></declaration>
+          <documentation>
+            <summary>
+ descriptionFieldLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="descriptionTextBox">
+          <declaration><![CDATA[protected TextBox descriptionTextBox;]]></declaration>
+          <documentation>
+            <summary>
+ descriptionTextBox control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="divParentTerm">
+          <declaration><![CDATA[protected HtmlGenericControl divParentTerm;]]></declaration>
+          <documentation>
+            <summary>
+ divParentTerm control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="nameFieldLabel">
+          <declaration><![CDATA[protected DnnFieldLabel nameFieldLabel;]]></declaration>
+          <documentation>
+            <summary>
+ nameFieldLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="nameTextBox">
+          <declaration><![CDATA[protected TextBox nameTextBox;]]></declaration>
+          <documentation>
+            <summary>
+ nameTextBox control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="nameValidator">
+          <declaration><![CDATA[protected RequiredFieldValidator nameValidator;]]></declaration>
+          <documentation>
+            <summary>
+ nameValidator control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="parentTermCombo">
+          <declaration><![CDATA[protected DnnComboBox parentTermCombo;]]></declaration>
+          <documentation>
+            <summary>
+ parentTermCombo control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="parentTermLabel">
+          <declaration><![CDATA[protected DnnFieldLabel parentTermLabel;]]></declaration>
+          <documentation>
+            <summary>
+ parentTermLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="LocalResourceFile">
+          <declaration><![CDATA[public string LocalResourceFile]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="EditVocabularyControl">
+      <declaration><![CDATA[public class EditVocabularyControl : UserControl]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditVocabularyControl()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+        <method name="BindVocabulary">
+          <declaration><![CDATA[public void BindVocabulary(Vocabulary vocabulary, bool editEnabled, bool showScope)]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="45" sc="9" el="79" ec="10">Controls\EditVocabularyControl.ascx.cs</location>
+            <body hash="8830bbd94dcf08643102728eff6f28e7"><![CDATA[{
+            if (IsPostBack)
+            {
+                vocabulary.Name = nameTextBox.Text;
+                vocabulary.Description = descriptionTextBox.Text;
+
+                var scopeTypeController = new ScopeTypeController();
+                ScopeType scopeType;
+                scopeType = scopeTypeController.GetScopeTypes().Where(s => s.ScopeType == scopeList.SelectedValue).SingleOrDefault();
+                vocabulary.ScopeTypeId = scopeType.ScopeTypeId;
+
+                vocabulary.Type = typeList.SelectedValue == "Simple" ? VocabularyType.Simple : VocabularyType.Hierarchy;
+            }
+            else
+            {
+                nameTextBox.Text = vocabulary.Name;
+                nameLabel.Text = vocabulary.Name;
+                descriptionTextBox.Text = vocabulary.Description;
+                typeList.Items.FindByValue(vocabulary.Type.ToString()).Selected = true;
+                if (vocabulary.ScopeType != null)
+                {
+					scopeLabel.Text = Localization.GetString(vocabulary.ScopeType.ScopeType, LocalResourceFile);
+                    scopeList.Items.FindByValue(vocabulary.ScopeType.ScopeType).Selected = true;
+                }
+                typeLabel.Text = vocabulary.Type.ToString();
+            }
+
+            nameTextBox.Visible = IsAddMode;
+            nameLabel.Visible = !IsAddMode;
+            descriptionTextBox.Enabled = editEnabled;
+            divScope.Visible = (IsAddMode && showScope);
+            scopeLabel.Visible = !(IsAddMode && showScope);
+            typeList.Visible = IsAddMode;
+            typeLabel.Visible = !IsAddMode;
+        }]]></body>
+          </codeblock>
+        </method>
+      </methods>
+      <fields>
+        <field name="descriptionFieldLabel">
+          <declaration><![CDATA[protected DnnFieldLabel descriptionFieldLabel;]]></declaration>
+          <documentation>
+            <summary>
+ descriptionFieldLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="descriptionTextBox">
+          <declaration><![CDATA[protected TextBox descriptionTextBox;]]></declaration>
+          <documentation>
+            <summary>
+ descriptionTextBox control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="divScope">
+          <declaration><![CDATA[protected HtmlGenericControl divScope;]]></declaration>
+          <documentation>
+            <summary>
+ divScope control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="nameFieldLabel">
+          <declaration><![CDATA[protected DnnFieldLabel nameFieldLabel;]]></declaration>
+          <documentation>
+            <summary>
+ nameFieldLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="nameLabel">
+          <declaration><![CDATA[protected Label nameLabel;]]></declaration>
+          <documentation>
+            <summary>
+ nameLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="nameTextBox">
+          <declaration><![CDATA[protected TextBox nameTextBox;]]></declaration>
+          <documentation>
+            <summary>
+ nameTextBox control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="nameValidator">
+          <declaration><![CDATA[protected RequiredFieldValidator nameValidator;]]></declaration>
+          <documentation>
+            <summary>
+ nameValidator control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="scopeFieldLabel">
+          <declaration><![CDATA[protected DnnFieldLabel scopeFieldLabel;]]></declaration>
+          <documentation>
+            <summary>
+ scopeFieldLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="scopeLabel">
+          <declaration><![CDATA[protected Label scopeLabel;]]></declaration>
+          <documentation>
+            <summary>
+ scopeLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="scopeList">
+          <declaration><![CDATA[protected RadioButtonList scopeList;]]></declaration>
+          <documentation>
+            <summary>
+ scopeList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="typeFieldLabel">
+          <declaration><![CDATA[protected DnnFieldLabel typeFieldLabel;]]></declaration>
+          <documentation>
+            <summary>
+ typeFieldLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="typeLabel">
+          <declaration><![CDATA[protected Label typeLabel;]]></declaration>
+          <documentation>
+            <summary>
+ typeLabel control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+        <field name="typeList">
+          <declaration><![CDATA[protected RadioButtonList typeList;]]></declaration>
+          <documentation>
+            <summary>
+ typeList control.
+ </summary>
+ <remarks>
+ Auto-generated field.
+ To modify move field declaration from designer file to code-behind file.
+ </remarks></documentation>
+        </field>
+      </fields>
+      <properties>
+        <property name="IsAddMode">
+          <declaration><![CDATA[public bool IsAddMode]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="LocalResourceFile">
+          <declaration><![CDATA[public string LocalResourceFile]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+  <namespace name="DotNetNuke.Modules.Taxonomy.Views.Models">
+    <class name="CreateVocabularyModel">
+      <declaration><![CDATA[public class CreateVocabularyModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public CreateVocabularyModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="TaxonomyHomeUrl">
+          <declaration><![CDATA[public string TaxonomyHomeUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Vocabulary">
+          <declaration><![CDATA[public Vocabulary Vocabulary]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="EditVocabularyModel">
+      <declaration><![CDATA[public class EditVocabularyModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public EditVocabularyModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CancelUrl">
+          <declaration><![CDATA[public string CancelUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Term">
+          <declaration><![CDATA[public Term Term]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Terms">
+          <declaration><![CDATA[public System.Collections.Generic.List<Term> Terms]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="Vocabulary">
+          <declaration><![CDATA[public Vocabulary Vocabulary]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+    <class name="VocabularyListModel">
+      <declaration><![CDATA[public class VocabularyListModel]]></declaration>
+      <documentation>
+      </documentation>
+      <constructors>
+        <constructor name=".ctor">
+          <declaration><![CDATA[public VocabularyListModel()]]></declaration>
+          <documentation>
+          </documentation>
+          <codeblock>
+            <location sl="2147483647" sc="0" el="0" ec="0">
+            </location>
+            <body hash="d41d8cd98f00b204e9800998ecf8427e"><![CDATA[]]></body>
+          </codeblock>
+        </constructor>
+      </constructors>
+      <methods>
+      </methods>
+      <fields>
+      </fields>
+      <properties>
+        <property name="CanEdit">
+          <declaration><![CDATA[public bool CanEdit]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+        <property name="NewVocabUrl">
+          <declaration><![CDATA[public string NewVocabUrl]]></declaration>
+          <documentation>
+          </documentation>
+        </property>
+      </properties>
+      <events>
+      </events>
+    </class>
+  </namespace>
+</root>
